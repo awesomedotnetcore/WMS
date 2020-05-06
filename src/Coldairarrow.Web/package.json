@@ -71,10 +71,14 @@
       "parser": "babel-eslint"
     },
     "rules": {
-      "generator-star-spacing": "off",
+      "space-before-function-paren":"off",
+      "generator-star-spacing":"off",
+      "eol-last":"off",
+      "eqeqeq":"off",
       "no-mixed-operators": 0,
+      "spaced-comment":"off",
       "vue/max-attributes-per-line": [
-        2,
+        "off",
         {
           "singleline": 5,
           "multiline": {

@@ -1,25 +1,12 @@
 <template>
-  <a-modal
-    title="编辑表单"
-    width="40%"
-    :visible="visible"
-    :confirmLoading="confirmLoading"
-    @ok="handleSubmit"
-    @cancel="()=>{this.visible=false}"
-  >
+  <a-modal title="编辑表单" width="40%" :visible="visible" :confirmLoading="confirmLoading" @ok="handleSubmit" @cancel="()=>{this.visible=false}">
     <a-spin :spinning="confirmLoading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
         <a-form-model-item label="菜单名" prop="Name">
           <a-input v-model="entity.Name" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="上级菜单" prop="ParentId">
-          <a-tree-select
-            v-model="entity.ParentId"
-            allowClear
-            :treeData="ParentIdTreeData"
-            placeholder="请选择上级菜单"
-            treeDefaultExpandAll
-          ></a-tree-select>
+          <a-tree-select v-model="entity.ParentId" allowClear :treeData="ParentIdTreeData" placeholder="请选择上级菜单" treeDefaultExpandAll></a-tree-select>
         </a-form-model-item>
         <a-form-model-item label="类型" prop="Type">
           <a-radio-group v-model="entity.Type">
