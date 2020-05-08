@@ -71,12 +71,12 @@
       "parser": "babel-eslint"
     },
     "rules": {
-      "space-before-function-paren":"off",
-      "generator-star-spacing":"off",
-      "eol-last":"off",
-      "eqeqeq":"off",
+      "space-before-function-paren": "off",
+      "generator-star-spacing": "off",
+      "eol-last": "off",
+      "eqeqeq": "off",
       "no-mixed-operators": 0,
-      "spaced-comment":"off",
+      "spaced-comment": "off",
       "vue/max-attributes-per-line": [
         "off",
         {
