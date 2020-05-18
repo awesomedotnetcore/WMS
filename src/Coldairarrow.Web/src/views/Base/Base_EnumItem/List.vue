@@ -1,14 +1,8 @@
 ﻿<template>
-  <a-card :bordered="false">
+  <a-drawer title="字典值" placement="right" :closable="true" :maskClosable="false" @close="onDrawerClose" :visible="visible" :width="1024" :getContainer="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button
-        type="primary"
-        icon="minus"
-        @click="handleDelete(selectedRowKeys)"
-        :disabled="!hasSelected()"
-        :loading="loading"
-      >删除</a-button>
+      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
 
@@ -16,18 +10,13 @@
       <a-form layout="inline">
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
-            <a-form-item label="查询类别">
-              <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="EnumId">EnumId</a-select-option>
-                <a-select-option key="Value">Value</a-select-option>
-                <a-select-option key="EnumCode">EnumCode</a-select-option>
-                <a-select-option key="Remarks">备注</a-select-option>
-              </a-select>
+            <a-form-item>
+              <a-input v-model="queryParam.Value" placeholder="字典值" />
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="关键字" />
+              <a-input v-model="queryParam.Code" placeholder="字典编码" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -38,40 +27,31 @@
       </a-form>
     </div>
 
-    <a-table
-      ref="table"
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      :bordered="true"
-      size="small"
-    >
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="handleEdit(record.Id)">编辑</a>
-          <a-divider type="vertical" />
-          <a @click="handleDelete([record.Id])">删除</a>
+          <a v-if="!record.IsSystem" @click="handleEdit(record.Id)">编辑</a>
+          <a-divider v-if="!record.IsSystem" type="vertical" />
+          <a v-if="!record.IsSystem" @click="handleDelete([record.Id])">删除</a>
         </template>
       </span>
     </a-table>
 
-    <edit-form ref="editForm" :parentObj="this"></edit-form>
-  </a-card>
+    <edit-form ref="editForm" :parentObj="this" :enumObj="enumData"></edit-form>
+  </a-drawer>
 </template>
 
 <script>
 import EditForm from './EditForm'
-
+const filterYesOrNo = (value, row, index) => {
+  if (value) return '是'
+  else return '否'
+}
 const columns = [
-  { title: 'EnumId', dataIndex: 'EnumId', width: '10%' },
-  { title: 'Value', dataIndex: 'Value', width: '10%' },
-  { title: 'EnumCode', dataIndex: 'EnumCode', width: '10%' },
+  { title: '字典值', dataIndex: 'Value', width: '10%' },
+  { title: '字典编码', dataIndex: 'Code', width: '10%' },
   { title: '备注', dataIndex: 'Remarks', width: '10%' },
-  { title: '系统必须', dataIndex: 'IsSystem', width: '10%' },
+  { title: '系统必须', dataIndex: 'IsSystem', customRender: filterYesOrNo, width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -80,10 +60,11 @@ export default {
     EditForm
   },
   mounted() {
-    this.getDataList()
   },
   data() {
     return {
+      enumData: {},
+      visible: false,
       data: [],
       pagination: {
         current: 1,
@@ -126,8 +107,12 @@ export default {
           this.pagination = pagination
         })
     },
-    onSelectChange(selectedRowKeys) {
-      this.selectedRowKeys = selectedRowKeys
+    onSelectChange(selectedRowKeys, selectedRows) {
+      var ids = []
+      selectedRows.forEach((val, index, arr) => {
+        if (!val.IsSystem) ids.push(val.Id)
+      })
+      this.selectedRowKeys = ids
     },
     hasSelected() {
       return this.selectedRowKeys.length > 0
@@ -158,6 +143,15 @@ export default {
           })
         }
       })
+    },
+    openDrawer(record) {
+      this.filters.EnumId = record.Id
+      this.enumData = record
+      this.visible = true
+      this.getDataList()
+    },
+    onDrawerClose() {
+      this.visible = false
     }
   }
 }

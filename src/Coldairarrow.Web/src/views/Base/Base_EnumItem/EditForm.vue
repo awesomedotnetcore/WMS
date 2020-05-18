@@ -1,28 +1,15 @@
 ﻿<template>
-  <a-modal
-    :title="title"
-    width="40%"
-    :visible="visible"
-    :confirmLoading="loading"
-    @ok="handleSubmit"
-    @cancel="()=>{this.visible=false}"
-  >
+  <a-modal :title="title" width="40%" :visible="visible" :confirmLoading="loading" @ok="handleSubmit" @cancel="()=>{this.visible=false}">
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="EnumId" prop="EnumId">
-          <a-input v-model="entity.EnumId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="Value" prop="Value">
+        <a-form-model-item label="字典值" prop="Value">
           <a-input v-model="entity.Value" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="EnumCode" prop="EnumCode">
-          <a-input v-model="entity.EnumCode" autocomplete="off" />
+        <a-form-model-item label="字典编码" prop="Code">
+          <a-input v-model="entity.Code" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="备注" prop="Remarks">
           <a-input v-model="entity.Remarks" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="系统必须" prop="IsSystem">
-          <a-input v-model="entity.IsSystem" autocomplete="off" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -32,7 +19,8 @@
 <script>
 export default {
   props: {
-    parentObj: Object
+    parentObj: { type: Object, required: true },
+    enumObj: { type: Object, required: true }
   },
   data() {
     return {
@@ -50,7 +38,7 @@ export default {
   methods: {
     init() {
       this.visible = true
-      this.entity = {}
+      this.entity = { EnumId: this.enumObj.Id, EnumCode: this.enumObj.Code }
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })

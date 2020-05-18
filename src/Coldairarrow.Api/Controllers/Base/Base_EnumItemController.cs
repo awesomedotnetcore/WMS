@@ -24,7 +24,7 @@ namespace Coldairarrow.Api.Controllers.Base
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<Base_EnumItem>> GetDataList(PageInput<ConditionDTO> input)
+        public async Task<PageResult<Base_EnumItem>> GetDataList(Base_EnumItemPageInput input)
         {
             return await _base_EnumItemBus.GetDataListAsync(input);
         }
@@ -42,6 +42,7 @@ namespace Coldairarrow.Api.Controllers.Base
         [HttpPost]
         public async Task SaveData(Base_EnumItem data)
         {
+            data.IsSystem = false;
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);

@@ -19,19 +19,16 @@ namespace Coldairarrow.Business.Base
 
         #region 外部接口
 
-        public async Task<PageResult<Base_EnumItem>> GetDataListAsync(PageInput<ConditionDTO> input)
+        public async Task<PageResult<Base_EnumItem>> GetDataListAsync(Base_EnumItemPageInput input)
         {
-            var q = GetIQueryable();
+            var q = GetIQueryable().Where(w => w.EnumId == input.EnumId);
             var where = LinqHelper.True<Base_EnumItem>();
             var search = input.Search;
 
-            //筛选
-            if (!search.Condition.IsNullOrEmpty() && !search.Keyword.IsNullOrEmpty())
-            {
-                var newWhere = DynamicExpressionParser.ParseLambda<Base_EnumItem, bool>(
-                    ParsingConfig.Default, false, $@"{search.Condition}.Contains(@0)", search.Keyword);
-                where = where.And(newWhere);
-            }
+            if (!search.Value.IsNullOrEmpty())
+                where = where.And(w => w.Value.Contains(search.Value));
+            if (!search.Code.IsNullOrEmpty())
+                where = where.And(w => w.Code.Contains(search.Code));
 
             return await q.Where(where).GetPageResultAsync(input);
         }

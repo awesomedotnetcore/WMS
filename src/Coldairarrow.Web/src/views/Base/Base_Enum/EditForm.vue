@@ -15,9 +15,6 @@
         <a-form-model-item label="名称" prop="Name">
           <a-input v-model="entity.Name" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="系统必须" prop="IsSystem">
-          <a-input v-model="entity.IsSystem" autocomplete="off" />
-        </a-form-model-item>
         <a-form-model-item label="备注" prop="Remarks">
           <a-input v-model="entity.Remarks" autocomplete="off" />
         </a-form-model-item>
