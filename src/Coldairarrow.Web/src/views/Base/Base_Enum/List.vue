@@ -111,8 +111,12 @@ export default {
           this.pagination = pagination
         })
     },
-    onSelectChange(selectedRowKeys) {
-      this.selectedRowKeys = selectedRowKeys
+    onSelectChange(selectedRowKeys, selectedRows) {
+      var ids = []
+      selectedRows.forEach((val, index, arr) => {
+        if (!val.IsSystem) ids.push(val.Id)
+      })
+      this.selectedRowKeys = ids
     },
     hasSelected() {
       return this.selectedRowKeys.length > 0
