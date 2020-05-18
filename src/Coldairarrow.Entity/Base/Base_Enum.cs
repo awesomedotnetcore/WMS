@@ -30,7 +30,7 @@ namespace Coldairarrow.Entity.Base
         /// <summary>
         /// 系统必须
         /// </summary>
-        public Boolean? IsSystem { get; set; }
+        public Boolean IsSystem { get; set; }
 
         /// <summary>
         /// 备注
@@ -50,7 +50,7 @@ namespace Coldairarrow.Entity.Base
         /// <summary>
         /// 删除状态：0=未删除；1＝已删除；
         /// </summary>
-        public Boolean? Deleted { get; set; }
+        public Boolean Deleted { get; set; }
 
     }
 }
