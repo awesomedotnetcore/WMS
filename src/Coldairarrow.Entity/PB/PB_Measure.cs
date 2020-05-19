@@ -2,53 +2,30 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Coldairarrow.Entity.Base
+namespace Coldairarrow.Entity.PB
 {
     /// <summary>
-    /// 字典值
+    /// 计量单位表
     /// </summary>
-    [Table("Base_EnumItem")]
-    public class Base_EnumItem
+    [Table("PB_Measure")]
+    public class PB_Measure
     {
 
         /// <summary>
-        /// Id
+        /// 单位ID
         /// </summary>
         [Key, Column(Order = 1)]
         public String Id { get; set; }
 
         /// <summary>
-        /// EnumId
-        /// </summary>
-        public String EnumId { get; set; }
-        /// <summary>
-        /// EnumCode
-        /// </summary>
-        public String EnumCode { get; set; }
-
-        /// <summary>
-        /// Name
-        /// </summary>
-        public String Name { get; set; }
-        /// <summary>
-        /// Code
+        /// 单位编码
         /// </summary>
         public String Code { get; set; }
 
         /// <summary>
-        /// Value
+        /// 单位名称
         /// </summary>
-        public String Value { get; set; }
-
-        /// <summary>
-        /// 备注
-        /// </summary>
-        public String Remarks { get; set; }
-
-        /// <summary>
-        /// 系统必须
-        /// </summary>
-        public Boolean IsSystem { get; set; }
+        public String Name { get; set; }
 
         /// <summary>
         /// 创建时间

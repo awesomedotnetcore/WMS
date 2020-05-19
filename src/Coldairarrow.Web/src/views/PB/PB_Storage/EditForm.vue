@@ -9,19 +9,14 @@
   >
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="仓库编号:" prop="Code">
+        <a-form-model-item label="仓库编号" prop="Code">
           <a-input v-model="entity.Code" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="仓库名称:" prop="Name">
+        <a-form-model-item label="仓库名称" prop="Name">
           <a-input v-model="entity.Name" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="仓库类型:" prop="Type">
-          <a-input v-model="entity.Type" autocomplete="off" /> 
-          <!-- <a-select v-model="entity.Type" autocomplete="off" >
-            <a-select-option v-for="mu in EnumItem" :value="mu.Id" :key="mu.Id">
-              [{{ mu.Code }}]{{ mu.Value }}
-              </a-select-option>
-          </a-select> -->
+        <a-form-model-item label="仓库类型" prop="Type">
+          <enum-select code="StorageType" v-model="entity.Type"></enum-select>
         </a-form-model-item>
         <a-form-model-item label="是否启用托盘管理:" prop="IsTray">
           <a-select style="width: 180px" placeholder="请选择" buttonStyle="solid" v-model="entity.IsTray" autocomplete="off" @select="DataTypeChange">
@@ -52,15 +47,15 @@
         </a-form-model-item>
       </a-form-model>
     </a-spin>
-
   </a-modal>
 </template>
 
 <script>
-
-
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 export default {
-
+  components: {
+    EnumSelect
+  },
   props: {
     parentObj: Object
   },
@@ -74,8 +69,7 @@ export default {
       loading: false,
       entity: {},
       rules: {},
-      title: '',
-      EnumItem: []
+      title: ''
     }
   },
   methods: {
@@ -85,13 +79,6 @@ export default {
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })
-
-      // this.$http.post('/Base/Base_EnumItem/GetDataList',{EnumId:"StorageType"}).then(resJson => {
-      //   this.EnumItem = resJson.Data
-      // })
-      // this.entity = {}
-      // this.form.resetFields()
-      // this.visible = true
     },
     openForm(id, title) {
       this.init()
@@ -127,8 +114,7 @@ export default {
     },
     DataTypeChange(val, option) {
       this.DataType = val
-    },
-    
+    }
   }
 }
 </script>

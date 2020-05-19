@@ -12,10 +12,12 @@ namespace Coldairarrow.Business.Base
         Task AddDataAsync(Base_EnumItem data);
         Task UpdateDataAsync(Base_EnumItem data);
         Task DeleteDataAsync(List<string> ids);
+        Task<List<Base_EnumItem>> GetDataListAsync(string enumCode);
     }
 
     public class Base_EnumItemQM
     {
+        public string Name { get; set; }
         public string Code { get; set; }
         public string Value { get; set; }
     }

@@ -2,20 +2,14 @@
   <a-card :bordered="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button
-        type="primary"
-        icon="minus"
-        @click="handleDelete(selectedRowKeys)"
-        :disabled="!hasSelected()"
-        :loading="loading"
-      >删除</a-button>
+      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
 
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
-          <!-- <a-col :md="4" :sm="24">
+          <a-col :md="4" :sm="24">
             <a-form-item label="查询类别">
               <a-select allowClear v-model="queryParam.condition">
                 <a-select-option key="Code">仓库编号</a-select-option>
@@ -24,7 +18,7 @@
                 <a-select-option key="Remarks">备注</a-select-option>
               </a-select>
             </a-form-item>
-          </a-col> -->
+          </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.keyword" placeholder="关键字" />
@@ -38,26 +32,10 @@
       </a-form>
     </div>
 
-    <a-table
-      ref="table"
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      :bordered="true"
-      size="small"
-    >
-    <span slot="IsTray" slot-scope="text, record">    
-        <template>
-        <a-button type="primary">
-          Primary
-        </a-button>
-        </template>
-    </span>
-
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+      <template slot="Type" slot-scope="text">
+        <enum-name code="StorageType" :value="text"></enum-name>
+      </template>
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -73,7 +51,7 @@
 
 <script>
 import EditForm from './EditForm'
-
+import EnumName from '../../../components/BaseEnum/BaseEnumName'
 const filterYesOrNo = (value, row, index) => {
   if (value) return '是'
   else return '否'
@@ -82,12 +60,8 @@ const filterYesOrNo = (value, row, index) => {
 const columns = [
   { title: '仓库编号', dataIndex: 'Code', width: '10%' },
   { title: '仓库名称', dataIndex: 'Name', width: '10%' },
-  { title: '仓库类型', dataIndex: 'Type', width: '10%' },
-  // { title: '是否启用托盘管理', dataIndex: 'IsTray', customRender: filterYesOrNo, width: '10%'},
-  // { title: '是否启用分区管理', dataIndex: 'IsZone', customRender: filterYesOrNo, width: '10%' },
-  // { title: '是否启用仓库', dataIndex: 'disable', customRender: filterYesOrNo, width: '10%' },
-  // { title: '是否默认仓库', dataIndex: 'IsDefault', customRender: filterYesOrNo, width: '10%' },
-  { title: '是否启用托盘管理', dataIndex: 'IsTray', width: '10%',scopedSlots: { customRender: 'IsTray' } },
+  { title: '仓库类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
+  { title: '是否启用托盘管理', dataIndex: 'IsTray', customRender: filterYesOrNo, width: '10%' },
   { title: '是否启用分区管理', dataIndex: 'IsZone', customRender: filterYesOrNo, width: '10%' },
   { title: '是否启用仓库', dataIndex: 'disable', customRender: filterYesOrNo, width: '10%' },
   { title: '是否默认仓库', dataIndex: 'IsDefault', customRender: filterYesOrNo, width: '10%' },
@@ -97,7 +71,8 @@ const columns = [
 
 export default {
   components: {
-    EditForm
+    EditForm,
+    EnumName
   },
   mounted() {
     this.getDataList()

@@ -2,13 +2,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Coldairarrow.Entity.Base
+namespace Coldairarrow.Entity.PB
 {
     /// <summary>
-    /// 字典值
+    /// 巷道管理
     /// </summary>
-    [Table("Base_EnumItem")]
-    public class Base_EnumItem
+    [Table("PB_Laneway")]
+    public class PB_Laneway
     {
 
         /// <summary>
@@ -18,37 +18,14 @@ namespace Coldairarrow.Entity.Base
         public String Id { get; set; }
 
         /// <summary>
-        /// EnumId
-        /// </summary>
-        public String EnumId { get; set; }
-        /// <summary>
-        /// EnumCode
-        /// </summary>
-        public String EnumCode { get; set; }
-
-        /// <summary>
-        /// Name
-        /// </summary>
-        public String Name { get; set; }
-        /// <summary>
-        /// Code
+        /// 巷道编号
         /// </summary>
         public String Code { get; set; }
 
         /// <summary>
-        /// Value
+        /// 巷道名称
         /// </summary>
-        public String Value { get; set; }
-
-        /// <summary>
-        /// 备注
-        /// </summary>
-        public String Remarks { get; set; }
-
-        /// <summary>
-        /// 系统必须
-        /// </summary>
-        public Boolean IsSystem { get; set; }
+        public String Name { get; set; }
 
         /// <summary>
         /// 创建时间

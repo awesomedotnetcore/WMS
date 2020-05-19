@@ -1,18 +1,19 @@
 ﻿<template>
-  <a-modal :title="title" width="40%" :visible="visible" :confirmLoading="loading" @ok="handleSubmit" @cancel="()=>{this.visible=false}">
+  <a-modal
+    :title="title"
+    width="40%"
+    :visible="visible"
+    :confirmLoading="loading"
+    @ok="handleSubmit"
+    @cancel="()=>{this.visible=false}"
+  >
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="字典名称" prop="Name">
-          <a-input v-model="entity.Name" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="字典值" prop="Value">
-          <a-input v-model="entity.Value" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="字典编码" prop="Code">
+        <a-form-model-item label="巷道编号" prop="Code">
           <a-input v-model="entity.Code" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="备注" prop="Remarks">
-          <a-input v-model="entity.Remarks" autocomplete="off" />
+        <a-form-model-item label="巷道名称" prop="Name">
+          <a-input v-model="entity.Name" autocomplete="off" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -22,8 +23,7 @@
 <script>
 export default {
   props: {
-    parentObj: { type: Object, required: true },
-    enumObj: { type: Object, required: true }
+    parentObj: Object
   },
   data() {
     return {
@@ -41,7 +41,7 @@ export default {
   methods: {
     init() {
       this.visible = true
-      this.entity = { EnumId: this.enumObj.Id, EnumCode: this.enumObj.Code }
+      this.entity = {}
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })
@@ -51,7 +51,7 @@ export default {
 
       if (id) {
         this.loading = true
-        this.$http.post('/Base/Base_EnumItem/GetTheData', { id: id }).then(resJson => {
+        this.$http.post('/PB/PB_Laneway/GetTheData', { id: id }).then(resJson => {
           this.loading = false
 
           this.entity = resJson.Data
@@ -64,7 +64,7 @@ export default {
           return
         }
         this.loading = true
-        this.$http.post('/Base/Base_EnumItem/SaveData', this.entity).then(resJson => {
+        this.$http.post('/PB/PB_Laneway/SaveData', this.entity).then(resJson => {
           this.loading = false
 
           if (resJson.Success) {
