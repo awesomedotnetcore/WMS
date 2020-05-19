@@ -148,8 +148,8 @@ export default {
         }
       })
     },
-    showEnumItem(record) {
-      this.$refs.enumItem.openDrawer(record)
+    showEnumItem(value) {
+      this.$refs.enumItem.openDrawer(value)
     }
   }
 }

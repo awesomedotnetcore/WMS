@@ -15,7 +15,7 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
-          <a-col :md="4" :sm="24">
+          <!-- <a-col :md="4" :sm="24">
             <a-form-item label="查询类别">
               <a-select allowClear v-model="queryParam.condition">
                 <a-select-option key="Code">仓库编号</a-select-option>
@@ -24,7 +24,7 @@
                 <a-select-option key="Remarks">备注</a-select-option>
               </a-select>
             </a-form-item>
-          </a-col>
+          </a-col> -->
           <a-col :md="4" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.keyword" placeholder="关键字" />
@@ -50,6 +50,14 @@
       :bordered="true"
       size="small"
     >
+    <span slot="IsTray" slot-scope="text, record">    
+        <template>
+        <a-button type="primary">
+          Primary
+        </a-button>
+        </template>
+    </span>
+
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -74,8 +82,12 @@ const filterYesOrNo = (value, row, index) => {
 const columns = [
   { title: '仓库编号', dataIndex: 'Code', width: '10%' },
   { title: '仓库名称', dataIndex: 'Name', width: '10%' },
-  { title: '仓库类型（平库,立库）(枚举)', dataIndex: 'Type', width: '10%' },
-  { title: '是否启用托盘管理', dataIndex: 'IsTray', customRender: filterYesOrNo, width: '10%' },
+  { title: '仓库类型', dataIndex: 'Type', width: '10%' },
+  // { title: '是否启用托盘管理', dataIndex: 'IsTray', customRender: filterYesOrNo, width: '10%'},
+  // { title: '是否启用分区管理', dataIndex: 'IsZone', customRender: filterYesOrNo, width: '10%' },
+  // { title: '是否启用仓库', dataIndex: 'disable', customRender: filterYesOrNo, width: '10%' },
+  // { title: '是否默认仓库', dataIndex: 'IsDefault', customRender: filterYesOrNo, width: '10%' },
+  { title: '是否启用托盘管理', dataIndex: 'IsTray', width: '10%',scopedSlots: { customRender: 'IsTray' } },
   { title: '是否启用分区管理', dataIndex: 'IsZone', customRender: filterYesOrNo, width: '10%' },
   { title: '是否启用仓库', dataIndex: 'disable', customRender: filterYesOrNo, width: '10%' },
   { title: '是否默认仓库', dataIndex: 'IsDefault', customRender: filterYesOrNo, width: '10%' },
