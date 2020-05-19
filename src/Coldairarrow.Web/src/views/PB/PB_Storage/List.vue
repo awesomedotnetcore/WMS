@@ -2,13 +2,7 @@
   <a-card :bordered="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button
-        type="primary"
-        icon="minus"
-        @click="handleDelete(selectedRowKeys)"
-        :disabled="!hasSelected()"
-        :loading="loading"
-      >删除</a-button>
+      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
 
@@ -38,18 +32,10 @@
       </a-form>
     </div>
 
-    <a-table
-      ref="table"
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      :bordered="true"
-      size="small"
-    >
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+      <template slot="Type" slot-scope="text">
+        <enum-name code="StorageType" :value="text"></enum-name>
+      </template>
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -65,7 +51,7 @@
 
 <script>
 import EditForm from './EditForm'
-
+import EnumName from '../../../components/BaseEnum/BaseEnumName'
 const filterYesOrNo = (value, row, index) => {
   if (value) return '是'
   else return '否'
@@ -74,7 +60,7 @@ const filterYesOrNo = (value, row, index) => {
 const columns = [
   { title: '仓库编号', dataIndex: 'Code', width: '10%' },
   { title: '仓库名称', dataIndex: 'Name', width: '10%' },
-  { title: '仓库类型（平库,立库）(枚举)', dataIndex: 'Type', width: '10%' },
+  { title: '仓库类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
   { title: '是否启用托盘管理', dataIndex: 'IsTray', customRender: filterYesOrNo, width: '10%' },
   { title: '是否启用分区管理', dataIndex: 'IsZone', customRender: filterYesOrNo, width: '10%' },
   { title: '是否启用仓库', dataIndex: 'disable', customRender: filterYesOrNo, width: '10%' },
@@ -85,7 +71,8 @@ const columns = [
 
 export default {
   components: {
-    EditForm
+    EditForm,
+    EnumName
   },
   mounted() {
     this.getDataList()

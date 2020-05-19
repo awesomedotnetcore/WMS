@@ -1,5 +1,5 @@
 <template>
-  <a-select v-model="value" @select="handleSelected">
+  <a-select v-model="curValue" @select="handleSelected">
     <a-select-option v-for="item in enumItem" :key="item.Value" :value="item.Value">{{ item.Name }}</a-select-option>
   </a-select>
 </template>
@@ -12,15 +12,17 @@ export default {
   },
   data() {
     return {
+      curValue: null,
       enumItem: []
     }
   },
   watch: {
-    value(code) {
+    code(code) {
       this.getEnumItem()
     }
   },
   mounted() {
+    this.curValue = this.value
     this.getEnumItem()
   },
   methods: {

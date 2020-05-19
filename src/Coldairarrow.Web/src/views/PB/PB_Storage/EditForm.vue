@@ -15,8 +15,8 @@
         <a-form-model-item label="仓库名称" prop="Name">
           <a-input v-model="entity.Name" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="仓库类型（平库,立库）(枚举)" prop="Type">
-          <a-input v-model="entity.Type" autocomplete="off" />
+        <a-form-model-item label="仓库类型" prop="Type">
+          <enum-select code="StorageType" v-model="entity.Type"></enum-select>
         </a-form-model-item>
         <a-form-model-item label="是否启用托盘管理:" prop="IsTray">
           <a-select style="width: 180px" placeholder="请选择" buttonStyle="solid" v-model="entity.IsTray" autocomplete="off" @select="DataTypeChange">
@@ -51,7 +51,11 @@
 </template>
 
 <script>
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 export default {
+  components: {
+    EnumSelect
+  },
   props: {
     parentObj: Object
   },
