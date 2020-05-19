@@ -11,6 +11,11 @@
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
             <a-form-item>
+              <a-input v-model="queryParam.Name" placeholder="字典名称" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="4" :sm="24">
+            <a-form-item>
               <a-input v-model="queryParam.Value" placeholder="字典值" />
             </a-form-item>
           </a-col>
@@ -48,9 +53,9 @@ const filterYesOrNo = (value, row, index) => {
   else return '否'
 }
 const columns = [
+  { title: '字典名称', dataIndex: 'Name', width: '10%' },
   { title: '字典值', dataIndex: 'Value', width: '10%' },
   { title: '字典编码', dataIndex: 'Code', width: '10%' },
-  { title: '备注', dataIndex: 'Remarks', width: '10%' },
   { title: '系统必须', dataIndex: 'IsSystem', customRender: filterYesOrNo, width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]

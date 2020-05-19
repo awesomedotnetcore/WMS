@@ -27,6 +27,10 @@ namespace Coldairarrow.Entity.Base
         public String EnumCode { get; set; }
 
         /// <summary>
+        /// Name
+        /// </summary>
+        public String Name { get; set; }
+        /// <summary>
         /// Code
         /// </summary>
         public String Code { get; set; }

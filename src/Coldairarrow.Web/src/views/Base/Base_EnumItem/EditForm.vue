@@ -2,6 +2,9 @@
   <a-modal :title="title" width="40%" :visible="visible" :confirmLoading="loading" @ok="handleSubmit" @cancel="()=>{this.visible=false}">
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
+        <a-form-model-item label="字典名称" prop="Name">
+          <a-input v-model="entity.Name" autocomplete="off" />
+        </a-form-model-item>
         <a-form-model-item label="字典值" prop="Value">
           <a-input v-model="entity.Value" autocomplete="off" />
         </a-form-model-item>

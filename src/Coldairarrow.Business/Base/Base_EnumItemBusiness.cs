@@ -25,6 +25,8 @@ namespace Coldairarrow.Business.Base
             var where = LinqHelper.True<Base_EnumItem>();
             var search = input.Search;
 
+            if (!search.Name.IsNullOrEmpty())
+                where = where.And(w => w.Name.Contains(search.Name));
             if (!search.Value.IsNullOrEmpty())
                 where = where.And(w => w.Value.Contains(search.Value));
             if (!search.Code.IsNullOrEmpty())
@@ -32,7 +34,10 @@ namespace Coldairarrow.Business.Base
 
             return await q.Where(where).GetPageResultAsync(input);
         }
-
+        public Task<List<Base_EnumItem>> GetDataListAsync(string enumCode)
+        {
+            return GetIQueryable().Where(w => w.EnumCode == enumCode).ToListAsync();
+        }
         public async Task<Base_EnumItem> GetTheDataAsync(string id)
         {
             return await GetEntityAsync(id);
