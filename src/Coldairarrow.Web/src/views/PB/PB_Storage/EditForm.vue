@@ -1,7 +1,7 @@
 ﻿<template>
   <a-modal
     :title="title"
-    width="50%"
+    width="30%"
     :visible="visible"
     :confirmLoading="loading"
     @ok="handleSubmit"
@@ -18,30 +18,36 @@
         <a-form-model-item label="仓库类型" prop="Type">
           <enum-select code="StorageType" v-model="entity.Type"></enum-select>
         </a-form-model-item>
-        <a-form-model-item label="是否启用托盘管理:" prop="IsTray">
-          <a-select style="width: 180px" placeholder="请选择" buttonStyle="solid" v-model="entity.IsTray" autocomplete="off" @select="DataTypeChange">
-            <a-select-option value="false" :key="false">否</a-select-option>
-            <a-select-option value="true" :key="true">是</a-select-option>
-          </a-select>&nbsp;&nbsp;
+        <a-form-model-item label="默认仓库:" prop="IsDefault">
+          <a-select  v-model="entity.IsDefault" autocomplete="off" @select="DataTypeChange">
+            <a-select-option :value="false" >否</a-select-option>
+            <a-select-option :value="true" >是</a-select-option>
+          </a-select>
         </a-form-model-item>
-        <a-form-model-item label="是否启用分区管理:" prop="IsZone">
-          <a-select style="width: 180px" placeholder="请选择" buttonStyle="solid" v-model="entity.IsZone" autocomplete="off" @select="DataTypeChange">
-            <a-select-option value="false" :key="false">否</a-select-option>
-            <a-select-option value="true" :key="true">是</a-select-option>
-          </a-select>&nbsp;&nbsp;
+        <a-form-model-item label="托盘管理:" prop="IsTray">
+          <!-- <a-input v-model="entity.IsTray" autocomplete="off"/> -->
+          <a-select  v-model="entity.IsTray" autocomplete="off" @select="DataTypeChange" disabled>
+            <a-select-option :value="false" >停用</a-select-option>
+            <a-select-option :value="true" >启用</a-select-option>
+          </a-select>
         </a-form-model-item>
-        <a-form-model-item label="仓库是否启用:" prop="disable">
-          <a-select style="width: 180px" placeholder="请选择" buttonStyle="solid" v-model="entity.disable" autocomplete="off" @select="DataTypeChange">
-            <a-select-option value="false" :key="false">否</a-select-option>
-            <a-select-option value="true" :key="true">是</a-select-option>
-          </a-select>&nbsp;&nbsp;
+        <a-form-model-item label="分区管理:" prop="IsZone">
+          <!-- <a-input v-model="entity.IsZone" autocomplete="off" /> -->
+          <a-select  v-model="entity.IsZone" autocomplete="off" @select="DataTypeChange" disabled> 
+            <a-select-option :value="false" >停用</a-select-option>
+            <a-select-option :value="true" >启用</a-select-option>
+          </a-select>
         </a-form-model-item>
-        <a-form-model-item label="是否默认仓库:" prop="IsDefault">
-          <a-select style="width: 180px" placeholder="请选择" buttonStyle="solid" v-model="entity.IsDefault" autocomplete="off" @select="DataTypeChange">
-            <a-select-option value="false" :key="false">否</a-select-option>
-            <a-select-option value="true" :key="true">是</a-select-option>
-          </a-select>&nbsp;&nbsp;
+        <a-form-model-item label="仓库状态:" prop="disable">
+          <!-- <a-input v-model="entity.disable" autocomplete="off" /> -->
+          <a-select  v-model="entity.disable" autocomplete="off" @select="DataTypeChange" disabled>
+            <a-select-option :value="false" >停用</a-select-option>
+            <a-select-option :value="true" >启用</a-select-option>
+          </a-select>
         </a-form-model-item>
+
+        
+
         <a-form-model-item label="备注" prop="Remarks">
           <a-textarea v-model="entity.Remarks" autocomplete="off" />
         </a-form-model-item>
@@ -75,7 +81,7 @@ export default {
   methods: {
     init() {
       this.visible = true
-      this.entity = {}
+      this.entity = {IsTray:false,IsZone:false,disable:false,IsDefault:false},
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })

@@ -9,16 +9,16 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
-          <a-col :md="4" :sm="24">
+          <!-- <a-col :md="4" :sm="24">
             <a-form-item label="查询类别">
               <a-select allowClear v-model="queryParam.condition">
                 <a-select-option key="Code">仓库编号</a-select-option>
                 <a-select-option key="Name">仓库名称</a-select-option>
-                <a-select-option key="Type">仓库类型（平库,立库）(枚举)</a-select-option>
+                <a-select-option key="Type">仓库类型</a-select-option>
                 <a-select-option key="Remarks">备注</a-select-option>
               </a-select>
             </a-form-item>
-          </a-col>
+          </a-col> -->
           <a-col :md="4" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.keyword" placeholder="关键字" />
@@ -36,6 +36,35 @@
       <template slot="Type" slot-scope="text">
         <enum-name code="StorageType" :value="text"></enum-name>
       </template>
+
+      <span slot="IsTray" slot-scope="text, record">    
+        <template>
+        <a-button :type="record.IsTray?'default':'primary'">
+        <a v-if="record.IsTray" @click="handleEnable(record,'IsTray',false)">启用</a>
+        <a v-else @click="handleEnable(record,'IsTray',true)">停用</a>
+        </a-button>
+        </template>
+      </span>
+
+      <span slot="IsZone" slot-scope="text, record">    
+        <template>
+        <a-button :type="record.IsZone?'default':'primary'">
+        <a v-if="record.IsZone" @click="handleEnable(record,'IsZone',true)">启用</a>
+        <a v-else @click="handleEnable(record,'IsZone',false)">停用</a>
+        </a-button>
+        </template>
+      </span>
+
+      <span slot="disable" slot-scope="text, record">    
+        <template>
+        <a-button :type="record.disable?'default':'primary'">
+        <a v-if="record.disable" @click="handleEnable(record,'disable',true)">启用</a>
+        <a v-else @click="handleEnable(record,'disable',false)">停用</a>
+        </a-button>
+        </template>
+      </span>
+
+
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -61,10 +90,10 @@ const columns = [
   { title: '仓库编号', dataIndex: 'Code', width: '10%' },
   { title: '仓库名称', dataIndex: 'Name', width: '10%' },
   { title: '仓库类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
-  { title: '是否启用托盘管理', dataIndex: 'IsTray', width: '10%' },
-  { title: '是否启用分区管理', dataIndex: 'IsZone', customRender: filterYesOrNo, width: '10%' },
-  { title: '是否启用仓库', dataIndex: 'disable', customRender: filterYesOrNo, width: '10%' },
-  { title: '是否默认仓库', dataIndex: 'IsDefault', customRender: filterYesOrNo, width: '10%' },
+  { title: '托盘管理', dataIndex: 'IsTray', width: '10%' , scopedSlots: { customRender: 'IsTray' }},
+  { title: '托盘分区管理', dataIndex: 'IsZone', width: '10%' , scopedSlots: { customRender: 'IsZone' }},
+  { title: '仓库状态', dataIndex: 'disable', width: '10%' , scopedSlots: { customRender: 'disable' }},
+  { title: '默认仓库', dataIndex: 'IsDefault', width: '10%'  , customRender: filterYesOrNo},
   { title: '备注', dataIndex: 'Remarks', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
@@ -153,7 +182,28 @@ export default {
           })
         }
       })
-    }
+    },
+    handleEnable(Storage,prop, enable) {
+      var thisObj = this
+      var entity = { ...Storage}
+      entity[prop] = enable   
+      this.$confirm({
+        title: '确认' + (enable ? '停用' : '启用' ) + '吗?',
+        onOk() {
+          return new Promise((resolve, reject) => {
+            thisObj.$http.post('/PB/PB_Storage/SaveData', entity).then(resJson => {
+              resolve()
+              if (resJson.Success) {
+                thisObj.$message.success('操作成功!')
+                thisObj.getDataList()
+              } else {
+                thisObj.$message.error(resJson.Msg)
+              }
+            })
+          })
+        }
+      })
+    },
   }
 }
 </script>
