@@ -61,7 +61,7 @@ const columns = [
   { title: '仓库编号', dataIndex: 'Code', width: '10%' },
   { title: '仓库名称', dataIndex: 'Name', width: '10%' },
   { title: '仓库类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
-  { title: '是否启用托盘管理', dataIndex: 'IsTray', customRender: filterYesOrNo, width: '10%' },
+  { title: '是否启用托盘管理', dataIndex: 'IsTray', width: '10%' },
   { title: '是否启用分区管理', dataIndex: 'IsZone', customRender: filterYesOrNo, width: '10%' },
   { title: '是否启用仓库', dataIndex: 'disable', customRender: filterYesOrNo, width: '10%' },
   { title: '是否默认仓库', dataIndex: 'IsDefault', customRender: filterYesOrNo, width: '10%' },
