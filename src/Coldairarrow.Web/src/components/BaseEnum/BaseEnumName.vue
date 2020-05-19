@@ -16,7 +16,7 @@ export default {
     }
   },
   watch: {
-    value(code) {
+    code(code) {
       this.getEnumItem()
     }
   },
