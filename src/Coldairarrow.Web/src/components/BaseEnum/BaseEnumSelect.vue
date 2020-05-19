@@ -8,17 +8,20 @@ import moment from 'moment'
 export default {
   props: {
     code: { type: String, required: true },
-    value: { type: String, default: null, required: false }
+    value: { type: String, default: '', required: false }
   },
   data() {
     return {
-      curValue: null,
+      curValue: '',
       enumItem: []
     }
   },
   watch: {
     code(code) {
       this.getEnumItem()
+    },
+    value(value) {
+      this.curValue = value
     }
   },
   mounted() {
