@@ -14,13 +14,15 @@ namespace Coldairarrow.Business.Base
 {
     public class Base_UserStorBusiness : BaseBusiness<Base_UserStor>, IBase_UserStorBusiness, ITransientDependency
     {
+        readonly Cache.IBase_UserCache _userCache;
         readonly IOperator _operator;
         readonly IServiceProvider _serviceProvider;
-        public Base_UserStorBusiness(IRepository repository, IOperator @operator, IServiceProvider serviceProvider)
+        public Base_UserStorBusiness(IRepository repository, IOperator @operator, Cache.IBase_UserCache userCache, IServiceProvider serviceProvider)
             : base(repository)
         {
             _operator = @operator;
             _serviceProvider = serviceProvider;
+            _userCache = userCache;
         }
 
         #region 外部接口
@@ -67,6 +69,30 @@ namespace Coldairarrow.Business.Base
             var userId = _operator.UserId;
             var userStorIds = await this.GetIQueryable().Where(w => w.UserId == userId).Select(s => s.StorId).ToListAsync();
             return listStor.Where(w => userStorIds.Contains(w.Id)).ToList();
+        }
+        public async Task SwitchDefault(string storageId)
+        {
+            var userId = _operator.UserId;
+            await UpdateWhereAsync(w => w.UserId == userId && w.IsDefault, (entity) => { entity.IsDefault = false; });
+            var userStorage = await this.GetIQueryable().SingleOrDefaultAsync(w => w.UserId == userId && w.StorId == storageId);
+            if (userStorage == null)
+            {
+                userStorage = new Base_UserStor() { };
+                userStorage.Id = IdHelper.GetId();
+                userStorage.UserId = userId;
+                userStorage.StorId = storageId;
+                userStorage.IsDefault = true;
+                userStorage.CreateTime = DateTime.Now;
+                userStorage.CreatorId = userId;
+                userStorage.Deleted = false;
+                await InsertAsync(userStorage);
+            }
+            else
+            {
+                userStorage.IsDefault = true;
+                await UpdateDataAsync(userStorage);
+            }
+            await _userCache.UpdateCacheAsync(userId);
         }
         #endregion
 

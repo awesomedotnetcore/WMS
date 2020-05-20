@@ -18,6 +18,9 @@ namespace Coldairarrow.Business.Base
         /// </summary>
         /// <returns></returns>
         Task<List<Entity.PB.PB_Storage>> GetStorage();
+
+
+        Task SwitchDefault(string storageId);
     }
     public class Base_UserStorQM
     {

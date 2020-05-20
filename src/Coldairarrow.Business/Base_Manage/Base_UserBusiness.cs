@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Coldairarrow.Business.Cache;
+using Coldairarrow.Entity.Base;
 using Coldairarrow.Entity.Base_Manage;
 using Coldairarrow.Util;
 using EFCore.Sharding;
@@ -79,11 +80,13 @@ namespace Coldairarrow.Business.Base_Manage
                                            RoleId = b.Id,
                                            b.RoleName
                                        }).ToListAsync();
+                var userStorages = await Service.GetIQueryable<Base_UserStor>().Where(w => userIds.Contains(w.UserId)).ToListAsync();
                 users.ForEach(aUser =>
                 {
                     var roleList = userRoles.Where(x => x.UserId == aUser.Id);
                     aUser.RoleIdList = roleList.Select(x => x.RoleId).ToList();
                     aUser.RoleNameList = roleList.Select(x => x.RoleName).ToList();
+                    aUser.DefaultStorageId = userStorages.Where(w => w.UserId == aUser.Id).OrderByDescending(o => o.IsDefault).FirstOrDefault()?.Id;
                 });
             }
         }

@@ -17,12 +17,7 @@
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <enum-select code="SupplierType" v-model="queryParam.Type"></enum-select>
-            </a-form-item>
-          </a-col>
-          <a-col :md="4" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.KeyWord" placeholder="供应商编号或名称" />
+              <a-input v-model="queryParam.keyword" placeholder="类型编号或名称" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -45,14 +40,13 @@
       :bordered="true"
       size="small"
     >
-      <template slot="Type" slot-scope="text">
-        <enum-name code="SupplierType" :value="text"></enum-name>
-      </template>
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
           <a-divider type="vertical" />
           <a @click="handleDelete([record.Id])">删除</a>
+          <a-divider type="vertical" />
+          <a @click="handleDelete([record.Id])">分区管理</a>
         </template>
       </span>
     </a-table>
@@ -63,26 +57,20 @@
 
 <script>
 import EditForm from './EditForm'
-import EnumName from '../../../components/BaseEnum/BaseEnumName'
-import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
+
 const columns = [
-  { title: '供应商编号', dataIndex: 'Code', width: '10%' },
-  { title: '供应商名称', dataIndex: 'Name', width: '10%' },
-  { title: '供应商类型', dataIndex: 'Type', width: '10%' , scopedSlots: { customRender: 'Type' }},
-  { title: '电话', dataIndex: 'Phone', width: '10%' },
-  { title: '传真', dataIndex: 'Fax', width: '10%' },
-  { title: 'Email', dataIndex: 'Email', width: '10%' },
-  { title: '联系人', dataIndex: 'ContactName', width: '10%' },
-  { title: '地址', dataIndex: 'Address', width: '10%' },
-  { title: '备注', dataIndex: 'Remarks', width: '10%' },
+  { title: '编号', dataIndex: 'Code', width: '10%' },
+  { title: '名称', dataIndex: 'Name', width: '10%' },
+  { title: '长', dataIndex: 'Length', width: '10%' },
+  { title: '宽', dataIndex: 'Width', width: '10%' },
+  { title: '高', dataIndex: 'High', width: '10%' },
+  { title: '是否有分区', dataIndex: 'IsZone', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
-    EditForm,
-    EnumName,
-    EnumSelect
+    EditForm
   },
   mounted() {
     this.getDataList()
@@ -115,7 +103,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/PB/PB_Supplier/QueryDataList', {
+        .post('/PB/PB_TrayType/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
@@ -149,7 +137,7 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/PB/PB_Supplier/DeleteData', ids).then(resJson => {
+            thisObj.$http.post('/PB/PB_TrayType/DeleteData', ids).then(resJson => {
               resolve()
 
               if (resJson.Success) {

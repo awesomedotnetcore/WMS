@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Coldairarrow.Util
 {
     [Map(typeof(Base_User))]
-    public class Base_UserDTO : Base_User
+    public partial class Base_UserDTO : Base_User
     {
         public string RoleNames { get => string.Join(",", RoleNameList ?? new List<string>()); }
         public List<string> RoleIdList { get; set; }
