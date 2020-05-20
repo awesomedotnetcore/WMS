@@ -46,6 +46,11 @@
       :bordered="true"
       size="small"
     >
+
+      <!-- <template slot="StorId" slot-scope="text">
+        <storage-select code="StorId" :value="text"></storage-select>
+      </template> -->
+
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -61,6 +66,7 @@
 
 <script>
 import EditForm from './EditForm'
+// import StorageSelect from '../../../components/Storage/StorageSelect' 
 
 const columns = [
   { title: '所属仓库', dataIndex: 'StorId', width: '10%' },
@@ -71,7 +77,8 @@ const columns = [
 
 export default {
   components: {
-    EditForm
+    EditForm,
+    // StorageSelect
   },
   mounted() {
     this.getDataList()
