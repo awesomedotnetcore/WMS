@@ -18,8 +18,15 @@
           <a-col :md="4" :sm="24">
             <a-form-item label="查询类别">
               <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="Code">单位编码</a-select-option>
-                <a-select-option key="Name">单位名称</a-select-option>
+                <a-select-option key="Code">供应商编号</a-select-option>
+                <a-select-option key="Name">供应商名称</a-select-option>
+                <a-select-option key="Type">供应商类型</a-select-option>
+                <a-select-option key="Phone">电话</a-select-option>
+                <a-select-option key="Fax">传真</a-select-option>
+                <a-select-option key="Email">Email</a-select-option>
+                <a-select-option key="ContactName">联系人</a-select-option>
+                <a-select-option key="Address">地址</a-select-option>
+                <a-select-option key="Remarks">备注</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -65,8 +72,15 @@
 import EditForm from './EditForm'
 
 const columns = [
-  { title: '单位编码', dataIndex: 'Code', width: '10%' },
-  { title: '单位名称', dataIndex: 'Name', width: '10%' },
+  { title: '供应商编号', dataIndex: 'Code', width: '10%' },
+  { title: '供应商名称', dataIndex: 'Name', width: '10%' },
+  { title: '供应商类型', dataIndex: 'Type', width: '10%' },
+  { title: '电话', dataIndex: 'Phone', width: '10%' },
+  { title: '传真', dataIndex: 'Fax', width: '10%' },
+  { title: 'Email', dataIndex: 'Email', width: '10%' },
+  { title: '联系人', dataIndex: 'ContactName', width: '10%' },
+  { title: '地址', dataIndex: 'Address', width: '10%' },
+  { title: '备注', dataIndex: 'Remarks', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -105,7 +119,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/PB/PB_Measure/GetDataList', {
+        .post('/PB/PB_Supplier/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
@@ -139,7 +153,7 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/PB/PB_Measure/DeleteData', ids).then(resJson => {
+            thisObj.$http.post('/PB/PB_Supplier/DeleteData', ids).then(resJson => {
               resolve()
 
               if (resJson.Success) {
