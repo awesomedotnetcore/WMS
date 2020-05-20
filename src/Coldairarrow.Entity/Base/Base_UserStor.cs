@@ -22,11 +22,15 @@ namespace Coldairarrow.Entity.Base
         /// </summary>
         public String UserId { get; set; }
 
+        [ForeignKey(nameof(UserId))]
+        public Base_Manage.Base_User User { get; set; }
         /// <summary>
         /// 仓库ID
         /// </summary>
         public String StorId { get; set; }
 
+        [ForeignKey(nameof(StorId))]
+        public PB.PB_Storage Storage { get; set; }
         /// <summary>
         /// 是否默认仓库
         /// </summary>

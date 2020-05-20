@@ -2,13 +2,7 @@
   <a-card :bordered="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button
-        type="primary"
-        icon="minus"
-        @click="handleDelete(selectedRowKeys)"
-        :disabled="!hasSelected()"
-        :loading="loading"
-      >删除</a-button>
+      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
 
@@ -16,16 +10,13 @@
       <a-form layout="inline">
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
-            <a-form-item label="查询类别">
-              <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="UserId">用户ID</a-select-option>
-                <a-select-option key="StorId">仓库ID</a-select-option>
-              </a-select>
+            <a-form-item>
+              <a-input v-model="queryParam.UserName" placeholder="姓名/帐号" />
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="关键字" />
+              <a-input v-model="queryParam.StorageName" placeholder="仓库名称/编码" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -36,18 +27,7 @@
       </a-form>
     </div>
 
-    <a-table
-      ref="table"
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      :bordered="true"
-      size="small"
-    >
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -63,11 +43,16 @@
 
 <script>
 import EditForm from './EditForm'
-
+const filterYesOrNo = (value, row, index) => {
+  if (value) return '是'
+  else return '否'
+}
 const columns = [
-  { title: '用户ID', dataIndex: 'UserId', width: '10%' },
-  { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
-  { title: '是否默认仓库', dataIndex: 'IsDefault', width: '10%' },
+  { title: '姓名', dataIndex: 'User.RealName', width: '10%' },
+  { title: '帐号', dataIndex: 'User.UserName', width: '10%' },
+  { title: '仓库名称', dataIndex: 'Storage.Name', width: '10%' },
+  { title: '仓库编码', dataIndex: 'Storage.Code', width: '10%' },
+  { title: '默认仓库', dataIndex: 'IsDefault', customRender: filterYesOrNo, width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 

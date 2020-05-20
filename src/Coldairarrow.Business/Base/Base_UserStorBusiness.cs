@@ -19,19 +19,16 @@ namespace Coldairarrow.Business.Base
 
         #region 外部接口
 
-        public async Task<PageResult<Base_UserStor>> GetDataListAsync(PageInput<ConditionDTO> input)
+        public async Task<PageResult<Base_UserStor>> GetDataListAsync(PageInput<Base_UserStorQM> input)
         {
-            var q = GetIQueryable();
+            var q = GetIQueryable().Include(i => i.User).Include(i => i.Storage);
             var where = LinqHelper.True<Base_UserStor>();
             var search = input.Search;
 
-            //筛选
-            if (!search.Condition.IsNullOrEmpty() && !search.Keyword.IsNullOrEmpty())
-            {
-                var newWhere = DynamicExpressionParser.ParseLambda<Base_UserStor, bool>(
-                    ParsingConfig.Default, false, $@"{search.Condition}.Contains(@0)", search.Keyword);
-                where = where.And(newWhere);
-            }
+            if (!search.UserName.IsNullOrEmpty())
+                where = where.And(w => w.User.RealName.Contains(search.UserName) || w.User.UserName.Contains(search.UserName));
+            if (!search.StorageName.IsNullOrEmpty())
+                where = where.And(w => w.Storage.Name.Contains(search.StorageName) || w.Storage.Code.Contains(search.StorageName));
 
             return await q.Where(where).GetPageResultAsync(input);
         }
