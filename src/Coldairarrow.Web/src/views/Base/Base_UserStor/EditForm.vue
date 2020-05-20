@@ -12,8 +12,8 @@
         <a-form-model-item label="用户ID" prop="UserId">
           <a-input v-model="entity.UserId" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="仓库ID" prop="StorId">
-          <a-input v-model="entity.StorId" autocomplete="off" />
+        <a-form-model-item label="仓库" prop="StorId">
+          <storage-select v-model="entity.StorId"></storage-select>
         </a-form-model-item>
         <a-form-model-item label="是否默认仓库" prop="IsDefault">
           <a-input v-model="entity.IsDefault" autocomplete="off" />
@@ -24,7 +24,11 @@
 </template>
 
 <script>
+import StorageSelect from '../../../components/Storage/StorageSelect'
 export default {
+  components: {
+    StorageSelect
+  },
   props: {
     parentObj: Object
   },

@@ -55,7 +55,6 @@ namespace Coldairarrow.Business.PB
         {
             await DeleteAsync(ids);
         }
-
         #endregion
 
         #region 私有成员
