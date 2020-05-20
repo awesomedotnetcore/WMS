@@ -17,20 +17,12 @@
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
             <a-form-item label="查询类别">
-              <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="Code">客户编号</a-select-option>
-                <a-select-option key="Name">客户名称</a-select-option>
-                <a-select-option key="Type">客户类型</a-select-option>
-                <a-select-option key="Phone">电话</a-select-option>
-                <a-select-option key="Fax">传真</a-select-option>
-                <a-select-option key="Email">Email</a-select-option>
-                <a-select-option key="Remarks">备注</a-select-option>
-              </a-select>
+              <enum-select code="CustomerType" v-model="queryParam.Type"></enum-select>
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="关键字" />
+              <a-input v-model="queryParam.keyword" placeholder="客户编号或名称" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -53,6 +45,9 @@
       :bordered="true"
       size="small"
     >
+      <template slot="Type" slot-scope="text">
+        <enum-name code="CustomerType" :value="text"></enum-name>
+      </template>
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -68,11 +63,11 @@
 
 <script>
 import EditForm from './EditForm'
-
+import EnumName from '../../../components/BaseEnum/BaseEnumName'
 const columns = [
   { title: '客户编号', dataIndex: 'Code', width: '10%' },
   { title: '客户名称', dataIndex: 'Name', width: '10%' },
-  { title: '客户类型', dataIndex: 'Type', width: '10%' },
+  { title: '客户类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
   { title: '电话', dataIndex: 'Phone', width: '10%' },
   { title: '传真', dataIndex: 'Fax', width: '10%' },
   { title: 'Email', dataIndex: 'Email', width: '10%' },
@@ -82,7 +77,8 @@ const columns = [
 
 export default {
   components: {
-    EditForm
+    EditForm,
+    EnumName
   },
   mounted() {
     this.getDataList()

@@ -10,25 +10,25 @@
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
         <a-form-model-item label="客户编号" prop="Code">
-          <a-input v-model="entity.Code" autocomplete="off" />
+          <a-input v-model="entity.Code" autocomplete="off" ><a-icon slot="prefix" type="scan" /></a-input>
         </a-form-model-item>
         <a-form-model-item label="客户名称" prop="Name">
-          <a-input v-model="entity.Name" autocomplete="off" />
+          <a-input v-model="entity.Name" autocomplete="off" ><a-icon slot="prefix" type="user" /></a-input>
         </a-form-model-item>
         <a-form-model-item label="客户类型" prop="Type">
-          <a-input v-model="entity.Type" autocomplete="off" />
+          <enum-select code="CustomerType" v-model="entity.Type"></enum-select>
         </a-form-model-item>
         <a-form-model-item label="电话" prop="Phone">
-          <a-input v-model="entity.Phone" autocomplete="off" />
+          <a-input v-model="entity.Phone" autocomplete="off"><a-icon slot="prefix" type="phone" /></a-input>
         </a-form-model-item>
         <a-form-model-item label="传真" prop="Fax">
-          <a-input v-model="entity.Fax" autocomplete="off" />
+          <a-input v-model="entity.Fax" autocomplete="off"><a-icon slot="prefix" type="printer" /></a-input>
         </a-form-model-item>
         <a-form-model-item label="Email" prop="Email">
-          <a-input v-model="entity.Email" autocomplete="off" />
+          <a-input v-model="entity.Email" autocomplete="off"><a-icon slot="prefix" type="mail" /></a-input>
         </a-form-model-item>
         <a-form-model-item label="备注" prop="Remarks">
-          <a-input v-model="entity.Remarks" autocomplete="off" />
+          <a-textarea v-model="entity.Remarks" autocomplete="off"></a-textarea>
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -36,7 +36,11 @@
 </template>
 
 <script>
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 export default {
+  components: {
+    EnumSelect
+  },
   props: {
     parentObj: Object
   },
