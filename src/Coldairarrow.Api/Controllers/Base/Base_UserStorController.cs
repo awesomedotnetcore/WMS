@@ -65,6 +65,11 @@ namespace Coldairarrow.Api.Controllers.Base
             await _base_UserStorBus.DeleteDataAsync(ids);
         }
 
+        [HttpPost]
+        public async Task SwitchStorage(IdInputDTO input)
+        {
+            await _base_UserStorBus.SwitchDefault(input.id);
+        }
         #endregion
     }
 }
