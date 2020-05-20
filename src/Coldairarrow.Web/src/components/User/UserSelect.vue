@@ -1,5 +1,5 @@
 <template>
-  <a-select ref="select" :allowClear="true" :showSearch="true" :filterOption="false" @search="handleSearch" @change="handleChange" v-model="thisValue">
+  <a-select ref="select" :allowClear="true" :showSearch="true" :filterOption="false" @search="handleSearch" @change="handleChange" v-model="thisValue" v-bind="$attrs">
     <a-select-option v-for="item in listData" :key="item.Id">{{ item.RealName }}({{ item.UserName }})</a-select-option>
   </a-select>
 </template>
