@@ -16,13 +16,13 @@
       <a-form layout="inline">
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
-            <a-form-item label="查询类别">
+            <a-form-item>
               <enum-select code="CustomerType" v-model="queryParam.Type"></enum-select>
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="客户编号或名称" />
+              <a-input v-model="queryParam.KeyWord" placeholder="客户编号或名称" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -64,6 +64,7 @@
 <script>
 import EditForm from './EditForm'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 const columns = [
   { title: '客户编号', dataIndex: 'Code', width: '10%' },
   { title: '客户名称', dataIndex: 'Name', width: '10%' },
@@ -78,7 +79,8 @@ const columns = [
 export default {
   components: {
     EditForm,
-    EnumName
+    EnumName,
+    EnumSelect
   },
   mounted() {
     this.getDataList()
@@ -111,7 +113,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/PB/PB_Customer/GetDataList', {
+        .post('/PB/PB_Customer/QueryDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',

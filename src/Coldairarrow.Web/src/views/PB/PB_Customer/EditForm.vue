@@ -19,13 +19,13 @@
           <enum-select code="CustomerType" v-model="entity.Type"></enum-select>
         </a-form-model-item>
         <a-form-model-item label="电话" prop="Phone">
-          <a-input v-model="entity.Phone" autocomplete="off"><a-icon slot="prefix" type="phone" /></a-input>
+          <a-input type="tel" v-model="entity.Phone" autocomplete="off"><a-icon slot="prefix" type="phone" /></a-input>
         </a-form-model-item>
         <a-form-model-item label="传真" prop="Fax">
           <a-input v-model="entity.Fax" autocomplete="off"><a-icon slot="prefix" type="printer" /></a-input>
         </a-form-model-item>
         <a-form-model-item label="Email" prop="Email">
-          <a-input v-model="entity.Email" autocomplete="off"><a-icon slot="prefix" type="mail" /></a-input>
+          <a-input type="email" v-model="entity.Email" autocomplete="off"><a-icon slot="prefix" type="mail" /></a-input>
         </a-form-model-item>
         <a-form-model-item label="备注" prop="Remarks">
           <a-textarea v-model="entity.Remarks" autocomplete="off"></a-textarea>
