@@ -8,31 +8,31 @@ using System.Threading.Tasks;
 namespace Coldairarrow.Api.Controllers.PB
 {
     [Route("/PB/[controller]/[action]")]
-    public class PB_MeasureController : BaseApiController
+    public partial class PB_CustomerController : BaseApiController
     {
         #region DI
 
-        public PB_MeasureController(IPB_MeasureBusiness pB_MeasureBus)
+        public PB_CustomerController(IPB_CustomerBusiness pB_CustomerBus)
         {
-            _pB_MeasureBus = pB_MeasureBus;
+            _pB_CustomerBus = pB_CustomerBus;
         }
 
-        IPB_MeasureBusiness _pB_MeasureBus { get; }
+        IPB_CustomerBusiness _pB_CustomerBus { get; }
 
         #endregion
 
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<PB_Measure>> GetDataList(PageInput<ConditionDTO> input)
+        public async Task<PageResult<PB_Customer>> GetDataList(PageInput<ConditionDTO> input)
         {
-            return await _pB_MeasureBus.GetDataListAsync(input);
+            return await _pB_CustomerBus.GetDataListAsync(input);
         }
 
         [HttpPost]
-        public async Task<PB_Measure> GetTheData(IdInputDTO input)
+        public async Task<PB_Customer> GetTheData(IdInputDTO input)
         {
-            return await _pB_MeasureBus.GetTheDataAsync(input.id);
+            return await _pB_CustomerBus.GetTheDataAsync(input.id);
         }
 
         #endregion
@@ -40,24 +40,24 @@ namespace Coldairarrow.Api.Controllers.PB
         #region 提交
 
         [HttpPost]
-        public async Task SaveData(PB_Measure data)
+        public async Task SaveData(PB_Customer data)
         {
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
 
-                await _pB_MeasureBus.AddDataAsync(data);
+                await _pB_CustomerBus.AddDataAsync(data);
             }
             else
             {
-                await _pB_MeasureBus.UpdateDataAsync(data);
+                await _pB_CustomerBus.UpdateDataAsync(data);
             }
         }
 
         [HttpPost]
         public async Task DeleteData(List<string> ids)
         {
-            await _pB_MeasureBus.DeleteDataAsync(ids);
+            await _pB_CustomerBus.DeleteDataAsync(ids);
         }
 
         #endregion

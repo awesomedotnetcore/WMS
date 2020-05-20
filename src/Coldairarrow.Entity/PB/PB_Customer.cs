@@ -2,39 +2,55 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Coldairarrow.Entity.Base
+namespace Coldairarrow.Entity.PB
 {
     /// <summary>
-    /// 用户仓库权限表
+    /// 客户/投料点表
     /// </summary>
-    [Table("Base_UserStor")]
-    public class Base_UserStor
+    [Table("PB_Customer")]
+    public class PB_Customer
     {
 
         /// <summary>
-        /// Id
+        /// 客户ID
         /// </summary>
         [Key, Column(Order = 1)]
         public String Id { get; set; }
 
         /// <summary>
-        /// 用户ID
+        /// 客户编号
         /// </summary>
-        public String UserId { get; set; }
+        public String Code { get; set; }
 
-        [ForeignKey(nameof(UserId))]
-        public Base_Manage.Base_User User { get; set; }
         /// <summary>
-        /// 仓库ID
+        /// 客户名称
         /// </summary>
-        public String StorId { get; set; }
+        public String Name { get; set; }
 
-        [ForeignKey(nameof(StorId))]
-        public PB.PB_Storage Storage { get; set; }
         /// <summary>
-        /// 是否默认仓库
+        /// 客户类型
         /// </summary>
-        public Boolean IsDefault { get; set; }
+        public String Type { get; set; }
+
+        /// <summary>
+        /// 电话
+        /// </summary>
+        public String Phone { get; set; }
+
+        /// <summary>
+        /// 传真
+        /// </summary>
+        public String Fax { get; set; }
+
+        /// <summary>
+        /// Email
+        /// </summary>
+        public String Email { get; set; }
+
+        /// <summary>
+        /// 备注
+        /// </summary>
+        public String Remarks { get; set; }
 
         /// <summary>
         /// 创建时间

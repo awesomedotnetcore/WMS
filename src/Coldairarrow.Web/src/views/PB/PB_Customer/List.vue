@@ -16,16 +16,13 @@
       <a-form layout="inline">
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
-            <a-form-item label="查询类别">
-              <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="Code">单位编码</a-select-option>
-                <a-select-option key="Name">单位名称</a-select-option>
-              </a-select>
+            <a-form-item>
+              <enum-select code="CustomerType" v-model="queryParam.Type"></enum-select>
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="关键字" />
+              <a-input v-model="queryParam.KeyWord" placeholder="客户编号或名称" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -48,6 +45,9 @@
       :bordered="true"
       size="small"
     >
+      <template slot="Type" slot-scope="text">
+        <enum-name code="CustomerType" :value="text"></enum-name>
+      </template>
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -63,16 +63,24 @@
 
 <script>
 import EditForm from './EditForm'
-
+import EnumName from '../../../components/BaseEnum/BaseEnumName'
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 const columns = [
-  { title: '单位编码', dataIndex: 'Code', width: '10%' },
-  { title: '单位名称', dataIndex: 'Name', width: '10%' },
+  { title: '客户编号', dataIndex: 'Code', width: '10%' },
+  { title: '客户名称', dataIndex: 'Name', width: '10%' },
+  { title: '客户类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
+  { title: '电话', dataIndex: 'Phone', width: '10%' },
+  { title: '传真', dataIndex: 'Fax', width: '10%' },
+  { title: 'Email', dataIndex: 'Email', width: '10%' },
+  { title: '备注', dataIndex: 'Remarks', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
-    EditForm
+    EditForm,
+    EnumName,
+    EnumSelect
   },
   mounted() {
     this.getDataList()
@@ -105,7 +113,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/PB/PB_Measure/GetDataList', {
+        .post('/PB/PB_Customer/QueryDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
@@ -139,7 +147,7 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/PB/PB_Measure/DeleteData', ids).then(resJson => {
+            thisObj.$http.post('/PB/PB_Customer/DeleteData', ids).then(resJson => {
               resolve()
 
               if (resJson.Success) {

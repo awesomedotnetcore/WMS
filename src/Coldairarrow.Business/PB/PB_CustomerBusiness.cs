@@ -10,25 +10,25 @@ using System.Threading.Tasks;
 
 namespace Coldairarrow.Business.PB
 {
-    public class PB_StorageBusiness : BaseBusiness<PB_Storage>, IPB_StorageBusiness, ITransientDependency
+    public partial class PB_CustomerBusiness : BaseBusiness<PB_Customer>, IPB_CustomerBusiness, ITransientDependency
     {
-        public PB_StorageBusiness(IRepository repository)
+        public PB_CustomerBusiness(IRepository repository)
             : base(repository)
         {
         }
 
         #region 外部接口
 
-        public async Task<PageResult<PB_Storage>> GetDataListAsync(PageInput<ConditionDTO> input)
+        public async Task<PageResult<PB_Customer>> GetDataListAsync(PageInput<ConditionDTO> input)
         {
             var q = GetIQueryable();
-            var where = LinqHelper.True<PB_Storage>();
+            var where = LinqHelper.True<PB_Customer>();
             var search = input.Search;
 
             //筛选
             if (!search.Condition.IsNullOrEmpty() && !search.Keyword.IsNullOrEmpty())
             {
-                var newWhere = DynamicExpressionParser.ParseLambda<PB_Storage, bool>(
+                var newWhere = DynamicExpressionParser.ParseLambda<PB_Customer, bool>(
                     ParsingConfig.Default, false, $@"{search.Condition}.Contains(@0)", search.Keyword);
                 where = where.And(newWhere);
             }
@@ -36,17 +36,17 @@ namespace Coldairarrow.Business.PB
             return await q.Where(where).GetPageResultAsync(input);
         }
 
-        public async Task<PB_Storage> GetTheDataAsync(string id)
+        public async Task<PB_Customer> GetTheDataAsync(string id)
         {
             return await GetEntityAsync(id);
         }
 
-        public async Task AddDataAsync(PB_Storage data)
+        public async Task AddDataAsync(PB_Customer data)
         {
             await InsertAsync(data);
         }
 
-        public async Task UpdateDataAsync(PB_Storage data)
+        public async Task UpdateDataAsync(PB_Customer data)
         {
             await UpdateAsync(data);
         }
@@ -55,6 +55,7 @@ namespace Coldairarrow.Business.PB
         {
             await DeleteAsync(ids);
         }
+
         #endregion
 
         #region 私有成员

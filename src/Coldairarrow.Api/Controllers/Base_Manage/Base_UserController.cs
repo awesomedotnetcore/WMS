@@ -8,7 +8,7 @@ namespace Coldairarrow.Api.Controllers.Base_Manage
 {
     /// <seealso cref="Coldairarrow.Api.BaseApiController" />
     [Route("/Base_Manage/[controller]/[action]")]
-    public class Base_UserController : BaseApiController
+    public partial class Base_UserController : BaseApiController
     {
         #region DI
 

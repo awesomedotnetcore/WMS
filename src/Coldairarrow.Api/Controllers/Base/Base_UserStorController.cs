@@ -24,7 +24,7 @@ namespace Coldairarrow.Api.Controllers.Base
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<Base_UserStor>> GetDataList(PageInput<ConditionDTO> input)
+        public async Task<PageResult<Base_UserStor>> GetDataList(PageInput<Base_UserStorQM> input)
         {
             return await _base_UserStorBus.GetDataListAsync(input);
         }
@@ -35,6 +35,11 @@ namespace Coldairarrow.Api.Controllers.Base
             return await _base_UserStorBus.GetTheDataAsync(input.id);
         }
 
+        [HttpGet]
+        public async Task<List<Entity.PB.PB_Storage>> GetStorage()
+        {
+            return await _base_UserStorBus.GetStorage();
+        }
         #endregion
 
         #region 提交

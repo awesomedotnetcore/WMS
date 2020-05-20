@@ -2,39 +2,50 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Coldairarrow.Entity.Base
+namespace Coldairarrow.Entity.PB
 {
     /// <summary>
-    /// 用户仓库权限表
+    /// 物料类型
     /// </summary>
-    [Table("Base_UserStor")]
-    public class Base_UserStor
+    [Table("PB_MaterialType")]
+    public class PB_MaterialType
     {
 
         /// <summary>
-        /// Id
+        /// 物料分类表ID
         /// </summary>
         [Key, Column(Order = 1)]
         public String Id { get; set; }
 
         /// <summary>
-        /// 用户ID
+        /// 物料分类名称
         /// </summary>
-        public String UserId { get; set; }
+        public String Name { get; set; }
 
-        [ForeignKey(nameof(UserId))]
-        public Base_Manage.Base_User User { get; set; }
         /// <summary>
-        /// 仓库ID
+        /// 物料分类编码
         /// </summary>
-        public String StorId { get; set; }
+        public String Code { get; set; }
 
-        [ForeignKey(nameof(StorId))]
-        public PB.PB_Storage Storage { get; set; }
         /// <summary>
-        /// 是否默认仓库
+        /// 父节点物料分类ID
         /// </summary>
-        public Boolean IsDefault { get; set; }
+        public String ParentId { get; set; }
+
+        /// <summary>
+        /// 是否是叶节点
+        /// </summary>
+        public String IsLeaf { get; set; }
+
+        /// <summary>
+        /// 备注
+        /// </summary>
+        public String Remarks { get; set; }
+
+        /// <summary>
+        /// Path
+        /// </summary>
+        public String Path { get; set; }
 
         /// <summary>
         /// 创建时间

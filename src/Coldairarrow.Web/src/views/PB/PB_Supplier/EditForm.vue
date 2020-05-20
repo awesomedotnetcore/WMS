@@ -9,17 +9,32 @@
   >
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="用户" prop="UserId">
-          <user-select v-model="entity.UserId"></user-select>
+        <a-form-model-item label="供应商编号" prop="Code">
+          <a-input v-model="entity.Code" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="仓库" prop="StorId">
-          <storage-select v-model="entity.StorId"></storage-select>
+        <a-form-model-item label="供应商名称" prop="Name">
+          <a-input v-model="entity.Name" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="默认仓库" prop="IsDefault">
-          <a-select v-model="entity.IsDefault" autocomplete="off">
-            <a-select-option :value="false">否</a-select-option>
-            <a-select-option :value="true">是</a-select-option>
-          </a-select>
+        <a-form-model-item label="供应商类型" prop="Type">
+          <a-input v-model="entity.Type" autocomplete="off" />
+        </a-form-model-item>
+        <a-form-model-item label="电话" prop="Phone">
+          <a-input v-model="entity.Phone" autocomplete="off" />
+        </a-form-model-item>
+        <a-form-model-item label="传真" prop="Fax">
+          <a-input v-model="entity.Fax" autocomplete="off" />
+        </a-form-model-item>
+        <a-form-model-item label="Email" prop="Email">
+          <a-input v-model="entity.Email" autocomplete="off" />
+        </a-form-model-item>
+        <a-form-model-item label="联系人" prop="ContactName">
+          <a-input v-model="entity.ContactName" autocomplete="off" />
+        </a-form-model-item>
+        <a-form-model-item label="地址" prop="Address">
+          <a-input v-model="entity.Address" autocomplete="off" />
+        </a-form-model-item>
+        <a-form-model-item label="备注" prop="Remarks">
+          <a-input v-model="entity.Remarks" autocomplete="off" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -27,13 +42,7 @@
 </template>
 
 <script>
-import StorageSelect from '../../../components/Storage/StorageSelect'
-import UserSelect from '../../../components/User/UserSelect'
 export default {
-  components: {
-    StorageSelect,
-    UserSelect
-  },
   props: {
     parentObj: Object
   },
@@ -63,7 +72,7 @@ export default {
 
       if (id) {
         this.loading = true
-        this.$http.post('/Base/Base_UserStor/GetTheData', { id: id }).then(resJson => {
+        this.$http.post('/PB/PB_Supplier/GetTheData', { id: id }).then(resJson => {
           this.loading = false
 
           this.entity = resJson.Data
@@ -76,7 +85,7 @@ export default {
           return
         }
         this.loading = true
-        this.$http.post('/Base/Base_UserStor/SaveData', this.entity).then(resJson => {
+        this.$http.post('/PB/PB_Supplier/SaveData', this.entity).then(resJson => {
           this.loading = false
 
           if (resJson.Success) {

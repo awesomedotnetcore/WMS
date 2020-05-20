@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Coldairarrow.Business.Base_Manage
 {
-    public interface IBase_UserBusiness
+    public partial interface IBase_UserBusiness
     {
         Task<PageResult<Base_UserDTO>> GetDataListAsync(PageInput<Base_UsersInputDTO> input);
         Task<List<SelectOption>> GetOptionListAsync(OptionListInputDTO input);
