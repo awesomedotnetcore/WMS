@@ -18,8 +18,12 @@
           <a-col :md="4" :sm="24">
             <a-form-item label="查询类别">
               <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="Code">单位编码</a-select-option>
-                <a-select-option key="Name">单位名称</a-select-option>
+                <a-select-option key="Name">物料分类名称</a-select-option>
+                <a-select-option key="Code">物料分类编码</a-select-option>
+                <a-select-option key="ParentId">父节点物料分类ID</a-select-option>
+                <a-select-option key="IsLeaf">是否是叶节点</a-select-option>
+                <a-select-option key="Remarks">备注</a-select-option>
+                <a-select-option key="Path">Path</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -65,8 +69,12 @@
 import EditForm from './EditForm'
 
 const columns = [
-  { title: '单位编码', dataIndex: 'Code', width: '10%' },
-  { title: '单位名称', dataIndex: 'Name', width: '10%' },
+  { title: '物料分类名称', dataIndex: 'Name', width: '10%' },
+  { title: '物料分类编码', dataIndex: 'Code', width: '10%' },
+  { title: '父节点物料分类ID', dataIndex: 'ParentId', width: '10%' },
+  { title: '是否是叶节点', dataIndex: 'IsLeaf', width: '10%' },
+  { title: '备注', dataIndex: 'Remarks', width: '10%' },
+  { title: 'Path', dataIndex: 'Path', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -105,7 +113,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/PB/PB_Measure/GetDataList', {
+        .post('/PB/PB_MaterialType/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
@@ -139,7 +147,7 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/PB/PB_Measure/DeleteData', ids).then(resJson => {
+            thisObj.$http.post('/PB/PB_MaterialType/DeleteData', ids).then(resJson => {
               resolve()
 
               if (resJson.Success) {
