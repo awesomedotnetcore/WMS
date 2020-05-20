@@ -9,6 +9,7 @@ namespace Coldairarrow.Business.Base
     {
         Task<PageResult<Base_Enum>> GetDataListAsync(PageInput<Base_EnumQM> input);
         Task<Base_Enum> GetTheDataAsync(string id);
+        Task<Base_Enum> GetByCodeAsync(string code);
         Task AddDataAsync(Base_Enum data);
         Task UpdateDataAsync(Base_Enum data);
         Task DeleteDataAsync(List<string> ids);
