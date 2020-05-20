@@ -5,10 +5,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Coldairarrow.Entity.PB
 {
     /// <summary>
-    /// 巷道管理
+    /// 货架管理
     /// </summary>
-    [Table("PB_Laneway")]
-    public class PB_Laneway
+    [Table("PB_Rack")]
+    public class PB_Rack
     {
 
         /// <summary>
@@ -17,20 +17,20 @@ namespace Coldairarrow.Entity.PB
         [Key, Column(Order = 1)]
         public String Id { get; set; }
 
-        ///<summary>
-        ///仓库ID
-        ///</summary>
-        public String StorId { get; set; }        
-
         /// <summary>
-        /// 巷道编号
+        /// 货架编号
         /// </summary>
         public String Code { get; set; }
 
         /// <summary>
-        /// 巷道名称
+        /// 货架名称
         /// </summary>
         public String Name { get; set; }
+
+        /// <summary>
+        /// 仓库ID
+        /// </summary>
+        public String StorId { get; set; }
 
         /// <summary>
         /// 创建时间

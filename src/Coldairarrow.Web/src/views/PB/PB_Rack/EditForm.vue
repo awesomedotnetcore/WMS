@@ -9,14 +9,14 @@
   >
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="所属仓库" prop="StorId">
-          <a-input v-model="entity.StorId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="巷道编号" prop="Code">
+        <a-form-model-item label="货架编号" prop="Code">
           <a-input v-model="entity.Code" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="巷道名称" prop="Name">
+        <a-form-model-item label="货架名称" prop="Name">
           <a-input v-model="entity.Name" autocomplete="off" />
+        </a-form-model-item>
+        <a-form-model-item label="仓库ID" prop="StorId">
+          <a-input v-model="entity.StorId" autocomplete="off" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -54,7 +54,7 @@ export default {
 
       if (id) {
         this.loading = true
-        this.$http.post('/PB/PB_Laneway/GetTheData', { id: id }).then(resJson => {
+        this.$http.post('/PB/PB_Rack/GetTheData', { id: id }).then(resJson => {
           this.loading = false
 
           this.entity = resJson.Data
@@ -67,7 +67,7 @@ export default {
           return
         }
         this.loading = true
-        this.$http.post('/PB/PB_Laneway/SaveData', this.entity).then(resJson => {
+        this.$http.post('/PB/PB_Rack/SaveData', this.entity).then(resJson => {
           this.loading = false
 
           if (resJson.Success) {
