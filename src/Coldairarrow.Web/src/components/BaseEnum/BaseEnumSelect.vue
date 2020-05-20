@@ -1,5 +1,5 @@
 <template>
-  <a-select v-model="curValue" @select="handleSelected">
+  <a-select v-model="curValue" @select="handleSelected" v-bind="$attrs">
     <a-select-option v-for="item in enumItem" :key="item.Value" :value="item.Value">{{ item.Name }}</a-select-option>
   </a-select>
 </template>
