@@ -17,19 +17,15 @@
       <a-form layout="inline">
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
-            <a-form-item label="查询类别">
-              <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="Code">货架编号</a-select-option>
-                <a-select-option key="Name">货架名称</a-select-option>
-                <a-select-option key="StorId">仓库ID</a-select-option>
-              </a-select>
+            <a-form-item>
+              <a-input v-model="queryParam.Code" placeholder="编码" />
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="关键字" />
+              <a-input v-model="queryParam.Name" placeholder="名称" />
             </a-form-item>
-          </a-col>
+          </a-col>          
           <a-col :md="6" :sm="24">
             <a-button type="primary" @click="getDataList">查询</a-button>
             <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
@@ -67,7 +63,7 @@
 import EditForm from './EditForm'
 
 const columns = [
-  { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
+  // { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
   { title: '货架编号', dataIndex: 'Code', width: '10%' },
   { title: '货架名称', dataIndex: 'Name', width: '10%' },  
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }

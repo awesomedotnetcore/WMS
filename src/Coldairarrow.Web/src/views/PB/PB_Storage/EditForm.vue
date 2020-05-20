@@ -16,10 +16,12 @@
           <a-input v-model="entity.Name" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="仓库类型" prop="Type">
-          <enum-select code="StorageType" v-model="entity.Type"></enum-select>
+          <enum-select code="StorageType" v-model="entity.Type" > 
+            
+          </enum-select>
         </a-form-model-item>
         <a-form-model-item label="默认仓库:" prop="IsDefault">
-          <a-select  v-model="entity.IsDefault" autocomplete="off" @select="DataTypeChange">
+          <a-select v-model="entity.IsDefault" autocomplete="off" @select="DataTypeChange" >
             <a-select-option :value="false" >否</a-select-option>
             <a-select-option :value="true" >是</a-select-option>
           </a-select>
@@ -76,7 +78,12 @@ export default {
   methods: {
     init() {
       this.visible = true
-      this.entity = {IsTray:false,IsZone:false,disable:false,IsDefault:false},
+      //this.entity = {Type:entity.id,IsTray:false,IsZone:false,disable:false,IsDefault:false},
+      //this.entity.Type=''
+      this.entity.IsTray= false
+      this.entity.IsZone= false
+      this.entity.disable= false
+      this.entity.IsDefault= false
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })
