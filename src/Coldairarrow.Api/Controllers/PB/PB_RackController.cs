@@ -8,31 +8,31 @@ using System.Threading.Tasks;
 namespace Coldairarrow.Api.Controllers.PB
 {
     [Route("/PB/[controller]/[action]")]
-    public class PB_LanewayController : BaseApiController
+    public class PB_RackController : BaseApiController
     {
         #region DI
 
-        public PB_LanewayController(IPB_LanewayBusiness pB_LanewayBus)
+        public PB_RackController(IPB_RackBusiness pB_RackBus)
         {
-            _pB_LanewayBus = pB_LanewayBus;
+            _pB_RackBus = pB_RackBus;
         }
 
-        IPB_LanewayBusiness _pB_LanewayBus { get; }
+        IPB_RackBusiness _pB_RackBus { get; }
 
         #endregion
 
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<PB_Laneway>> GetDataList(PB_LanewayPageInput input)
+        public async Task<PageResult<PB_Rack>> GetDataList(PageInput<ConditionDTO> input)
         {
-            return await _pB_LanewayBus.GetDataListAsync(input);
+            return await _pB_RackBus.GetDataListAsync(input);
         }
 
         [HttpPost]
-        public async Task<PB_Laneway> GetTheData(IdInputDTO input)
+        public async Task<PB_Rack> GetTheData(IdInputDTO input)
         {
-            return await _pB_LanewayBus.GetTheDataAsync(input.id);
+            return await _pB_RackBus.GetTheDataAsync(input.id);
         }
 
         #endregion
@@ -40,24 +40,24 @@ namespace Coldairarrow.Api.Controllers.PB
         #region 提交
 
         [HttpPost]
-        public async Task SaveData(PB_Laneway data)
+        public async Task SaveData(PB_Rack data)
         {
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
 
-                await _pB_LanewayBus.AddDataAsync(data);
+                await _pB_RackBus.AddDataAsync(data);
             }
             else
             {
-                await _pB_LanewayBus.UpdateDataAsync(data);
+                await _pB_RackBus.UpdateDataAsync(data);
             }
         }
 
         [HttpPost]
         public async Task DeleteData(List<string> ids)
         {
-            await _pB_LanewayBus.DeleteDataAsync(ids);
+            await _pB_RackBus.DeleteDataAsync(ids);
         }
 
         #endregion

@@ -7,7 +7,8 @@ namespace Coldairarrow.Business.PB
 {
     public interface IPB_LanewayBusiness
     {
-        Task<PageResult<PB_Laneway>> GetDataListAsync(PageInput<PB_LanewayQM> input);
+        //Task<PageResult<PB_Laneway>> GetDataListAsync(PageInput<PB_LanewayQM> input);
+        Task<PageResult<PB_Laneway>> GetDataListAsync(PB_LanewayPageInput input);
         Task<PB_Laneway> GetTheDataAsync(string id);
         Task AddDataAsync(PB_Laneway data);
         Task UpdateDataAsync(PB_Laneway data);
@@ -17,5 +18,9 @@ namespace Coldairarrow.Business.PB
     {
         public string Name { get; set; }
         public string Code { get; set; }
+    }
+    public class PB_LanewayPageInput : PageInput<PB_LanewayQM>
+    {
+        public string StorId { get; set; }
     }
 }

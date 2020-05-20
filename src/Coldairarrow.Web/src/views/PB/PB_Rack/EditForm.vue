@@ -9,26 +9,14 @@
   >
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="客户编号" prop="Code">
-          <a-input v-model="entity.Code" autocomplete="off" ><a-icon slot="prefix" type="scan" /></a-input>
+        <a-form-model-item label="货架编号" prop="Code">
+          <a-input v-model="entity.Code" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="客户名称" prop="Name">
-          <a-input v-model="entity.Name" autocomplete="off" ><a-icon slot="prefix" type="user" /></a-input>
+        <a-form-model-item label="货架名称" prop="Name">
+          <a-input v-model="entity.Name" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="客户类型" prop="Type">
-          <enum-select code="CustomerType" v-model="entity.Type"></enum-select>
-        </a-form-model-item>
-        <a-form-model-item label="电话" prop="Phone">
-          <a-input type="tel" v-model="entity.Phone" autocomplete="off"><a-icon slot="prefix" type="phone" /></a-input>
-        </a-form-model-item>
-        <a-form-model-item label="传真" prop="Fax">
-          <a-input v-model="entity.Fax" autocomplete="off"><a-icon slot="prefix" type="printer" /></a-input>
-        </a-form-model-item>
-        <a-form-model-item label="Email" prop="Email">
-          <a-input type="email" v-model="entity.Email" autocomplete="off"><a-icon slot="prefix" type="mail" /></a-input>
-        </a-form-model-item>
-        <a-form-model-item label="备注" prop="Remarks">
-          <a-textarea v-model="entity.Remarks" autocomplete="off"></a-textarea>
+        <a-form-model-item label="仓库ID" prop="StorId">
+          <a-input v-model="entity.StorId" autocomplete="off" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -36,11 +24,7 @@
 </template>
 
 <script>
-import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 export default {
-  components: {
-    EnumSelect
-  },
   props: {
     parentObj: Object
   },
@@ -70,7 +54,7 @@ export default {
 
       if (id) {
         this.loading = true
-        this.$http.post('/PB/PB_Customer/GetTheData', { id: id }).then(resJson => {
+        this.$http.post('/PB/PB_Rack/GetTheData', { id: id }).then(resJson => {
           this.loading = false
 
           this.entity = resJson.Data
@@ -83,7 +67,7 @@ export default {
           return
         }
         this.loading = true
-        this.$http.post('/PB/PB_Customer/SaveData', this.entity).then(resJson => {
+        this.$http.post('/PB/PB_Rack/SaveData', this.entity).then(resJson => {
           this.loading = false
 
           if (resJson.Success) {

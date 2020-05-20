@@ -1,5 +1,6 @@
 ﻿<template>
-  <a-card :bordered="false">
+  <!-- <a-card :bordered="false"> -->
+  <a-drawer title="巷道设置" placement="right" :closable="true" :maskClosable="false" @close="onDrawerClose" :visible="visible" :width="1024" :getContainer="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
       <a-button
@@ -54,14 +55,15 @@
       </span>
     </a-table>
 
-    <edit-form ref="editForm" :parentObj="this"></edit-form>
-  </a-card>
+    <edit-form ref="editForm" :parentObj="this" :storObj="storData"></edit-form>
+  </a-drawer>
 </template>
 
 <script>
 import EditForm from './EditForm'
 
 const columns = [
+  { title: '所属仓库', dataIndex: 'StorId', width: '10%' },
   { title: '巷道编号', dataIndex: 'Code', width: '10%' },
   { title: '巷道名称', dataIndex: 'Name', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
@@ -76,6 +78,8 @@ export default {
   },
   data() {
     return {
+      storData: {},
+      visible: false,
       data: [],
       pagination: {
         current: 1,
@@ -129,7 +133,7 @@ export default {
     },
     handleEdit(id) {
       this.$refs.editForm.openForm(id)
-    },
+    },    
     handleDelete(ids) {
       var thisObj = this
       this.$confirm({
@@ -150,6 +154,15 @@ export default {
           })
         }
       })
+    },
+    openDrawer(record) {
+      this.filters.StorId = record.Id
+      this.storData = record
+      this.visible = true
+      this.getDataList()
+    },
+    onDrawerClose() {
+      this.visible = false
     }
   }
 }
