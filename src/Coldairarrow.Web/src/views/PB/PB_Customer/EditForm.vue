@@ -8,7 +8,7 @@
     @cancel="()=>{this.visible=false}"
   >
     <a-spin :spinning="loading">
-      <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
+      <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">        
         <a-form-model-item label="客户编号" prop="Code">
           <a-input v-model="entity.Code" autocomplete="off" ><a-icon slot="prefix" type="scan" /></a-input>
         </a-form-model-item>
@@ -29,7 +29,7 @@
         </a-form-model-item>
         <a-form-model-item label="备注" prop="Remarks">
           <a-textarea v-model="entity.Remarks" autocomplete="off"></a-textarea>
-        </a-form-model-item>
+        </a-form-model-item>        
       </a-form-model>
     </a-spin>
   </a-modal>

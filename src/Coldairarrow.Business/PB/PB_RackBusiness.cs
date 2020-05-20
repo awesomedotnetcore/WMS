@@ -19,21 +19,31 @@ namespace Coldairarrow.Business.PB
 
         #region 外部接口
 
-        public async Task<PageResult<PB_Rack>> GetDataListAsync(PageInput<ConditionDTO> input)
+        public async Task<PageResult<PB_Rack>> GetDataListAsync(PB_RackPageInput input)
         {
-            var q = GetIQueryable();
+            var q = GetIQueryable().Where(w => w.StorId == input.StorId);
             var where = LinqHelper.True<PB_Rack>();
             var search = input.Search;
 
-            //筛选
-            if (!search.Condition.IsNullOrEmpty() && !search.Keyword.IsNullOrEmpty())
-            {
-                var newWhere = DynamicExpressionParser.ParseLambda<PB_Rack, bool>(
-                    ParsingConfig.Default, false, $@"{search.Condition}.Contains(@0)", search.Keyword);
-                where = where.And(newWhere);
-            }
+            if (!search.Name.IsNullOrEmpty())
+                where = where.And(w => w.Name.Contains(search.Name));
+            if (!search.Code.IsNullOrEmpty())
+                where = where.And(w => w.Code.Contains(search.Code));
 
             return await q.Where(where).GetPageResultAsync(input);
+            //var q = GetIQueryable();
+            //var where = LinqHelper.True<PB_Rack>();
+            //var search = input.Search;
+
+            ////筛选
+            //if (!search.Condition.IsNullOrEmpty() && !search.Keyword.IsNullOrEmpty())
+            //{
+            //    var newWhere = DynamicExpressionParser.ParseLambda<PB_Rack, bool>(
+            //        ParsingConfig.Default, false, $@"{search.Condition}.Contains(@0)", search.Keyword);
+            //    where = where.And(newWhere);
+            //}
+
+            //return await q.Where(where).GetPageResultAsync(input);
         }
 
         public async Task<PB_Rack> GetTheDataAsync(string id)

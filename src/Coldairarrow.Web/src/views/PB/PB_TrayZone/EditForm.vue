@@ -9,27 +9,31 @@
   >
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="仓库ID" prop="StorId">
-          <storage-select code="Storage" v-model="entity.StorId"></storage-select>
+        <a-form-model-item label="托盘类型ID" prop="TrayTypeId">
+          <a-input v-model="entity.TrayTypeId" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="货架编号" prop="Code">
+        <a-form-model-item label="托盘分区编号" prop="Code">
           <a-input v-model="entity.Code" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="货架名称" prop="Name">
+        <a-form-model-item label="托盘分区名称" prop="Name">
           <a-input v-model="entity.Name" autocomplete="off" />
-        </a-form-model-item>        
+        </a-form-model-item>
+        <a-form-model-item label="X" prop="X">
+          <a-input v-model="entity.X" autocomplete="off" />
+        </a-form-model-item>
+        <a-form-model-item label="Y" prop="Y">
+          <a-input v-model="entity.Y" autocomplete="off" />
+        </a-form-model-item>
+        <a-form-model-item label="是否默认托盘分区" prop="IsDefault">
+          <a-input v-model="entity.IsDefault" autocomplete="off" />
+        </a-form-model-item>
       </a-form-model>
     </a-spin>
   </a-modal>
 </template>
 
 <script>
-import StorageSelect from '../../../components/Storage/StorageSelect' 
-
 export default {
-  components: {
-    StorageSelect
-  },
   props: {
     parentObj: Object
   },
@@ -59,7 +63,7 @@ export default {
 
       if (id) {
         this.loading = true
-        this.$http.post('/PB/PB_Rack/GetTheData', { id: id }).then(resJson => {
+        this.$http.post('/PB/PB_TrayZone/GetTheData', { id: id }).then(resJson => {
           this.loading = false
 
           this.entity = resJson.Data
@@ -72,7 +76,7 @@ export default {
           return
         }
         this.loading = true
-        this.$http.post('/PB/PB_Rack/SaveData', this.entity).then(resJson => {
+        this.$http.post('/PB/PB_TrayZone/SaveData', this.entity).then(resJson => {
           this.loading = false
 
           if (resJson.Success) {

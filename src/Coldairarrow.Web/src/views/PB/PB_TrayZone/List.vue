@@ -1,6 +1,5 @@
 ﻿<template>
-  <!-- <a-card :bordered="false"> -->
-  <a-drawer title="货架设置" placement="right" :closable="true" :maskClosable="false" @close="onDrawerClose" :visible="visible" :width="1024" :getContainer="false">
+  <a-card :bordered="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
       <a-button
@@ -19,9 +18,9 @@
           <a-col :md="4" :sm="24">
             <a-form-item label="查询类别">
               <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="Code">货架编号</a-select-option>
-                <a-select-option key="Name">货架名称</a-select-option>
-                <a-select-option key="StorId">仓库ID</a-select-option>
+                <a-select-option key="TrayTypeId">托盘类型ID</a-select-option>
+                <a-select-option key="Code">托盘分区编号</a-select-option>
+                <a-select-option key="Name">托盘分区名称</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -59,17 +58,20 @@
       </span>
     </a-table>
 
-    <edit-form ref="editForm" :parentObj="this" :storObj="storData"></edit-form>
-  </a-drawer>
+    <edit-form ref="editForm" :parentObj="this"></edit-form>
+  </a-card>
 </template>
 
 <script>
 import EditForm from './EditForm'
 
 const columns = [
-  { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
-  { title: '货架编号', dataIndex: 'Code', width: '10%' },
-  { title: '货架名称', dataIndex: 'Name', width: '10%' },  
+  { title: '托盘类型ID', dataIndex: 'TrayTypeId', width: '10%' },
+  { title: '托盘分区编号', dataIndex: 'Code', width: '10%' },
+  { title: '托盘分区名称', dataIndex: 'Name', width: '10%' },
+  { title: 'X', dataIndex: 'X', width: '10%' },
+  { title: 'Y', dataIndex: 'Y', width: '10%' },
+  { title: '是否默认托盘分区', dataIndex: 'IsDefault', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -82,9 +84,7 @@ export default {
   },
   data() {
     return {
-      storData: {},
       data: [],
-      visible: false,
       pagination: {
         current: 1,
         pageSize: 10,
@@ -110,7 +110,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/PB/PB_Rack/GetDataList', {
+        .post('/PB/PB_TrayZone/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
@@ -144,7 +144,7 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/PB/PB_Rack/DeleteData', ids).then(resJson => {
+            thisObj.$http.post('/PB/PB_TrayZone/DeleteData', ids).then(resJson => {
               resolve()
 
               if (resJson.Success) {
@@ -158,15 +158,6 @@ export default {
           })
         }
       })
-    },
-    openDrawer(record) {
-      this.filters.StorId = record.Id
-      this.storData = record
-      this.visible = true
-      this.getDataList()
-    },
-    onDrawerClose() {
-      this.visible = false
     }
   }
 }

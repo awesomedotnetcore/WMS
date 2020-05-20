@@ -8,31 +8,31 @@ using System.Threading.Tasks;
 namespace Coldairarrow.Api.Controllers.PB
 {
     [Route("/PB/[controller]/[action]")]
-    public partial class PB_SupplierController : BaseApiController
+    public class PB_TrayTypeController : BaseApiController
     {
         #region DI
 
-        public PB_SupplierController(IPB_SupplierBusiness pB_SupplierBus)
+        public PB_TrayTypeController(IPB_TrayTypeBusiness pB_TrayTypeBus)
         {
-            _pB_SupplierBus = pB_SupplierBus;
+            _pB_TrayTypeBus = pB_TrayTypeBus;
         }
 
-        IPB_SupplierBusiness _pB_SupplierBus { get; }
+        IPB_TrayTypeBusiness _pB_TrayTypeBus { get; }
 
         #endregion
 
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<PB_Supplier>> GetDataList(PageInput<ConditionDTO> input)
+        public async Task<PageResult<PB_TrayType>> GetDataList(PageInput<ConditionDTO> input)
         {
-            return await _pB_SupplierBus.GetDataListAsync(input);
+            return await _pB_TrayTypeBus.GetDataListBySearch(input);
         }
 
         [HttpPost]
-        public async Task<PB_Supplier> GetTheData(IdInputDTO input)
+        public async Task<PB_TrayType> GetTheData(IdInputDTO input)
         {
-            return await _pB_SupplierBus.GetTheDataAsync(input.id);
+            return await _pB_TrayTypeBus.GetTheDataAsync(input.id);
         }
 
         #endregion
@@ -40,24 +40,24 @@ namespace Coldairarrow.Api.Controllers.PB
         #region 提交
 
         [HttpPost]
-        public async Task SaveData(PB_Supplier data)
+        public async Task SaveData(PB_TrayType data)
         {
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
 
-                await _pB_SupplierBus.AddDataAsync(data);
+                await _pB_TrayTypeBus.AddDataAsync(data);
             }
             else
             {
-                await _pB_SupplierBus.UpdateDataAsync(data);
+                await _pB_TrayTypeBus.UpdateDataAsync(data);
             }
         }
 
         [HttpPost]
         public async Task DeleteData(List<string> ids)
         {
-            await _pB_SupplierBus.DeleteDataAsync(ids);
+            await _pB_TrayTypeBus.DeleteDataAsync(ids);
         }
 
         #endregion
