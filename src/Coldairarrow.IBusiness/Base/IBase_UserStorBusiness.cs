@@ -12,6 +12,12 @@ namespace Coldairarrow.Business.Base
         Task AddDataAsync(Base_UserStor data);
         Task UpdateDataAsync(Base_UserStor data);
         Task DeleteDataAsync(List<string> ids);
+
+        /// <summary>
+        /// 获取当前用户有权限的仓库
+        /// </summary>
+        /// <returns></returns>
+        Task<List<Entity.PB.PB_Storage>> GetStorage();
     }
     public class Base_UserStorQM
     {

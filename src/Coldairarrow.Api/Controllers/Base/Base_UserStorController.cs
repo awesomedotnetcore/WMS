@@ -35,6 +35,11 @@ namespace Coldairarrow.Api.Controllers.Base
             return await _base_UserStorBus.GetTheDataAsync(input.id);
         }
 
+        [HttpGet]
+        public async Task<List<Entity.PB.PB_Storage>> GetStorage()
+        {
+            return await _base_UserStorBus.GetStorage();
+        }
         #endregion
 
         #region 提交

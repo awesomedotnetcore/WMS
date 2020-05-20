@@ -19,17 +19,19 @@ namespace Coldairarrow.Business.PB
 
         #region 外部接口
 
-        public async Task<PageResult<PB_Measure>> GetDataListAsync(PageInput<PB_MeasureQM> input)
+        public async Task<PageResult<PB_Measure>> GetDataListAsync(PageInput<ConditionDTO> input)
         {
             var q = GetIQueryable();
             var where = LinqHelper.True<PB_Measure>();
             var search = input.Search;
 
             //筛选
-            if (!search.Name.IsNullOrEmpty())
-                where = where.And(w => w.Name.Contains(search.Name));
-            if (!search.Code.IsNullOrEmpty())
-                where = where.And(w => w.Code.Contains(search.Code));
+            if (!search.Condition.IsNullOrEmpty() && !search.Keyword.IsNullOrEmpty())
+            {
+                var newWhere = DynamicExpressionParser.ParseLambda<PB_Measure, bool>(
+                    ParsingConfig.Default, false, $@"{search.Condition}.Contains(@0)", search.Keyword);
+                where = where.And(newWhere);
+            }
 
             return await q.Where(where).GetPageResultAsync(input);
         }

@@ -17,6 +17,11 @@ namespace Coldairarrow.Entity.PB
         [Key, Column(Order = 1)]
         public String Id { get; set; }
 
+        ///<summary>
+        ///仓库ID
+        ///</summary>
+        public String StorId { get; set; }        
+
         /// <summary>
         /// 巷道编号
         /// </summary>

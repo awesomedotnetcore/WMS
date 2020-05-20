@@ -9,6 +9,10 @@
   >
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
+        <a-form-model-item label="所属仓库" prop="StorId">
+          <!-- <a-input v-model="entity.StorId" autocomplete="off" /> -->
+          <storage-select code="Storage" v-model="entity.StorId"></storage-select>
+        </a-form-model-item>
         <a-form-model-item label="巷道编号" prop="Code">
           <a-input v-model="entity.Code" autocomplete="off" />
         </a-form-model-item>
@@ -21,7 +25,12 @@
 </template>
 
 <script>
+import StorageSelect from '../../../components/Storage/StorageSelect' 
+
 export default {
+  components: {
+    StorageSelect
+  },
   props: {
     parentObj: Object
   },

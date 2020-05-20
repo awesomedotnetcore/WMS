@@ -9,14 +9,17 @@
   >
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="用户ID" prop="UserId">
-          <a-input v-model="entity.UserId" autocomplete="off" />
+        <a-form-model-item label="用户" prop="UserId">
+          <user-select v-model="entity.UserId"></user-select>
         </a-form-model-item>
-        <a-form-model-item label="仓库ID" prop="StorId">
-          <a-input v-model="entity.StorId" autocomplete="off" />
+        <a-form-model-item label="仓库" prop="StorId">
+          <storage-select v-model="entity.StorId"></storage-select>
         </a-form-model-item>
-        <a-form-model-item label="是否默认仓库" prop="IsDefault">
-          <a-input v-model="entity.IsDefault" autocomplete="off" />
+        <a-form-model-item label="默认仓库" prop="IsDefault">
+          <a-select v-model="entity.IsDefault" autocomplete="off">
+            <a-select-option :value="false">否</a-select-option>
+            <a-select-option :value="true">是</a-select-option>
+          </a-select>
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -24,7 +27,13 @@
 </template>
 
 <script>
+import StorageSelect from '../../../components/Storage/StorageSelect'
+import UserSelect from '../../../components/User/UserSelect'
 export default {
+  components: {
+    StorageSelect,
+    UserSelect
+  },
   props: {
     parentObj: Object
   },

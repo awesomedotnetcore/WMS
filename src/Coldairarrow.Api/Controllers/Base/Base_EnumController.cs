@@ -34,7 +34,11 @@ namespace Coldairarrow.Api.Controllers.Base
         {
             return await _base_EnumBus.GetTheDataAsync(input.id);
         }
-
+        [HttpGet]
+        public async Task<Base_Enum> GetByCode(string code)
+        {
+            return await _base_EnumBus.GetByCodeAsync(code);
+        }
         #endregion
 
         #region 提交

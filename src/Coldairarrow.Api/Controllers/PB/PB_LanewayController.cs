@@ -24,7 +24,7 @@ namespace Coldairarrow.Api.Controllers.PB
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<PB_Laneway>> GetDataList(PageInput<PB_LanewayQM> input)
+        public async Task<PageResult<PB_Laneway>> GetDataList(PB_LanewayPageInput input)
         {
             return await _pB_LanewayBus.GetDataListAsync(input);
         }

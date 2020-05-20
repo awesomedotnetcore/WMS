@@ -1,5 +1,5 @@
 <template>
-  <a-select v-model="curValue" @select="handleSelected">
+  <a-select v-model="curValue" placeholder="TEST" @select="handleSelected" v-bind="$attrs">
     <a-select-option v-for="item in enumItem" :key="item.Value" :value="item.Value">{{ item.Name }}</a-select-option>
   </a-select>
 </template>
@@ -8,7 +8,7 @@ import moment from 'moment'
 export default {
   props: {
     code: { type: String, required: true },
-    value: { type: String, default: '', required: false }
+    value: { type: String, required: false }
   },
   data() {
     return {

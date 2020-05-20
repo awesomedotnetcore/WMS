@@ -39,7 +39,7 @@
 
       <span slot="IsTray" slot-scope="text, record">    
         <template>
-        <a-button :type="record.IsTray?'default':'primary'">
+        <a-button :type="record.IsTray?'primary':'default'">
         <a v-if="record.IsTray" @click="handleEnable(record,'IsTray',false)">启用</a>
         <a v-else @click="handleEnable(record,'IsTray',true)">停用</a>
         </a-button>
@@ -48,18 +48,18 @@
 
       <span slot="IsZone" slot-scope="text, record">    
         <template>
-        <a-button :type="record.IsZone?'default':'primary'">
-        <a v-if="record.IsZone" @click="handleEnable(record,'IsZone',true)">启用</a>
-        <a v-else @click="handleEnable(record,'IsZone',false)">停用</a>
+        <a-button :type="record.IsZone?'primary':'default'">
+        <a v-if="record.IsZone" @click="handleEnable(record,'IsZone',false)">启用</a>
+        <a v-else @click="handleEnable(record,'IsZone',true)">停用</a>
         </a-button>
         </template>
       </span>
 
       <span slot="disable" slot-scope="text, record">    
         <template>
-        <a-button :type="record.disable?'default':'primary'">
-        <a v-if="record.disable" @click="handleEnable(record,'disable',true)">启用</a>
-        <a v-else @click="handleEnable(record,'disable',false)">停用</a>
+        <a-button :type="record.disable?'primary':'default'">
+        <a v-if="record.disable" @click="handleEnable(record,'disable',false)">启用</a>
+        <a v-else @click="handleEnable(record,'disable',true)">停用</a>
         </a-button>
         </template>
       </span>
@@ -67,20 +67,29 @@
 
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="handleEdit(record.Id)">编辑</a>
-          <a-divider type="vertical" />
-          <a @click="handleDelete([record.Id])">删除</a>
+          <a  @click="handleEdit(record.Id)">编辑</a>
+          <a-divider  type="vertical" />
+          <a  @click="handleDelete([record.Id])">删除</a>
+          <a-divider  type="vertical" />
+          <a @click="openLanewayList(record)">设置巷道</a>
+          <a-divider  type="vertical" />
+          <a @click="openRackList(record)">设置货架</a>
         </template>
       </span>
     </a-table>
-
+    
     <edit-form ref="editForm" :parentObj="this"></edit-form>
+    <laneway-List ref="lanewayList"></laneway-List>
+    <rack-List ref="rackList"></rack-List>
   </a-card>
 </template>
 
 <script>
 import EditForm from './EditForm'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
+import LanewayList from '../PB_Laneway/List'
+import RackList from '../PB_Rack/List'
+
 const filterYesOrNo = (value, row, index) => {
   if (value) return '是'
   else return '否'
@@ -93,15 +102,17 @@ const columns = [
   { title: '托盘管理', dataIndex: 'IsTray', width: '10%' , scopedSlots: { customRender: 'IsTray' }},
   { title: '托盘分区管理', dataIndex: 'IsZone', width: '10%' , scopedSlots: { customRender: 'IsZone' }},
   { title: '仓库状态', dataIndex: 'disable', width: '10%' , scopedSlots: { customRender: 'disable' }},
-  { title: '默认仓库', dataIndex: 'IsDefault', width: '10%'  , customRender: filterYesOrNo},
+  { title: '默认仓库', dataIndex: 'IsDefault', width: '8%'  , customRender: filterYesOrNo},
   { title: '备注', dataIndex: 'Remarks', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
+    LanewayList,
+    RackList,
     EditForm,
-    EnumName
+    EnumName,    
   },
   mounted() {
     this.getDataList()
@@ -204,6 +215,12 @@ export default {
         }
       })
     },
+    openLanewayList(value) {
+      this.$refs.lanewayList.openDrawer(value)
+    },
+    openRackList(value) {
+      this.$refs.rackList.openDrawer(value)
+    }
   }
 }
 </script>

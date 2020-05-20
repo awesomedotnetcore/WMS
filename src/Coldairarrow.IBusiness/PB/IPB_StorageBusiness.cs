@@ -12,5 +12,7 @@ namespace Coldairarrow.Business.PB
         Task AddDataAsync(PB_Storage data);
         Task UpdateDataAsync(PB_Storage data);
         Task DeleteDataAsync(List<string> ids);
+
+        Task<List<PB_Storage>> GetListAsync();
     }
 }
