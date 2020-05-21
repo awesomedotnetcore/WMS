@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Coldairarrow.Api.Controllers.PB
 {
     [Route("/PB/[controller]/[action]")]
-    public class PB_MaterialTypeController : BaseApiController
+    public partial class PB_MaterialTypeController : BaseApiController
     {
         #region DI
 

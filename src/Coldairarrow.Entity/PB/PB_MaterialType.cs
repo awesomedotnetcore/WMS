@@ -35,7 +35,7 @@ namespace Coldairarrow.Entity.PB
         /// <summary>
         /// 是否是叶节点
         /// </summary>
-        public String IsLeaf { get; set; }
+        public bool IsLeaf { get; set; }
 
         /// <summary>
         /// 备注
