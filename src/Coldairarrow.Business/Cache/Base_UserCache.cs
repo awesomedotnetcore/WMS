@@ -10,11 +10,13 @@ namespace Coldairarrow.Business.Cache
 {
     class Base_UserCache : BaseCache<Base_UserDTO>, IBase_UserCache, ITransientDependency
     {
+        readonly IDistributedCache _cache;
         readonly IServiceProvider _serviceProvider;
         public Base_UserCache(IServiceProvider serviceProvider, IDistributedCache cache)
             : base(cache)
         {
             _serviceProvider = serviceProvider;
+            _cache = cache;
         }
 
         protected override async Task<Base_UserDTO> GetDbDataAsync(string key)
@@ -33,6 +35,12 @@ namespace Coldairarrow.Business.Cache
             var userStorSvc = _serviceProvider.GetRequiredService<Base.IBase_UserStorBusiness>();
             result.DefaultStorageId = await userStorSvc.GetDefaultStorageId(key);
             return result;
+        }
+        public async Task UpdateCacheAsync(string id, Base_UserDTO user)
+        {
+            if (id.IsNullOrEmpty()) return;
+            string cacheKey = BuildKey(id);
+            await _cache.SetStringAsync(cacheKey, user.ToJson());
         }
     }
 }

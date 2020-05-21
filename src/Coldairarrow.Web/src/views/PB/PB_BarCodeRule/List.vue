@@ -16,13 +16,17 @@
       <a-form layout="inline">
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.Code" placeholder="编码" />
+            <a-form-item label="查询类别">
+              <a-select allowClear v-model="queryParam.condition">
+                <a-select-option key="BarCodeId">BarCodeId</a-select-option>
+                <a-select-option key="Sort">排序</a-select-option>
+                <a-select-option key="Rule">规则</a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.Name" placeholder="名称" />
+              <a-input v-model="queryParam.keyword" placeholder="关键字" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -45,10 +49,6 @@
       :bordered="true"
       size="small"
     >
-    <template slot="Type" slot-scope="text">
-        <enum-name code="SystemType" :value="text"></enum-name>
-     </template>
-
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -64,27 +64,19 @@
 
 <script>
 import EditForm from './EditForm'
-import EnumName from '../../../components/BaseEnum/BaseEnumName'
-
-const filterYesOrNo = (value, row, index) => {
-  if (value) return '是'
-  else return '否'
-}
 
 const columns = [
-  { title: '参数类型', dataIndex: 'Type', width: '15%', scopedSlots: { customRender: 'Type' } },
-  { title: '参数编号', dataIndex: 'Code', width: '15%' },
-  { title: '参数名称', dataIndex: 'Name', width: '15%' },
-  { title: '参数值', dataIndex: 'Val', width: '10%' },
-  { title: '描述', dataIndex: 'Remarks', width: '20%' },
-  { title: '是否系统必须', dataIndex: 'IsSystem', width: '10%' , customRender: filterYesOrNo},
+  { title: 'BarCodeId', dataIndex: 'BarCodeId', width: '10%' },
+  { title: '类型', dataIndex: 'Type', width: '10%' },
+  { title: '排序', dataIndex: 'Sort', width: '10%' },
+  { title: '规则', dataIndex: 'Rule', width: '10%' },
+  { title: '长度', dataIndex: 'length', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
-    EditForm,
-    EnumName, 
+    EditForm
   },
   mounted() {
     this.getDataList()
@@ -117,7 +109,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/Base/Base_Parameter/GetDataList', {
+        .post('/PB/PB_BarCodeRule/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
@@ -151,7 +143,7 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/Base/Base_Parameter/DeleteData', ids).then(resJson => {
+            thisObj.$http.post('/PB/PB_BarCodeRule/DeleteData', ids).then(resJson => {
               resolve()
 
               if (resJson.Success) {

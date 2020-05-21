@@ -5,57 +5,43 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Coldairarrow.Entity.PB
 {
     /// <summary>
-    /// 仓库表
+    /// 条码规则
     /// </summary>
-    [Table("PB_Storage")]
-    public class PB_Storage
+    [Table("PB_BarCodeRule")]
+    public class PB_BarCodeRule
     {
 
         /// <summary>
-        /// 主键ID
+        /// Id
         /// </summary>
         [Key, Column(Order = 1)]
         public String Id { get; set; }
 
         /// <summary>
-        /// 仓库编号
+        /// BarCodeId
         /// </summary>
-        public String Code { get; set; }
+        public String BarCodeId { get; set; }
 
         /// <summary>
-        /// 仓库名称
+        /// 类型
+        /// 常量 日期 流水号 引用 每日流水号 随机数(GUID) 参数
         /// </summary>
-        public String Name { get; set; }
+        public Int32 Type { get; set; }
 
         /// <summary>
-        /// 仓库类型（平库,立库）(枚举)
+        /// 排序
         /// </summary>
-        public String Type { get; set; }
+        public String Sort { get; set; }
 
         /// <summary>
-        /// 是否启用托盘管理 0  禁用：1启用
+        /// 规则
         /// </summary>
-        public Boolean IsTray { get; set; }
+        public String Rule { get; set; }
 
         /// <summary>
-        /// 事情启用分区管理 0  禁用：1启用
+        /// 长度
         /// </summary>
-        public Boolean? IsZone { get; set; }
-
-        /// <summary>
-        /// 启用：0  禁用：1启用
-        /// </summary>
-        public Boolean Disable { get; set; }
-
-        /// <summary>
-        /// 默认
-        /// </summary>
-        public Boolean IsDefault { get; set; }
-
-        /// <summary>
-        /// 备注
-        /// </summary>
-        public String Remarks { get; set; }
+        public Int32? length { get; set; }
 
         /// <summary>
         /// 创建时间

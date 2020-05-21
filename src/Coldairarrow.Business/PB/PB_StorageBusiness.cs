@@ -45,13 +45,23 @@ namespace Coldairarrow.Business.PB
         }
 
         public async Task UpdateDataAsync(PB_Storage data)
-        {
+        {            
             await UpdateAsync(data);
         }
 
         public async Task DeleteDataAsync(List<string> ids)
         {
             await DeleteAsync(ids);
+        }
+
+        public async Task ModifyDefaultAsync(PB_Storage data)
+        {
+            var oldDefaultData = await GetIQueryable().Where(p => p.IsDefault == true).FirstOrDefaultAsync();
+            oldDefaultData.IsDefault = false;
+
+            var modifyData= new List<PB_Storage>() { data, oldDefaultData };
+
+            await UpdateAsync(modifyData);
         }
         #endregion
 

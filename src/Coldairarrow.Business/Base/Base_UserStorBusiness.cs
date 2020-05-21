@@ -19,7 +19,7 @@ namespace Coldairarrow.Business.Base
         readonly Cache.IBase_UserCache _userCache;
         readonly IServiceProvider _serviceProvider;
         readonly IMapper _mapper;
-        public Base_UserStorBusiness(IRepository repository, Cache.IBase_UserCache userCache, IServiceProvider serviceProvider,IMapper mapper)
+        public Base_UserStorBusiness(IRepository repository, Cache.IBase_UserCache userCache, IServiceProvider serviceProvider, IMapper mapper)
             : base(repository)
         {
             _serviceProvider = serviceProvider;
@@ -74,7 +74,9 @@ namespace Coldairarrow.Business.Base
             var defaultStorId = storDto.SingleOrDefault(w => w.IsDefault)?.Id;//系统默认仓库Id
             var userStors = await this.GetIQueryable().Where(w => w.UserId == userId).OrderByDescending(o => o.IsDefault).ToListAsync();
             //过滤用户有权限的仓库
-            if (userStors.Count > 0)
+            var userSvc = _serviceProvider.GetRequiredService<Base_Manage.IBase_UserBusiness>();
+            var user = await userSvc.GetTheDataAsync(userId);
+            if (!this.IsAdmin(user) && userStors.Count > 0)
             {
                 var userStorIds = userStors.Select(s => s.StorId).ToList();
                 storDto = storDto.Where(w => userStorIds.Contains(w.Id)).ToList();
@@ -91,6 +93,14 @@ namespace Coldairarrow.Business.Base
             }
             return storDto;
         }
+        private bool IsAdmin(Base_UserDTO user)
+        {
+            var role = user.RoleType;
+            if (user.Id == GlobalData.ADMINID || role.HasFlag(RoleTypes.超级管理员))
+                return true;
+            else
+                return false;
+        }
         public async Task<string> GetDefaultStorageId(string userId)
         {
             var listStor = await this.GetStorage(userId);
@@ -100,24 +110,19 @@ namespace Coldairarrow.Business.Base
         {
             await UpdateWhereAsync(w => w.UserId == userId && w.IsDefault, (entity) => { entity.IsDefault = false; });
             var userStorage = await this.GetIQueryable().SingleOrDefaultAsync(w => w.UserId == userId && w.StorId == storageId);
-            if (userStorage == null)
-            {
-                userStorage = new Base_UserStor() { };
-                userStorage.Id = IdHelper.GetId();
-                userStorage.UserId = userId;
-                userStorage.StorId = storageId;
-                userStorage.IsDefault = true;
-                userStorage.CreateTime = DateTime.Now;
-                userStorage.CreatorId = userId;
-                userStorage.Deleted = false;
-                await InsertAsync(userStorage);
-            }
-            else
+            if (userStorage != null)
             {
                 userStorage.IsDefault = true;
                 await UpdateDataAsync(userStorage);
+                await _userCache.UpdateCacheAsync(userId);
             }
-            await _userCache.UpdateCacheAsync(userId);
+            else
+            {
+                var userSvc = _serviceProvider.GetRequiredService<Base_Manage.IBase_UserBusiness>();
+                var user = await userSvc.GetTheDataAsync(userId);
+                user.DefaultStorageId = storageId;
+                await _userCache.UpdateCacheAsync(userId, user);
+            }
         }
         #endregion
 
