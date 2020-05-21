@@ -20,7 +20,7 @@ namespace Coldairarrow.Entity.PB
         /// <summary>
         /// 物料ID
         /// </summary>
-        [Key, Column(Order = 2)]
+       // [Key, Column(Order = 2)]
         public String MaterialId { get; set; }
 
     }
