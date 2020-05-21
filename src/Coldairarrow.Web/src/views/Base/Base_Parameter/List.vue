@@ -15,20 +15,14 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
-          <!-- <a-col :md="4" :sm="24">
-            <a-form-item label="查询类别">
-              <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="Type">参数类型</a-select-option>
-                <a-select-option key="Code">参数编号</a-select-option>
-                <a-select-option key="Name">参数名称</a-select-option>
-                <a-select-option key="Val">参数值</a-select-option>
-                <a-select-option key="Remarks">描述</a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col> -->
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="关键字" />
+              <a-input v-model="queryParam.Code" placeholder="编码" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="4" :sm="24">
+            <a-form-item>
+              <a-input v-model="queryParam.Name" placeholder="名称" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -51,6 +45,10 @@
       :bordered="true"
       size="small"
     >
+    <template slot="Type" slot-scope="text">
+        <enum-name code="SystemType" :value="text"></enum-name>
+     </template>
+
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -66,20 +64,27 @@
 
 <script>
 import EditForm from './EditForm'
+import EnumName from '../../../components/BaseEnum/BaseEnumName'
+
+const filterYesOrNo = (value, row, index) => {
+  if (value) return '是'
+  else return '否'
+}
 
 const columns = [
-  { title: '参数类型', dataIndex: 'Type', width: '10%' },
-  { title: '参数编号', dataIndex: 'Code', width: '10%' },
-  { title: '参数名称', dataIndex: 'Name', width: '10%' },
+  { title: '参数类型', dataIndex: 'Type', width: '15%', scopedSlots: { customRender: 'Type' } },
+  { title: '参数编号', dataIndex: 'Code', width: '15%' },
+  { title: '参数名称', dataIndex: 'Name', width: '15%' },
   { title: '参数值', dataIndex: 'Val', width: '10%' },
-  { title: '描述', dataIndex: 'Remarks', width: '10%' },
-  { title: '是否系统必须', dataIndex: 'IsSystem', width: '10%' },
+  { title: '描述', dataIndex: 'Remarks', width: '20%' },
+  { title: '是否系统必须', dataIndex: 'IsSystem', width: '10%' , customRender: filterYesOrNo},
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
-    EditForm
+    EditForm,
+    EnumName, 
   },
   mounted() {
     this.getDataList()

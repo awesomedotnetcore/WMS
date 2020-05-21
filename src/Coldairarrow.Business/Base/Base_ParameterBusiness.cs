@@ -19,19 +19,17 @@ namespace Coldairarrow.Business.Base
 
         #region 外部接口
 
-        public async Task<PageResult<Base_Parameter>> GetDataListAsync(PageInput<ConditionDTO> input)
+        public async Task<PageResult<Base_Parameter>> GetDataListAsync(PB_ParameterPageInput input)
         {
             var q = GetIQueryable();
             var where = LinqHelper.True<Base_Parameter>();
             var search = input.Search;
 
             //筛选
-            if (!search.Condition.IsNullOrEmpty() && !search.Keyword.IsNullOrEmpty())
-            {
-                var newWhere = DynamicExpressionParser.ParseLambda<Base_Parameter, bool>(
-                    ParsingConfig.Default, false, $@"{search.Condition}.Contains(@0)", search.Keyword);
-                where = where.And(newWhere);
-            }
+            if (!search.Name.IsNullOrEmpty())
+                where = where.And(w => w.Name.Contains(search.Name));
+            if (!search.Code.IsNullOrEmpty())
+                where = where.And(w => w.Code.Contains(search.Code));
 
             return await q.Where(where).GetPageResultAsync(input);
         }
