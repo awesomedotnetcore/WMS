@@ -25,7 +25,10 @@
           <a-input v-model="entity.High" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="是否有分区" prop="IsZone">
-          <a-input v-model="entity.IsZone" autocomplete="off" />
+          <a-select v-model="entity.IsZone">
+            <a-select-option :key="true" >是</a-select-option>
+            <a-select-option :key="false" >否</a-select-option>
+          </a-select>
         </a-form-model-item>
       </a-form-model>
     </a-spin>

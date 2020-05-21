@@ -16,8 +16,23 @@
       <a-form layout="inline">
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
+            <a-form-item label="查询类别">
+              <a-select allowClear v-model="queryParam.condition">
+                <a-select-option key="Code">货位编号</a-select-option>
+                <a-select-option key="Name">货位名称</a-select-option>
+                <a-select-option key="Type">库位类型(枚举)</a-select-option>
+                <a-select-option key="StorId">仓库ID</a-select-option>
+                <a-select-option key="AreaId">库区ID</a-select-option>
+                <a-select-option key="LanewayId">巷道ID</a-select-option>
+                <a-select-option key="IdRack">货架ID</a-select-option>
+                <a-select-option key="ErrorCode">故障代码</a-select-option>
+                <a-select-option key="Remarks">备注</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="类型编号或名称" />
+              <a-input v-model="queryParam.keyword" placeholder="关键字" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -45,39 +60,36 @@
           <a @click="handleEdit(record.Id)">编辑</a>
           <a-divider type="vertical" />
           <a @click="handleDelete([record.Id])">删除</a>
-          <a-divider type="vertical" />
-          <a @click="openZoneList(record.Id)">分区管理</a>
         </template>
       </span>
     </a-table>
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
-    <zone-list ref="zoneList" :parentObj="this"></zone-list>
   </a-card>
 </template>
 
 <script>
 import EditForm from './EditForm'
-import ZoneList from '../PB_TrayZone/List'
 
-const filterYesOrNo = (value, row, index) => {
-  if (value) return '是'
-  else return '否'
-}
 const columns = [
-  { title: '编号', dataIndex: 'Code', width: '10%' },
-  { title: '名称', dataIndex: 'Name', width: '10%' },
-  { title: '长', dataIndex: 'Length', width: '10%' },
-  { title: '宽', dataIndex: 'Width', width: '10%' },
-  { title: '高', dataIndex: 'High', width: '10%' },
-  { title: '是否有分区', dataIndex: 'IsZone', width: '10%', customRender: filterYesOrNo },
+  { title: '货位编号', dataIndex: 'Code', width: '10%' },
+  { title: '货位名称', dataIndex: 'Name', width: '10%' },
+  { title: '库位类型(枚举)', dataIndex: 'Type', width: '10%' },
+  { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
+  { title: '库区ID', dataIndex: 'AreaId', width: '10%' },
+  { title: '巷道ID', dataIndex: 'LanewayId', width: '10%' },
+  { title: '货架ID', dataIndex: 'IdRack', width: '10%' },
+  { title: '剩余容量', dataIndex: 'OverVol', width: '10%' },
+  { title: '是否禁用', dataIndex: 'IsForbid', width: '10%' },
+  { title: '是否默认', dataIndex: 'IsDefault', width: '10%' },
+  { title: '故障代码', dataIndex: 'ErrorCode', width: '10%' },
+  { title: '备注', dataIndex: 'Remarks', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
-    EditForm,
-    ZoneList
+    EditForm
   },
   mounted() {
     this.getDataList()
@@ -110,7 +122,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/PB/PB_TrayType/GetDataList', {
+        .post('/PB/PB_Location/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
@@ -144,7 +156,7 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/PB/PB_TrayType/DeleteData', ids).then(resJson => {
+            thisObj.$http.post('/PB/PB_Location/DeleteData', ids).then(resJson => {
               resolve()
 
               if (resJson.Success) {
@@ -158,9 +170,6 @@ export default {
           })
         }
       })
-    },
-    openZoneList(typeId) {
-      this.$refs.zoneList.openDrawer(typeId)
     }
   }
 }

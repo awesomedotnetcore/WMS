@@ -16,19 +16,8 @@
       <a-form layout="inline">
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
-            <a-form-item label="查询类别">
-              <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="LocalId">货位ID(空托盘出库情况)</a-select-option>
-                <a-select-option key="Code">托盘号</a-select-option>
-                <a-select-option key="Name">托盘名称</a-select-option>
-                <a-select-option key="TrayTypeId">托盘类型ID</a-select-option>
-                <a-select-option key="Remarks">备注</a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
-          <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="关键字" />
+              <a-input v-model="queryParam.keyword" placeholder="托盘名称或编码" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -67,13 +56,17 @@
 <script>
 import EditForm from './EditForm'
 
+const filterYesOrNo = (value, row, index) => {
+  if (value) return '是'
+  else return '否'
+}
 const columns = [
-  { title: '货位ID(空托盘出库情况)', dataIndex: 'LocalId', width: '10%' },
+  { title: '货位', dataIndex: 'PB_Location.Name', width: '10%' },
   { title: '托盘号', dataIndex: 'Code', width: '10%' },
   { title: '托盘名称', dataIndex: 'Name', width: '10%' },
-  { title: '托盘类型ID', dataIndex: 'TrayTypeId', width: '10%' },
+  { title: '托盘类型', dataIndex: 'PB_TrayType.Name', width: '10%' },
   { title: '启用日期', dataIndex: 'StartTime', width: '10%' },
-  { title: '托盘状态:0启用 1停用', dataIndex: 'Status', width: '10%' },
+  { title: '托盘状态', dataIndex: 'Status', width: '10%', customRender: filterYesOrNo },
   { title: '备注', dataIndex: 'Remarks', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]

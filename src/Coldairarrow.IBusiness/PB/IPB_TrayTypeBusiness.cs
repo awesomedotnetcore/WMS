@@ -8,6 +8,7 @@ namespace Coldairarrow.Business.PB
     public interface IPB_TrayTypeBusiness
     {
         Task<PageResult<PB_TrayType>> GetDataListAsync(PageInput<ConditionDTO> input);
+        Task<List<PB_TrayType>> GetDataListAsync();
         Task<PageResult<PB_TrayType>> GetDataListBySearch(PageInput<ConditionDTO> input);
         Task<PB_TrayType> GetTheDataAsync(string id);
         Task AddDataAsync(PB_TrayType data);

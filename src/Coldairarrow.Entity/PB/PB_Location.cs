@@ -5,10 +5,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Coldairarrow.Entity.PB
 {
     /// <summary>
-    /// 托盘表
+    /// 货位管理
     /// </summary>
-    [Table("PB_Tray")]
-    public class PB_Tray
+    [Table("PB_Location")]
+    public class PB_Location
     {
 
         /// <summary>
@@ -18,40 +18,59 @@ namespace Coldairarrow.Entity.PB
         public String Id { get; set; }
 
         /// <summary>
-        /// 货位ID(空托盘出库情况)
-        /// </summary>
-        public String LocalId { get; set; }
-
-        [ForeignKey(nameof(LocalId))]
-        public PB_Location PB_Location { get; set; }
-
-        /// <summary>
-        /// 托盘号
+        /// 货位编号
         /// </summary>
         public String Code { get; set; }
 
         /// <summary>
-        /// 托盘名称
+        /// 货位名称
         /// </summary>
         public String Name { get; set; }
 
         /// <summary>
-        /// 托盘类型ID
+        /// 库位类型(枚举)
         /// </summary>
-        public String TrayTypeId { get; set; }
-
-        [ForeignKey(nameof(TrayTypeId))]
-        public PB_TrayType PB_TrayType { get; set; }
+        public String Type { get; set; }
 
         /// <summary>
-        /// 启用日期
+        /// 仓库ID
         /// </summary>
-        public DateTime StartTime { get; set; }
+        public String StorId { get; set; }
 
         /// <summary>
-        /// 托盘状态:0启用 1停用
+        /// 库区ID
         /// </summary>
-        public Int32 Status { get; set; }
+        public String AreaId { get; set; }
+
+        /// <summary>
+        /// 巷道ID
+        /// </summary>
+        public String LanewayId { get; set; }
+
+        /// <summary>
+        /// 货架ID
+        /// </summary>
+        public String IdRack { get; set; }
+
+        /// <summary>
+        /// 剩余容量
+        /// </summary>
+        public Double? OverVol { get; set; }
+
+        /// <summary>
+        /// 是否禁用
+        /// </summary>
+        public Boolean IsForbid { get; set; }
+
+        /// <summary>
+        /// 是否默认
+        /// </summary>
+        public Boolean IsDefault { get; set; }
+
+        /// <summary>
+        /// 故障代码
+        /// </summary>
+        public String ErrorCode { get; set; }
 
         /// <summary>
         /// 备注

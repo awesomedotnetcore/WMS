@@ -10,25 +10,25 @@ using System.Threading.Tasks;
 
 namespace Coldairarrow.Business.PB
 {
-    public class PB_TrayTypeBusiness : BaseBusiness<PB_TrayType>, IPB_TrayTypeBusiness, ITransientDependency
+    public class PB_LocationBusiness : BaseBusiness<PB_Location>, IPB_LocationBusiness, ITransientDependency
     {
-        public PB_TrayTypeBusiness(IRepository repository)
+        public PB_LocationBusiness(IRepository repository)
             : base(repository)
         {
         }
 
         #region 外部接口
 
-        public async Task<PageResult<PB_TrayType>> GetDataListAsync(PageInput<ConditionDTO> input)
+        public async Task<PageResult<PB_Location>> GetDataListAsync(PageInput<ConditionDTO> input)
         {
             var q = GetIQueryable();
-            var where = LinqHelper.True<PB_TrayType>();
+            var where = LinqHelper.True<PB_Location>();
             var search = input.Search;
 
             //筛选
             if (!search.Condition.IsNullOrEmpty() && !search.Keyword.IsNullOrEmpty())
             {
-                var newWhere = DynamicExpressionParser.ParseLambda<PB_TrayType, bool>(
+                var newWhere = DynamicExpressionParser.ParseLambda<PB_Location, bool>(
                     ParsingConfig.Default, false, $@"{search.Condition}.Contains(@0)", search.Keyword);
                 where = where.And(newWhere);
             }
@@ -36,38 +36,24 @@ namespace Coldairarrow.Business.PB
             return await q.Where(where).GetPageResultAsync(input);
         }
 
-        public async Task<List<PB_TrayType>> GetDataListAsync()
+        public async Task<List<PB_Location>> GetDataListAsync()
         {
             var q = GetIQueryable();
 
             return await q.ToListAsync();
         }
 
-        public async Task<PageResult<PB_TrayType>> GetDataListBySearch(PageInput<ConditionDTO> input)
-        {
-            var q = GetIQueryable();
-            var search = input.Search;
-
-            //筛选
-            if (!search.Keyword.IsNullOrEmpty())
-            {
-                q = q.Where(w => w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
-            }
-
-            return await q.GetPageResultAsync(input);
-        }
-
-        public async Task<PB_TrayType> GetTheDataAsync(string id)
+        public async Task<PB_Location> GetTheDataAsync(string id)
         {
             return await GetEntityAsync(id);
         }
 
-        public async Task AddDataAsync(PB_TrayType data)
+        public async Task AddDataAsync(PB_Location data)
         {
             await InsertAsync(data);
         }
 
-        public async Task UpdateDataAsync(PB_TrayType data)
+        public async Task UpdateDataAsync(PB_Location data)
         {
             await UpdateAsync(data);
         }

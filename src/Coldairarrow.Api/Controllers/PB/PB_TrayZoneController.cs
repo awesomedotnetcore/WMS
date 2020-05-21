@@ -30,6 +30,13 @@ namespace Coldairarrow.Api.Controllers.PB
         }
 
         [HttpPost]
+        public async Task<List<PB_TrayZone>> GetDataListByType(string typeId)
+        {
+            var res = await _pB_TrayZoneBus.GetDataListAsync(typeId);
+            return res;
+        }
+
+        [HttpPost]
         public async Task<PB_TrayZone> GetTheData(IdInputDTO input)
         {
             return await _pB_TrayZoneBus.GetTheDataAsync(input.id);
