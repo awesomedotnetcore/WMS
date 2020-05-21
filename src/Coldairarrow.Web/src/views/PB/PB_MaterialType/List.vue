@@ -12,34 +12,6 @@
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
 
-    <div class="table-page-search-wrapper">
-      <a-form layout="inline">
-        <a-row :gutter="10">
-          <a-col :md="4" :sm="24">
-            <a-form-item label="查询类别">
-              <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="Name">物料分类名称</a-select-option>
-                <a-select-option key="Code">物料分类编码</a-select-option>
-                <a-select-option key="ParentId">父节点物料分类ID</a-select-option>
-                <a-select-option key="IsLeaf">是否是叶节点</a-select-option>
-                <a-select-option key="Remarks">备注</a-select-option>
-                <a-select-option key="Path">Path</a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
-          <a-col :md="4" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="关键字" />
-            </a-form-item>
-          </a-col>
-          <a-col :md="6" :sm="24">
-            <a-button type="primary" @click="getDataList">查询</a-button>
-            <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
-          </a-col>
-        </a-row>
-      </a-form>
-    </div>
-
     <a-table
       ref="table"
       :columns="columns"
@@ -69,13 +41,10 @@
 import EditForm from './EditForm'
 
 const columns = [
-  { title: '物料分类名称', dataIndex: 'Name', width: '10%' },
-  { title: '物料分类编码', dataIndex: 'Code', width: '10%' },
-  { title: '父节点物料分类ID', dataIndex: 'ParentId', width: '10%' },
-  { title: '是否是叶节点', dataIndex: 'IsLeaf', width: '10%' },
-  { title: '备注', dataIndex: 'Remarks', width: '10%' },
-  { title: 'Path', dataIndex: 'Path', width: '10%' },
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+  { title: '物料分类名称', dataIndex: 'title', width: '15%' },
+  { title: '物料分类编码', dataIndex: 'Code', width: '15%' },
+  { title: '备注', dataIndex: 'Remark' },
+  { title: '操作', dataIndex: 'action', width: '15%', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
@@ -113,7 +82,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/PB/PB_MaterialType/GetDataList', {
+        .post('/PB/PB_MaterialType/GetTreeDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
