@@ -47,11 +47,13 @@ export default {
     },
     handleSwitch(storage) {
       if (this.curStorage !== storage) {
-        this.curStorage.IsDefault = false
-        storage.IsDefault = true
         this.$http.post('/Base/Base_UserStor/SwitchStorage', { id: storage.Id })
           .then(resJson => {
-            this.getListData()
+            if (resJson.Success) {
+              this.curStorage.IsDefault = false
+              storage.IsDefault = true
+            }
+            //this.getListData()
           })
       }
     }

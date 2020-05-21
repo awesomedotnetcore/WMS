@@ -12,12 +12,14 @@ namespace Coldairarrow.Api.Controllers.Base
     {
         #region DI
 
-        public Base_UserStorController(IBase_UserStorBusiness base_UserStorBus)
+        public Base_UserStorController(IBase_UserStorBusiness base_UserStorBus,IOperator @operator)
         {
             _base_UserStorBus = base_UserStorBus;
+            _Operator = @operator;
         }
 
         IBase_UserStorBusiness _base_UserStorBus { get; }
+        IOperator _Operator { get; }
 
         #endregion
 
@@ -36,9 +38,9 @@ namespace Coldairarrow.Api.Controllers.Base
         }
 
         [HttpGet]
-        public async Task<List<Entity.PB.PB_Storage>> GetStorage()
+        public async Task<List<Business.PB.PB_StorageDTO>> GetStorage()
         {
-            return await _base_UserStorBus.GetStorage();
+            return await _base_UserStorBus.GetStorage(_Operator.UserId);
         }
         #endregion
 
@@ -47,10 +49,11 @@ namespace Coldairarrow.Api.Controllers.Base
         [HttpPost]
         public async Task SaveData(Base_UserStor data)
         {
+            if (data.IsDefault)
+                await _base_UserStorBus.UpdateDefault(_Operator.UserId);
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
-
                 await _base_UserStorBus.AddDataAsync(data);
             }
             else
@@ -68,7 +71,7 @@ namespace Coldairarrow.Api.Controllers.Base
         [HttpPost]
         public async Task SwitchStorage(IdInputDTO input)
         {
-            await _base_UserStorBus.SwitchDefault(input.id);
+            await _base_UserStorBus.SwitchDefault(_Operator.UserId, input.id);
         }
         #endregion
     }

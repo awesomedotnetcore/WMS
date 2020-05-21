@@ -3,6 +3,7 @@ using Coldairarrow.Util;
 using EFCore.Sharding;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
+using Quartz.Util;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Coldairarrow.Business.PB
 {
-    public class PB_MaterialTypeBusiness : BaseBusiness<PB_MaterialType>, IPB_MaterialTypeBusiness, ITransientDependency
+    public partial class PB_MaterialTypeBusiness : BaseBusiness<PB_MaterialType>, IPB_MaterialTypeBusiness, ITransientDependency
     {
         public PB_MaterialTypeBusiness(IRepository repository)
             : base(repository)
@@ -43,11 +44,14 @@ namespace Coldairarrow.Business.PB
 
         public async Task AddDataAsync(PB_MaterialType data)
         {
+            await SetPathAsync(data);
             await InsertAsync(data);
         }
 
         public async Task UpdateDataAsync(PB_MaterialType data)
         {
+            await SetPathAsync(data);
+            await ModifyRefDataAsync(data);
             await UpdateAsync(data);
         }
 

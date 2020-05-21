@@ -50,7 +50,7 @@ namespace Coldairarrow.Entity.PB
         /// <summary>
         /// 默认
         /// </summary>
-        public Boolean? IsDefault { get; set; }
+        public Boolean IsDefault { get; set; }
 
         /// <summary>
         /// 备注
