@@ -16,7 +16,7 @@
           <a-input v-model="entity.Name" autocomplete="off" ><a-icon slot="prefix" type="user" /></a-input>
         </a-form-model-item>
         <a-form-model-item label="客户类型" prop="Type">
-          <enum-select code="CustomerType" v-model="entity.Type"></enum-select>
+          <enum-select code="CustomerType" v-model="entity.Type" :allowClear="true"></enum-select>
         </a-form-model-item>
         <a-form-model-item label="电话" prop="Phone">
           <a-input type="tel" v-model="entity.Phone" autocomplete="off"><a-icon slot="prefix" type="phone" /></a-input>
