@@ -2,6 +2,7 @@
 using Coldairarrow.Entity.PB;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -42,16 +43,17 @@ namespace Coldairarrow.Api.Controllers.PB
         [HttpPost]
         public async Task SaveData(PB_AreaMaterial data)
         {
-            if (data.Id.IsNullOrEmpty())
-            {
-                InitEntity(data);
+            throw new Exception();
+            //if (data.Id.IsNullOrEmpty())
+            //{
+            //    InitEntity(data);
 
-                await _pB_AreaMaterialBus.AddDataAsync(data);
-            }
-            else
-            {
-                await _pB_AreaMaterialBus.UpdateDataAsync(data);
-            }
+            //    await _pB_AreaMaterialBus.AddDataAsync(data);
+            //}
+            //else
+            //{
+            //    await _pB_AreaMaterialBus.UpdateDataAsync(data);
+            //}
         }
 
         [HttpPost]
