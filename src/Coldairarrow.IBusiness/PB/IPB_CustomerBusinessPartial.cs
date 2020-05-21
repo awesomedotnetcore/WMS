@@ -9,5 +9,7 @@ namespace Coldairarrow.Business.PB
     public partial interface IPB_CustomerBusiness
     {
         Task<PageResult<PB_Customer>> QueryDataListAsync(PageInput<PBCustomerCoditionDTO> input);
+
+        Task<List<PB_Customer>> QueryAllDataAsync();
     }
 }
