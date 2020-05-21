@@ -9,17 +9,11 @@
   >
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="编号（业务表名称）" prop="Code">
+        <a-form-model-item label="编号" prop="Code">
           <a-input v-model="entity.Code" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="名称" prop="Name">
           <a-input v-model="entity.Name" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="流水号" prop="SeqNum">
-          <a-input v-model="entity.SeqNum" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="当前流水日期" prop="SeqDate">
-          <a-input v-model="entity.SeqDate" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="连接符" prop="JoinChar">
           <a-input v-model="entity.JoinChar" autocomplete="off" />

@@ -1,14 +1,8 @@
 ﻿<template>
-  <a-card :bordered="false">
+  <a-drawer title="条码规则" placement="right" :closable="true" :maskClosable="false" @close="onDrawerClose" :visible="visible" :width="1024" :getContainer="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button
-        type="primary"
-        icon="minus"
-        @click="handleDelete(selectedRowKeys)"
-        :disabled="!hasSelected()"
-        :loading="loading"
-      >删除</a-button>
+      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
 
@@ -16,17 +10,8 @@
       <a-form layout="inline">
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
-            <a-form-item label="查询类别">
-              <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="BarCodeId">BarCodeId</a-select-option>
-                <a-select-option key="Sort">排序</a-select-option>
-                <a-select-option key="Rule">规则</a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
-          <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="关键字" />
+              <enum-select code="BarCodeRuleType" v-model="queryParam.Type"></enum-select>
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -37,18 +22,10 @@
       </a-form>
     </div>
 
-    <a-table
-      ref="table"
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      :bordered="true"
-      size="small"
-    >
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+      <template slot="Type" slot-scope="text">
+        <enum-name code="BarCodeRuleType" :value="text"></enum-name>
+      </template>
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -59,15 +36,15 @@
     </a-table>
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
-  </a-card>
+  </a-drawer>
 </template>
 
 <script>
 import EditForm from './EditForm'
-
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
+import EnumName from '../../../components/BaseEnum/BaseEnumName'
 const columns = [
-  { title: 'BarCodeId', dataIndex: 'BarCodeId', width: '10%' },
-  { title: '类型', dataIndex: 'Type', width: '10%' },
+  { title: '类型', dataIndex: 'Type', scopedSlots: { customRender: 'Type' }, width: '10%' },
   { title: '排序', dataIndex: 'Sort', width: '10%' },
   { title: '规则', dataIndex: 'Rule', width: '10%' },
   { title: '长度', dataIndex: 'length', width: '10%' },
@@ -76,21 +53,24 @@ const columns = [
 
 export default {
   components: {
-    EditForm
+    EditForm,
+    EnumSelect,
+    EnumName
   },
   mounted() {
     this.getDataList()
   },
   data() {
     return {
+      visible: false,
       data: [],
       pagination: {
         current: 1,
         pageSize: 10,
         showTotal: (total, range) => `总数:${total} 当前:${range[0]}-${range[1]}`
       },
-      filters: {},
-      sorter: { field: 'Id', order: 'asc' },
+      filters: { TypeId: '' },
+      sorter: { field: 'Sort', order: 'asc' },
       loading: false,
       columns,
       queryParam: {},
@@ -132,10 +112,10 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm()
+      this.$refs.editForm.openForm(this.filters.TypeId)
     },
     handleEdit(id) {
-      this.$refs.editForm.openForm(id)
+      this.$refs.editForm.openForm(this.filters.TypeId, id)
     },
     handleDelete(ids) {
       var thisObj = this
@@ -157,6 +137,14 @@ export default {
           })
         }
       })
+    },
+    openDrawer(typeId) {
+      this.filters.TypeId = typeId
+      this.visible = true
+      this.getDataList()
+    },
+    onDrawerClose() {
+      this.visible = false
     }
   }
 }

@@ -32,6 +32,7 @@ export default {
     curStorage() {
       var defaultStorage = this.listData.filter((item, index, arr) => { return item.IsDefault })
       if (defaultStorage.length > 0) return defaultStorage[0]
+      if (this.listData.length === 0) return { Name: '', Code: '' }
       return this.listData[0]
     }
   },

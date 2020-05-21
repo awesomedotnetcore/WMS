@@ -20,13 +20,13 @@ namespace Coldairarrow.Entity.PB
         /// <summary>
         /// BarCodeId
         /// </summary>
-        public String BarCodeId { get; set; }
+        public String TypeId { get; set; }
 
         /// <summary>
         /// 类型
         /// 常量 日期 流水号 引用 每日流水号 随机数(GUID) 参数
         /// </summary>
-        public Int32 Type { get; set; }
+        public String Type { get; set; }
 
         /// <summary>
         /// 排序
