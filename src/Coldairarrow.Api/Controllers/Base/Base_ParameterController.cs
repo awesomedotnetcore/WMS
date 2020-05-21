@@ -24,7 +24,7 @@ namespace Coldairarrow.Api.Controllers.Base
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<Base_Parameter>> GetDataList(PageInput<ConditionDTO> input)
+        public async Task<PageResult<Base_Parameter>> GetDataList(PB_ParameterPageInput input)
         {
             return await _base_ParameterBus.GetDataListAsync(input);
         }

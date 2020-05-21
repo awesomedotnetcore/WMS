@@ -15,14 +15,18 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
-          <a-col :md="4" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.Code" placeholder="编码" />
-            </a-form-item>
+          <a-col :md="3" :sm="24">
+            <materialType-select v-model="queryParam.TypeId"></materialType-select>
           </a-col>
-          <a-col :md="4" :sm="24">
+          <a-col :md="3" :sm="24">
+            <customer-select v-model="queryParam.CustomerId"></customer-select>
+          </a-col>
+          <a-col :md="3" :sm="24">
+            <supplier-select v-model="queryParam.SupplierId"></supplier-select>
+          </a-col>         
+          <a-col :md="3" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.Name" placeholder="名称" />
+              <a-input v-model="queryParam.keyword" placeholder="物料名称或编号或条码" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -45,10 +49,6 @@
       :bordered="true"
       size="small"
     >
-    <template slot="Type" slot-scope="text">
-        <enum-name code="SystemType" :value="text"></enum-name>
-     </template>
-
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -64,27 +64,27 @@
 
 <script>
 import EditForm from './EditForm'
-import EnumName from '../../../components/BaseEnum/BaseEnumName'
-
-const filterYesOrNo = (value, row, index) => {
-  if (value) return '是'
-  else return '否'
-}
-
+import CustomerSelect from '../../../components/PB/CustomerSelect'
+import MaterialTypeSelect from '../../../components/PB/MaterialTypeSelect'
+import SupplierSelect from '../../../components/PB/SupplierSelect'
 const columns = [
-  { title: '参数类型', dataIndex: 'Type', width: '15%', scopedSlots: { customRender: 'Type' } },
-  { title: '参数编号', dataIndex: 'Code', width: '15%' },
-  { title: '参数名称', dataIndex: 'Name', width: '15%' },
-  { title: '参数值', dataIndex: 'Val', width: '10%' },
-  { title: '描述', dataIndex: 'Remarks', width: '20%' },
-  { title: '是否系统必须', dataIndex: 'IsSystem', width: '10%' , customRender: filterYesOrNo},
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+  { title: '物料名称', dataIndex: 'Name', width: '15%' },
+  { title: '物料编码', dataIndex: 'Code', width: '10%' },
+  { title: '条码', dataIndex: 'BarCode', width: '10%' },
+  { title: '物料简称', dataIndex: 'SimpleName', width: '10%' },
+  { title: '物料规格', dataIndex: 'Spec', width: '10%' },
+  { title: '上限数量', dataIndex: 'Max', width: '8%' },
+  { title: '下限数量', dataIndex: 'Min', width: '8%' },
+  { title: '备注', dataIndex: 'Remarks' },
+  { title: '操作', dataIndex: 'action', width: '10%', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
     EditForm,
-    EnumName, 
+    CustomerSelect,
+    MaterialTypeSelect,
+    SupplierSelect
   },
   mounted() {
     this.getDataList()
@@ -117,7 +117,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/Base/Base_Parameter/GetDataList', {
+        .post('/PB/PB_Material/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
@@ -151,7 +151,7 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/Base/Base_Parameter/DeleteData', ids).then(resJson => {
+            thisObj.$http.post('/PB/PB_Material/DeleteData', ids).then(resJson => {
               resolve()
 
               if (resJson.Success) {

@@ -7,10 +7,19 @@ namespace Coldairarrow.Business.Base
 {
     public interface IBase_ParameterBusiness
     {
-        Task<PageResult<Base_Parameter>> GetDataListAsync(PageInput<ConditionDTO> input);
+        Task<PageResult<Base_Parameter>> GetDataListAsync(PB_ParameterPageInput input);
         Task<Base_Parameter> GetTheDataAsync(string id);
         Task AddDataAsync(Base_Parameter data);
         Task UpdateDataAsync(Base_Parameter data);
         Task DeleteDataAsync(List<string> ids);
+    }
+    public class PB_ParameterQM
+    {
+        public string Name { get; set; }
+        public string Code { get; set; }
+    }
+    public class PB_ParameterPageInput : PageInput<PB_ParameterQM>
+    {
+        public string Id { get; set; }
     }
 }

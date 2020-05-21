@@ -89,11 +89,6 @@ import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import LanewayList from '../PB_Laneway/List'
 import RackList from '../PB_Rack/List'
 
-const filterYesOrNo = (value, row, index) => {
-  if (value) return '是'
-  else return '否'
-}
-
 const columns = [
   { title: '仓库编号', dataIndex: 'Code', width: '10%' },
   { title: '仓库名称', dataIndex: 'Name', width: '10%' },

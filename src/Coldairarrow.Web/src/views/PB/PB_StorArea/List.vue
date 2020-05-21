@@ -24,7 +24,7 @@
             <a-form-item>
               <a-input v-model="queryParam.Name" placeholder="名称" />
             </a-form-item>
-          </a-col>
+          </a-col> 
           <a-col :md="6" :sm="24">
             <a-button type="primary" @click="getDataList">查询</a-button>
             <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
@@ -45,10 +45,6 @@
       :bordered="true"
       size="small"
     >
-    <template slot="Type" slot-scope="text">
-        <enum-name code="SystemType" :value="text"></enum-name>
-     </template>
-
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -64,27 +60,18 @@
 
 <script>
 import EditForm from './EditForm'
-import EnumName from '../../../components/BaseEnum/BaseEnumName'
-
-const filterYesOrNo = (value, row, index) => {
-  if (value) return '是'
-  else return '否'
-}
 
 const columns = [
-  { title: '参数类型', dataIndex: 'Type', width: '15%', scopedSlots: { customRender: 'Type' } },
-  { title: '参数编号', dataIndex: 'Code', width: '15%' },
-  { title: '参数名称', dataIndex: 'Name', width: '15%' },
-  { title: '参数值', dataIndex: 'Val', width: '10%' },
-  { title: '描述', dataIndex: 'Remarks', width: '20%' },
-  { title: '是否系统必须', dataIndex: 'IsSystem', width: '10%' , customRender: filterYesOrNo},
+  { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
+  { title: '货区编号', dataIndex: 'Code', width: '10%' },
+  { title: '货区名称', dataIndex: 'Name', width: '10%' },
+  { title: '是否缓存区', dataIndex: 'IsCache', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
-    EditForm,
-    EnumName, 
+    EditForm
   },
   mounted() {
     this.getDataList()
@@ -117,7 +104,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/Base/Base_Parameter/GetDataList', {
+        .post('/PB/PB_StorArea/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
@@ -151,7 +138,7 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/Base/Base_Parameter/DeleteData', ids).then(resJson => {
+            thisObj.$http.post('/PB/PB_StorArea/DeleteData', ids).then(resJson => {
               resolve()
 
               if (resJson.Success) {
