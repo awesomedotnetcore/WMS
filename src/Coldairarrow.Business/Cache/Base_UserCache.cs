@@ -29,7 +29,10 @@ namespace Coldairarrow.Business.Cache
             };
             var list = await _serviceProvider.GetService<IBase_UserBusiness>().GetDataListAsync(input);
 
-            return list.Data.FirstOrDefault();
+            var result = list.Data.FirstOrDefault();
+            var userStorSvc = _serviceProvider.GetRequiredService<Base.IBase_UserStorBusiness>();
+            result.DefaultStorageId = await userStorSvc.GetDefaultStorageId(key);
+            return result;
         }
     }
 }
