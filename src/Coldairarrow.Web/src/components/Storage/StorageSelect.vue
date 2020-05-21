@@ -21,10 +21,10 @@ export default {
   },
   mounted() {
     this.curValue = this.value
-    this.getEnumItem()
+    this.getListData()
   },
   methods: {
-    getEnumItem() {
+    getListData() {
       this.$http.get('/Base/Base_UserStor/GetStorage')
         .then(resJson => {
           this.listData = resJson.Data

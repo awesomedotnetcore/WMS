@@ -14,10 +14,21 @@ namespace Coldairarrow.Business.Base
         Task DeleteDataAsync(List<string> ids);
 
         /// <summary>
+        /// 修改默认为False
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task UpdateDefault(string userId);
+        /// <summary>
         /// 获取当前用户有权限的仓库
         /// </summary>
         /// <returns></returns>
-        Task<List<Entity.PB.PB_Storage>> GetStorage();
+        Task<List<PB.PB_StorageDTO>> GetStorage(string userId);
+
+
+        Task SwitchDefault(string userId, string storageId);
+
+        Task<string> GetDefaultStorageId(string userId);
     }
     public class Base_UserStorQM
     {

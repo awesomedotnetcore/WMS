@@ -9,23 +9,21 @@
   >
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="物料分类名称" prop="Name">
-          <a-input v-model="entity.Name" autocomplete="off" />
-        </a-form-model-item>
+        <a-form-model-item label="上级物料分类" prop="ParentId">
+          <a-tree-select style="width: 300px" allowClear 
+            :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }" 
+            :treeData="ParentIdTreeData" 
+            placeholder="请选择上级物料分类" 
+            treeDefaultExpandAll v-model="entity.ParentId"></a-tree-select>
+        </a-form-model-item>        
         <a-form-model-item label="物料分类编码" prop="Code">
-          <a-input v-model="entity.Code" autocomplete="off" />
+          <a-input v-model="entity.Code" autocomplete="off"><a-icon slot="prefix" type="scan" /></a-input>
         </a-form-model-item>
-        <a-form-model-item label="父节点物料分类ID" prop="ParentId">
-          <a-input v-model="entity.ParentId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="是否是叶节点" prop="IsLeaf">
-          <a-input v-model="entity.IsLeaf" autocomplete="off" />
+        <a-form-model-item label="物料分类名称" prop="Name">
+          <a-input v-model="entity.Name" autocomplete="off"><a-icon slot="prefix" type="paper-clip" /></a-input>
         </a-form-model-item>
         <a-form-model-item label="备注" prop="Remarks">
-          <a-input v-model="entity.Remarks" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="Path" prop="Path">
-          <a-input v-model="entity.Path" autocomplete="off" />
+          <a-textarea v-model="entity.Remarks" autocomplete="off"></a-textarea>
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -47,11 +45,17 @@ export default {
       loading: false,
       entity: {},
       rules: {},
-      title: ''
+      title: '',
+      ParentIdTreeData: []
     }
   },
   methods: {
     init() {
+      this.$http.post('/PB/PB_MaterialType/GetTreeDataList').then(resJson => {
+        if (resJson.Success) {
+          this.ParentIdTreeData = resJson.Data
+        }
+      })
       this.visible = true
       this.entity = {}
       this.$nextTick(() => {

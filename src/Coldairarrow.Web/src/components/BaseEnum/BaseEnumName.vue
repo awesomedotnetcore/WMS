@@ -46,8 +46,7 @@ export default {
             localStorage.setItem(expKey, moment().minute(15).toJSON())
           })
       } else {
-        var listData = JSON.parse(enumJson)
-        this.enumItem = listData
+        this.enumItem = JSON.parse(enumJson)
       }
     }
   }

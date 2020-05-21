@@ -11,9 +11,15 @@ namespace Coldairarrow.Api.Controllers.PB
     public partial class PB_CustomerController
     {
         [HttpPost]
-        public async Task<PageResult<PB_Customer>> QueryDataListAsync(PageInput<PBCustomerCoditionDTO> input)
+        public async Task<PageResult<PB_Customer>> QueryDataList(PageInput<PBCustomerCoditionDTO> input)
         {
             return await _pB_CustomerBus.QueryDataListAsync(input);
+        }
+
+        [HttpPost]
+        public async Task<List<PB_Customer>> QueryAllData()
+        {
+            return await _pB_CustomerBus.QueryAllDataAsync();
         }
     }
 }

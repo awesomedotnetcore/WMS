@@ -9,21 +9,16 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
-          <!-- <a-col :md="4" :sm="24">
-            <a-form-item label="查询类别">
-              <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="Code">仓库编号</a-select-option>
-                <a-select-option key="Name">仓库名称</a-select-option>
-                <a-select-option key="Type">仓库类型</a-select-option>
-                <a-select-option key="Remarks">备注</a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col> -->
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="关键字" />
+              <a-input v-model="queryParam.Code" placeholder="编码" />
             </a-form-item>
           </a-col>
+          <a-col :md="4" :sm="24">
+            <a-form-item>
+              <a-input v-model="queryParam.Name" placeholder="名称" />
+            </a-form-item>
+          </a-col> 
           <a-col :md="6" :sm="24">
             <a-button type="primary" @click="getDataList">查询</a-button>
             <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
@@ -35,6 +30,11 @@
     <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
       <template slot="Type" slot-scope="text">
         <enum-name code="StorageType" :value="text"></enum-name>
+      </template>
+
+      <template  slot="IsDefault" slot-scope="text, record" >
+        <a-radio  :checked="text" @click="handleDefault(record,'IsDefault',true)">
+        </a-radio>
       </template>
 
       <span slot="IsTray" slot-scope="text, record">    
@@ -64,7 +64,6 @@
         </template>
       </span>
 
-
       <span slot="action" slot-scope="text, record">
         <template>
           <a  @click="handleEdit(record.Id)">编辑</a>
@@ -90,11 +89,6 @@ import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import LanewayList from '../PB_Laneway/List'
 import RackList from '../PB_Rack/List'
 
-const filterYesOrNo = (value, row, index) => {
-  if (value) return '是'
-  else return '否'
-}
-
 const columns = [
   { title: '仓库编号', dataIndex: 'Code', width: '10%' },
   { title: '仓库名称', dataIndex: 'Name', width: '10%' },
@@ -102,7 +96,8 @@ const columns = [
   { title: '托盘管理', dataIndex: 'IsTray', width: '10%' , scopedSlots: { customRender: 'IsTray' }},
   { title: '托盘分区管理', dataIndex: 'IsZone', width: '10%' , scopedSlots: { customRender: 'IsZone' }},
   { title: '仓库状态', dataIndex: 'disable', width: '10%' , scopedSlots: { customRender: 'disable' }},
-  { title: '默认仓库', dataIndex: 'IsDefault', width: '8%'  , customRender: filterYesOrNo},
+  //{ title: '默认仓库', dataIndex: 'IsDefault', width: '8%'  , customRender: filterYesOrNo},
+  { title: '默认仓库', dataIndex: 'IsDefault', width: '8%' , scopedSlots: { customRender: 'IsDefault' }},
   { title: '备注', dataIndex: 'Remarks', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
@@ -119,6 +114,7 @@ export default {
   },
   data() {
     return {
+      value: 1,
       data: [],
       pagination: {
         current: 1,
@@ -220,7 +216,28 @@ export default {
     },
     openRackList(value) {
       this.$refs.rackList.openDrawer(value)
-    }
+    },   
+    handleDefault(Storage,prop, enable) {
+      var thisObj = this
+      var entity = { ...Storage}
+      entity[prop] = enable   
+      this.$confirm({
+        title: '确认将此仓库设置为默认仓库吗?',
+        onOk() {
+          return new Promise((resolve, reject) => {
+            thisObj.$http.post('/PB/PB_Storage/SaveDataDefault', entity).then(resJson => {
+              resolve()
+              if (resJson.Success) {
+                thisObj.$message.success('操作成功!')
+                thisObj.getDataList()
+              } else {
+                thisObj.$message.error(resJson.Msg)
+              }
+            })
+          })
+        }
+      })
+    },
   }
 }
 </script>

@@ -45,12 +45,12 @@ namespace Coldairarrow.Entity.PB
         /// <summary>
         /// 启用：0  禁用：1启用
         /// </summary>
-        public Boolean disable { get; set; }
+        public Boolean Disable { get; set; }
 
         /// <summary>
         /// 默认
         /// </summary>
-        public Boolean? IsDefault { get; set; }
+        public Boolean IsDefault { get; set; }
 
         /// <summary>
         /// 备注

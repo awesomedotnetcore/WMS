@@ -9,6 +9,7 @@
           <a-icon v-if="device==='mobile'" class="trigger" :type="collapsed ? 'menu-fold' : 'menu-unfold'" @click="toggle"/>
           <a-icon v-else class="trigger" :type="collapsed ? 'menu-unfold' : 'menu-fold'" @click="toggle"/>
           <user-menu></user-menu>
+          <storage-switch></storage-switch>
         </div>
         <div v-else :class="['top-nav-header-index', theme]">
           <div class="header-index-wide">
@@ -17,6 +18,7 @@
               <s-menu v-if="device !== 'mobile'" mode="horizontal" :menu="menus" :theme="theme" />
               <a-icon v-else class="trigger" :type="collapsed ? 'menu-fold' : 'menu-unfold'" @click="toggle" />
             </div>
+            <storage-switch class="header-index-right"></storage-switch>
             <user-menu class="header-index-right"></user-menu>
           </div>
         </div>
@@ -27,6 +29,7 @@
 
 <script>
 import UserMenu from '../tools/UserMenu'
+import StorageSwitch from '../Storage/StorageSwitch'
 import SMenu from '../Menu/'
 import Logo from '../tools/Logo'
 import { mixin } from '@/utils/mixin'
@@ -36,7 +39,8 @@ export default {
   components: {
     UserMenu,
     SMenu,
-    Logo
+    Logo,
+    StorageSwitch
   },
   mixins: [mixin],
   props: {

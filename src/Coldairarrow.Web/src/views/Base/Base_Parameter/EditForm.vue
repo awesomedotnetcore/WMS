@@ -10,7 +10,8 @@
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
         <a-form-model-item label="参数类型" prop="Type">
-          <a-input v-model="entity.Type" autocomplete="off" />
+          <enum-select code="SystemType" v-model="entity.Type" >             
+          </enum-select>
         </a-form-model-item>
         <a-form-model-item label="参数编号" prop="Code">
           <a-input v-model="entity.Code" autocomplete="off" />
@@ -20,12 +21,16 @@
         </a-form-model-item>
         <a-form-model-item label="参数值" prop="Val">
           <a-input v-model="entity.Val" autocomplete="off" />
+        </a-form-model-item>        
+        <a-form-model-item label="是否系统必须" prop="IsSystem">
+          <!-- <a-input v-model="entity.IsSystem" autocomplete="off" /> -->
+          <a-select v-model="entity.IsSystem" autocomplete="off" @select="DataTypeChange">
+            <a-select-option :value="false" >否</a-select-option>
+            <a-select-option :value="true" >是</a-select-option>
+          </a-select>
         </a-form-model-item>
         <a-form-model-item label="描述" prop="Remarks">
-          <a-input v-model="entity.Remarks" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="是否系统必须" prop="IsSystem">
-          <a-input v-model="entity.IsSystem" autocomplete="off" />
+          <a-textarea v-model="entity.Remarks" autocomplete="off" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -33,7 +38,12 @@
 </template>
 
 <script>
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
+
 export default {
+  components: {
+    EnumSelect
+  },
   props: {
     parentObj: Object
   },
@@ -89,6 +99,9 @@ export default {
           }
         })
       })
+    },
+    DataTypeChange(val, option) {
+      this.DataType = val
     }
   }
 }

@@ -24,7 +24,7 @@ namespace Coldairarrow.Api.Controllers.PB
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<PB_Storage>> GetDataList(PageInput<ConditionDTO> input)
+        public async Task<PageResult<PB_Storage>> GetDataList(PB_StoragePageInput input)
         {
             return await _PB_StorageBus.GetDataListAsync(input);
         }
@@ -52,6 +52,15 @@ namespace Coldairarrow.Api.Controllers.PB
             {
                 await _PB_StorageBus.UpdateDataAsync(data);
             }
+        }
+
+        /// <summary>
+        /// 更新默认仓库
+        /// </summary>
+        [HttpPost]
+        public async Task SaveDataDefault(PB_Storage data)
+        {
+            await _PB_StorageBus.ModifyDefaultAsync(data);
         }
 
         [HttpPost]

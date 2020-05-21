@@ -19,10 +19,8 @@ namespace Coldairarrow.Business.PB
 
         #region 外部接口
 
-        //public async Task<PageResult<PB_Laneway>> GetDataListAsync(PageInput<PB_LanewayQM> input)
         public async Task<PageResult<PB_Laneway>> GetDataListAsync(PB_LanewayPageInput input)
         {
-            //var q = GetIQueryable();
             var q = GetIQueryable().Where(w => w.StorId == input.StorId);
             var where = LinqHelper.True<PB_Laneway>();
             var search = input.Search;

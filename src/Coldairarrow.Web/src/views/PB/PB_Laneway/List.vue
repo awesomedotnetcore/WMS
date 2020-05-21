@@ -18,14 +18,14 @@
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.Name" placeholder="名称" />
+              <a-input v-model="queryParam.Code" placeholder="编码" />
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.Code" placeholder="编码" />
+              <a-input v-model="queryParam.Name" placeholder="名称" />
             </a-form-item>
-          </a-col>
+          </a-col>          
           <a-col :md="6" :sm="24">
             <a-button type="primary" @click="getDataList">查询</a-button>
             <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
@@ -69,7 +69,7 @@ import EditForm from './EditForm'
 // import StorageSelect from '../../../components/Storage/StorageSelect' 
 
 const columns = [
-  { title: '所属仓库', dataIndex: 'StorId', width: '10%' },
+  // { title: '所属仓库', dataIndex: 'StorId', width: '10%' },
   { title: '巷道编号', dataIndex: 'Code', width: '10%' },
   { title: '巷道名称', dataIndex: 'Name', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }

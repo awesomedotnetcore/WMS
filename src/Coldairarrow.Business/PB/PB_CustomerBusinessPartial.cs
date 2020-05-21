@@ -32,5 +32,13 @@ namespace Coldairarrow.Business.PB
 
             return await q.Where(where).GetPageResultAsync(input);
         }
+
+        public async Task<List<PB_Customer>> QueryAllDataAsync()
+        {
+            var q = GetIQueryable();
+            var where = LinqHelper.True<PB_Customer>();
+
+            return await q.Where(where).ToListAsync();
+        }
     }
 }

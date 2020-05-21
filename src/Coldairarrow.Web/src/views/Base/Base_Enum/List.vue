@@ -52,10 +52,10 @@ const filterYesOrNo = (value, row, index) => {
   else return '否'
 }
 const columns = [
-  { title: '编号', dataIndex: 'Code', width: '10%' },
-  { title: '名称', dataIndex: 'Name', width: '10%' },
+  { title: '编号', dataIndex: 'Code', width: '20%' },
+  { title: '名称', dataIndex: 'Name', width: '20%' },
   { title: '系统必须', dataIndex: 'IsSystem', customRender: filterYesOrNo, width: '10%' },
-  { title: '备注', dataIndex: 'Remarks', width: '10%' },
+  { title: '备注', dataIndex: 'Remarks', width: '20%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
