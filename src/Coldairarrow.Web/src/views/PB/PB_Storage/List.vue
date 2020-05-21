@@ -32,6 +32,11 @@
         <enum-name code="StorageType" :value="text"></enum-name>
       </template>
 
+      <template  slot="IsDefault" slot-scope="text, record" >
+        <a-radio  :checked="text" @click="handleDefault(record,'IsDefault',true)">
+        </a-radio>
+      </template>
+
       <span slot="IsTray" slot-scope="text, record">    
         <template>
         <a-button :type="record.IsTray?'primary':'default'">
@@ -58,38 +63,6 @@
         </a-button>
         </template>
       </span>
-
-      <!-- <template slot="IsDefault"> 
-      <a-radio-group :name="record.IsDefault" v-model="value" @change="onChange">
-            <a-radio :style="radioStyle" :value="1">
-              Option A
-            </a-radio>
-            </a-radio-group> 
-      </template>  -->
-
-      <span slot="IsDefault" slot-scope="text, record">    
-        <template>
-        <!-- <a-radio :type="record.IsDefault?'primary':'IsDefault'">
-          <a v-if="record.IsDefault" @click="handleEnable(record,'IsDefault',false)">启用</a>
-          <a v-else @click="handleEnable(record,'IsDefault',true)">停用</a>
-        </a-radio> -->
-
-            
-
-          <!-- <a-radio-group v-model="value" @change="onChange">
-            <a-radio :style="radioStyle" :value="1">
-              Option A
-            </a-radio>
-          </a-radio-group> -->
-
-
-        <a-button :type="record.IsDefault?'primary':'default'">
-        <a v-if="record.IsDefault" @click="handleEnable(record,'IsDefault',false)">启用</a>
-        <a v-else @click="handleEnable(record,'IsDefault',true)">停用</a>
-        </a-button>
-        </template>
-      </span>
-
 
       <span slot="action" slot-scope="text, record">
         <template>
@@ -248,9 +221,27 @@ export default {
     },
     openRackList(value) {
       this.$refs.rackList.openDrawer(value)
-    },
-    onChange(e) {
-      console.log('radio checked', e.target.value);
+    },   
+    handleDefault(Storage,prop, enable) {
+      var thisObj = this
+      var entity = { ...Storage}
+      entity[prop] = enable   
+      this.$confirm({
+        title: '确认将此仓库设置为默认仓库吗?',
+        onOk() {
+          return new Promise((resolve, reject) => {
+            thisObj.$http.post('/PB/PB_Storage/SaveDataDefault', entity).then(resJson => {
+              resolve()
+              if (resJson.Success) {
+                thisObj.$message.success('操作成功!')
+                thisObj.getDataList()
+              } else {
+                thisObj.$message.error(resJson.Msg)
+              }
+            })
+          })
+        }
+      })
     },
   }
 }

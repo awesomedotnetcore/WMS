@@ -54,6 +54,15 @@ namespace Coldairarrow.Api.Controllers.PB
             }
         }
 
+        /// <summary>
+        /// 更新默认仓库
+        /// </summary>
+        [HttpPost]
+        public async Task SaveDataDefault(PB_Storage data)
+        {
+            await _PB_StorageBus.ModifyDefaultAsync(data);
+        }
+
         [HttpPost]
         public async Task DeleteData(List<string> ids)
         {

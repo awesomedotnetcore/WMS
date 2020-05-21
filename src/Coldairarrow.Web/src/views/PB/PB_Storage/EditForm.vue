@@ -16,12 +16,11 @@
           <a-input v-model="entity.Name" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="仓库类型" prop="Type">
-          <enum-select code="StorageType" v-model="entity.Type" > 
-            
+          <enum-select code="StorageType" v-model="entity.Type" >             
           </enum-select>
         </a-form-model-item>
         <a-form-model-item label="默认仓库:" prop="IsDefault">
-          <a-select v-model="entity.IsDefault" autocomplete="off" @select="DataTypeChange" >
+          <a-select v-model="entity.IsDefault" autocomplete="off" @select="DataTypeChange" disabled>
             <a-select-option :value="false" >否</a-select-option>
             <a-select-option :value="true" >是</a-select-option>
           </a-select>
