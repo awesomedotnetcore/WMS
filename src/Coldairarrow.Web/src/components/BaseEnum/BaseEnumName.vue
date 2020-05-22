@@ -1,10 +1,9 @@
 <template>
   <div class="editable-cell">
-    <div class="editable-cell-text-wrapper">{{ enumName || ' ' }}</div>
+    <div class="editable-cell-text-wrapper">{{ enumName }}</div>
   </div>
 </template>
 <script>
-import moment from 'moment'
 export default {
   props: {
     code: { type: String, required: true },
@@ -12,41 +11,37 @@ export default {
   },
   data() {
     return {
-      enumItem: []
+      enumData: {}
     }
   },
   watch: {
     code(code) {
-      this.getEnumItem()
+      this.getEnum()
     }
   },
   mounted() {
-    this.getEnumItem()
+    this.getEnum()
   },
   computed: {
     enumName: function () {
-      var search = this.enumItem.filter((item, index, arr) => { return item.Value === this.value })
+      var search = this.enumData.EnumItems.filter((item, index, arr) => { return item.Value === this.value })
       if (search.length <= 0) return ' '
       else return search[0].Name
     }
   },
   methods: {
-    moment,
-    getEnumItem() {
-      var storageKey = 'EnumItem_' + this.code
+    getEnum() {
+      var storageKey = 'Enum_' + this.code
       var enumJson = localStorage.getItem(storageKey)
-      var expKey = 'EnumItemExp_' + this.code
-      var expValue = localStorage.getItem(expKey)
-      if (enumJson === null || enumJson === '' || this.moment(expValue).isAfter(moment())) {
-        this.$http.get('/Base/Base_EnumItem/GetListByCode?code=' + this.code)
+      if (enumJson === null || enumJson === '') {
+        this.$http.get('/Base/Base_Enum/GetByCode?code=' + this.code)
           .then(resJson => {
-            this.enumItem = resJson.Data
+            this.enumData = resJson.Data
             enumJson = JSON.stringify(resJson.Data)
             localStorage.setItem(storageKey, enumJson)
-            localStorage.setItem(expKey, moment().minute(15).toJSON())
           })
       } else {
-        this.enumItem = JSON.parse(enumJson)
+        this.enumData = JSON.parse(enumJson)
       }
     }
   }
