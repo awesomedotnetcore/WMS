@@ -35,6 +35,19 @@ namespace Coldairarrow.Api.Controllers.PB
             return await _pB_TrayBus.GetTheDataAsync(input.id);
         }
 
+
+        [HttpPost]
+        public async Task EnableTheData(IdInputDTO input)
+        {
+            await _pB_TrayBus.EnableTheData(input.id);
+        }
+
+
+        [HttpPost]
+        public async Task DisableTheData(IdInputDTO input)
+        {
+            await _pB_TrayBus.DisableTheData(input.id);
+        }
         #endregion
 
         #region 提交

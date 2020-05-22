@@ -9,24 +9,26 @@
   >
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="货位" prop="LocalId">
-          <a-select v-model="entity.LocalId">
-            <a-select-option v-for="item in this.LocationList" :key="item.Id">{{item.Name}}</a-select-option>
-          </a-select>
+        <a-form-model-item label="客户ID" prop="CusId">
+          <a-input v-model="entity.CusId" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="托盘号" prop="Code">
+        <a-form-model-item label="供应商ID" prop="SupId">
+          <a-input v-model="entity.SupId" autocomplete="off" />
+        </a-form-model-item>
+        <a-form-model-item label="电话/投料点编号" prop="Code">
           <a-input v-model="entity.Code" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="托盘名称" prop="Name">
+        <a-form-model-item label="联系人/投料点名称" prop="Name">
           <a-input v-model="entity.Name" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="托盘类型" prop="TrayTypeId">
-          <a-select v-model="entity.TrayTypeId">
-            <a-select-option v-for="item in this.TrayTypeList" :key="item.Id">{{item.Name}}</a-select-option>
-          </a-select>
+        <a-form-model-item label="地址" prop="Address">
+          <a-input v-model="entity.Address" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="启用日期" prop="StartTime">
-          <a-input v-model="entity.StartTime" autocomplete="off" />
+        <a-form-model-item label="是否启用 " prop="IsEnable">
+          <a-input v-model="entity.IsEnable" autocomplete="off" />
+        </a-form-model-item>
+        <a-form-model-item label="是否默认" prop="IsDefault">
+          <a-input v-model="entity.IsDefault" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="备注" prop="Remarks">
           <a-input v-model="entity.Remarks" autocomplete="off" />
@@ -51,17 +53,13 @@ export default {
       loading: false,
       entity: {},
       rules: {},
-      title: '',
-      LocationList: [],
-      TrayTypeList: []
+      title: ''
     }
   },
   methods: {
     init() {
       this.visible = true
       this.entity = {}
-      this.LocationList = []
-      this.TrayTypeList = []
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })
@@ -69,18 +67,13 @@ export default {
     openForm(id, title) {
       this.init()
 
-      this.getLocationList()
-      this.getTrayTypeList()
-
       if (id) {
         this.loading = true
-        this.$http.post('/PB/PB_Tray/GetTheData', { id: id }).then(resJson => {
+        this.$http.post('/PB/PB_Address/GetTheData', { id: id }).then(resJson => {
           this.loading = false
 
           this.entity = resJson.Data
         })
-      } else {
-        this.entity.Status = 1
       }
     },
     handleSubmit() {
@@ -89,7 +82,7 @@ export default {
           return
         }
         this.loading = true
-        this.$http.post('/PB/PB_Tray/SaveData', this.entity).then(resJson => {
+        this.$http.post('/PB/PB_Address/SaveData', this.entity).then(resJson => {
           this.loading = false
 
           if (resJson.Success) {
@@ -101,22 +94,6 @@ export default {
             this.$message.error(resJson.Msg)
           }
         })
-      })
-    },
-    getLocationList() {
-      var thisObj = this
-      this.loading = true
-      this.$http.post('/PB/PB_Location/GetAllData').then(resJson => {
-        this.loading = false
-        thisObj.LocationList = resJson.Data
-      })
-    },
-    getTrayTypeList() {
-      var thisObj = this
-      this.loading = true
-      this.$http.post('/PB/PB_TrayType/GetAllData').then(resJson => {
-        this.loading = false
-        thisObj.TrayTypeList = resJson.Data
       })
     }
   }
