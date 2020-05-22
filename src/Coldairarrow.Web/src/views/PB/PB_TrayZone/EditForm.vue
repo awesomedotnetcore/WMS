@@ -9,9 +9,6 @@
   >
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="托盘类型ID" prop="TrayTypeId">
-          <a-input v-model="entity.TrayTypeId" autocomplete="off" />
-        </a-form-model-item>
         <a-form-model-item label="托盘分区编号" prop="Code">
           <a-input v-model="entity.Code" autocomplete="off" />
         </a-form-model-item>
@@ -25,7 +22,10 @@
           <a-input v-model="entity.Y" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="是否默认托盘分区" prop="IsDefault">
-          <a-input v-model="entity.IsDefault" autocomplete="off" />
+          <a-select v-model="entity.IsDefault">
+            <a-select-option :key="true">是</a-select-option>
+            <a-select-option :key="false">否</a-select-option>
+          </a-select>
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -58,7 +58,7 @@ export default {
         this.$refs['form'].clearValidate()
       })
     },
-    openForm(id, title) {
+    openForm(typeId, id, title) {
       this.init()
 
       if (id) {
@@ -68,6 +68,8 @@ export default {
 
           this.entity = resJson.Data
         })
+      } else {
+        this.entity.TrayTypeId = typeId
       }
     },
     handleSubmit() {

@@ -22,18 +22,16 @@ namespace Coldairarrow.Business.PB
         public async Task<PageResult<PB_Tray>> GetDataListAsync(PageInput<ConditionDTO> input)
         {
             var q = GetIQueryable();
-            var where = LinqHelper.True<PB_Tray>();
             var search = input.Search;
+            q = q.Include(i => i.PB_TrayType).Include(i => i.PB_Location);
 
             //筛选
-            if (!search.Condition.IsNullOrEmpty() && !search.Keyword.IsNullOrEmpty())
+            if (!search.Keyword.IsNullOrEmpty())
             {
-                var newWhere = DynamicExpressionParser.ParseLambda<PB_Tray, bool>(
-                    ParsingConfig.Default, false, $@"{search.Condition}.Contains(@0)", search.Keyword);
-                where = where.And(newWhere);
+                q = q.Where(w => w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
             }
 
-            return await q.Where(where).GetPageResultAsync(input);
+            return await q.GetPageResultAsync(input);
         }
 
         public async Task<PB_Tray> GetTheDataAsync(string id)

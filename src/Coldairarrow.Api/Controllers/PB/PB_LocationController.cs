@@ -30,6 +30,12 @@ namespace Coldairarrow.Api.Controllers.PB
         }
 
         [HttpPost]
+        public async Task<List<PB_Location>> GetAllData()
+        {
+            return await _pB_LocationBus.GetDataListAsync();
+        }
+
+        [HttpPost]
         public async Task<PB_Location> GetTheData(IdInputDTO input)
         {
             return await _pB_LocationBus.GetTheDataAsync(input.id);

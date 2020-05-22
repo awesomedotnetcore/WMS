@@ -1,19 +1,9 @@
 ﻿<template>
-  <a-modal
-    :title="title"
-    width="40%"
-    :visible="visible"
-    :confirmLoading="loading"
-    @ok="handleSubmit"
-    @cancel="()=>{this.visible=false}"
-  >
+  <a-modal :title="title" width="40%" :visible="visible" :confirmLoading="loading" @ok="handleSubmit" @cancel="()=>{this.visible=false}">
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="BarCodeId" prop="BarCodeId">
-          <a-input v-model="entity.BarCodeId" autocomplete="off" />
-        </a-form-model-item>
         <a-form-model-item label="类型" prop="Type">
-          <a-input v-model="entity.Type" autocomplete="off" />
+          <enum-select code="BarCodeRuleType" v-model="entity.Type"></enum-select>
         </a-form-model-item>
         <a-form-model-item label="排序" prop="Sort">
           <a-input v-model="entity.Sort" autocomplete="off" />
@@ -30,7 +20,11 @@
 </template>
 
 <script>
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 export default {
+  components: {
+    EnumSelect
+  },
   props: {
     parentObj: Object
   },
@@ -55,9 +49,9 @@ export default {
         this.$refs['form'].clearValidate()
       })
     },
-    openForm(id, title) {
+    openForm(typeId, id, title) {
       this.init()
-
+      this.entity.TypeId = typeId
       if (id) {
         this.loading = true
         this.$http.post('/PB/PB_BarCodeRule/GetTheData', { id: id }).then(resJson => {

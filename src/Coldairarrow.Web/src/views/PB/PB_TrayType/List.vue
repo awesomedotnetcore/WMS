@@ -46,31 +46,38 @@
           <a-divider type="vertical" />
           <a @click="handleDelete([record.Id])">删除</a>
           <a-divider type="vertical" />
-          <a @click="handleDelete([record.Id])">分区管理</a>
+          <a @click="openZoneList(record.Id)">分区管理</a>
         </template>
       </span>
     </a-table>
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
+    <zone-list ref="zoneList" :parentObj="this"></zone-list>
   </a-card>
 </template>
 
 <script>
 import EditForm from './EditForm'
+import ZoneList from '../PB_TrayZone/List'
 
+const filterYesOrNo = (value, row, index) => {
+  if (value) return '是'
+  else return '否'
+}
 const columns = [
   { title: '编号', dataIndex: 'Code', width: '10%' },
   { title: '名称', dataIndex: 'Name', width: '10%' },
   { title: '长', dataIndex: 'Length', width: '10%' },
   { title: '宽', dataIndex: 'Width', width: '10%' },
   { title: '高', dataIndex: 'High', width: '10%' },
-  { title: '是否有分区', dataIndex: 'IsZone', width: '10%' },
+  { title: '是否有分区', dataIndex: 'IsZone', width: '10%', customRender: filterYesOrNo },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
-    EditForm
+    EditForm,
+    ZoneList
   },
   mounted() {
     this.getDataList()
@@ -151,6 +158,9 @@ export default {
           })
         }
       })
+    },
+    openZoneList(typeId) {
+      this.$refs.zoneList.openDrawer(typeId)
     }
   }
 }

@@ -36,6 +36,13 @@ namespace Coldairarrow.Business.PB
             return await q.Where(where).GetPageResultAsync(input);
         }
 
+        public async Task<List<PB_TrayType>> GetDataListAsync()
+        {
+            var q = GetIQueryable();
+
+            return await q.ToListAsync();
+        }
+
         public async Task<PageResult<PB_TrayType>> GetDataListBySearch(PageInput<ConditionDTO> input)
         {
             var q = GetIQueryable();

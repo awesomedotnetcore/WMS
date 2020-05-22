@@ -22,6 +22,9 @@ namespace Coldairarrow.Entity.PB
         /// </summary>
         public String LocalId { get; set; }
 
+        [ForeignKey(nameof(LocalId))]
+        public PB_Location PB_Location { get; set; }
+
         /// <summary>
         /// 托盘号
         /// </summary>
@@ -36,6 +39,9 @@ namespace Coldairarrow.Entity.PB
         /// 托盘类型ID
         /// </summary>
         public String TrayTypeId { get; set; }
+
+        [ForeignKey(nameof(TrayTypeId))]
+        public PB_TrayType PB_TrayType { get; set; }
 
         /// <summary>
         /// 启用日期
