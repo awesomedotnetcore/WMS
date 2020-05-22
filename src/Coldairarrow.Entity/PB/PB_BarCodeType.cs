@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -30,7 +33,7 @@ namespace Coldairarrow.Entity.PB
         /// <summary>
         /// 流水号
         /// </summary>
-        public String SeqNum { get; set; }
+        public int? SeqNum { get; set; }
 
         /// <summary>
         /// 当前流水日期
@@ -57,5 +60,18 @@ namespace Coldairarrow.Entity.PB
         /// </summary>
         public Boolean Deleted { get; set; }
 
+        public List<PB_BarCodeRule> BarCodeRules { get; set; }
+
     }
+
+    //public class Base_EnumEntityTypeConfig : IEntityTypeConfiguration<PB_BarCodeType>
+    //{
+    //    public void Configure(EntityTypeBuilder<PB_BarCodeType> builder)
+    //    {
+    //        builder
+    //        .HasMany(b => b.BarCodeRules)
+    //        .WithOne()
+    //        .HasForeignKey(k => k.TypeId);
+    //    }
+    //}
 }

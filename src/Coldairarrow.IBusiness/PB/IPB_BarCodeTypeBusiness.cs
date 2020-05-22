@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Coldairarrow.Business.PB
 {
-    public interface IPB_BarCodeTypeBusiness
+    public partial interface IPB_BarCodeTypeBusiness
     {
         Task<PageResult<PB_BarCodeType>> GetDataListAsync(PageInput<PB_BarCodeTypeQM> input);
         Task<PB_BarCodeType> GetTheDataAsync(string id);

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -21,6 +23,9 @@ namespace Coldairarrow.Entity.PB
         /// BarCodeId
         /// </summary>
         public String TypeId { get; set; }
+
+        [ForeignKey(nameof(TypeId))]
+        public PB_BarCodeType BarCodeType { get; set; }
 
         /// <summary>
         /// 类型
@@ -59,4 +64,15 @@ namespace Coldairarrow.Entity.PB
         public Boolean Deleted { get; set; }
 
     }
+
+    //public class Base_EnumItemEntityTypeConfig : IEntityTypeConfiguration<PB_BarCodeRule>
+    //{
+    //    public void Configure(EntityTypeBuilder<PB_BarCodeRule> builder)
+    //    {
+    //        builder
+    //        .HasOne(p => p.BarCodeType)
+    //        .WithMany(b => b.BarCodeRules)
+    //        .HasForeignKey(p => p.TypeId);
+    //    }
+    //}
 }
