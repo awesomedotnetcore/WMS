@@ -69,7 +69,6 @@ namespace Coldairarrow.Business.PB
             var q = GetIQueryable();
             var where = LinqHelper.True<PB_Storage>();
 
-
             return await q.Where(where).ToListAsync();
         }
         #endregion

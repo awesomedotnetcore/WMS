@@ -45,6 +45,7 @@
       :bordered="true"
       size="small"
     >
+
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -67,7 +68,7 @@ const filterYesOrNo = (value, row, index) => {
 }
 
 const columns = [
-  { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
+  { title: '仓库', dataIndex: 'PB_Storage.Name', width: '10%' },
   { title: '货区编号', dataIndex: 'Code', width: '10%' },
   { title: '货区名称', dataIndex: 'Name', width: '10%' },
   { title: '是否缓存区', dataIndex: 'IsCache', width: '10%', customRender: filterYesOrNo },

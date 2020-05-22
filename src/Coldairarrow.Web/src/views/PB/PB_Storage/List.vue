@@ -39,10 +39,10 @@
 
       <span slot="IsTray" slot-scope="text, record">    
         <template>
-        <a-button :type="record.IsTray?'primary':'default'">
+        <a-tag :type="record.IsTray?'#FF0000':'#87d068'">
         <a v-if="record.IsTray" @click="handleEnable(record,'IsTray',false)">启用</a>
         <a v-else @click="handleEnable(record,'IsTray',true)">停用</a>
-        </a-button>
+        </a-tag>
         </template>
       </span>
 

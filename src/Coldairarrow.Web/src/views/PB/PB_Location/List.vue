@@ -20,9 +20,9 @@
               <a-select allowClear v-model="queryParam.condition">
                 <a-select-option key="Code">货位编号</a-select-option>
                 <a-select-option key="Name">货位名称</a-select-option>
-                <a-select-option key="Type">库位类型(枚举)</a-select-option>
-                <a-select-option key="StorId">仓库ID</a-select-option>
-                <a-select-option key="AreaId">库区ID</a-select-option>
+                <a-select-option key="Type">库位类型</a-select-option>
+                <a-select-option key="StorId">仓库</a-select-option>
+                <a-select-option key="AreaId">货区</a-select-option>
                 <a-select-option key="LanewayId">巷道ID</a-select-option>
                 <a-select-option key="IdRack">货架ID</a-select-option>
                 <a-select-option key="ErrorCode">故障代码</a-select-option>
@@ -55,6 +55,10 @@
       :bordered="true"
       size="small"
     >
+      <template slot="Type" slot-scope="text">
+        <enum-name code="	LocationType" :value="text"></enum-name>
+      </template>
+
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -70,11 +74,12 @@
 
 <script>
 import EditForm from './EditForm'
+import EnumName from '../../../components/BaseEnum/BaseEnumName'
 
 const columns = [
   { title: '货位编号', dataIndex: 'Code', width: '10%' },
   { title: '货位名称', dataIndex: 'Name', width: '10%' },
-  { title: '库位类型(枚举)', dataIndex: 'Type', width: '10%' },
+  { title: '货位类型', dataIndex: 'Type', width: '10%' , scopedSlots: { customRender: 'Type' } },
   { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
   { title: '库区ID', dataIndex: 'AreaId', width: '10%' },
   { title: '巷道ID', dataIndex: 'LanewayId', width: '10%' },
@@ -89,7 +94,8 @@ const columns = [
 
 export default {
   components: {
-    EditForm
+    EditForm,
+    EnumName, 
   },
   mounted() {
     this.getDataList()
