@@ -10,6 +10,7 @@
         :loading="loading"
       >删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
+      <a-button type="danger" icon="redo" @click="onDrawerClose()">关闭</a-button>
     </div>
 
     <a-table
@@ -26,17 +27,12 @@
     >
       <span slot="IsEnable" slot-scope="text, record">
         <template>
-          <a-tag v-if="record.IsEnable===false" color="red">
-            停用
-          </a-tag>
-          <a-tag color="green">
-            启用
-          </a-tag>
+          <a-switch checked-children="启用" un-checked-children="停用" @click="handleModifyEnable(record.Id)" v-model="record.IsEnable" />
         </template>
       </span>
       <span slot="IsDefault" slot-scope="text, record">    
         <template>
-          <a-switch checked-children="开" un-checked-children="关" v-model="record.IsDefault" />
+          <a-switch checked-children="开" un-checked-children="关" @click="handleModifyDefault(record.Id)" v-model="record.IsDefault" />
         </template>
       </span>
       <span slot="action" slot-scope="text, record">
@@ -56,12 +52,12 @@
 import EditForm from './EditForm'
 
 const columns = [
-  { title: '编号', dataIndex: 'Code', width: '15%' },
+  { title: '编号', dataIndex: 'Code', width: '10%' },
   { title: '名称', dataIndex: 'Name', width: '15%' },
-  { title: '地址', dataIndex: 'Address', width: '10%' },
-  { title: '状态', dataIndex: 'IsEnable', width: '8%', scopedSlots: { customRender: 'IsEnable' } },
-  { title: '是否默认', dataIndex: 'IsDefault', width: '8%', scopedSlots: { customRender: 'IsDefault' } },
+  { title: '地址', dataIndex: 'Address', width: '15%' },
   { title: '备注', dataIndex: 'Remarks' },
+  { title: '状态', dataIndex: 'IsEnable', width: '7%', scopedSlots: { customRender: 'IsEnable' } },
+  { title: '默认', dataIndex: 'IsDefault', width: '7%', scopedSlots: { customRender: 'IsDefault' } },  
   { title: '操作', dataIndex: 'action', width: '10%', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -150,6 +146,20 @@ export default {
           })
         }
       })
+    },
+    handleModifyDefault(id){
+      this.$http
+        .post('/PB/PB_Address/ModifyDefault?id='+id)
+        .then(resJson => {
+          this.getDataList()
+        })
+    },
+    handleModifyEnable(id){
+      this.$http
+        .post('/PB/PB_Address/ModifyEnable?id='+id)
+        .then(resJson => {
+          this.getDataList()
+        })
     },
     openDrawer(isCus, id, name) {
       this.title=name+'地址设置'
