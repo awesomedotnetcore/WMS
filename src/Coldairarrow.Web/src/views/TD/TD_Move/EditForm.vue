@@ -9,43 +9,42 @@
   >
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="货位编号" prop="Code">
+        <a-form-model-item label="移库单号" prop="Code">
           <a-input v-model="entity.Code" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="货位名称" prop="Name">
-          <a-input v-model="entity.Name" autocomplete="off" />
+        <a-form-model-item label="移库时间" prop="MoveTime">
+          <a-input v-model="entity.MoveTime" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="库位类型" prop="Type">
-          <!-- <a-input v-model="entity.Type" autocomplete="off" /> -->
-          <enum-select code="LocationType" v-model="entity.Type" >             
-          </enum-select>
+        <a-form-model-item label="移库类型(枚举)" prop="Type">
+          <a-input v-model="entity.Type" autocomplete="off" />
+        </a-form-model-item>
+        <a-form-model-item label="关联单号" prop="RefCode">
+          <a-input v-model="entity.RefCode" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="仓库ID" prop="StorId">
           <a-input v-model="entity.StorId" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="库区ID" prop="AreaId">
-          <a-input v-model="entity.AreaId" autocomplete="off" />
+        <a-form-model-item label="数量" prop="MoveNum">
+          <a-input v-model="entity.MoveNum" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="巷道ID" prop="LanewayId">
-          <a-input v-model="entity.LanewayId" autocomplete="off" />
+        <a-form-model-item label="总额" prop="TotalAmt">
+          <a-input v-model="entity.TotalAmt" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="货架ID" prop="IdRack">
-          <a-input v-model="entity.IdRack" autocomplete="off" />
+        <a-form-model-item label="设备ID" prop="EquId">
+          <a-input v-model="entity.EquId" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="剩余容量" prop="OverVol">
-          <a-input v-model="entity.OverVol" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="是否禁用" prop="IsForbid">
-          <a-input v-model="entity.IsForbid" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="是否默认" prop="IsDefault">
-          <a-input v-model="entity.IsDefault" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="故障代码" prop="ErrorCode">
-          <a-input v-model="entity.ErrorCode" autocomplete="off" />
+        <a-form-model-item label="状态(0待审核;1审核通过;2审核失败)
+            待移库；已移库" prop="Status">
+          <a-input v-model="entity.Status" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="备注" prop="Remarks">
           <a-input v-model="entity.Remarks" autocomplete="off" />
+        </a-form-model-item>
+        <a-form-model-item label="审核人ID" prop="AuditUserId">
+          <a-input v-model="entity.AuditUserId" autocomplete="off" />
+        </a-form-model-item>
+        <a-form-model-item label="审核时间" prop="AuditeTime">
+          <a-input v-model="entity.AuditeTime" autocomplete="off" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -53,13 +52,8 @@
 </template>
 
 <script>
-import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
-
 export default {
-  components: {
-    EnumSelect
-  },
-  props: {    
+  props: {
     parentObj: Object
   },
   data() {
@@ -88,7 +82,7 @@ export default {
 
       if (id) {
         this.loading = true
-        this.$http.post('/PB/PB_Location/GetTheData', { id: id }).then(resJson => {
+        this.$http.post('/TD/TD_Move/GetTheData', { id: id }).then(resJson => {
           this.loading = false
 
           this.entity = resJson.Data
@@ -101,7 +95,7 @@ export default {
           return
         }
         this.loading = true
-        this.$http.post('/PB/PB_Location/SaveData', this.entity).then(resJson => {
+        this.$http.post('/TD/TD_Move/SaveData', this.entity).then(resJson => {
           this.loading = false
 
           if (resJson.Success) {

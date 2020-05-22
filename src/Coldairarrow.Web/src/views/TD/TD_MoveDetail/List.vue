@@ -16,15 +16,27 @@
       <a-form layout="inline">
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.Code" placeholder="编码" />
+            <a-form-item label="查询类别">
+              <a-select allowClear v-model="queryParam.condition">
+                <a-select-option key="MoveId">移库ID</a-select-option>
+                <a-select-option key="StorId">仓库ID</a-select-option>
+                <a-select-option key="FromLocalId">原货位ID</a-select-option>
+                <a-select-option key="FromZoneId">原托盘分区</a-select-option>
+                <a-select-option key="FromTrayId">原托盘ID</a-select-option>
+                <a-select-option key="ToLocalId">目标货位ID</a-select-option>
+                <a-select-option key="ToTrayId">目标托盘ID</a-select-option>
+                <a-select-option key="ToZoneId">目标托盘分区</a-select-option>
+                <a-select-option key="BarCode">条码</a-select-option>
+                <a-select-option key="MaterialId">物料ID</a-select-option>
+                <a-select-option key="BatchNo">批次号</a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.Name" placeholder="名称" />
+              <a-input v-model="queryParam.keyword" placeholder="关键字" />
             </a-form-item>
-          </a-col> 
+          </a-col>
           <a-col :md="6" :sm="24">
             <a-button type="primary" @click="getDataList">查询</a-button>
             <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
@@ -45,7 +57,6 @@
       :bordered="true"
       size="small"
     >
-
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -62,16 +73,21 @@
 <script>
 import EditForm from './EditForm'
 
-const filterYesOrNo = (value, row, index) => {
-  if (value) return '是'
-  else return '否'
-}
-
 const columns = [
-  { title: '仓库', dataIndex: 'PB_Storage.Name', width: '10%' },
-  { title: '货区编号', dataIndex: 'Code', width: '10%' },
-  { title: '货区名称', dataIndex: 'Name', width: '10%' },
-  { title: '是否缓存区', dataIndex: 'IsCache', width: '10%', customRender: filterYesOrNo },
+  { title: '移库ID', dataIndex: 'MoveId', width: '10%' },
+  { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
+  { title: '原货位ID', dataIndex: 'FromLocalId', width: '10%' },
+  { title: '原托盘分区', dataIndex: 'FromZoneId', width: '10%' },
+  { title: '原托盘ID', dataIndex: 'FromTrayId', width: '10%' },
+  { title: '目标货位ID', dataIndex: 'ToLocalId', width: '10%' },
+  { title: '目标托盘ID', dataIndex: 'ToTrayId', width: '10%' },
+  { title: '目标托盘分区', dataIndex: 'ToZoneId', width: '10%' },
+  { title: '条码', dataIndex: 'BarCode', width: '10%' },
+  { title: '物料ID', dataIndex: 'MaterialId', width: '10%' },
+  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
+  { title: '单价', dataIndex: 'Price', width: '10%' },
+  { title: '移库数量', dataIndex: 'LocalNum', width: '10%' },
+  { title: '总额', dataIndex: 'Amount', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -110,7 +126,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/PB/PB_StorArea/GetDataList', {
+        .post('/TD/TD_MoveDetail/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
@@ -144,7 +160,7 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/PB/PB_StorArea/DeleteData', ids).then(resJson => {
+            thisObj.$http.post('/TD/TD_MoveDetail/DeleteData', ids).then(resJson => {
               resolve()
 
               if (resJson.Success) {

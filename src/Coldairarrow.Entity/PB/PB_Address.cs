@@ -5,39 +5,57 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Coldairarrow.Entity.PB
 {
     /// <summary>
-    /// 货区表
+    /// 客户/投料点/供应商地址表
     /// </summary>
-    [Table("PB_StorArea")]
-    public class PB_StorArea
+    [Table("PB_Address")]
+    public class PB_Address
     {
 
         /// <summary>
-        /// Id
+        /// 主键ID
         /// </summary>
         [Key, Column(Order = 1)]
         public String Id { get; set; }
 
         /// <summary>
-        /// 仓库ID
+        /// 客户ID
         /// </summary>
-        public String StorId { get; set; }
-        [ForeignKey(nameof(StorId))]
-        public PB_Storage PB_Storage { get; set; }
+        public string CusId { get; set; }
 
         /// <summary>
-        /// 货区编号
+        /// 供应商ID
+        /// </summary>
+        public string SupId { get; set; }
+
+        /// <summary>
+        /// 电话/投料点编号
         /// </summary>
         public String Code { get; set; }
 
         /// <summary>
-        /// 货区名称
+        /// 联系人/投料点名称
         /// </summary>
         public String Name { get; set; }
 
         /// <summary>
-        /// 是否缓存区
+        /// 地址
         /// </summary>
-        public Boolean IsCache { get; set; }
+        public String Address { get; set; }
+
+        /// <summary>
+        /// 是否启用 
+        /// </summary>
+        public Boolean IsEnable { get; set; }
+
+        /// <summary>
+        /// 是否默认
+        /// </summary>
+        public Boolean IsDefault { get; set; }
+
+        /// <summary>
+        /// 备注
+        /// </summary>
+        public String Remarks { get; set; }
 
         /// <summary>
         /// 创建时间

@@ -16,15 +16,25 @@
       <a-form layout="inline">
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.Code" placeholder="编码" />
+            <a-form-item label="查询类别">
+              <a-select allowClear v-model="queryParam.condition">
+                <a-select-option key="Code">移库单号</a-select-option>
+                <a-select-option key="Type">移库类型(枚举)</a-select-option>
+                <a-select-option key="RefCode">关联单号</a-select-option>
+                <a-select-option key="StorId">仓库ID</a-select-option>
+                <a-select-option key="MoveNum">数量</a-select-option>
+                <a-select-option key="TotalAmt">总额</a-select-option>
+                <a-select-option key="EquId">设备ID</a-select-option>
+                <a-select-option key="Remarks">备注</a-select-option>
+                <a-select-option key="AuditUserId">审核人ID</a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.Name" placeholder="名称" />
+              <a-input v-model="queryParam.keyword" placeholder="关键字" />
             </a-form-item>
-          </a-col> 
+          </a-col>
           <a-col :md="6" :sm="24">
             <a-button type="primary" @click="getDataList">查询</a-button>
             <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
@@ -45,7 +55,6 @@
       :bordered="true"
       size="small"
     >
-
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -62,16 +71,19 @@
 <script>
 import EditForm from './EditForm'
 
-const filterYesOrNo = (value, row, index) => {
-  if (value) return '是'
-  else return '否'
-}
-
 const columns = [
-  { title: '仓库', dataIndex: 'PB_Storage.Name', width: '10%' },
-  { title: '货区编号', dataIndex: 'Code', width: '10%' },
-  { title: '货区名称', dataIndex: 'Name', width: '10%' },
-  { title: '是否缓存区', dataIndex: 'IsCache', width: '10%', customRender: filterYesOrNo },
+  { title: '移库单号', dataIndex: 'Code', width: '10%' },
+  { title: '移库时间', dataIndex: 'MoveTime', width: '10%' },
+  { title: '移库类型(枚举)', dataIndex: 'Type', width: '10%' },
+  { title: '关联单号', dataIndex: 'RefCode', width: '10%' },
+  { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
+  { title: '数量', dataIndex: 'MoveNum', width: '10%' },
+  { title: '总额', dataIndex: 'TotalAmt', width: '10%' },
+  { title: '设备ID', dataIndex: 'EquId', width: '10%' },
+  { title: '状态(0待审核;1审核通过;2审核失败) 待移库；已移库', dataIndex: 'Status', width: '10%' },
+  { title: '备注', dataIndex: 'Remarks', width: '10%' },
+  { title: '审核人ID', dataIndex: 'AuditUserId', width: '10%' },
+  { title: '审核时间', dataIndex: 'AuditeTime', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -110,7 +122,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/PB/PB_StorArea/GetDataList', {
+        .post('/TD/TD_Move/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
@@ -144,7 +156,7 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/PB/PB_StorArea/DeleteData', ids).then(resJson => {
+            thisObj.$http.post('/TD/TD_Move/DeleteData', ids).then(resJson => {
               resolve()
 
               if (resJson.Success) {

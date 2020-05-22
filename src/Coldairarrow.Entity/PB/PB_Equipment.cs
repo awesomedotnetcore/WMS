@@ -5,10 +5,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Coldairarrow.Entity.PB
 {
     /// <summary>
-    /// 货区表
+    /// 设备表
     /// </summary>
-    [Table("PB_StorArea")]
-    public class PB_StorArea
+    [Table("PB_Equipment")]
+    public class PB_Equipment
     {
 
         /// <summary>
@@ -18,26 +18,29 @@ namespace Coldairarrow.Entity.PB
         public String Id { get; set; }
 
         /// <summary>
-        /// 仓库ID
-        /// </summary>
-        public String StorId { get; set; }
-        [ForeignKey(nameof(StorId))]
-        public PB_Storage PB_Storage { get; set; }
-
-        /// <summary>
-        /// 货区编号
+        /// 编号
         /// </summary>
         public String Code { get; set; }
 
         /// <summary>
-        /// 货区名称
+        /// 名称
         /// </summary>
         public String Name { get; set; }
 
         /// <summary>
-        /// 是否缓存区
+        /// 设备码
         /// </summary>
-        public Boolean IsCache { get; set; }
+        public String EquNum { get; set; }
+
+        /// <summary>
+        /// 状态 0 启用 1停用
+        /// </summary>
+        public Boolean Status { get; set; }
+
+        /// <summary>
+        /// 备注
+        /// </summary>
+        public String Remark { get; set; }
 
         /// <summary>
         /// 创建时间

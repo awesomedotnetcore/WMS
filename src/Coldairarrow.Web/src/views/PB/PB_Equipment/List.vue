@@ -16,15 +16,19 @@
       <a-form layout="inline">
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.Code" placeholder="编码" />
+            <a-form-item label="查询类别">
+              <a-select allowClear v-model="queryParam.condition">
+                <a-select-option key="Code">编号</a-select-option>
+                <a-select-option key="Name">名称</a-select-option>
+                <a-select-option key="EquNum">设备码</a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.Name" placeholder="名称" />
+              <a-input v-model="queryParam.keyword" placeholder="关键字" />
             </a-form-item>
-          </a-col> 
+          </a-col>
           <a-col :md="6" :sm="24">
             <a-button type="primary" @click="getDataList">查询</a-button>
             <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
@@ -45,7 +49,16 @@
       :bordered="true"
       size="small"
     >
-
+      <span slot="Status" slot-scope="text, record">
+        <template>
+          <a-tag v-if="record.Status===false" color="red">
+          停用
+          </a-tag>
+          <a-tag v-else color="green">
+          启用
+          </a-tag>
+        </template>
+      </span>
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -62,17 +75,13 @@
 <script>
 import EditForm from './EditForm'
 
-const filterYesOrNo = (value, row, index) => {
-  if (value) return '是'
-  else return '否'
-}
-
 const columns = [
-  { title: '仓库', dataIndex: 'PB_Storage.Name', width: '10%' },
-  { title: '货区编号', dataIndex: 'Code', width: '10%' },
-  { title: '货区名称', dataIndex: 'Name', width: '10%' },
-  { title: '是否缓存区', dataIndex: 'IsCache', width: '10%', customRender: filterYesOrNo },
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+  { title: '编号', dataIndex: 'Code', width: '15%' },
+  { title: '名称', dataIndex: 'Name', width: '15%' },
+  { title: '设备码', dataIndex: 'EquNum', width: '15%' },
+  { title: '状态', dataIndex: 'Status', width: '8%', scopedSlots: { customRender: 'Status' } },
+  { title: '备注', dataIndex: 'Remark' },
+  { title: '操作', dataIndex: 'action', width: '10%', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
@@ -110,7 +119,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/PB/PB_StorArea/GetDataList', {
+        .post('/PB/PB_Equipment/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
@@ -144,7 +153,7 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/PB/PB_StorArea/DeleteData', ids).then(resJson => {
+            thisObj.$http.post('/PB/PB_Equipment/DeleteData', ids).then(resJson => {
               resolve()
 
               if (resJson.Success) {
