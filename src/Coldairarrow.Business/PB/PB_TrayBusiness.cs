@@ -49,6 +49,16 @@ namespace Coldairarrow.Business.PB
             await UpdateAsync(data);
         }
 
+        public async Task EnableTheData(string id)
+        {
+            await UpdateWhereAsync(w => w.Id == id, entity => { entity.Status = 1; });
+        }
+
+        public async Task DisableTheData(string id)
+        {
+            await UpdateWhereAsync(w => w.Id == id, entity => { entity.Status = 0; });
+        }
+
         public async Task DeleteDataAsync(List<string> ids)
         {
             await DeleteAsync(ids);
