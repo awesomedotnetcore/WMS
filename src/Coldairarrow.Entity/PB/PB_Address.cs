@@ -20,12 +20,12 @@ namespace Coldairarrow.Entity.PB
         /// <summary>
         /// 客户ID
         /// </summary>
-        public String CusId { get; set; }
+        public string CusId { get; set; }
 
         /// <summary>
         /// 供应商ID
         /// </summary>
-        public String SupId { get; set; }
+        public string SupId { get; set; }
 
         /// <summary>
         /// 电话/投料点编号

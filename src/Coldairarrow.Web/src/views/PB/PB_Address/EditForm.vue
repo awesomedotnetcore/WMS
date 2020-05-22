@@ -8,30 +8,18 @@
     @cancel="()=>{this.visible=false}"
   >
     <a-spin :spinning="loading">
-      <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="客户ID" prop="CusId">
-          <a-input v-model="entity.CusId" autocomplete="off" />
+      <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">        
+        <a-form-model-item label="编号" prop="Code">
+          <a-input v-model="entity.Code" autocomplete="off"><a-icon slot="prefix" type="scan" /></a-input>
         </a-form-model-item>
-        <a-form-model-item label="供应商ID" prop="SupId">
-          <a-input v-model="entity.SupId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="电话/投料点编号" prop="Code">
-          <a-input v-model="entity.Code" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="联系人/投料点名称" prop="Name">
-          <a-input v-model="entity.Name" autocomplete="off" />
+        <a-form-model-item label="名称" prop="Name">
+          <a-input v-model="entity.Name" autocomplete="off"><a-icon slot="prefix" type="user" /></a-input>
         </a-form-model-item>
         <a-form-model-item label="地址" prop="Address">
-          <a-input v-model="entity.Address" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="是否启用 " prop="IsEnable">
-          <a-input v-model="entity.IsEnable" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="是否默认" prop="IsDefault">
-          <a-input v-model="entity.IsDefault" autocomplete="off" />
+          <a-input v-model="entity.Address" autocomplete="off"><a-icon slot="prefix" type="compass" /></a-input>
         </a-form-model-item>
         <a-form-model-item label="备注" prop="Remarks">
-          <a-input v-model="entity.Remarks" autocomplete="off" />
+          <a-textarea v-model="entity.Remarks" autocomplete="off"></a-textarea>
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -64,10 +52,15 @@ export default {
         this.$refs['form'].clearValidate()
       })
     },
-    openForm(id, title) {
+    openForm(id, CusId, SupId) {
       this.init()
 
-      if (id) {
+      this.entity.CusId = CusId
+      this.entity.SupId = SupId
+      this.entity.IsEnable=true
+      this.entity.IsDefault=false
+      
+      if (id!="") {
         this.loading = true
         this.$http.post('/PB/PB_Address/GetTheData', { id: id }).then(resJson => {
           this.loading = false

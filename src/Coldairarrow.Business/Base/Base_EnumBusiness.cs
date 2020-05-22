@@ -34,7 +34,7 @@ namespace Coldairarrow.Business.Base
         }
         public async Task<Base_Enum> GetByCodeAsync(string code)
         {
-            return await this.GetIQueryable().Where(w => w.Code == code).SingleOrDefaultAsync();
+            return await this.GetIQueryable().Include(i => i.EnumItems).Where(w => w.Code == code).SingleOrDefaultAsync();
         }
         public async Task<Base_Enum> GetTheDataAsync(string id)
         {
