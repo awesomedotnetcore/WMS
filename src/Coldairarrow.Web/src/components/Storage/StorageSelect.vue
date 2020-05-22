@@ -1,12 +1,12 @@
 <template>
-  <a-select v-model="curValue" @select="handleSelected" v-bind="$attrs">
+  <a-select v-model="curValue" placeholder="请选择仓库" @select="handleSelected" v-bind="$attrs">
     <a-select-option v-for="item in listData" :key="item.Id" :value="item.Id">{{ item.Name }}({{ item.Code }})</a-select-option>
   </a-select>
 </template>
 <script>
 export default {
   props: {
-    value: { type: String, default: '', required: false }
+    value: { type: String, required: true }
   },
   data() {
     return {

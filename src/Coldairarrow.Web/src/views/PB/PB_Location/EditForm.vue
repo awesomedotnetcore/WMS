@@ -15,8 +15,10 @@
         <a-form-model-item label="货位名称" prop="Name">
           <a-input v-model="entity.Name" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="库位类型(枚举)" prop="Type">
-          <a-input v-model="entity.Type" autocomplete="off" />
+        <a-form-model-item label="库位类型" prop="Type">
+          <!-- <a-input v-model="entity.Type" autocomplete="off" /> -->
+          <enum-select code="LocationType" v-model="entity.Type" >             
+          </enum-select>
         </a-form-model-item>
         <a-form-model-item label="仓库ID" prop="StorId">
           <a-input v-model="entity.StorId" autocomplete="off" />
@@ -51,8 +53,13 @@
 </template>
 
 <script>
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
+
 export default {
-  props: {
+  components: {
+    EnumSelect
+  },
+  props: {    
     parentObj: Object
   },
   data() {

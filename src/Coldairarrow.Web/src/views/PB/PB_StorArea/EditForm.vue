@@ -10,7 +10,7 @@
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
         <a-form-model-item label="仓库ID" prop="StorId">
-          <a-input v-model="entity.StorId" autocomplete="off" />
+          <storage-select v-model="entity.StorId"></storage-select>
         </a-form-model-item>
         <a-form-model-item label="货区编号" prop="Code">
           <a-input v-model="entity.Code" autocomplete="off" />
@@ -19,7 +19,7 @@
           <a-input v-model="entity.Name" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="是否缓存区" prop="IsCache">    
-          <a-select v-model="entity.IsCache" autocomplete="off" @select="DataTypeChange">
+          <a-select placeholder="请选择" v-model="entity.IsCache" autocomplete="off" @select="DataTypeChange">
             <a-select-option :value="false" >否</a-select-option>
             <a-select-option :value="true" >是</a-select-option>
           </a-select>
@@ -30,7 +30,12 @@
 </template>
 
 <script>
+import StorageSelect from '../../../components/Storage/StorageSelect'
+
 export default {
+  components: {
+    StorageSelect,
+  },
   props: {
     parentObj: Object
   },
