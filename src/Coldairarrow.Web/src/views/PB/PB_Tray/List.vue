@@ -42,6 +42,8 @@
     >
       <span slot="action" slot-scope="text, record">
         <template>
+          <a @click="changeStatus(record.Id, record.Status)">启停用</a>
+          <a-divider type="vertical" />
           <a @click="handleEdit(record.Id)">编辑</a>
           <a-divider type="vertical" />
           <a @click="handleDelete([record.Id])">删除</a>
@@ -57,8 +59,8 @@
 import EditForm from './EditForm'
 
 const filterYesOrNo = (value, row, index) => {
-  if (value) return '是'
-  else return '否'
+  if (value) return '启用'
+  else return '停用'
 }
 const columns = [
   { title: '货位', dataIndex: 'PB_Location.Name', width: '10%' },
@@ -154,6 +156,31 @@ export default {
           })
         }
       })
+    },
+    changeStatus(Id, Status) {
+      var thisObj = this
+      if (Status == 1) {
+        this.$http.post('/PB/PB_Tray/DisableTheData', { Id: Id }).then(resJson => {
+          if (resJson.Success) {
+            thisObj.$message.success('操作成功!')
+
+            thisObj.getDataList()
+          } else {
+            thisObj.$message.error(resJson.Msg)
+          }
+        })
+      } else {
+        this.$http.post('/PB/PB_Tray/EnableTheData', { Id: Id }).then(resJson => {
+
+          if (resJson.Success) {
+            thisObj.$message.success('操作成功!')
+
+            thisObj.getDataList()
+          } else {
+            thisObj.$message.error(resJson.Msg)
+          }
+        })
+      }
     }
   }
 }

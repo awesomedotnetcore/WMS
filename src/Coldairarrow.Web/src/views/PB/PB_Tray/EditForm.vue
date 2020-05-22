@@ -28,9 +28,6 @@
         <a-form-model-item label="启用日期" prop="StartTime">
           <a-input v-model="entity.StartTime" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="托盘状态:0启用 1停用" prop="Status">
-          <a-input v-model="entity.Status" autocomplete="off" />
-        </a-form-model-item>
         <a-form-model-item label="备注" prop="Remarks">
           <a-input v-model="entity.Remarks" autocomplete="off" />
         </a-form-model-item>
@@ -82,6 +79,8 @@ export default {
 
           this.entity = resJson.Data
         })
+      } else {
+        this.entity.Status = 1
       }
     },
     handleSubmit() {
