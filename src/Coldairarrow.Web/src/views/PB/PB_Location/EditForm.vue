@@ -15,22 +15,31 @@
         <a-form-model-item label="货位名称" prop="Name">
           <a-input v-model="entity.Name" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="库位类型" prop="Type">
-          <!-- <a-input v-model="entity.Type" autocomplete="off" /> -->
+        <a-form-model-item label="货位类型" prop="Type">
           <enum-select code="LocationType" v-model="entity.Type" >             
           </enum-select>
         </a-form-model-item>
         <a-form-model-item label="仓库ID" prop="StorId">
-          <a-input v-model="entity.StorId" autocomplete="off" />
+          <!-- <a-input v-model="entity.StorId" autocomplete="off" /> -->
+          <storage-select v-model="entity.StorId"></storage-select>
         </a-form-model-item>
-        <a-form-model-item label="库区ID" prop="AreaId">
-          <a-input v-model="entity.AreaId" autocomplete="off" />
+        <a-form-model-item label="货区ID" prop="AreaId">
+          <!-- <a-input v-model="entity.AreaId" autocomplete="off" /> -->
+          <a-select placeholder="请选择" v-model="entity.AreaId">
+            <a-select-option v-for="item in this.StorAreaList" :key="item.Id">{{item.Name}}</a-select-option>
+          </a-select>
         </a-form-model-item>
         <a-form-model-item label="巷道ID" prop="LanewayId">
-          <a-input v-model="entity.LanewayId" autocomplete="off" />
+          <!-- <a-input v-model="entity.LanewayId" autocomplete="off" /> -->
+          <a-select placeholder="请选择" v-model="entity.LanewayId">
+            <a-select-option v-for="item in this.LanewayList" :key="item.Id">{{item.Name}}</a-select-option>
+          </a-select>
         </a-form-model-item>
-        <a-form-model-item label="货架ID" prop="IdRack">
-          <a-input v-model="entity.IdRack" autocomplete="off" />
+        <a-form-model-item label="货架ID" prop="RackId">
+          <!-- <a-input v-model="entity.RackId" autocomplete="off" /> -->
+          <a-select placeholder="请选择" v-model="entity.RackId">
+            <a-select-option v-for="item in this.RackList" :key="item.Id">{{item.Name}}</a-select-option>
+          </a-select>
         </a-form-model-item>
         <a-form-model-item label="剩余容量" prop="OverVol">
           <a-input v-model="entity.OverVol" autocomplete="off" />
@@ -54,10 +63,12 @@
 
 <script>
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
+import StorageSelect from '../../../components/Storage/StorageSelect'
 
 export default {
   components: {
-    EnumSelect
+    EnumSelect,
+    StorageSelect
   },
   props: {    
     parentObj: Object
@@ -72,19 +83,29 @@ export default {
       loading: false,
       entity: {},
       rules: {},
-      title: ''
+      title: '',
+      StorAreaList: [],
+      LanewayList:[],
+      RackList:[],
     }
   },
   methods: {
     init() {
       this.visible = true
       this.entity = {}
+      this.StorAreaList = []
+      this.LanewayList = []
+      this.RackList = []
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })
     },
     openForm(id, title) {
       this.init()
+
+      this.GetStorAreaList()
+      this.GetLanewayList()
+      this.GetRackList()
 
       if (id) {
         this.loading = true
@@ -113,6 +134,30 @@ export default {
             this.$message.error(resJson.Msg)
           }
         })
+      })
+    },
+    GetStorAreaList() {
+      var thisObj = this
+      this.loading = true
+      this.$http.post('/PB/PB_StorArea/QueryStorAreaData').then(resJson => {
+        this.loading = false
+        thisObj.StorAreaList = resJson.Data
+      })
+    },
+    GetLanewayList() {
+      var thisObj = this
+      this.loading = true
+      this.$http.post('/PB/PB_Laneway/QueryLanewayData').then(resJson => {
+        this.loading = false
+        thisObj.LanewayList = resJson.Data
+      })
+    },
+    GetRackList() {
+      var thisObj = this
+      this.loading = true
+      this.$http.post('/PB/PB_Rack/QueryRackData').then(resJson => {
+        this.loading = false
+        thisObj.RackList = resJson.Data
       })
     }
   }

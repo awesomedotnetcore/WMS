@@ -35,6 +35,15 @@ namespace Coldairarrow.Api.Controllers.PB
             return await _pB_StorAreaBus.GetTheDataAsync(input.id);
         }
 
+        /// <summary>
+        /// 查询货区
+        /// </summary>
+        [HttpPost]
+        public async Task<List<PB_StorArea>> QueryStorAreaData()
+        {
+            return await _pB_StorAreaBus.QueryStorAreaDataAsync();
+        }
+
         #endregion
 
         #region 提交
@@ -59,6 +68,8 @@ namespace Coldairarrow.Api.Controllers.PB
         {
             await _pB_StorAreaBus.DeleteDataAsync(ids);
         }
+
+        
 
         #endregion
     }

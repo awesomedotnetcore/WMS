@@ -54,6 +54,13 @@ namespace Coldairarrow.Business.PB
             await DeleteAsync(ids);
         }
 
+        public async Task<List<PB_StorArea>> QueryStorAreaDataAsync()
+        {
+            var q = GetIQueryable();
+
+            return await q.ToListAsync();
+        }
+
         #endregion
 
         #region 私有成员

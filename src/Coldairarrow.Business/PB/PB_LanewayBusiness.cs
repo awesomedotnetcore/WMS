@@ -53,6 +53,13 @@ namespace Coldairarrow.Business.PB
             await DeleteAsync(ids);
         }
 
+        public async Task<List<PB_Laneway>> QueryLanewayDataAsync()
+        {
+            var q = GetIQueryable();
+
+            return await q.ToListAsync();
+        }
+
         #endregion
 
         #region 私有成员

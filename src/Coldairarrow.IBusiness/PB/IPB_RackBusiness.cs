@@ -7,9 +7,9 @@ namespace Coldairarrow.Business.PB
 {
     public interface IPB_RackBusiness
     {
-        //Task<PageResult<PB_Rack>> GetDataListAsync(PageInput<ConditionDTO> input);
         Task<PageResult<PB_Rack>> GetDataListAsync(PB_RackPageInput input);
         Task<PB_Rack> GetTheDataAsync(string id);
+        Task<List<PB_Rack>> QueryRackDataAsync();
         Task AddDataAsync(PB_Rack data);
         Task UpdateDataAsync(PB_Rack data);
         Task DeleteDataAsync(List<string> ids);
