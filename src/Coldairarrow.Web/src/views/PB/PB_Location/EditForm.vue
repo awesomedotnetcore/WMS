@@ -19,24 +19,20 @@
           <enum-select code="LocationType" v-model="entity.Type" >             
           </enum-select>
         </a-form-model-item>
-        <a-form-model-item label="仓库ID" prop="StorId">
-          <!-- <a-input v-model="entity.StorId" autocomplete="off" /> -->
+        <a-form-model-item label="仓库" prop="StorId">
           <storage-select v-model="entity.StorId"></storage-select>
         </a-form-model-item>
-        <a-form-model-item label="货区ID" prop="AreaId">
-          <!-- <a-input v-model="entity.AreaId" autocomplete="off" /> -->
+        <a-form-model-item label="货区" prop="AreaId">
           <a-select placeholder="请选择" v-model="entity.AreaId">
             <a-select-option v-for="item in this.StorAreaList" :key="item.Id">{{item.Name}}</a-select-option>
           </a-select>
         </a-form-model-item>
-        <a-form-model-item label="巷道ID" prop="LanewayId">
-          <!-- <a-input v-model="entity.LanewayId" autocomplete="off" /> -->
+        <a-form-model-item label="巷道" prop="LanewayId">
           <a-select placeholder="请选择" v-model="entity.LanewayId">
             <a-select-option v-for="item in this.LanewayList" :key="item.Id">{{item.Name}}</a-select-option>
           </a-select>
         </a-form-model-item>
-        <a-form-model-item label="货架ID" prop="RackId">
-          <!-- <a-input v-model="entity.RackId" autocomplete="off" /> -->
+        <a-form-model-item label="货架" prop="RackId">
           <a-select placeholder="请选择" v-model="entity.RackId">
             <a-select-option v-for="item in this.RackList" :key="item.Id">{{item.Name}}</a-select-option>
           </a-select>
@@ -54,7 +50,7 @@
           <a-input v-model="entity.ErrorCode" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="备注" prop="Remarks">
-          <a-input v-model="entity.Remarks" autocomplete="off" />
+          <a-textarea v-model="entity.Remarks" autocomplete="off" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>

@@ -80,14 +80,14 @@ const columns = [
   { title: '货位编号', dataIndex: 'Code', width: '10%' },
   { title: '货位名称', dataIndex: 'Name', width: '10%' },
   { title: '货位类型', dataIndex: 'Type', width: '10%' , scopedSlots: { customRender: 'Type' } },
-  { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
-  { title: '库区ID', dataIndex: 'AreaId', width: '10%' },
-  { title: '巷道ID', dataIndex: 'LanewayId', width: '10%' },
-  { title: '货架ID', dataIndex: 'IdRack', width: '10%' },
-  { title: '剩余容量', dataIndex: 'OverVol', width: '10%' },
-  { title: '是否禁用', dataIndex: 'IsForbid', width: '10%' },
-  { title: '是否默认', dataIndex: 'IsDefault', width: '10%' },
-  { title: '故障代码', dataIndex: 'ErrorCode', width: '10%' },
+  { title: '仓库', dataIndex: 'PB_Storage.Name', width: '8%' },
+  { title: '货区', dataIndex: 'PB_StorArea.Name', width: '6%' },
+  { title: '巷道', dataIndex: 'PB_Laneway.Name', width: '6%' },
+  { title: '货架', dataIndex: 'PB_Rack.Name', width: '6%' },
+  { title: '剩余容量', dataIndex: 'OverVol', width: '8%' },
+  { title: '状态', dataIndex: 'IsForbid', width: '5%' },//是否禁用
+  { title: '默认', dataIndex: 'IsDefault', width: '5%' },
+  { title: '故障码', dataIndex: 'ErrorCode', width: '6' },
   { title: '备注', dataIndex: 'Remarks', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
