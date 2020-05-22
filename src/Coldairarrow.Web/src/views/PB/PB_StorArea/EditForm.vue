@@ -18,8 +18,11 @@
         <a-form-model-item label="货区名称" prop="Name">
           <a-input v-model="entity.Name" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="是否缓存区" prop="IsCache">
-          <a-input v-model="entity.IsCache" autocomplete="off" />
+        <a-form-model-item label="是否缓存区" prop="IsCache">    
+          <a-select v-model="entity.IsCache" autocomplete="off" @select="DataTypeChange">
+            <a-select-option :value="false" >否</a-select-option>
+            <a-select-option :value="true" >是</a-select-option>
+          </a-select>
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -83,6 +86,9 @@ export default {
           }
         })
       })
+    },
+    DataTypeChange(val, option) {
+      this.DataType = val
     }
   }
 }

@@ -61,11 +61,16 @@
 <script>
 import EditForm from './EditForm'
 
+const filterYesOrNo = (value, row, index) => {
+  if (value) return '是'
+  else return '否'
+}
+
 const columns = [
   { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
   { title: '货区编号', dataIndex: 'Code', width: '10%' },
   { title: '货区名称', dataIndex: 'Name', width: '10%' },
-  { title: '是否缓存区', dataIndex: 'IsCache', width: '10%' },
+  { title: '是否缓存区', dataIndex: 'IsCache', width: '10%', customRender: filterYesOrNo },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 

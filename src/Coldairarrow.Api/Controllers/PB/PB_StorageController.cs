@@ -69,6 +69,15 @@ namespace Coldairarrow.Api.Controllers.PB
             await _PB_StorageBus.DeleteDataAsync(ids);
         }
 
+        /// <summary>
+        /// 查询仓库ID
+        /// </summary>
+        [HttpPost]
+        public async Task<List<PB_Storage>> QueryStorageData()
+        {
+            return await _PB_StorageBus.QueryStorageDataAsync();
+        }
+
         #endregion
     }
 }
