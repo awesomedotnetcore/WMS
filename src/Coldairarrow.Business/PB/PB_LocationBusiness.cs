@@ -22,18 +22,16 @@ namespace Coldairarrow.Business.PB
         public async Task<PageResult<PB_Location>> GetDataListAsync(PageInput<ConditionDTO> input)
         {
             var q = GetIQueryable();
-            var where = LinqHelper.True<PB_Location>();
             var search = input.Search;
+            q = q.Include(i => i.PB_Storage).Include(i => i.PB_Laneway).Include(i => i.PB_StorArea).Include(i => i.PB_Rack);
 
             //筛选
-            if (!search.Condition.IsNullOrEmpty() && !search.Keyword.IsNullOrEmpty())
+            if (!search.Keyword.IsNullOrEmpty())
             {
-                var newWhere = DynamicExpressionParser.ParseLambda<PB_Location, bool>(
-                    ParsingConfig.Default, false, $@"{search.Condition}.Contains(@0)", search.Keyword);
-                where = where.And(newWhere);
+                q = q.Where(w => w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
             }
 
-            return await q.Where(where).GetPageResultAsync(input);
+            return await q.GetPageResultAsync(input);
         }
 
         public async Task<List<PB_Location>> GetDataListAsync()
@@ -61,6 +59,22 @@ namespace Coldairarrow.Business.PB
         public async Task DeleteDataAsync(List<string> ids)
         {
             await DeleteAsync(ids);
+        }
+
+        public async Task ModifyEnableAsync(string Id)
+        {
+            var entity = await GetEntityAsync(Id);
+            if (entity.IsForbid)
+            {
+                entity.IsForbid = false;
+                if (entity.IsDefault) entity.IsDefault = false;
+            }
+            else
+            {
+                entity.IsForbid = true;
+            }
+
+            await UpdateAsync(entity);
         }
 
         #endregion

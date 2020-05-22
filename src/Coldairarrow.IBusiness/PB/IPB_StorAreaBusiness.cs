@@ -9,6 +9,7 @@ namespace Coldairarrow.Business.PB
     {
         Task<PageResult<PB_StorArea>> GetDataListAsync(PageInput<ConditionDTO> input);
         Task<PB_StorArea> GetTheDataAsync(string id);
+        Task<List<PB_StorArea>> QueryStorAreaDataAsync();
         Task AddDataAsync(PB_StorArea data);
         Task UpdateDataAsync(PB_StorArea data);
         Task DeleteDataAsync(List<string> ids);

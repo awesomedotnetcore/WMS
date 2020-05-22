@@ -15,5 +15,17 @@ namespace Coldairarrow.Api.Controllers.PB
         {
             return await _pB_AddressBus.QueryDataListAsync(input);
         }
+
+        [HttpPost]
+        public async Task ModifyDefault(string id)
+        {
+            await _pB_AddressBus.ModifyDefaultAsync(id);
+        }
+
+        [HttpPost]
+        public async Task ModifyEnable(string id)
+        {
+            await _pB_AddressBus.ModifyEnableAsync(id);
+        }
     }
 }

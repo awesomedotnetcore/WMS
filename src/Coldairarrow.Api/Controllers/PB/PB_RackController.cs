@@ -34,7 +34,14 @@ namespace Coldairarrow.Api.Controllers.PB
         {
             return await _pB_RackBus.GetTheDataAsync(input.id);
         }
-
+        /// <summary>
+        /// 查询货架
+        /// </summary>
+        [HttpPost]
+        public async Task<List<PB_Rack>> QueryRackData()
+        {
+            return await _pB_RackBus.QueryRackDataAsync();
+        }
         #endregion
 
         #region 提交

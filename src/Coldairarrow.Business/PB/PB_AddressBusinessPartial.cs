@@ -36,5 +36,43 @@ namespace Coldairarrow.Business.PB
 
             return await q.Where(where).GetPageResultAsync(input);
         }
+
+        public async Task ModifyDefaultAsync(string Id)
+        {
+            var entity = await GetEntityAsync(Id);
+            if(entity.IsDefault)
+            {
+                entity.IsDefault = false;
+                await UpdateAsync(entity);
+            }
+            else
+            {
+                var defaultData = await GetIQueryable().Where(p => p.IsDefault == true && p.SupId==entity.SupId && p.CusId==entity.CusId).FirstOrDefaultAsync();
+                if(defaultData!=null && !string.IsNullOrWhiteSpace(defaultData.Id))
+                {
+                    defaultData.IsDefault = false;
+                    await UpdateAsync(defaultData);
+                }
+
+                entity.IsDefault = true;
+                await UpdateAsync(entity);
+            }
+        }
+
+        public async Task ModifyEnableAsync(string Id)
+        {
+            var entity = await GetEntityAsync(Id);
+            if (entity.IsEnable)
+            {
+                entity.IsEnable = false;
+                if (entity.IsDefault) entity.IsDefault = false;
+            }
+            else
+            {
+                entity.IsEnable = true;
+            }
+
+            await UpdateAsync(entity);
+        }
     }
 }

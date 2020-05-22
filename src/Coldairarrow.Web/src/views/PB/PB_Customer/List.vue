@@ -53,11 +53,14 @@
           <a @click="handleEdit(record.Id)">编辑</a>
           <a-divider type="vertical" />
           <a @click="handleDelete([record.Id])">删除</a>
+          <a-divider type="vertical" />
+          <a @click="openAddressList(record.Id,record.Name)">地址</a>
         </template>
       </span>
     </a-table>
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
+    <address-list ref="addressList" :parentObj="this"></address-list>
   </a-card>
 </template>
 
@@ -65,6 +68,7 @@
 import EditForm from './EditForm'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
+import AddressList from '../../PB/PB_Address/List'
 const columns = [
   { title: '客户编号', dataIndex: 'Code', width: '10%' },
   { title: '客户名称', dataIndex: 'Name', width: '10%' },
@@ -80,7 +84,8 @@ export default {
   components: {
     EditForm,
     EnumName,
-    EnumSelect
+    EnumSelect,
+    AddressList
   },
   mounted() {
     this.getDataList()
@@ -161,6 +166,9 @@ export default {
           })
         }
       })
+    },
+    openAddressList(id,name) {
+      this.$refs.addressList.openDrawer(true,id,name)
     }
   }
 }
