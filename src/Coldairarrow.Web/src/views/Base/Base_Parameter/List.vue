@@ -77,7 +77,7 @@ const columns = [
   { title: '参数名称', dataIndex: 'Name', width: '15%' },
   { title: '参数值', dataIndex: 'Val', width: '10%' },
   { title: '描述', dataIndex: 'Remarks', width: '20%' },
-  { title: '是否系统必须', dataIndex: 'IsSystem', width: '10%' , customRender: filterYesOrNo},
+  // { title: '是否系统必须', dataIndex: 'IsSystem', width: '10%' , customRender: filterYesOrNo},
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
