@@ -9,20 +9,27 @@
   >
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="仓库ID" prop="StorId">
-          <a-input v-model="entity.StorId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="货区编号" prop="Code">
+        <a-form-model-item label="编号" prop="Code">
           <a-input v-model="entity.Code" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="货区名称" prop="Name">
+        <a-form-model-item label="名称" prop="Name">
           <a-input v-model="entity.Name" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="是否缓存区" prop="IsCache">    
-          <a-select v-model="entity.IsCache" autocomplete="off" @select="DataTypeChange">
-            <a-select-option :value="false" >否</a-select-option>
-            <a-select-option :value="true" >是</a-select-option>
-          </a-select>
+        <a-form-model-item label="设备码" prop="EquNum">
+          <a-input v-model="entity.EquNum" autocomplete="off" />
+        </a-form-model-item>
+        <a-form-model-item label="状态" prop="Status">
+          <a-radio-group v-model="entity.Status">
+            <a-radio-button :value="true">
+              启用
+            </a-radio-button>
+            <a-radio-button :value="false">
+              停用
+            </a-radio-button>
+          </a-radio-group>
+        </a-form-model-item>
+        <a-form-model-item label="备注" prop="Remark">
+          <a-input v-model="entity.Remark" autocomplete="off" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -50,9 +57,9 @@ export default {
   methods: {
     init() {
       this.visible = true
-      this.entity = {}
+      this.entity = {Status:true}    
       this.$nextTick(() => {
-        this.$refs['form'].clearValidate()
+        this.$refs['form'].clearValidate()        
       })
     },
     openForm(id, title) {
@@ -60,7 +67,7 @@ export default {
 
       if (id) {
         this.loading = true
-        this.$http.post('/PB/PB_StorArea/GetTheData', { id: id }).then(resJson => {
+        this.$http.post('/PB/PB_Equipment/GetTheData', { id: id }).then(resJson => {
           this.loading = false
 
           this.entity = resJson.Data
@@ -73,7 +80,7 @@ export default {
           return
         }
         this.loading = true
-        this.$http.post('/PB/PB_StorArea/SaveData', this.entity).then(resJson => {
+        this.$http.post('/PB/PB_Equipment/SaveData', this.entity).then(resJson => {
           this.loading = false
 
           if (resJson.Success) {
@@ -86,9 +93,6 @@ export default {
           }
         })
       })
-    },
-    DataTypeChange(val, option) {
-      this.DataType = val
     }
   }
 }

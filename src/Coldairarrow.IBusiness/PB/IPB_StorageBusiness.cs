@@ -14,6 +14,7 @@ namespace Coldairarrow.Business.PB
         Task UpdateDataAsync(PB_Storage data);
         Task ModifyDefaultAsync(PB_Storage data);
         Task DeleteDataAsync(List<string> ids);
+        Task<List<PB_Storage>> QueryStorageDataAsync();
 
         Task<List<PB_Storage>> GetListAsync();
     }

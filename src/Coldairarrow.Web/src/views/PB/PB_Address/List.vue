@@ -16,15 +16,22 @@
       <a-form layout="inline">
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.Code" placeholder="编码" />
+            <a-form-item label="查询类别">
+              <a-select allowClear v-model="queryParam.condition">
+                <a-select-option key="CusId">客户ID</a-select-option>
+                <a-select-option key="SupId">供应商ID</a-select-option>
+                <a-select-option key="Code">电话/投料点编号</a-select-option>
+                <a-select-option key="Name">联系人/投料点名称</a-select-option>
+                <a-select-option key="Address">地址</a-select-option>
+                <a-select-option key="Remarks">备注</a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.Name" placeholder="名称" />
+              <a-input v-model="queryParam.keyword" placeholder="关键字" />
             </a-form-item>
-          </a-col> 
+          </a-col>
           <a-col :md="6" :sm="24">
             <a-button type="primary" @click="getDataList">查询</a-button>
             <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
@@ -61,16 +68,15 @@
 <script>
 import EditForm from './EditForm'
 
-const filterYesOrNo = (value, row, index) => {
-  if (value) return '是'
-  else return '否'
-}
-
 const columns = [
-  { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
-  { title: '货区编号', dataIndex: 'Code', width: '10%' },
-  { title: '货区名称', dataIndex: 'Name', width: '10%' },
-  { title: '是否缓存区', dataIndex: 'IsCache', width: '10%', customRender: filterYesOrNo },
+  { title: '客户ID', dataIndex: 'CusId', width: '10%' },
+  { title: '供应商ID', dataIndex: 'SupId', width: '10%' },
+  { title: '电话/投料点编号', dataIndex: 'Code', width: '10%' },
+  { title: '联系人/投料点名称', dataIndex: 'Name', width: '10%' },
+  { title: '地址', dataIndex: 'Address', width: '10%' },
+  { title: '是否启用 ', dataIndex: 'IsEnable', width: '10%' },
+  { title: '是否默认', dataIndex: 'IsDefault', width: '10%' },
+  { title: '备注', dataIndex: 'Remarks', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -109,7 +115,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/PB/PB_StorArea/GetDataList', {
+        .post('/PB/PB_Address/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
@@ -143,7 +149,7 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/PB/PB_StorArea/DeleteData', ids).then(resJson => {
+            thisObj.$http.post('/PB/PB_Address/DeleteData', ids).then(resJson => {
               resolve()
 
               if (resJson.Success) {
