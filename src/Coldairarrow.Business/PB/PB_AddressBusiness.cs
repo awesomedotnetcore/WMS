@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Coldairarrow.Business.PB
 {
-    public class PB_AddressBusiness : BaseBusiness<PB_Address>, IPB_AddressBusiness, ITransientDependency
+    public partial class PB_AddressBusiness : BaseBusiness<PB_Address>, IPB_AddressBusiness, ITransientDependency
     {
         public PB_AddressBusiness(IRepository repository)
             : base(repository)

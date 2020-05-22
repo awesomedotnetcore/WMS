@@ -10,13 +10,13 @@
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
         <a-form-model-item label="编号" prop="Code">
-          <a-input v-model="entity.Code" autocomplete="off" />
+          <a-input v-model="entity.Code" autocomplete="off" ><a-icon slot="prefix" type="scan" /></a-input>
         </a-form-model-item>
         <a-form-model-item label="名称" prop="Name">
-          <a-input v-model="entity.Name" autocomplete="off" />
+          <a-input v-model="entity.Name" autocomplete="off" ><a-icon slot="prefix" type="paper-clip" /></a-input>
         </a-form-model-item>
         <a-form-model-item label="设备码" prop="EquNum">
-          <a-input v-model="entity.EquNum" autocomplete="off" />
+          <a-input v-model="entity.EquNum" autocomplete="off" ><a-icon slot="prefix" type="barcode" /></a-input>
         </a-form-model-item>
         <a-form-model-item label="状态" prop="Status">
           <a-radio-group v-model="entity.Status">
@@ -29,7 +29,7 @@
           </a-radio-group>
         </a-form-model-item>
         <a-form-model-item label="备注" prop="Remark">
-          <a-input v-model="entity.Remark" autocomplete="off" />
+          <a-textarea v-model="entity.Remark" autocomplete="off"></a-textarea>
         </a-form-model-item>
       </a-form-model>
     </a-spin>

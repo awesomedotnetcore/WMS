@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Coldairarrow.Api.Controllers.PB
 {
     [Route("/PB/[controller]/[action]")]
-    public class PB_AddressController : BaseApiController
+    public partial class PB_AddressController : BaseApiController
     {
         #region DI
 
@@ -45,6 +45,9 @@ namespace Coldairarrow.Api.Controllers.PB
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
+                if(string.IsNullOrWhiteSpace(data.SupId)) data.SupId = null;
+                else if (string.IsNullOrWhiteSpace(data.CusId)) data.CusId = null;
+
 
                 await _pB_AddressBus.AddDataAsync(data);
             }

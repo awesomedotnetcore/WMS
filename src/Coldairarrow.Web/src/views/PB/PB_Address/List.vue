@@ -1,5 +1,5 @@
 ﻿<template>
-  <a-card :bordered="false">
+  <a-drawer :title="title" placement="right" :closable="true" :maskClosable="false" @close="onDrawerClose" :visible="visible" :width="1224" :getContainer="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
       <a-button
@@ -10,34 +10,6 @@
         :loading="loading"
       >删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
-    </div>
-
-    <div class="table-page-search-wrapper">
-      <a-form layout="inline">
-        <a-row :gutter="10">
-          <a-col :md="4" :sm="24">
-            <a-form-item label="查询类别">
-              <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="CusId">客户ID</a-select-option>
-                <a-select-option key="SupId">供应商ID</a-select-option>
-                <a-select-option key="Code">电话/投料点编号</a-select-option>
-                <a-select-option key="Name">联系人/投料点名称</a-select-option>
-                <a-select-option key="Address">地址</a-select-option>
-                <a-select-option key="Remarks">备注</a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
-          <a-col :md="4" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="关键字" />
-            </a-form-item>
-          </a-col>
-          <a-col :md="6" :sm="24">
-            <a-button type="primary" @click="getDataList">查询</a-button>
-            <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
-          </a-col>
-        </a-row>
-      </a-form>
     </div>
 
     <a-table
@@ -52,6 +24,21 @@
       :bordered="true"
       size="small"
     >
+      <span slot="IsEnable" slot-scope="text, record">
+        <template>
+          <a-tag v-if="record.IsEnable===false" color="red">
+            停用
+          </a-tag>
+          <a-tag color="green">
+            启用
+          </a-tag>
+        </template>
+      </span>
+      <span slot="IsDefault" slot-scope="text, record">    
+        <template>
+          <a-switch checked-children="开" un-checked-children="关" v-model="record.IsDefault" />
+        </template>
+      </span>
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -62,22 +49,20 @@
     </a-table>
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
-  </a-card>
+  </a-drawer>
 </template>
 
 <script>
 import EditForm from './EditForm'
 
 const columns = [
-  { title: '客户ID', dataIndex: 'CusId', width: '10%' },
-  { title: '供应商ID', dataIndex: 'SupId', width: '10%' },
-  { title: '电话/投料点编号', dataIndex: 'Code', width: '10%' },
-  { title: '联系人/投料点名称', dataIndex: 'Name', width: '10%' },
+  { title: '编号', dataIndex: 'Code', width: '15%' },
+  { title: '名称', dataIndex: 'Name', width: '15%' },
   { title: '地址', dataIndex: 'Address', width: '10%' },
-  { title: '是否启用 ', dataIndex: 'IsEnable', width: '10%' },
-  { title: '是否默认', dataIndex: 'IsDefault', width: '10%' },
-  { title: '备注', dataIndex: 'Remarks', width: '10%' },
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+  { title: '状态', dataIndex: 'IsEnable', width: '8%', scopedSlots: { customRender: 'IsEnable' } },
+  { title: '是否默认', dataIndex: 'IsDefault', width: '8%', scopedSlots: { customRender: 'IsDefault' } },
+  { title: '备注', dataIndex: 'Remarks' },
+  { title: '操作', dataIndex: 'action', width: '10%', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
@@ -89,6 +74,8 @@ export default {
   },
   data() {
     return {
+      visible: false,
+      title:'',
       data: [],
       pagination: {
         current: 1,
@@ -115,7 +102,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/PB/PB_Address/GetDataList', {
+        .post('/PB/PB_Address/QueryDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
@@ -138,10 +125,10 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm()
+      this.$refs.editForm.openForm("",this.queryParam.CusId,this.queryParam.SupId)
     },
     handleEdit(id) {
-      this.$refs.editForm.openForm(id)
+      this.$refs.editForm.openForm(id,this.queryParam.CusId,this.queryParam.SupId)
     },
     handleDelete(ids) {
       var thisObj = this
@@ -163,6 +150,22 @@ export default {
           })
         }
       })
+    },
+    openDrawer(isCus, id, name) {
+      this.title=name+'地址设置'
+      if(isCus){
+        this.queryParam.CusId = id
+        this.queryParam.SupId = ""
+      }else{
+        this.queryParam.SupId = id
+        this.queryParam.CusId = ""
+      }
+      
+      this.visible = true
+      this.getDataList()
+    },
+    onDrawerClose() {
+      this.visible = false
     }
   }
 }
