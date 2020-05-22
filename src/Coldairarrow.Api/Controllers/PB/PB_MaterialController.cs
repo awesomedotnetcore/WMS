@@ -29,6 +29,14 @@ namespace Coldairarrow.Api.Controllers.PB
             return await _pB_MaterialBus.GetDataListAsync(input);
         }
 
+
+        [HttpPost]
+        public async Task<List<PB_Material>> GetAllDataList()
+        {
+            return await _pB_MaterialBus.GetDataListAsync();
+        }
+
+
         [HttpPost]
         public async Task<PB_Material> GetTheData(IdInputDTO input)
         {

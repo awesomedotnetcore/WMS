@@ -47,18 +47,22 @@
           <a @click="handleDelete([record.Id])">删除</a>
           <a-divider type="vertical" />
           <a @click="openZoneList(record.Id)">分区管理</a>
+          <a-divider type="vertical" />
+          <a @click="openMaterialList(record.Id)">关联物料</a>
         </template>
       </span>
     </a-table>
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
     <zone-list ref="zoneList" :parentObj="this"></zone-list>
+    <material-list ref="materialList" :parentObj="this"></material-list>
   </a-card>
 </template>
 
 <script>
 import EditForm from './EditForm'
 import ZoneList from '../PB_TrayZone/List'
+import MaterialList from '../PB_TrayMaterial/List'
 
 const filterYesOrNo = (value, row, index) => {
   if (value) return '是'
@@ -77,7 +81,8 @@ const columns = [
 export default {
   components: {
     EditForm,
-    ZoneList
+    ZoneList,
+    MaterialList
   },
   mounted() {
     this.getDataList()
@@ -161,6 +166,9 @@ export default {
     },
     openZoneList(typeId) {
       this.$refs.zoneList.openDrawer(typeId)
+    },
+    openMaterialList(typeId) {
+      this.$refs.materialList.openDrawer(typeId)
     }
   }
 }

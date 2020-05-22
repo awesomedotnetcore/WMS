@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -62,5 +63,6 @@ namespace Coldairarrow.Entity.PB
         /// </summary>
         public Boolean Deleted { get; set; }
 
+        public List<PB_TrayMaterial> PB_TrayMaterials { get; set; }
     }
 }
