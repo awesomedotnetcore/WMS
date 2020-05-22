@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.ComponentModel;
 using System.IO;
@@ -66,7 +67,10 @@ namespace Coldairarrow.Util
         /// <returns></returns>
         public static string ToJson(this object obj)
         {
-            return JsonConvert.SerializeObject(obj);
+            var setting = new JsonSerializerSettings();
+            setting.ContractResolver = new DefaultContractResolver();
+            setting.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            return JsonConvert.SerializeObject(obj, setting);
         }
 
         /// <summary>

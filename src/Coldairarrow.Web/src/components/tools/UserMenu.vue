@@ -61,6 +61,7 @@ export default {
         onOk() {
           TokenCache.deleteToken()
           OperatorCache.clear()
+          localStorage.clear()
           location.reload()
           // that.$router.push({ path: '/user/login' })
         }
