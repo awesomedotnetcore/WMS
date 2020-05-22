@@ -41,10 +41,16 @@
           <a-input v-model="entity.OverVol" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="是否禁用" prop="IsForbid">
-          <a-input v-model="entity.IsForbid" autocomplete="off" />
+          <a-select placeholder="请选择" v-model="entity.IsForbid" autocomplete="off" @select="DataTypeChange">            
+            <a-select-option :value="true" >是</a-select-option>
+            <a-select-option :value="false" >否</a-select-option>
+          </a-select>
         </a-form-model-item>
         <a-form-model-item label="是否默认" prop="IsDefault">
-          <a-input v-model="entity.IsDefault" autocomplete="off" />
+          <a-select placeholder="请选择" v-model="entity.IsDefault" autocomplete="off" @select="DataTypeChange">            
+            <a-select-option :value="true" >是</a-select-option>
+            <a-select-option :value="false" >否</a-select-option>
+          </a-select>
         </a-form-model-item>
         <a-form-model-item label="故障代码" prop="ErrorCode">
           <a-input v-model="entity.ErrorCode" autocomplete="off" />
@@ -155,6 +161,9 @@ export default {
         this.loading = false
         thisObj.RackList = resJson.Data
       })
+    },
+    DataTypeChange(val, option) {
+      this.DataType = val
     }
   }
 }

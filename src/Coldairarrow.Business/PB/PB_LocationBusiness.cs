@@ -61,6 +61,22 @@ namespace Coldairarrow.Business.PB
             await DeleteAsync(ids);
         }
 
+        public async Task ModifyEnableAsync(string Id)
+        {
+            var entity = await GetEntityAsync(Id);
+            if (entity.IsForbid)
+            {
+                entity.IsForbid = false;
+                if (entity.IsDefault) entity.IsDefault = false;
+            }
+            else
+            {
+                entity.IsForbid = true;
+            }
+
+            await UpdateAsync(entity);
+        }
+
         #endregion
 
         #region 私有成员

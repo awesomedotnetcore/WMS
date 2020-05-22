@@ -13,5 +13,6 @@ namespace Coldairarrow.Business.PB
         Task AddDataAsync(PB_Location data);
         Task UpdateDataAsync(PB_Location data);
         Task DeleteDataAsync(List<string> ids);
+        //Task ModifyEnableAsync(string Id);
     }
 }
