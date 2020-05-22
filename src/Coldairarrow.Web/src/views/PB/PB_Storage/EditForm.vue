@@ -37,8 +37,8 @@
             <a-select-option :value="true" >启用</a-select-option>
           </a-select>
         </a-form-model-item>
-        <a-form-model-item label="仓库状态:" prop="disable">
-          <a-select  v-model="entity.disable" autocomplete="off" @select="DataTypeChange" disabled>
+        <a-form-model-item label="仓库状态:" prop="Disable">
+          <a-select  v-model="entity.Disable" autocomplete="off" @select="DataTypeChange" disabled>
             <a-select-option :value="false" >停用</a-select-option>
             <a-select-option :value="true" >启用</a-select-option>
           </a-select>
