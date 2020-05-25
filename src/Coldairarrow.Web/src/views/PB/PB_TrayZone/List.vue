@@ -5,7 +5,7 @@
     :closable="true"
     @close="onDrawerClose"
     :visible="visible"
-    :width="1300"
+    :width="900"
     :getContainer="false"
   >
     <a-card :bordered="false">

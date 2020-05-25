@@ -2,12 +2,22 @@
   <a-drawer
     title="关联托盘类型"
     placement="right"
-    :closable="true"
+    :closable="false"
     @close="onDrawerClose"
     :visible="visible"
     :width="1000"
     :getContainer="false"
   >
+
+    <a-drawer
+        title="分区管理"
+        :width="320"
+        :closable="false"
+        :visible="childrenDrawer"
+        @close="onChildrenDrawerClose"
+      >
+      </a-drawer>
+  
   <a-card :bordered="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
@@ -112,6 +122,7 @@ export default {
       queryParam: {},
       selectedRowKeys: [],
       visible: false,
+      childrenDrawer: false,
     }
   },
   methods: {
@@ -183,6 +194,9 @@ export default {
     },
     onDrawerClose() {
       this.visible = false
+    },
+    onChildrenDrawerClose() {
+      this.childrenDrawer = false;
     },
     openDrawer(typeId) {
       this.typeId = typeId
