@@ -30,6 +30,12 @@ namespace Coldairarrow.Api.Controllers.PB
         }
 
         [HttpPost]
+        public async Task<List<PB_TrayMaterial>> GetDataListByTypeId(string typeId)
+        {
+            return await _pB_TrayMaterialBus.GetDataListAsync(typeId);
+        }
+
+        [HttpPost]
         public async Task<PB_TrayMaterial> GetTheData(IdInputDTO input)
         {
             return await _pB_TrayMaterialBus.GetTheDataAsync(input.id);
@@ -41,6 +47,22 @@ namespace Coldairarrow.Api.Controllers.PB
 
         [HttpPost]
         public async Task SaveData(PB_TrayMaterial data)
+        {
+            //if (data.Id.IsNullOrEmpty())
+            //{
+            //    InitEntity(data);
+
+            //    await _pB_TrayMaterialBus.AddDataAsync(data);
+            //}
+            //else
+            //{
+            //    await _pB_TrayMaterialBus.UpdateDataAsync(data);
+            //}
+            await _pB_TrayMaterialBus.AddDataAsync(data);
+        }
+
+        [HttpPost]
+        public async Task SaveDatas(string typeId, List<string> targetKeys)
         {
             //if (data.Id.IsNullOrEmpty())
             //{

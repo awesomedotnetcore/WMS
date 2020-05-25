@@ -10,7 +10,7 @@
   >
     <a-card :bordered="false">
       <div class="table-operator">
-        <a-button type="primary" icon="plus" @click="hanldleAdd()">添加</a-button>
+        <a-button type="primary" icon="plus" @click="hanldleAdd()">编辑</a-button>
         <a-button
           type="primary"
           icon="minus"
@@ -116,9 +116,6 @@ export default {
     },
     hanldleAdd() {
       this.$refs.editForm.openForm(this.typeId)
-    },
-    handleEdit(id) {
-      this.$refs.editForm.openForm(this.typeId, id)
     },
     handleDelete(ids) {
       this.ids = ids
