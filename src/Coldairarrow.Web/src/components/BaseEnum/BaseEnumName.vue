@@ -11,7 +11,8 @@ export default {
   },
   data() {
     return {
-      enumData: {}
+      enumData: {},
+      enumItems: []
     }
   },
   watch: {
@@ -24,24 +25,31 @@ export default {
   },
   computed: {
     enumName: function () {
-      var search = this.enumData.EnumItems.filter((item, index, arr) => { return item.Value === this.value })
-      if (search.length <= 0) return ' '
-      else return search[0].Name
+      var search = this.enumItems.filter((item, index, arr) => { return item.Value === this.value })
+      var resultName = ''
+      if (search.length <= 0) resultName = ' '
+      else {
+        resultName = search[0].Name
+      }
+      console.log('enumName', resultName)
+      return resultName
     }
   },
   methods: {
     getEnum() {
       var storageKey = 'Enum_' + this.code
-      var enumJson = localStorage.getItem(storageKey)
-      if (enumJson === null || enumJson === '') {
+      var dataJson = localStorage.getItem(storageKey)
+      if (dataJson === null || dataJson === '') {
         this.$http.get('/Base/Base_Enum/GetByCode?code=' + this.code)
           .then(resJson => {
-            this.enumData = resJson.Data
-            enumJson = JSON.stringify(resJson.Data)
-            localStorage.setItem(storageKey, enumJson)
+            this.enumData = { ...resJson.Data }
+            this.enumItems = [...resJson.Data.EnumItems]
+            dataJson = JSON.stringify(resJson.Data)
+            localStorage.setItem(storageKey, dataJson)
           })
       } else {
-        this.enumData = JSON.parse(enumJson)
+        this.enumData = JSON.parse(dataJson)
+        this.enumItems = [...this.enumData.EnumItems]
       }
     }
   }
