@@ -4,6 +4,7 @@ import 'nprogress/nprogress.css' // progress bar style
 import { setDocumentTitle, domTitle } from '@/utils/domUtil'
 import TokenCache from '@/utils/cache/TokenCache'
 import OperatorCache from '@/utils/cache/OperatorCache'
+import ParameterCache from '@/utils/cache/ParameterCache'
 import { initRouter } from '@/utils/routerUtil'
 import defaultSettings from '@/config/defaultSettings'
 
@@ -37,6 +38,7 @@ router.beforeEach((to, from, next) => {
         })
       }
     })
+    ParameterCache.init()
   } else {
     if (whiteList.includes(to.name)) {
       // 在免登录白名单，直接进入

@@ -39,6 +39,10 @@ namespace Coldairarrow.Business.Base
             return await GetEntityAsync(id);
         }
 
+        public async Task<Dictionary<string, string>> GetConfig()
+        {
+            return await this.GetIQueryable().ToDictionaryAsync(k => k.Code, v => v.Val);
+        }
         public async Task AddDataAsync(Base_Parameter data)
         {
             await InsertAsync(data);
