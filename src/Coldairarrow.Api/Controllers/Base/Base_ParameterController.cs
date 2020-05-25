@@ -35,6 +35,12 @@ namespace Coldairarrow.Api.Controllers.Base
             return await _base_ParameterBus.GetTheDataAsync(input.id);
         }
 
+        [HttpGet]
+        public async Task<Dictionary<string, string>> GetConfig()
+        {
+            return await _base_ParameterBus.GetConfig();
+        }
+
         #endregion
 
         #region 提交

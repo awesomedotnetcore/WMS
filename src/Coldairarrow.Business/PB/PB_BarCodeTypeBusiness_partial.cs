@@ -53,7 +53,7 @@ namespace Coldairarrow.Business.PB
             switch (rule.Type)
             {
                 case "Const": code = rule.Rule; break;
-                case "Date": code = now.ToString(rule.Rule.IsNullOrEmpty() ? "YYYYMMDD" : rule.Rule); break;
+                case "Date": code = now.ToString(rule.Rule.IsNullOrEmpty() ? "yyyyMMdd" : rule.Rule); break;
                 case "Serial":
                     {
                         var seq = type.SeqNum.GetValueOrDefault(0) + 1;
