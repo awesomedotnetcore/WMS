@@ -15,7 +15,6 @@ namespace Coldairarrow.Business.PB
         public PB_TrayMaterialBusiness(IRepository repository)
             : base(repository)
         {
-            repository.HandleSqlLog = System.Console.WriteLine;
         }
 
         #region 外部接口
@@ -53,11 +52,11 @@ namespace Coldairarrow.Business.PB
 
         public async Task DeleteDataAsync(string trayTypeId, List<string> materialIds)
         {
-            var q = GetIQueryable();
-            q = q.Where(w => w.TrayTypeId == trayTypeId && materialIds.Contains(w.MaterialId));
-            var res = await q.ToListAsync();
-
-            await DeleteAsync(res);
+            
+            foreach(var key in materialIds)
+            {
+                await ExecuteSqlAsync(string.Format("delete from PB_TrayMaterial where TrayTypeId='{0}' and MaterialId='{1}'", trayTypeId, key));
+            }
         }
 
         #endregion

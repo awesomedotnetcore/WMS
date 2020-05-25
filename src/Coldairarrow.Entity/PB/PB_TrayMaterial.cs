@@ -10,7 +10,6 @@ namespace Coldairarrow.Entity.PB
     /// 托盘类型与物料对应关系
     /// </summary>
     [Table("PB_TrayMaterial")]
-    [EFCore.Sharding.DataAnnotations.Keys(nameof(MaterialId), nameof(TrayTypeId))]
     public class PB_TrayMaterial
     {
 
@@ -38,8 +37,8 @@ namespace Coldairarrow.Entity.PB
     {
         public void Configure(EntityTypeBuilder<PB_TrayMaterial> builder)
         {
-            //builder
-            //    .HasKey(t => new { t.MaterialId, t.TrayTypeId });
+            builder
+                .HasKey(t => new { t.MaterialId, t.TrayTypeId });
 
             builder.HasOne(pt => pt.PB_Material)
                 .WithMany(p => p.PB_TrayMaterials)

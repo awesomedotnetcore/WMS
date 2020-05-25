@@ -387,6 +387,11 @@ namespace Coldairarrow.Business
 
         #region 执行Sql语句
 
+        public async Task<int> ExecuteSqlAsync(string sql)
+        {
+            return await Service.ExecuteSqlAsync(sql);
+        }
+
         #endregion
 
         #region 业务返回
