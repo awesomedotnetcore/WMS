@@ -2,21 +2,12 @@
   <a-drawer
     title="关联托盘类型"
     placement="right"
-    :closable="false"
+    :closable="true"
     @close="onDrawerClose"
     :visible="visible"
     :width="1000"
     :getContainer="false"
   >
-
-    <a-drawer
-        title="分区管理"
-        :width="320"
-        :closable="false"
-        :visible="childrenDrawer"
-        @close="onChildrenDrawerClose"
-      >
-      </a-drawer>
   
   <a-card :bordered="false">
     <div class="table-operator">
