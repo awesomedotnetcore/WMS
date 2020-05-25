@@ -1,4 +1,13 @@
 ﻿<template>
+  <a-drawer
+    title="关联托盘类型"
+    placement="right"
+    :closable="true"
+    @close="onDrawerClose"
+    :visible="visible"
+    :width="1000"
+    :getContainer="false"
+  >
   <a-card :bordered="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
@@ -17,14 +26,9 @@
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.Code" placeholder="编码" />
+              <a-input v-model="queryParam.keyword" placeholder="类型编号或名称" />
             </a-form-item>
           </a-col>
-          <a-col :md="4" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.Name" placeholder="名称" />
-            </a-form-item>
-          </a-col> 
           <a-col :md="6" :sm="24">
             <a-button type="primary" @click="getDataList">查询</a-button>
             <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
@@ -45,12 +49,13 @@
       :bordered="true"
       size="small"
     >
-
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
           <a-divider type="vertical" />
           <a @click="handleDelete([record.Id])">删除</a>
+          <a-divider type="vertical" />
+          <a @click="openZoneList(record.Id)">分区管理</a>
           <a-divider type="vertical" />
           <a @click="openMaterialList(record.Id)">关联物料</a>
         </template>
@@ -58,31 +63,36 @@
     </a-table>
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
+    <zone-list ref="zoneList" :parentObj="this"></zone-list>
     <material-list ref="materialList" :parentObj="this"></material-list>
   </a-card>
+  </a-drawer>
 </template>
 
 <script>
 import EditForm from './EditForm'
+import ZoneList from '../PB_TrayZone/List'
 import MaterialList from '../PB_TrayMaterial/List'
 
 const filterYesOrNo = (value, row, index) => {
   if (value) return '是'
   else return '否'
 }
-
 const columns = [
-  { title: '仓库', dataIndex: 'PB_Storage.Name', width: '10%' },
-  { title: '货区编号', dataIndex: 'Code', width: '10%' },
-  { title: '货区名称', dataIndex: 'Name', width: '10%' },
-  { title: '是否缓存区', dataIndex: 'IsCache', width: '10%', customRender: filterYesOrNo },
+  { title: '编号', dataIndex: 'Code', width: '10%' },
+  { title: '名称', dataIndex: 'Name', width: '10%' },
+  { title: '长', dataIndex: 'Length', width: '10%' },
+  { title: '宽', dataIndex: 'Width', width: '10%' },
+  { title: '高', dataIndex: 'High', width: '10%' },
+  { title: '是否有分区', dataIndex: 'IsZone', width: '10%', customRender: filterYesOrNo },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
     EditForm,
-    MaterialList,
+    ZoneList,
+    MaterialList
   },
   mounted() {
     this.getDataList()
@@ -100,7 +110,8 @@ export default {
       loading: false,
       columns,
       queryParam: {},
-      selectedRowKeys: []
+      selectedRowKeys: [],
+      visible: false,
     }
   },
   methods: {
@@ -115,7 +126,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/PB/PB_StorArea/GetDataList', {
+        .post('/PB/PB_TrayType/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
@@ -149,7 +160,7 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/PB/PB_StorArea/DeleteData', ids).then(resJson => {
+            thisObj.$http.post('/PB/PB_TrayType/DeleteData', ids).then(resJson => {
               resolve()
 
               if (resJson.Success) {
@@ -164,8 +175,21 @@ export default {
         }
       })
     },
+    openZoneList(typeId) {
+      this.$refs.zoneList.openDrawer(typeId)
+    },
     openMaterialList(typeId) {
       this.$refs.materialList.openDrawer(typeId)
+    },
+    onDrawerClose() {
+      this.visible = false
+    },
+    openDrawer(typeId) {
+      this.typeId = typeId
+      this.visible = true
+      if (typeId != null) {
+        this.getDataList()
+      }
     }
   }
 }

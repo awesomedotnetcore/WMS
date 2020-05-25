@@ -45,8 +45,7 @@
       </template>
 
       <span slot="IsForbid" slot-scope="text, record">    
-        <template>
-          <!-- <a-switch checked-children="启用" un-checked-children="停用" @click="handleEnable(record.Id)" v-model="record.IsForbid" /> -->
+        <template>          
         <a-button :type="record.IsForbid?'primary':'danger'">
         <a v-if="record.IsForbid" @click="handleEnable(record,'IsForbid',false)">启用</a>
         <a v-else @click="handleEnable(record,'IsForbid',true)">停用</a>
@@ -54,27 +53,27 @@
         </template>
       </span>
 
-      <!-- <template slot="IsDefault" slot-scope="text, record" >
-        <a-radio :checked="text" @click="handleDefault(record,'IsDefault',true)">
-        </a-radio>
-      </template> -->
-
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="handleEdit(record.Id)">编辑</a>
           <a-divider type="vertical" />
-          <a @click="handleDelete([record.Id])">删除</a>
+          <a @click="handleEdit(record.Id)">编辑<br></a>
+          <a-divider type="vertical" />
+          <a @click="handleDelete([record.Id])">删除<br></a>
+          <a-divider type="vertical" />
+          <a @click="openTrayTypeList(record.Id)">设置托盘类型</a>
         </template>
       </span>
     </a-table>
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
+    <traytype-list ref="traytypeList" :parentObj="this"></traytype-list>
   </a-card>
 </template>
 
 <script>
 import EditForm from './EditForm'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
+import TraytypeList from '../PB_LocalTrayType/List'
 
 const filterYesOrNo = (value, row, index) => {
   if (value) return '是'
@@ -101,6 +100,7 @@ export default {
   components: {
     EditForm,
     EnumName, 
+    TraytypeList,
   },
   mounted() {
     this.getDataList()
@@ -203,27 +203,9 @@ export default {
         }
       })
     },
-    // handleDefault(Location,prop, enable) {
-    //   var thisObj = this
-    //   var entity = { ...Location}
-    //   entity[prop] = enable   
-    //   this.$confirm({
-    //     title: '确认将此货位设置为默认货位吗?',
-    //     onOk() {
-    //       return new Promise((resolve, reject) => {
-    //         thisObj.$http.post('/PB/PB_Location/SaveData', entity).then(resJson => {
-    //           resolve()
-    //           if (resJson.Success) {
-    //             thisObj.$message.success('操作成功!')
-    //             thisObj.getDataList()
-    //           } else {
-    //             thisObj.$message.error(resJson.Msg)
-    //           }
-    //         })
-    //       })
-    //     }
-    //   })
-    // },
+    openTrayTypeList(typeId) {
+      this.$refs.traytypeList.openDrawer(typeId)
+    }
   }
 }
 </script>
