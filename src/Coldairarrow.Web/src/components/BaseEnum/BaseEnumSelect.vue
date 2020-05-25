@@ -1,6 +1,6 @@
 <template>
   <a-select v-model="curValue" :placeholder="enumData.Name" @select="handleSelected" v-bind="$attrs">
-    <a-select-option v-for="item in enumData.EnumItems" :key="item.Value" :value="item.Value">{{ item.Name }}</a-select-option>
+    <a-select-option v-for="item in enumItems" :key="item.Value" :value="item.Value">{{ item.Name }}</a-select-option>
   </a-select>
 </template>
 <script>
@@ -12,7 +12,8 @@ export default {
   data() {
     return {
       curValue: '',
-      enumData: {}
+      enumData: {},
+      enumItems: []
     }
   },
   watch: {
@@ -35,11 +36,13 @@ export default {
         this.$http.get('/Base/Base_Enum/GetByCode?code=' + this.code)
           .then(resJson => {
             this.enumData = resJson.Data
+            this.enumItems = [...resJson.Data.EnumItems]
             enumJson = JSON.stringify(resJson.Data)
             localStorage.setItem(storageKey, enumJson)
           })
       } else {
         this.enumData = JSON.parse(enumJson)
+        this.enumItems = [...this.enumData.EnumItems]
       }
     },
     handleSelected(val) {
