@@ -52,7 +52,11 @@ namespace Coldairarrow.Business.PB
 
         public async Task DeleteDataAsync(string trayTypeId, List<string> materialIds)
         {
-            await Delete_SqlAsync(w => materialIds.Contains(w.MaterialId) && w.TrayTypeId == trayTypeId);
+            
+            foreach(var key in materialIds)
+            {
+                await ExecuteSqlAsync(string.Format("delete from PB_TrayMaterial where TrayTypeId='{0}' and MaterialId='{1}'", trayTypeId, key));
+            }
         }
 
         #endregion
