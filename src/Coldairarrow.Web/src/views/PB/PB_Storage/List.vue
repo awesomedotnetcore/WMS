@@ -39,27 +39,27 @@
 
       <span slot="IsTray" slot-scope="text, record">    
         <template>
-        <a-tag :type="record.IsTray?'#FF0000':'#87d068'">
+        <a-button :type="record.IsTray?'primary':'danger'">
         <a v-if="record.IsTray" @click="handleEnable(record,'IsTray',false)">启用</a>
         <a v-else @click="handleEnable(record,'IsTray',true)">停用</a>
-        </a-tag>
+        </a-button>
         </template>
       </span>
 
       <span slot="IsZone" slot-scope="text, record">    
         <template>
-        <a-button :type="record.IsZone?'primary':'default'">
+        <a-button :type="record.IsZone?'primary':'danger'">
         <a v-if="record.IsZone" @click="handleEnable(record,'IsZone',false)">启用</a>
         <a v-else @click="handleEnable(record,'IsZone',true)">停用</a>
         </a-button>
         </template>
       </span>
 
-      <span slot="disable" slot-scope="text, record">    
+      <span slot="Disable" slot-scope="text, record">    
         <template>
-        <a-button :type="record.disable?'primary':'default'">
-        <a v-if="record.disable" @click="handleEnable(record,'disable',false)">启用</a>
-        <a v-else @click="handleEnable(record,'disable',true)">停用</a>
+        <a-button :type="record.Disable?'primary':'danger'">
+        <a v-if="record.Disable" @click="handleEnable(record,'Disable',false)">启用</a>
+        <a v-else @click="handleEnable(record,'Disable',true)">停用</a>
         </a-button>
         </template>
       </span>
@@ -95,8 +95,7 @@ const columns = [
   { title: '仓库类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
   { title: '托盘管理', dataIndex: 'IsTray', width: '10%' , scopedSlots: { customRender: 'IsTray' }},
   { title: '托盘分区管理', dataIndex: 'IsZone', width: '10%' , scopedSlots: { customRender: 'IsZone' }},
-  { title: '仓库状态', dataIndex: 'disable', width: '10%' , scopedSlots: { customRender: 'disable' }},
-  //{ title: '默认仓库', dataIndex: 'IsDefault', width: '8%'  , customRender: filterYesOrNo},
+  { title: '仓库状态', dataIndex: 'Disable', width: '10%' , scopedSlots: { customRender: 'Disable' }},
   { title: '默认仓库', dataIndex: 'IsDefault', width: '8%' , scopedSlots: { customRender: 'IsDefault' }},
   { title: '备注', dataIndex: 'Remarks', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
@@ -195,7 +194,7 @@ export default {
       var entity = { ...Storage}
       entity[prop] = enable   
       this.$confirm({
-        title: '确认' + (enable ? '停用' : '启用' ) + '吗?',
+        title: '确认' + (enable ? '启用' : '停用' ) + '吗?',
         onOk() {
           return new Promise((resolve, reject) => {
             thisObj.$http.post('/PB/PB_Storage/SaveData', entity).then(resJson => {

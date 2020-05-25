@@ -21,17 +21,16 @@
         </a-form-model-item>
         <a-form-model-item label="参数值" prop="Val">
           <a-input v-model="entity.Val" autocomplete="off" />
-        </a-form-model-item>        
+        </a-form-model-item>   
+        <a-form-model-item label="描述" prop="Remarks">
+          <a-textarea v-model="entity.Remarks" autocomplete="off" />
+        </a-form-model-item>     
         <a-form-model-item label="是否系统必须" prop="IsSystem">
-          <!-- <a-input v-model="entity.IsSystem" autocomplete="off" /> -->
-          <a-select v-model="entity.IsSystem" autocomplete="off" @select="DataTypeChange">
+          <a-select v-model="entity.IsSystem" autocomplete="off" @select="DataTypeChange" disabled>
             <a-select-option :value="false" >否</a-select-option>
             <a-select-option :value="true" >是</a-select-option>
           </a-select>
-        </a-form-model-item>
-        <a-form-model-item label="描述" prop="Remarks">
-          <a-textarea v-model="entity.Remarks" autocomplete="off" />
-        </a-form-model-item>
+        </a-form-model-item>        
       </a-form-model>
     </a-spin>
   </a-modal>
@@ -63,7 +62,8 @@ export default {
   methods: {
     init() {
       this.visible = true
-      this.entity = {}
+      // this.entity = {}
+      this.entity.IsSystem= false
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })

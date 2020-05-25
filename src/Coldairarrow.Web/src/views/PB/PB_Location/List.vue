@@ -16,25 +16,10 @@
       <a-form layout="inline">
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
-            <a-form-item label="查询类别">
-              <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="Code">货位编号</a-select-option>
-                <a-select-option key="Name">货位名称</a-select-option>
-                <a-select-option key="Type">库位类型</a-select-option>
-                <a-select-option key="StorId">仓库</a-select-option>
-                <a-select-option key="AreaId">货区</a-select-option>
-                <a-select-option key="LanewayId">巷道ID</a-select-option>
-                <a-select-option key="IdRack">货架ID</a-select-option>
-                <a-select-option key="ErrorCode">故障代码</a-select-option>
-                <a-select-option key="Remarks">备注</a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
-          <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="关键字" />
+              <a-input v-model="queryParam.keyword" placeholder="货位编码或名称" />
             </a-form-item>
-          </a-col>
+          </a-col>         
           <a-col :md="6" :sm="24">
             <a-button type="primary" @click="getDataList">查询</a-button>
             <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
@@ -59,6 +44,21 @@
         <enum-name code="	LocationType" :value="text"></enum-name>
       </template>
 
+      <span slot="IsForbid" slot-scope="text, record">    
+        <template>
+          <!-- <a-switch checked-children="启用" un-checked-children="停用" @click="handleEnable(record.Id)" v-model="record.IsForbid" /> -->
+        <a-button :type="record.IsForbid?'primary':'danger'">
+        <a v-if="record.IsForbid" @click="handleEnable(record,'IsForbid',false)">启用</a>
+        <a v-else @click="handleEnable(record,'IsForbid',true)">停用</a>
+        </a-button>
+        </template>
+      </span>
+
+      <!-- <template slot="IsDefault" slot-scope="text, record" >
+        <a-radio :checked="text" @click="handleDefault(record,'IsDefault',true)">
+        </a-radio>
+      </template> -->
+
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -76,18 +76,23 @@
 import EditForm from './EditForm'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 
+const filterYesOrNo = (value, row, index) => {
+  if (value) return '是'
+  else return '否'
+}
+
 const columns = [
   { title: '货位编号', dataIndex: 'Code', width: '10%' },
   { title: '货位名称', dataIndex: 'Name', width: '10%' },
-  { title: '货位类型', dataIndex: 'Type', width: '10%' , scopedSlots: { customRender: 'Type' } },
-  { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
-  { title: '库区ID', dataIndex: 'AreaId', width: '10%' },
-  { title: '巷道ID', dataIndex: 'LanewayId', width: '10%' },
-  { title: '货架ID', dataIndex: 'IdRack', width: '10%' },
-  { title: '剩余容量', dataIndex: 'OverVol', width: '10%' },
-  { title: '是否禁用', dataIndex: 'IsForbid', width: '10%' },
-  { title: '是否默认', dataIndex: 'IsDefault', width: '10%' },
-  { title: '故障代码', dataIndex: 'ErrorCode', width: '10%' },
+  { title: '货位类型', dataIndex: 'Type', width: '8%' , scopedSlots: { customRender: 'Type' } },
+  { title: '仓库', dataIndex: 'PB_Storage.Name', width: '8%' },
+  { title: '货区', dataIndex: 'PB_StorArea.Name', width: '6%' },
+  { title: '巷道', dataIndex: 'PB_Laneway.Name', width: '6%' },
+  { title: '货架', dataIndex: 'PB_Rack.Name', width: '6%' },
+  { title: '剩余容量', dataIndex: 'OverVol', width: '7%' },
+  { title: '状态', dataIndex: 'IsForbid', width: '5%', scopedSlots: { customRender: 'IsForbid' }  },//是否禁用
+  { title: '默认', dataIndex: 'IsDefault', width: '5%', customRender: filterYesOrNo },//是否默认库位
+  { title: '故障码', dataIndex: 'ErrorCode', width: '6' },
   { title: '备注', dataIndex: 'Remarks', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
@@ -176,7 +181,49 @@ export default {
           })
         }
       })
-    }
+    },
+    handleEnable(Location,prop, enable) {
+      var thisObj = this
+      var entity = { ...Location}
+      entity[prop] = enable   
+      this.$confirm({
+        title: '确认' + (enable ? '启用' : '停用' ) + '吗?',
+        onOk() {
+          return new Promise((resolve, reject) => {
+            thisObj.$http.post('/PB/PB_Location/SaveData', entity).then(resJson => {
+              resolve()
+              if (resJson.Success) {
+                thisObj.$message.success('操作成功!')
+                thisObj.getDataList()
+              } else {
+                thisObj.$message.error(resJson.Msg)
+              }
+            })
+          })
+        }
+      })
+    },
+    // handleDefault(Location,prop, enable) {
+    //   var thisObj = this
+    //   var entity = { ...Location}
+    //   entity[prop] = enable   
+    //   this.$confirm({
+    //     title: '确认将此货位设置为默认货位吗?',
+    //     onOk() {
+    //       return new Promise((resolve, reject) => {
+    //         thisObj.$http.post('/PB/PB_Location/SaveData', entity).then(resJson => {
+    //           resolve()
+    //           if (resJson.Success) {
+    //             thisObj.$message.success('操作成功!')
+    //             thisObj.getDataList()
+    //           } else {
+    //             thisObj.$message.error(resJson.Msg)
+    //           }
+    //         })
+    //       })
+    //     }
+    //   })
+    // },
   }
 }
 </script>

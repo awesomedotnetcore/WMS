@@ -66,6 +66,17 @@ namespace Coldairarrow.Api.Controllers.PB
             await _pB_LocationBus.DeleteDataAsync(ids);
         }
 
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="id"></param>
+        ///// <returns></returns>
+        //[HttpPost]
+        //public async Task ModifyEnable(string id)
+        //{
+        //    await _pB_LocationBus.ModifyEnableAsync(id);
+        //}
+
         #endregion
     }
 }
