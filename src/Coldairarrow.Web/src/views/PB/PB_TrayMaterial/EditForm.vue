@@ -1,21 +1,20 @@
 ﻿<template>
   <a-modal
     :title="title"
-    width="40%"
+    width="70%"
     :visible="visible"
     :confirmLoading="loading"
     @ok="handleSubmit"
     @cancel="()=>{this.visible=false}"
   >
-    <a-spin :spinning="loading">
-      <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="物料" prop="MaterialId">
-          <a-select v-model="entity.MaterialId">
-            <a-select-option v-for="item in materialList" :key="item.Id">{{ item.Code + item.Name }}</a-select-option>
-          </a-select>
-        </a-form-model-item>
-      </a-form-model>
-    </a-spin>
+    <a-transfer
+      :data-source="materialList"
+      show-search
+      :list-style="{width: '250px',height: '300px'}"
+      :target-keys="targetKeys"
+      :render="item => `${item.title}(${item.description})`"
+      @change="handleMaterialChange"
+    ></a-transfer>
   </a-modal>
 </template>
 
@@ -32,32 +31,40 @@ export default {
       },
       visible: false,
       loading: false,
-      entity: {},
       rules: {},
       title: '',
-      materialList: []
+      materialList: [],
+      // selectedMaterials: [],
+      targetKeys: []
     }
   },
   methods: {
     init() {
       this.visible = true
-      this.entity = {}
-      this.$nextTick(() => {
-        this.$refs['form'].clearValidate()
-      })
+      this.materialList = []
+      // this.selectedMaterials = []
+      this.targetKeys = []
+      // this.$nextTick(() => {
+      //   thisObj.$refs['form'].clearValidate()
+      // })
     },
-    openForm(typeId, id, title) {
+    openForm(typeId, title) {
+      var thisObj = this
       this.init()
       this.getMaterialList()
-      if (id) {
+      if (typeId) {
         this.loading = true
-        this.$http.post('/PB/PB_TrayMaterial/GetTheData', { id: id }).then(resJson => {
+        this.$http.post('/PB/PB_TrayMaterial/GetDataListByTypeId?typeId=' + typeId).then(resJson => {
           this.loading = false
-
-          this.entity = resJson.Data
+          resJson.Data.forEach(element => {
+            // thisObj.selectedMaterials.push({
+            //   key: element.PB_Material.Id,
+            //   title: element.PB_Material.Name,
+            //   description: element.PB_Material.Code
+            // })
+            thisObj.targetKeys.push(element.PB_Material.Id)
+          })
         })
-      } else {
-        this.entity.TrayTypeId = typeId
       }
     },
     handleSubmit() {
@@ -66,27 +73,48 @@ export default {
           return
         }
         this.loading = true
-        this.$http.post('/PB/PB_TrayMaterial/SaveData', this.entity).then(resJson => {
-          this.loading = false
+        this.$http
+          .post('/PB/PB_TrayMaterial/SaveDatas?typeId=', this.typeId, this.targetKeys)
+          .then(resJson => {
+            this.loading = false
 
-          if (resJson.Success) {
-            this.$message.success('操作成功!')
-            this.visible = false
+            if (resJson.Success) {
+              this.$message.success('操作成功!')
+              this.visible = false
 
-            this.parentObj.getDataList()
-          } else {
-            this.$message.error(resJson.Msg)
-          }
-        })
+              this.parentObj.getDataList()
+            } else {
+              this.$message.error(resJson.Msg)
+            }
+          })
       })
     },
     getMaterialList() {
+      var thisObj = this
+      this.materialList = []
       this.loading = true
       this.$http.post('/PB/PB_Material/GetAllDataList').then(resJson => {
-        this.loading = false
-
-        this.materialList = resJson.Data
+        thisObj.loading = false
+        resJson.Data.forEach(element => {
+          thisObj.materialList.push({
+            key: element.Id,
+            title: element.Name,
+            description: element.Code,
+            chosen: false
+          })
+        })
+        // thisObj.selectedMaterials.forEach(e => {
+        //   thisObj.materialList.forEach(m => {
+        //     if (e.key === m.key) {
+        //       m.chosen = true
+        //       // thisObj.targetKeys.push(m.key)
+        //     }
+        //   })
+        // })
       })
+    },
+    handleMaterialChange(selectedRowKeys) {
+      this.targetKeys = selectedRowKeys
     }
   }
 }

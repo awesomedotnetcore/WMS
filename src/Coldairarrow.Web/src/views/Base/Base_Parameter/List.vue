@@ -2,13 +2,7 @@
   <a-card :bordered="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button
-        type="primary"
-        icon="minus"
-        @click="handleDelete(selectedRowKeys)"
-        :disabled="!hasSelected()"
-        :loading="loading"
-      >删除</a-button>
+      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
 
@@ -33,21 +27,10 @@
       </a-form>
     </div>
 
-    <a-table
-      ref="table"
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      :bordered="true"
-      size="small"
-    >
-    <template slot="Type" slot-scope="text">
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+      <template slot="Type" slot-scope="text">
         <enum-name code="SystemType" :value="text"></enum-name>
-     </template>
+      </template>
 
       <span slot="action" slot-scope="text, record">
         <template>
@@ -77,14 +60,14 @@ const columns = [
   { title: '参数名称', dataIndex: 'Name', width: '15%' },
   { title: '参数值', dataIndex: 'Val', width: '10%' },
   { title: '描述', dataIndex: 'Remarks', width: '20%' },
-  // { title: '是否系统必须', dataIndex: 'IsSystem', width: '10%' , customRender: filterYesOrNo},
+  { title: '系统必须', dataIndex: 'IsSystem', width: '10%', customRender: filterYesOrNo },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
     EditForm,
-    EnumName, 
+    EnumName
   },
   mounted() {
     this.getDataList()

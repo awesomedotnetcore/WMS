@@ -35,6 +35,21 @@ namespace Coldairarrow.Business.PB
             return res;
         }
 
+        public async Task<List<PB_TrayMaterial>> GetDataListAsync(string typeId)
+        {
+            var q = GetIQueryable();
+            q = q.Include(i => i.PB_Material);
+
+            //筛选
+            if (!typeId.IsNullOrEmpty())
+            {
+                q = q.Where(w => w.TrayTypeId == typeId);
+            }
+            var res = await q.ToListAsync();
+
+            return res;
+        }
+
         public async Task<PB_TrayMaterial> GetTheDataAsync(string id)
         {
             return await GetEntityAsync(id);
@@ -45,9 +60,19 @@ namespace Coldairarrow.Business.PB
             await InsertAsync(data);
         }
 
+        public async Task<int> AddDataAsync(List<PB_TrayMaterial> datas)
+        {
+            return await InsertAsync(datas);
+        }
+
         public async Task UpdateDataAsync(PB_TrayMaterial data)
         {
             await UpdateAsync(data);
+        }
+
+        public async Task<int> UpdateDataAsync(List<PB_TrayMaterial> datas)
+        {
+           return await UpdateAsync(datas);
         }
 
         public async Task DeleteDataAsync(string trayTypeId, List<string> materialIds)

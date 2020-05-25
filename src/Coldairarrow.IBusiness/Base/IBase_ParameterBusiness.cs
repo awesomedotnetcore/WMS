@@ -9,6 +9,7 @@ namespace Coldairarrow.Business.Base
     {
         Task<PageResult<Base_Parameter>> GetDataListAsync(PB_ParameterPageInput input);
         Task<Base_Parameter> GetTheDataAsync(string id);
+        Task<Dictionary<string, string>> GetConfig();
         Task AddDataAsync(Base_Parameter data);
         Task UpdateDataAsync(Base_Parameter data);
         Task DeleteDataAsync(List<string> ids);

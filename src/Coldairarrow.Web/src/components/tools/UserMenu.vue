@@ -37,6 +37,7 @@
 // import NoticeIcon from '@/components/NoticeIcon'
 // import { mapActions, mapGetters } from 'vuex'
 import OperatorCache from '@/utils/cache/OperatorCache'
+import ParameterCache from '@/utils/cache/ParameterCache'
 import TokenCache from '@/utils/cache/TokenCache'
 import ChangePwdForm from './ChangePwdForm'
 
@@ -61,6 +62,7 @@ export default {
         onOk() {
           TokenCache.deleteToken()
           OperatorCache.clear()
+          ParameterCache.clear()
           localStorage.clear()
           location.reload()
           // that.$router.push({ path: '/user/login' })
