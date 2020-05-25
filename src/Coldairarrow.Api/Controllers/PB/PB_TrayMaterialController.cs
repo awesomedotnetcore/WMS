@@ -64,17 +64,22 @@ namespace Coldairarrow.Api.Controllers.PB
         [HttpPost]
         public async Task SaveDatas(string typeId, List<string> targetKeys)
         {
-            //if (data.Id.IsNullOrEmpty())
-            //{
-            //    InitEntity(data);
+            var list = await _pB_TrayMaterialBus.GetDataListAsync(typeId);
+            var addList = new List<PB_TrayMaterial>();
+            var deleteList = new List<string>();
 
-            //    await _pB_TrayMaterialBus.AddDataAsync(data);
-            //}
-            //else
-            //{
-            //    await _pB_TrayMaterialBus.UpdateDataAsync(data);
-            //}
-            await _pB_TrayMaterialBus.AddDataAsync(data);
+            foreach (var i in targetKeys)
+            {
+                foreach(var s in list)
+                {
+                    if(i == s.MaterialId)
+                    {
+
+                    }
+                }
+            }
+            await _pB_TrayMaterialBus.AddDataAsync(addList);
+            await _pB_TrayMaterialBus.DeleteDataAsync(typeId, deleteList);
         }
 
         [HttpPost]
