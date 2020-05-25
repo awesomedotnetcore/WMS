@@ -31,7 +31,6 @@ export default {
       else {
         resultName = search[0].Name
       }
-      console.log('enumName', resultName)
       return resultName
     }
   },
