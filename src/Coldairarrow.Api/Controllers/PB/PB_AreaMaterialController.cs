@@ -38,7 +38,7 @@ namespace Coldairarrow.Api.Controllers.PB
         }
 
         [HttpPost]
-        public async Task<List<PB_AreaMaterial>> GetDataListByTypeId(string areaId)
+        public async Task<List<PB_AreaMaterial>> GetDataListByAreaId(string areaId)
         {
             return await _pB_AreaMaterialBus.GetDataListAsync(areaId);
         }
