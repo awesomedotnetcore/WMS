@@ -7,5 +7,6 @@ namespace Coldairarrow.Business.PB
 {
     public partial interface IPB_MaterialBusiness
     {
+        Task<List<PB_Material>> GetQueryData(string id, string keyword);
     }
 }

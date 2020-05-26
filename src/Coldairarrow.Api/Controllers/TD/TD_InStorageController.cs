@@ -12,7 +12,7 @@ namespace Coldairarrow.Api.Controllers.TD
     {
         #region DI
 
-        public TD_InStorageController(ITD_InStorageBusiness tD_InStorageBus,IOperator op)
+        public TD_InStorageController(ITD_InStorageBusiness tD_InStorageBus, IOperator op)
         {
             _tD_InStorageBus = tD_InStorageBus;
             _Op = op;
