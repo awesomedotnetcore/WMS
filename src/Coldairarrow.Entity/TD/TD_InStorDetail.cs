@@ -8,7 +8,7 @@ namespace Coldairarrow.Entity.TD
     /// 入库明细
     /// </summary>
     [Table("TD_InStorDetail")]
-    public class TD_InStorDetail
+    public partial class TD_InStorDetail
     {
 
         /// <summary>

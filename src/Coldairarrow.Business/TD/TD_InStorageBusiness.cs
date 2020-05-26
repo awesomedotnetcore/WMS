@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Coldairarrow.Business.TD
 {
-    public class TD_InStorageBusiness : BaseBusiness<TD_InStorage>, ITD_InStorageBusiness, ITransientDependency
+    public partial class TD_InStorageBusiness : BaseBusiness<TD_InStorage>, ITD_InStorageBusiness, ITransientDependency
     {
         public TD_InStorageBusiness(IRepository repository)
             : base(repository)
@@ -19,22 +19,7 @@ namespace Coldairarrow.Business.TD
 
         #region 外部接口
 
-        public async Task<PageResult<TD_InStorage>> GetDataListAsync(PageInput<ConditionDTO> input)
-        {
-            var q = GetIQueryable();
-            var where = LinqHelper.True<TD_InStorage>();
-            var search = input.Search;
-
-            //筛选
-            if (!search.Condition.IsNullOrEmpty() && !search.Keyword.IsNullOrEmpty())
-            {
-                var newWhere = DynamicExpressionParser.ParseLambda<TD_InStorage, bool>(
-                    ParsingConfig.Default, false, $@"{search.Condition}.Contains(@0)", search.Keyword);
-                where = where.And(newWhere);
-            }
-
-            return await q.Where(where).GetPageResultAsync(input);
-        }
+        
 
         public async Task<TD_InStorage> GetTheDataAsync(string id)
         {
