@@ -1,4 +1,13 @@
 ﻿<template>
+<a-drawer
+    title="关联物料清单"
+    placement="right"
+    :closable="true"
+    @close="onDrawerClose"
+    :visible="visible"
+    :width="900"
+    :getContainer="false"
+  >
   <a-card :bordered="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
@@ -39,7 +48,7 @@
     <a-table
       ref="table"
       :columns="columns"
-      :rowKey="row => row.Id"
+      :rowKey="row => row.MaterialId"
       :dataSource="data"
       :pagination="pagination"
       :loading="loading"
@@ -50,15 +59,16 @@
     >
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="handleEdit(record.Id)">编辑</a>
-          <a-divider type="vertical" />
-          <a @click="handleDelete([record.Id])">删除</a>
+          <!-- <a @click="handleEdit(record.Id)">编辑</a>
+          <a-divider type="vertical" /> -->
+          <a @click="handleDelete([record.MaterialId])">删除</a>
         </template>
       </span>
     </a-table>
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
   </a-card>
+</a-drawer>
 </template>
 
 <script>
@@ -86,11 +96,12 @@ export default {
         showTotal: (total, range) => `总数:${total} 当前:${range[0]}-${range[1]}`
       },
       filters: {},
-      sorter: { field: 'Id', order: 'asc' },
+      sorter: { field: 'MaterialId', order: 'asc' },
       loading: false,
       columns,
       queryParam: {},
-      selectedRowKeys: []
+      selectedRowKeys: [],
+      visible: false,
     }
   },
   methods: {
@@ -108,7 +119,7 @@ export default {
         .post('/PB/PB_AreaMaterial/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
-          SortField: this.sorter.field || 'Id',
+          SortField: this.sorter.field || 'MaterialId',
           SortType: this.sorter.order,
           Search: this.queryParam,
           ...this.filters
@@ -153,6 +164,16 @@ export default {
           })
         }
       })
+    },
+    openDrawer(typeId) {
+      this.typeId = typeId
+      this.visible = true
+      if (typeId != null) {
+        this.getDataList()
+      }
+    },
+    onDrawerClose() {
+      this.visible = false
     }
   }
 }
