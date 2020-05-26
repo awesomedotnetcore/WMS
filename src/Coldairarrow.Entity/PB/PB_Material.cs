@@ -100,5 +100,7 @@ namespace Coldairarrow.Entity.PB
 
         public List<PB_TrayMaterial> PB_TrayMaterials { get; set; }
 
+        public List<PB_AreaMaterial> PB_AreaMaterials { get; set; }
+
     }
 }

@@ -21,10 +21,10 @@
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
 
-    <div class="table-page-search-wrapper">
+    <!-- <!-- <div class="table-page-search-wrapper">
       <a-form layout="inline">
-        <a-row :gutter="10">
-          <a-col :md="4" :sm="24">
+        <a-row :gutter="10"> -->
+          <!-- <a-col :md="4" :sm="24">
             <a-form-item label="查询类别">
               <a-select allowClear v-model="queryParam.condition">
                 <a-select-option key="AreaId">货区ID</a-select-option>
@@ -43,7 +43,7 @@
           </a-col>
         </a-row>
       </a-form>
-    </div>
+    </div>  -->
 
     <a-table
       ref="table"
@@ -75,9 +75,13 @@
 import EditForm from './EditForm'
 
 const columns = [
-  { title: '货区ID', dataIndex: 'AreaId', width: '10%' },
-  { title: '物料ID', dataIndex: 'MaterialId', width: '10%' },
+  { title: '物料编码', dataIndex: 'PB_Material.Code', width: '10%' },
+  { title: '物料名称', dataIndex: 'PB_Material.Name', width: '10%' },
+  { title: '物料规格', dataIndex: 'PB_Material.Spec', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+  // { title: '货区ID', dataIndex: 'AreaId', width: '10%' },
+  // { title: '物料ID', dataIndex: 'MaterialId', width: '10%' },
+  // { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
@@ -102,6 +106,8 @@ export default {
       queryParam: {},
       selectedRowKeys: [],
       visible: false,
+      areaId: null,
+      ids: []
     }
   },
   methods: {
@@ -113,6 +119,7 @@ export default {
     },
     getDataList() {
       this.selectedRowKeys = []
+      this.queryParam.Keyword = this.areaId
 
       this.loading = true
       this.$http
@@ -139,23 +146,23 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm()
+      this.$refs.editForm.openForm(this.areaId)
     },
-    handleEdit(id) {
-      this.$refs.editForm.openForm(id)
-    },
+    // handleEdit(id) {
+    //   this.$refs.editForm.openForm(id)
+    // },
     handleDelete(ids) {
+      this.ids = ids
       var thisObj = this
       this.$confirm({
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/PB/PB_AreaMaterial/DeleteData', ids).then(resJson => {
+            thisObj.$http.post('/PB/PB_AreaMaterial/DeleteData?AreaId=' + thisObj.areaId, thisObj.ids)
+            .then(resJson => {
               resolve()
-
               if (resJson.Success) {
                 thisObj.$message.success('操作成功!')
-
                 thisObj.getDataList()
               } else {
                 thisObj.$message.error(resJson.Msg)
@@ -165,10 +172,10 @@ export default {
         }
       })
     },
-    openDrawer(typeId) {
-      this.typeId = typeId
+    openDrawer(areaId) {
+      this.areaId = areaId
       this.visible = true
-      if (typeId != null) {
+      if (areaId != null) {
         this.getDataList()
       }
     },
