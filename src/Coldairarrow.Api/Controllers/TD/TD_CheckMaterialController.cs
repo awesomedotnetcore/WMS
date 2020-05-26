@@ -42,16 +42,7 @@ namespace Coldairarrow.Api.Controllers.TD
         [HttpPost]
         public async Task SaveData(TD_CheckMaterial data)
         {
-            if (data.Id.IsNullOrEmpty())
-            {
-                InitEntity(data);
-
-                await _tD_CheckMaterialBus.AddDataAsync(data);
-            }
-            else
-            {
-                await _tD_CheckMaterialBus.UpdateDataAsync(data);
-            }
+            await _tD_CheckMaterialBus.UpdateDataAsync(data);
         }
 
         [HttpPost]
