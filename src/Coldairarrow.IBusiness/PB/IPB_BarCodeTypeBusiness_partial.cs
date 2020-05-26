@@ -15,5 +15,6 @@ namespace Coldairarrow.Business.PB
         /// <param name="para">参数</param>
         /// <returns></returns>
         Task<string> Generate(string typeCode, Dictionary<string, string> para = null);
+        Task<List<PB_BarCodeType>> GetAllData();
     }
 }

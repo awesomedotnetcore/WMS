@@ -19,19 +19,19 @@ namespace Coldairarrow.Business.PB
 
         #region 外部接口
 
-        public async Task<PageResult<PB_BarCode>> GetDataListAsync(PageInput<ConditionDTO> input)
+        public async Task<PageResult<PB_BarCode>> GetDataListAsync(PageInput<PB_BarCodeQM> input)
         {
             var q = GetIQueryable();
             var where = LinqHelper.True<PB_BarCode>();
             var search = input.Search;
+            q = q.Include(i => i.BarCodeType);
 
             //筛选
-            if (!search.Condition.IsNullOrEmpty() && !search.Keyword.IsNullOrEmpty())
-            {
-                var newWhere = DynamicExpressionParser.ParseLambda<PB_BarCode, bool>(
-                    ParsingConfig.Default, false, $@"{search.Condition}.Contains(@0)", search.Keyword);
-                where = where.And(newWhere);
-            }
+            if (!search.BarCode.IsNullOrEmpty())
+                where = where.And(w => w.BarCode.Contains(search.BarCode));
+
+            if (!search.BarCodeTypeName.IsNullOrEmpty())
+                where = where.And(w => w.BarCodeType.Code.Contains(search.BarCodeTypeName) || w.BarCodeType.Name.Contains(search.BarCodeTypeName));
 
             return await q.Where(where).GetPageResultAsync(input);
         }

@@ -15,6 +15,7 @@ namespace Coldairarrow.Business.PB
         public PB_TrayBusiness(IRepository repository)
             : base(repository)
         {
+
         }
 
         #region 外部接口
