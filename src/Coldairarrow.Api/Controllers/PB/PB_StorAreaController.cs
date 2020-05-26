@@ -1,4 +1,5 @@
-﻿using Coldairarrow.Business.PB;
+﻿using Coldairarrow.Business.Base;
+using Coldairarrow.Business.PB;
 using Coldairarrow.Entity.PB;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
@@ -8,13 +9,17 @@ using System.Threading.Tasks;
 namespace Coldairarrow.Api.Controllers.PB
 {
     [Route("/PB/[controller]/[action]")]
-    public class PB_StorAreaController : BaseApiController
+    public partial class PB_StorAreaController : BaseApiController
     {
         #region DI
+        IBase_UserStorBusiness _base_UserStorBus { get; }
+        IOperator _Op { get; }
 
-        public PB_StorAreaController(IPB_StorAreaBusiness pB_StorAreaBus)
+        public PB_StorAreaController(IPB_StorAreaBusiness pB_StorAreaBus, IBase_UserStorBusiness base_UserStorBus, IOperator op)
         {
             _pB_StorAreaBus = pB_StorAreaBus;
+            _base_UserStorBus = base_UserStorBus;
+            _Op = op;
         }
 
         IPB_StorAreaBusiness _pB_StorAreaBus { get; }

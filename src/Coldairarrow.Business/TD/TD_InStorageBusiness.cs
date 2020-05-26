@@ -19,13 +19,6 @@ namespace Coldairarrow.Business.TD
 
         #region 外部接口
 
-        
-
-        public async Task<TD_InStorage> GetTheDataAsync(string id)
-        {
-            return await GetEntityAsync(id);
-        }
-
         public async Task AddDataAsync(TD_InStorage data)
         {
             await InsertAsync(data);

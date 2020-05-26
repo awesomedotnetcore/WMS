@@ -3,6 +3,7 @@ using Coldairarrow.Entity.PB;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 
 namespace Coldairarrow.Api.Controllers.PB
@@ -12,11 +13,13 @@ namespace Coldairarrow.Api.Controllers.PB
     {
         #region DI
 
-        public PB_StorageController(IPB_StorageBusiness PB_StorageBus)
+        public PB_StorageController(IPB_StorageBusiness PB_StorageBus,IOperator op)
         {
             _PB_StorageBus = PB_StorageBus;
+            _Op = op;
         }
 
+        IOperator _Op { get; }
         IPB_StorageBusiness _PB_StorageBus { get; }
 
         #endregion
@@ -33,6 +36,16 @@ namespace Coldairarrow.Api.Controllers.PB
         public async Task<PB_Storage> GetTheData(IdInputDTO input)
         {
             return await _PB_StorageBus.GetTheDataAsync(input.id);
+        }
+
+        /// <summary>
+        /// 获取当前用户默认的仓库
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<PB_Storage> GetCurStorage()
+        {
+            return await _PB_StorageBus.GetTheDataAsync(_Op.Property.DefaultStorageId);
         }
 
         #endregion

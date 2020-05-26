@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace Coldairarrow.Business.PB
 {
-    public partial interface IPB_MaterialBusiness
+    public partial interface IPB_StorAreaBusiness
     {
-        Task<List<PB_Material>> GetQueryData(string id, string keyword);
+        Task<List<PB_StorArea>> QueryAsync(string storageId);
     }
 }

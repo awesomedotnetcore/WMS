@@ -43,6 +43,12 @@ namespace Coldairarrow.Api.Controllers.PB
             return await _pB_MaterialBus.GetTheDataAsync(input.id);
         }
 
+        [HttpGet]
+        public async Task<List<PB_Material>> GetQueryData(string id, string keyword)
+        {
+            return await _pB_MaterialBus.GetQueryData(id, keyword);
+        }
+
         #endregion
 
         #region 提交

@@ -29,5 +29,10 @@ namespace Coldairarrow.Business.TD
 
             return await q.Where(where).GetPageResultAsync(input);
         }
+
+        public async Task<TD_InStorage> GetTheDataAsync(string id)
+        {
+            return await this.GetIQueryable().Include(i => i.InStorDetails).SingleOrDefaultAsync(w => w.Id == id);
+        }
     }
 }

@@ -1,70 +1,56 @@
 ﻿<template>
-  <a-card :bordered="false">
+  <div>
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
       <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
-      <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
-
-    <div class="table-page-search-wrapper">
-      <a-form layout="inline">
-        <a-row :gutter="10">
-          <a-col :md="4" :sm="24">
-            <a-form-item label="查询类别">
-              <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="InStorId">入库ID</a-select-option>
-                <a-select-option key="StorId">仓库ID</a-select-option>
-                <a-select-option key="LocalId">货位ID</a-select-option>
-                <a-select-option key="TrayId">托盘ID</a-select-option>
-                <a-select-option key="ZoneId">托盘分区ID</a-select-option>
-                <a-select-option key="BarCode">条码</a-select-option>
-                <a-select-option key="MaterialId">物料ID</a-select-option>
-                <a-select-option key="BatchNo">批次号</a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
-          <a-col :md="4" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="关键字" />
-            </a-form-item>
-          </a-col>
-          <a-col :md="6" :sm="24">
-            <a-button type="primary" @click="getDataList">查询</a-button>
-            <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
-          </a-col>
-        </a-row>
-      </a-form>
-    </div>
-
-    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="handleEdit(record.Id)">编辑</a>
+          <a @click="handleEdit(record)">编辑</a>
           <a-divider type="vertical" />
           <a @click="handleDelete([record.Id])">删除</a>
         </template>
       </span>
     </a-table>
-
-    <edit-form ref="editForm" :parentObj="this"></edit-form>
-  </a-card>
+    <edit-form ref="editForm" @Submit="onEditFormSubmit"></edit-form>
+  </div>
 </template>
 
 <script>
 import EditForm from './EditForm'
 
-const columns = [
-  { title: '入库ID', dataIndex: 'InStorId', width: '10%' },
-  { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
-  { title: '货位ID', dataIndex: 'LocalId', width: '10%' },
-  { title: '托盘ID', dataIndex: 'TrayId', width: '10%' },
-  { title: '托盘分区ID', dataIndex: 'ZoneId', width: '10%' },
+const columns1 = [
+  { title: '物料', dataIndex: 'Material.Name', width: '10%' },
+  { title: '编码', dataIndex: 'Material.Code', width: '10%' },
   { title: '条码', dataIndex: 'BarCode', width: '10%' },
-  { title: '物料ID', dataIndex: 'MaterialId', width: '10%' },
   { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
+  { title: '货位', dataIndex: 'Local.Name', width: '10%' },
   { title: '单价', dataIndex: 'Price', width: '10%' },
-  { title: '总额', dataIndex: 'TotalAmt', width: '10%' },
-  { title: '入库数量', dataIndex: 'Num', width: '10%' },
+  { title: '数量', dataIndex: 'Num', width: '10%' },
+  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+]
+const columns2 = [
+  { title: '物料', dataIndex: 'Material.Name', width: '10%' },
+  { title: '编码', dataIndex: 'Material.Code', width: '10%' },
+  { title: '条码', dataIndex: 'BarCode', width: '10%' },
+  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
+  { title: '货位', dataIndex: 'Local.Name', width: '10%' },
+  { title: '托盘', dataIndex: 'Tray.Name', width: '10%' },
+  { title: '单价', dataIndex: 'Price', width: '10%' },
+  { title: '数量', dataIndex: 'Num', width: '10%' },
+  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+]
+const columns3 = [
+  { title: '物料', dataIndex: 'Material.Name', width: '10%' },
+  { title: '编码', dataIndex: 'Material.Code', width: '10%' },
+  { title: '条码', dataIndex: 'BarCode', width: '10%' },
+  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
+  { title: '货位', dataIndex: 'Local.Name', width: '10%' },
+  { title: '托盘', dataIndex: 'Tray.Name', width: '10%' },
+  { title: '托盘分区', dataIndex: 'Zone.Name', width: '10%' },
+  { title: '单价', dataIndex: 'Price', width: '10%' },
+  { title: '数量', dataIndex: 'Num', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -72,24 +58,26 @@ export default {
   components: {
     EditForm
   },
-  mounted() {
-    this.getDataList()
+  props: {
+    value: { type: Object, required: true }
   },
   data() {
     return {
+      storage: {},
       data: [],
-      pagination: {
-        current: 1,
-        pageSize: 10,
-        showTotal: (total, range) => `总数:${total} 当前:${range[0]}-${range[1]}`
-      },
-      filters: {},
-      sorter: { field: 'Id', order: 'asc' },
-      loading: false,
-      columns,
-      queryParam: {},
+      curDetail: {},
+      columns: columns1,
       selectedRowKeys: []
     }
+  },
+  watch: {
+    value(val) {
+      this.data = [...this.value]
+    }
+  },
+  mounted() {
+    this.data = [...this.value]
+    this.getCurStorage()
   },
   methods: {
     handleTableChange(pagination, filters, sorter) {
@@ -98,25 +86,17 @@ export default {
       this.sorter = { ...sorter }
       this.getDataList()
     },
-    getDataList() {
-      this.selectedRowKeys = []
-
-      this.loading = true
-      this.$http
-        .post('/TD/TD_InStorDetail/GetDataList', {
-          PageIndex: this.pagination.current,
-          PageRows: this.pagination.pageSize,
-          SortField: this.sorter.field || 'Id',
-          SortType: this.sorter.order,
-          Search: this.queryParam,
-          ...this.filters
-        })
+    getCurStorage() {
+      this.$http.get('/PB/PB_Storage/GetCurStorage')
         .then(resJson => {
-          this.loading = false
-          this.data = resJson.Data
-          const pagination = { ...this.pagination }
-          pagination.total = resJson.Total
-          this.pagination = pagination
+          this.storage = resJson.Data
+          if (this.storage.IsTray && this.storage.IsZone) {
+            this.columns = columns3
+          } else if (this.storage.IsTray) {
+            this.columns = columns2
+          } else {
+            this.columns = columns1
+          }
         })
     },
     onSelectChange(selectedRowKeys) {
@@ -126,10 +106,15 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm()
+      this.curDetail = {}
+      this.$refs.editForm.openForm(this.curDetail)
     },
-    handleEdit(id) {
-      this.$refs.editForm.openForm(id)
+    handleEdit(item) {
+      this.curDetail = item
+      this.$refs.editForm.openForm(this.curDetail)
+    },
+    onEditFormSubmit(item) {
+      this.curDetail = item
     },
     handleDelete(ids) {
       var thisObj = this
