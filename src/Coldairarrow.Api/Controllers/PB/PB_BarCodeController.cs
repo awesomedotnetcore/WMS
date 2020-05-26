@@ -24,7 +24,7 @@ namespace Coldairarrow.Api.Controllers.PB
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<PB_BarCode>> GetDataList(PageInput<ConditionDTO> input)
+        public async Task<PageResult<PB_BarCode>> GetDataList(PageInput<PB_BarCodeQM> input)
         {
             return await _pB_BarCodeBus.GetDataListAsync(input);
         }

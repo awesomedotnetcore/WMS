@@ -27,6 +27,9 @@ namespace Coldairarrow.Entity.PB
         /// </summary>
         public String BarCodeTypeId { get; set; }
 
+        [ForeignKey(nameof(BarCodeTypeId))]
+        public PB_BarCodeType BarCodeType { get; set; }
+
         /// <summary>
         /// 创建时间
         /// </summary>

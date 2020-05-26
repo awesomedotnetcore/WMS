@@ -25,7 +25,7 @@
             <a-form-item>
               <a-input v-model="queryParam.Name" placeholder="名称" />
             </a-form-item>
-          </a-col>          
+          </a-col>        
           <a-col :md="6" :sm="24">
             <a-button type="primary" @click="getDataList">查询</a-button>
             <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
