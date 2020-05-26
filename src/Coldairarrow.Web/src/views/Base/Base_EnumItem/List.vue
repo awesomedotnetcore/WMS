@@ -53,9 +53,9 @@ const filterYesOrNo = (value, row, index) => {
   else return '否'
 }
 const columns = [
-  { title: '字典名称', dataIndex: 'Name', width: '10%' },
-  { title: '字典值', dataIndex: 'Value', width: '10%' },
-  { title: '字典编码', dataIndex: 'Code', width: '10%' },
+  { title: '字典名称', dataIndex: 'Name', width: '20%' },
+  { title: '字典值', dataIndex: 'Value', width: '20%' },
+  { title: '字典编码', dataIndex: 'Code', width: '20%' },
   { title: '系统必须', dataIndex: 'IsSystem', customRender: filterYesOrNo, width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]

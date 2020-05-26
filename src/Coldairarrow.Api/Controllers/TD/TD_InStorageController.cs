@@ -12,20 +12,23 @@ namespace Coldairarrow.Api.Controllers.TD
     {
         #region DI
 
-        public TD_InStorageController(ITD_InStorageBusiness tD_InStorageBus)
+        public TD_InStorageController(ITD_InStorageBusiness tD_InStorageBus,IOperator op)
         {
             _tD_InStorageBus = tD_InStorageBus;
+            _Op = op;
         }
 
         ITD_InStorageBusiness _tD_InStorageBus { get; }
+        IOperator _Op { get; }
 
         #endregion
 
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<TD_InStorage>> GetDataList(PageInput<ConditionDTO> input)
+        public async Task<PageResult<TD_InStorage>> GetDataList(TD_InStoragePageInput input)
         {
+            input.StorId = _Op.Property.DefaultStorageId;
             return await _tD_InStorageBus.GetDataListAsync(input);
         }
 
@@ -45,7 +48,7 @@ namespace Coldairarrow.Api.Controllers.TD
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
-
+                data.StorId = _Op.Property.DefaultStorageId;
                 await _tD_InStorageBus.AddDataAsync(data);
             }
             else

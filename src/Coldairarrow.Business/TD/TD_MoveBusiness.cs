@@ -19,21 +19,27 @@ namespace Coldairarrow.Business.TD
 
         #region 外部接口
 
-        public async Task<PageResult<TD_Move>> GetDataListAsync(PageInput<ConditionDTO> input)
+        public async Task<PageResult<TD_Move>> GetDataListAsync(PageInput<SearchCondition> input, string storageId)
         {
             var q = GetIQueryable();
-            var where = LinqHelper.True<TD_Move>();
             var search = input.Search;
+            q = q.Include(i => i.PB_Equipment).Include(i => i.AuditUser);
 
             //筛选
-            if (!search.Condition.IsNullOrEmpty() && !search.Keyword.IsNullOrEmpty())
+            if (!search.Type.IsNullOrEmpty())
             {
-                var newWhere = DynamicExpressionParser.ParseLambda<TD_Move, bool>(
-                    ParsingConfig.Default, false, $@"{search.Condition}.Contains(@0)", search.Keyword);
-                where = where.And(newWhere);
+                q = q.Where(w => w.Type == search.Type);
+            }
+            if (!search.Keyword.IsNullOrEmpty())
+            {
+                q = q.Where(w => w.Code.Contains(search.Keyword) || w.RefCode.Contains(search.Keyword));
+            }
+            if (!storageId.IsNullOrEmpty())
+            {
+                q = q.Where(w => w.StorId == storageId);
             }
 
-            return await q.Where(where).GetPageResultAsync(input);
+            return await q.GetPageResultAsync(input);
         }
 
         public async Task<TD_Move> GetTheDataAsync(string id)

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Coldairarrow.Entity.Base_Manage;
+using Coldairarrow.Entity.PB;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -57,6 +59,9 @@ namespace Coldairarrow.Entity.TD
         /// </summary>
         public String EquId { get; set; }
 
+        [ForeignKey(nameof(EquId))]
+        public PB_Equipment PB_Equipment { get; set; }
+
         /// <summary>
         /// 状态(0待审核;1审核通过;2审核失败)待移库；已移库
         /// </summary>
@@ -71,6 +76,9 @@ namespace Coldairarrow.Entity.TD
         /// 审核人ID
         /// </summary>
         public String AuditUserId { get; set; }
+
+        [ForeignKey(nameof(AuditUserId))]
+        public Base_User AuditUser { get; set; }
 
         /// <summary>
         /// 审核时间
@@ -92,5 +100,14 @@ namespace Coldairarrow.Entity.TD
         /// </summary>
         public Boolean Deleted { get; set; }
 
+    }
+
+    public enum MoveStatus
+    {
+        待审核 = 0,
+        审核通过,
+        审核失败,
+        待移库,
+        已移库
     }
 }

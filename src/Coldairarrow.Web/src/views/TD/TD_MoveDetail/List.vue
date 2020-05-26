@@ -1,93 +1,69 @@
 ﻿<template>
-  <a-card :bordered="false">
-    <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button
-        type="primary"
-        icon="minus"
-        @click="handleDelete(selectedRowKeys)"
-        :disabled="!hasSelected()"
+  <a-drawer
+    title="移库明细"
+    placement="right"
+    :closable="true"
+    @close="onDrawerClose"
+    :visible="visible"
+    :width="1600"
+    :getContainer="false"
+  >
+    <a-card :bordered="false">
+      <div class="table-operator">
+        <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
+        <a-button
+          type="primary"
+          icon="minus"
+          @click="handleDelete(selectedRowKeys)"
+          :disabled="!hasSelected()"
+          :loading="loading"
+        >删除</a-button>
+        <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
+        <a-button type="primary" icon="check" @click="getDataList()">审批</a-button>
+      </div>
+
+      <a-table
+        ref="table"
+        :columns="columns"
+        :rowKey="row => row.Id"
+        :dataSource="data"
+        :pagination="pagination"
         :loading="loading"
-      >删除</a-button>
-      <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
-    </div>
+        @change="handleTableChange"
+        :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+        :bordered="true"
+        size="small"
+      >
+        <span slot="action" slot-scope="text, record">
+          <template>
+            <a @click="handleEdit(record.Id)">编辑</a>
+            <a-divider type="vertical" />
+            <a @click="handleDelete([record.Id])">删除</a>
+          </template>
+        </span>
+      </a-table>
 
-    <div class="table-page-search-wrapper">
-      <a-form layout="inline">
-        <a-row :gutter="10">
-          <a-col :md="4" :sm="24">
-            <a-form-item label="查询类别">
-              <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="MoveId">移库ID</a-select-option>
-                <a-select-option key="StorId">仓库ID</a-select-option>
-                <a-select-option key="FromLocalId">原货位ID</a-select-option>
-                <a-select-option key="FromZoneId">原托盘分区</a-select-option>
-                <a-select-option key="FromTrayId">原托盘ID</a-select-option>
-                <a-select-option key="ToLocalId">目标货位ID</a-select-option>
-                <a-select-option key="ToTrayId">目标托盘ID</a-select-option>
-                <a-select-option key="ToZoneId">目标托盘分区</a-select-option>
-                <a-select-option key="BarCode">条码</a-select-option>
-                <a-select-option key="MaterialId">物料ID</a-select-option>
-                <a-select-option key="BatchNo">批次号</a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
-          <a-col :md="4" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="关键字" />
-            </a-form-item>
-          </a-col>
-          <a-col :md="6" :sm="24">
-            <a-button type="primary" @click="getDataList">查询</a-button>
-            <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
-          </a-col>
-        </a-row>
-      </a-form>
-    </div>
-
-    <a-table
-      ref="table"
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      :bordered="true"
-      size="small"
-    >
-      <span slot="action" slot-scope="text, record">
-        <template>
-          <a @click="handleEdit(record.Id)">编辑</a>
-          <a-divider type="vertical" />
-          <a @click="handleDelete([record.Id])">删除</a>
-        </template>
-      </span>
-    </a-table>
-
-    <edit-form ref="editForm" :parentObj="this"></edit-form>
-  </a-card>
+      <edit-form ref="editForm" :parentObj="this"></edit-form>
+    </a-card>
+  </a-drawer>
 </template>
 
 <script>
 import EditForm from './EditForm'
 
 const columns = [
-  { title: '移库ID', dataIndex: 'MoveId', width: '10%' },
-  { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
-  { title: '原货位ID', dataIndex: 'FromLocalId', width: '10%' },
-  { title: '原托盘分区', dataIndex: 'FromZoneId', width: '10%' },
-  { title: '原托盘ID', dataIndex: 'FromTrayId', width: '10%' },
-  { title: '目标货位ID', dataIndex: 'ToLocalId', width: '10%' },
-  { title: '目标托盘ID', dataIndex: 'ToTrayId', width: '10%' },
-  { title: '目标托盘分区', dataIndex: 'ToZoneId', width: '10%' },
-  { title: '条码', dataIndex: 'BarCode', width: '10%' },
-  { title: '物料ID', dataIndex: 'MaterialId', width: '10%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
-  { title: '单价', dataIndex: 'Price', width: '10%' },
-  { title: '移库数量', dataIndex: 'LocalNum', width: '10%' },
-  { title: '总额', dataIndex: 'Amount', width: '10%' },
+  { title: '原货位', dataIndex: 'Src_Location.Name', width: '8%' },
+  { title: '原托盘', dataIndex: 'Src_Tray.Name', width: '8%' },
+  { title: '原托盘分区', dataIndex: 'Src_TrayZone.Name', width: '8%' },
+  { title: '目标货位', dataIndex: 'Tar_Location.Name', width: '8%' },
+  { title: '目标托盘', dataIndex: 'Tar_Tray.Name', width: '8%' },
+  { title: '目标托盘分区', dataIndex: 'Tar_TrayZone.Name', width: '8%' },
+  { title: '条码', dataIndex: 'BarCode', width: '8%' },
+  { title: '物料', dataIndex: 'PB_Material.Name', width: '8%' },
+  { title: '批次号', dataIndex: 'BatchNo', width: '8%' },
+  { title: '单价', dataIndex: 'Price', width: '5%' },
+  { title: '移库数量', dataIndex: 'LocalNum', width: '5%' },
+  { title: '总额', dataIndex: 'Amount', width: '5%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -95,9 +71,7 @@ export default {
   components: {
     EditForm
   },
-  mounted() {
-    this.getDataList()
-  },
+  mounted() {},
   data() {
     return {
       data: [],
@@ -111,7 +85,10 @@ export default {
       loading: false,
       columns,
       queryParam: {},
-      selectedRowKeys: []
+      selectedRowKeys: [],
+      visible: false,
+      moveId: null,
+      state: null
     }
   },
   methods: {
@@ -122,24 +99,26 @@ export default {
       this.getDataList()
     },
     getDataList() {
+      var thisObj = this
       this.selectedRowKeys = []
 
       this.loading = true
+      this.queryParam.Keyword = this.moveId
       this.$http
         .post('/TD/TD_MoveDetail/GetDataList', {
-          PageIndex: this.pagination.current,
-          PageRows: this.pagination.pageSize,
-          SortField: this.sorter.field || 'Id',
-          SortType: this.sorter.order,
-          Search: this.queryParam,
-          ...this.filters
+          PageIndex: thisObj.pagination.current,
+          PageRows: thisObj.pagination.pageSize,
+          SortField: thisObj.sorter.field || 'Id',
+          SortType: thisObj.sorter.order,
+          Search: thisObj.queryParam,
+          ...thisObj.filters
         })
         .then(resJson => {
-          this.loading = false
-          this.data = resJson.Data
-          const pagination = { ...this.pagination }
+          thisObj.loading = false
+          thisObj.data = resJson.Data
+          const pagination = { ...thisObj.pagination }
           pagination.total = resJson.Total
-          this.pagination = pagination
+          thisObj.pagination = pagination
         })
     },
     onSelectChange(selectedRowKeys) {
@@ -174,6 +153,18 @@ export default {
           })
         }
       })
+    },
+    openDrawer(moveId, state) {
+      this.moveId = moveId
+      this.state = state
+      this.visible = true
+      if (moveId != null) {
+        this.getDataList()
+      }
+    },
+    onDrawerClose() {
+      this.visible = false
+      this.parentObj.getDataList()
     }
   }
 }
