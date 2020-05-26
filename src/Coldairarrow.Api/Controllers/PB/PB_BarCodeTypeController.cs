@@ -34,6 +34,13 @@ namespace Coldairarrow.Api.Controllers.PB
         {
             return await _pB_BarCodeTypeBus.GetTheDataAsync(input.id);
         }
+
+        [HttpGet]
+        public async Task<List<PB_BarCodeType>> GetAllData()
+        {
+            return await _pB_BarCodeTypeBus.GetAllData();
+        }
+
         [HttpPost]
         public async Task<string> Generate(string code, Dictionary<string, string> para)
         {

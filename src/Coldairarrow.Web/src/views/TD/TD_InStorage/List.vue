@@ -2,13 +2,7 @@
   <a-card :bordered="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button
-        type="primary"
-        icon="minus"
-        @click="handleDelete(selectedRowKeys)"
-        :disabled="!hasSelected()"
-        :loading="loading"
-      >删除</a-button>
+      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
 
@@ -16,23 +10,18 @@
       <a-form layout="inline">
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
-            <a-form-item label="查询类别">
-              <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="RecId">收货ID</a-select-option>
-                <a-select-option key="Code">入库单号</a-select-option>
-                <a-select-option key="InType">入库类型(枚举)</a-select-option>
-                <a-select-option key="RefCode">关联单号</a-select-option>
-                <a-select-option key="StorId">仓库ID</a-select-option>
-                <a-select-option key="AddrId">目标地址ID</a-select-option>
-                <a-select-option key="SupId">供应商ID</a-select-option>
-                <a-select-option key="EqId">设备ID</a-select-option>
-                <a-select-option key="AuditUserId">审核人ID</a-select-option>
-              </a-select>
+            <a-form-item>
+              <a-input v-model="queryParam.Code" placeholder="入库类型" />
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="关键字" />
+              <a-input v-model="queryParam.Code" placeholder="入库单号" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="4" :sm="24">
+            <a-form-item>
+              <a-range-picker @change="onInStorTimeChange" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -43,18 +32,7 @@
       </a-form>
     </div>
 
-    <a-table
-      ref="table"
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      :bordered="true"
-      size="small"
-    >
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -72,20 +50,14 @@
 import EditForm from './EditForm'
 
 const columns = [
-  { title: '收货ID', dataIndex: 'RecId', width: '10%' },
   { title: '入库单号', dataIndex: 'Code', width: '10%' },
+  { title: '入库类型', dataIndex: 'InType', width: '10%' },
   { title: '入库时间', dataIndex: 'InStorTime', width: '10%' },
-  { title: '入库类型(枚举)', dataIndex: 'InType', width: '10%' },
-  { title: '关联单号', dataIndex: 'RefCode', width: '10%' },
-  { title: '状态(0待审核;1审核通过;2审核失败)', dataIndex: 'Status', width: '10%' },
-  { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
-  { title: '目标地址ID', dataIndex: 'AddrId', width: '10%' },
-  { title: '供应商ID', dataIndex: 'SupId', width: '10%' },
+  { title: '状态', dataIndex: 'Status', width: '10%' },
+  { title: '供应商', dataIndex: 'SupId', width: '10%' },
   { title: '入库数量', dataIndex: 'TotalNum', width: '10%' },
-  { title: '总金额', dataIndex: 'TotalAmt', width: '10%' },
-  { title: '设备ID', dataIndex: 'EqId', width: '10%' },
-  { title: '审核人ID', dataIndex: 'AuditUserId', width: '10%' },
-  { title: '审核时间', dataIndex: 'AuditeTime', width: '10%' },
+  { title: '制单人', dataIndex: 'CreatorId', width: '10%' },
+  { title: '审核人', dataIndex: 'AuditUserId', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -142,6 +114,10 @@ export default {
     },
     onSelectChange(selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
+    },
+    onInStorTimeChange(dates, dateStrings) {
+      this.queryParam.InStorTimeStart = dateStrings[0]
+      this.queryParam.InStorTimeEnd = dateStrings[1]
     },
     hasSelected() {
       return this.selectedRowKeys.length > 0

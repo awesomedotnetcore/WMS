@@ -100,7 +100,7 @@ export default {
       loading: false,
       columns,
       queryParam: {},
-      selectedRowKeys: [],
+      selectedRowKeys: []
     }
   },
   methods: {
@@ -169,7 +169,7 @@ export default {
     },
     openMaterialList(typeId) {
       this.$refs.materialList.openDrawer(typeId)
-    },
+    }
   }
 }
 </script>

@@ -8,7 +8,7 @@ namespace Coldairarrow.Entity.TD
     /// 入库表
     /// </summary>
     [Table("TD_InStorage")]
-    public class TD_InStorage
+    public partial class TD_InStorage
     {
 
         /// <summary>
@@ -61,6 +61,8 @@ namespace Coldairarrow.Entity.TD
         /// 供应商ID
         /// </summary>
         public String SupId { get; set; }
+
+        public String Remarks { get; set; }
 
         /// <summary>
         /// 入库数量

@@ -283,7 +283,7 @@ namespace {nameSpace}
     /// {tableDescription}
     /// </summary>
     [Table(""{tableName}""{schema})]
-    public class {tableName}
+    public partial class {tableName}
     {{
 {properties}
     }}

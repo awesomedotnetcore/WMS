@@ -101,5 +101,10 @@ namespace Coldairarrow.Business.PB
             }
             return code;
         }
+
+        public async Task<List<PB_BarCodeType>> GetAllData()
+        {
+            return await this.GetIQueryable().ToListAsync();
+        }
     }
 }

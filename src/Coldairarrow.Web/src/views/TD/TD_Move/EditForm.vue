@@ -13,38 +13,16 @@
           <a-input v-model="entity.Code" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="移库时间" prop="MoveTime">
-          <a-input v-model="entity.MoveTime" autocomplete="off" />
+          <a-date-picker show-time v-model="entity.MoveTime"/>
         </a-form-model-item>
-        <a-form-model-item label="移库类型(枚举)" prop="Type">
-          <a-input v-model="entity.Type" autocomplete="off" />
+        <a-form-model-item label="移库类型" prop="Type">
+          <enum-select code="MoveStorageType" v-model="entity.Type"></enum-select>
         </a-form-model-item>
         <a-form-model-item label="关联单号" prop="RefCode">
           <a-input v-model="entity.RefCode" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="仓库ID" prop="StorId">
-          <a-input v-model="entity.StorId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="数量" prop="MoveNum">
-          <a-input v-model="entity.MoveNum" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="总额" prop="TotalAmt">
-          <a-input v-model="entity.TotalAmt" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="设备ID" prop="EquId">
-          <a-input v-model="entity.EquId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="状态(0待审核;1审核通过;2审核失败)
-            待移库；已移库" prop="Status">
-          <a-input v-model="entity.Status" autocomplete="off" />
-        </a-form-model-item>
         <a-form-model-item label="备注" prop="Remarks">
           <a-input v-model="entity.Remarks" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="审核人ID" prop="AuditUserId">
-          <a-input v-model="entity.AuditUserId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="审核时间" prop="AuditeTime">
-          <a-input v-model="entity.AuditeTime" autocomplete="off" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -52,7 +30,14 @@
 </template>
 
 <script>
+import EnumName from '../../../components/BaseEnum/BaseEnumName'
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
+
 export default {
+  components: {
+    EnumName,
+    EnumSelect
+  },
   props: {
     parentObj: Object
   },
