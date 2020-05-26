@@ -64,7 +64,7 @@
 
 <script>
 import EditForm from './EditForm'
-import MaterialList from '../PB_TrayMaterial/List'
+import MaterialList from '../PB_AreaMaterial/List'
 
 const filterYesOrNo = (value, row, index) => {
   if (value) return '是'

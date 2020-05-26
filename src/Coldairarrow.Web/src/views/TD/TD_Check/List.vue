@@ -1,13 +1,4 @@
 ﻿<template>
-<a-drawer
-    title="关联物料清单"
-    placement="right"
-    :closable="true"
-    @close="onDrawerClose"
-    :visible="visible"
-    :width="900"
-    :getContainer="false"
-  >
   <a-card :bordered="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
@@ -27,8 +18,10 @@
           <a-col :md="4" :sm="24">
             <a-form-item label="查询类别">
               <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="AreaId">货区ID</a-select-option>
-                <a-select-option key="MaterialId">物料ID</a-select-option>
+                <a-select-option key="StorId">仓库ID</a-select-option>
+                <a-select-option key="RefCode">关联单号</a-select-option>
+                <a-select-option key="EquId">设备ID</a-select-option>
+                <a-select-option key="AuditUserId">审核人ID</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -48,7 +41,7 @@
     <a-table
       ref="table"
       :columns="columns"
-      :rowKey="row => row.MaterialId"
+      :rowKey="row => row.Id"
       :dataSource="data"
       :pagination="pagination"
       :loading="loading"
@@ -59,24 +52,30 @@
     >
       <span slot="action" slot-scope="text, record">
         <template>
-          <!-- <a @click="handleEdit(record.Id)">编辑</a>
-          <a-divider type="vertical" /> -->
-          <a @click="handleDelete([record.MaterialId])">删除</a>
+          <a @click="handleEdit(record.Id)">编辑</a>
+          <a-divider type="vertical" />
+          <a @click="handleDelete([record.Id])">删除</a>
         </template>
       </span>
     </a-table>
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
   </a-card>
-</a-drawer>
 </template>
 
 <script>
 import EditForm from './EditForm'
 
 const columns = [
-  { title: '货区ID', dataIndex: 'AreaId', width: '10%' },
-  { title: '物料ID', dataIndex: 'MaterialId', width: '10%' },
+  { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
+  { title: '盘点时间', dataIndex: 'CheckTime', width: '10%' },
+  { title: '盘点类型', dataIndex: 'Type', width: '10%' },
+  { title: '关联单号', dataIndex: 'RefCode', width: '10%' },
+  { title: '设备ID', dataIndex: 'EquId', width: '10%' },
+  { title: '是否盘差状态(0待盘 1已盘)', dataIndex: 'IsComplete', width: '10%' },
+  { title: '状态(0待审核;1审核通过;2审核失败)', dataIndex: 'Status', width: '10%' },
+  { title: '审核人ID', dataIndex: 'AuditUserId', width: '10%' },
+  { title: '审核时间', dataIndex: 'AuditeTime', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -96,12 +95,11 @@ export default {
         showTotal: (total, range) => `总数:${total} 当前:${range[0]}-${range[1]}`
       },
       filters: {},
-      sorter: { field: 'MaterialId', order: 'asc' },
+      sorter: { field: 'Id', order: 'asc' },
       loading: false,
       columns,
       queryParam: {},
-      selectedRowKeys: [],
-      visible: false,
+      selectedRowKeys: []
     }
   },
   methods: {
@@ -116,10 +114,10 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/PB/PB_AreaMaterial/GetDataList', {
+        .post('/TD/TD_Check/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
-          SortField: this.sorter.field || 'MaterialId',
+          SortField: this.sorter.field || 'Id',
           SortType: this.sorter.order,
           Search: this.queryParam,
           ...this.filters
@@ -150,7 +148,7 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/PB/PB_AreaMaterial/DeleteData', ids).then(resJson => {
+            thisObj.$http.post('/TD/TD_Check/DeleteData', ids).then(resJson => {
               resolve()
 
               if (resJson.Success) {
@@ -164,16 +162,6 @@ export default {
           })
         }
       })
-    },
-    openDrawer(typeId) {
-      this.typeId = typeId
-      this.visible = true
-      if (typeId != null) {
-        this.getDataList()
-      }
-    },
-    onDrawerClose() {
-      this.visible = false
     }
   }
 }

@@ -1,13 +1,4 @@
 ﻿<template>
-<a-drawer
-    title="关联物料清单"
-    placement="right"
-    :closable="true"
-    @close="onDrawerClose"
-    :visible="visible"
-    :width="900"
-    :getContainer="false"
-  >
   <a-card :bordered="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
@@ -27,8 +18,16 @@
           <a-col :md="4" :sm="24">
             <a-form-item label="查询类别">
               <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="AreaId">货区ID</a-select-option>
+                <a-select-option key="StorId">仓库ID</a-select-option>
+                <a-select-option key="InStorId">入库ID</a-select-option>
+                <a-select-option key="LocalId">货位ID</a-select-option>
+                <a-select-option key="TrayId">托盘号ID</a-select-option>
+                <a-select-option key="ZonedId">托盘分区ID</a-select-option>
                 <a-select-option key="MaterialId">物料ID</a-select-option>
+                <a-select-option key="MeasureId">单位ID</a-select-option>
+                <a-select-option key="BatchNo">批次号</a-select-option>
+                <a-select-option key="BarCode">条码</a-select-option>
+                <a-select-option key="InputTime">入库时间</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -48,7 +47,7 @@
     <a-table
       ref="table"
       :columns="columns"
-      :rowKey="row => row.MaterialId"
+      :rowKey="row => row.Id"
       :dataSource="data"
       :pagination="pagination"
       :loading="loading"
@@ -59,24 +58,34 @@
     >
       <span slot="action" slot-scope="text, record">
         <template>
-          <!-- <a @click="handleEdit(record.Id)">编辑</a>
-          <a-divider type="vertical" /> -->
-          <a @click="handleDelete([record.MaterialId])">删除</a>
+          <a @click="handleEdit(record.Id)">编辑</a>
+          <a-divider type="vertical" />
+          <a @click="handleDelete([record.Id])">删除</a>
         </template>
       </span>
     </a-table>
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
   </a-card>
-</a-drawer>
 </template>
 
 <script>
 import EditForm from './EditForm'
 
 const columns = [
-  { title: '货区ID', dataIndex: 'AreaId', width: '10%' },
+  { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
+  { title: '入库ID', dataIndex: 'InStorId', width: '10%' },
+  { title: '货位ID', dataIndex: 'LocalId', width: '10%' },
+  { title: '托盘号ID', dataIndex: 'TrayId', width: '10%' },
+  { title: '托盘分区ID', dataIndex: 'ZonedId', width: '10%' },
   { title: '物料ID', dataIndex: 'MaterialId', width: '10%' },
+  { title: '单位ID', dataIndex: 'MeasureId', width: '10%' },
+  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
+  { title: '条码', dataIndex: 'BarCode', width: '10%' },
+  { title: '入库时间', dataIndex: 'InputTime', width: '10%' },
+  { title: '总额', dataIndex: 'Amount', width: '10%' },
+  { title: '单价', dataIndex: 'Price', width: '10%' },
+  { title: '数量', dataIndex: 'Num', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -96,12 +105,11 @@ export default {
         showTotal: (total, range) => `总数:${total} 当前:${range[0]}-${range[1]}`
       },
       filters: {},
-      sorter: { field: 'MaterialId', order: 'asc' },
+      sorter: { field: 'Id', order: 'asc' },
       loading: false,
       columns,
       queryParam: {},
-      selectedRowKeys: [],
-      visible: false,
+      selectedRowKeys: []
     }
   },
   methods: {
@@ -116,10 +124,10 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/PB/PB_AreaMaterial/GetDataList', {
+        .post('/IT/IT_LocalDetail/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
-          SortField: this.sorter.field || 'MaterialId',
+          SortField: this.sorter.field || 'Id',
           SortType: this.sorter.order,
           Search: this.queryParam,
           ...this.filters
@@ -150,7 +158,7 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/PB/PB_AreaMaterial/DeleteData', ids).then(resJson => {
+            thisObj.$http.post('/IT/IT_LocalDetail/DeleteData', ids).then(resJson => {
               resolve()
 
               if (resJson.Success) {
@@ -164,16 +172,6 @@ export default {
           })
         }
       })
-    },
-    openDrawer(typeId) {
-      this.typeId = typeId
-      this.visible = true
-      if (typeId != null) {
-        this.getDataList()
-      }
-    },
-    onDrawerClose() {
-      this.visible = false
     }
   }
 }
