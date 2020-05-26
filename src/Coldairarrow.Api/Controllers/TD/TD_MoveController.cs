@@ -12,14 +12,16 @@ namespace Coldairarrow.Api.Controllers.TD
     {
         #region DI
 
-        public TD_MoveController(ITD_MoveBusiness tD_MoveBus,IOperator @op)
+        public TD_MoveController(ITD_MoveBusiness tD_MoveBus,IOperator @op, ITD_MoveDetailBusiness tD_MoveDetailBus)
         {
             _tD_MoveBus = tD_MoveBus;
             _Op = @op;
+            _tD_MoveDetailBus = tD_MoveDetailBus;
         }
 
         ITD_MoveBusiness _tD_MoveBus { get; }
         IOperator _Op { get; }
+        ITD_MoveDetailBusiness _tD_MoveDetailBus { get; }
 
         #endregion
 
@@ -56,6 +58,27 @@ namespace Coldairarrow.Api.Controllers.TD
             {
                 await _tD_MoveBus.UpdateDataAsync(data);
             }
+        }
+
+        [HttpPost]
+        public async Task UpdateData(string moveId, List<double> localNums, List<double> amounts)
+        {
+            var data = await _tD_MoveBus.GetTheDataAsync(moveId);
+            double moveNum = 0;
+            double totalAmt = 0;
+
+            foreach (var i in localNums)
+            {
+                moveNum += i;
+            }
+            foreach(var a in amounts)
+            {
+                totalAmt += a;
+            }
+            data.MoveNum = moveNum.ToString();
+            data.TotalAmt = totalAmt.ToString();
+
+            await _tD_MoveBus.UpdateDataAsync(data);
         }
 
         [HttpPost]

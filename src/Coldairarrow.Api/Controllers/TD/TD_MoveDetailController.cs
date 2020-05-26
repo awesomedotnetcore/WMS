@@ -12,12 +12,14 @@ namespace Coldairarrow.Api.Controllers.TD
     {
         #region DI
 
-        public TD_MoveDetailController(ITD_MoveDetailBusiness tD_MoveDetailBus)
+        public TD_MoveDetailController(ITD_MoveDetailBusiness tD_MoveDetailBus, IOperator @op)
         {
             _tD_MoveDetailBus = tD_MoveDetailBus;
+            _Op = @op;
         }
 
         ITD_MoveDetailBusiness _tD_MoveDetailBus { get; }
+        IOperator _Op { get; }
 
         #endregion
 
@@ -45,7 +47,8 @@ namespace Coldairarrow.Api.Controllers.TD
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
-
+                data.StorId = _Op.Property.DefaultStorageId;
+                data.Amount = data.LocalNum * data.Price;
                 await _tD_MoveDetailBus.AddDataAsync(data);
             }
             else

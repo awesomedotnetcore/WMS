@@ -68,6 +68,9 @@ const columns = [
 ]
 
 export default {
+  props: {
+    parentObj: Object
+  },
   components: {
     EditForm
   },

@@ -9,11 +9,8 @@
   >
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="移库ID" prop="MoveId">
-          <a-input v-model="entity.MoveId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="仓库ID" prop="StorId">
-          <a-input v-model="entity.StorId" autocomplete="off" />
+        <a-form-model-item label="物料ID" prop="MaterialId">
+          <a-input v-model="entity.MaterialId" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="原货位ID" prop="FromLocalId">
           <a-input v-model="entity.FromLocalId" autocomplete="off" />
@@ -36,9 +33,6 @@
         <a-form-model-item label="条码" prop="BarCode">
           <a-input v-model="entity.BarCode" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="物料ID" prop="MaterialId">
-          <a-input v-model="entity.MaterialId" autocomplete="off" />
-        </a-form-model-item>
         <a-form-model-item label="批次号" prop="BatchNo">
           <a-input v-model="entity.BatchNo" autocomplete="off" />
         </a-form-model-item>
@@ -47,9 +41,6 @@
         </a-form-model-item>
         <a-form-model-item label="移库数量" prop="LocalNum">
           <a-input v-model="entity.LocalNum" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="总额" prop="Amount">
-          <a-input v-model="entity.Amount" autocomplete="off" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -71,18 +62,32 @@ export default {
       loading: false,
       entity: {},
       rules: {},
-      title: ''
+      title: '',
+      materialList: [],
+      srcLocalList: [],
+      srcTrayList: [],
+      srcZoneList: [],
+      tarLocalList: [],
+      tarTrayList: [],
+      tarZoneList: []
     }
   },
   methods: {
     init() {
       this.visible = true
       this.entity = {}
+      this.materialList = []
+      this.srcLocalList = []
+      this.srcTrayList = []
+      this.srcZoneList = []
+      this.tarLocalList = []
+      this.tarTrayList = []
+      this.tarZoneList = []
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })
     },
-    openForm(id, title) {
+    openForm(moveId, id, title) {
       this.init()
 
       if (id) {
@@ -92,6 +97,8 @@ export default {
 
           this.entity = resJson.Data
         })
+      } else {
+        this.entity.MoveId = moveId
       }
     },
     handleSubmit() {
@@ -112,6 +119,68 @@ export default {
             this.$message.error(resJson.Msg)
           }
         })
+      })
+    },
+    getMaterialList() {
+      this.loading = true
+      this.$http.post('/PB/PB_Material/GetStorageMaterials').then(resJson => {
+        this.loading = false
+
+        this.materialList = resJson.Data
+      })
+    },
+    getSrcLocalList() {
+      this.srcLocalList = []
+      this.loading = true
+      this.$http.post('/PB/PB_Material/GetStorageMaterials').then(resJson => {
+        this.loading = false
+
+        this.materialList = resJson.Data
+      })
+    },
+    getSrcTrayList() {
+      this.srcTrayList = []
+      this.loading = true
+      this.$http.post('/PB/PB_Material/GetStorageMaterials').then(resJson => {
+        this.loading = false
+
+        this.materialList = resJson.Data
+      })
+    },
+    getSrcZoneList() {
+      this.srcZoneList = []
+      this.loading = true
+      this.$http.post('/PB/PB_Material/GetStorageMaterials').then(resJson => {
+        this.loading = false
+
+        this.materialList = resJson.Data
+      })
+    },
+    getTarLocalList() {
+      this.tarLocalList = []
+      this.loading = true
+      this.$http.post('/PB/PB_Material/GetStorageMaterials').then(resJson => {
+        this.loading = false
+
+        this.materialList = resJson.Data
+      })
+    },
+    getTarTrayList() {
+      this.tarTrayList = []
+      this.loading = true
+      this.$http.post('/PB/PB_Material/GetStorageMaterials').then(resJson => {
+        this.loading = false
+
+        this.materialList = resJson.Data
+      })
+    },
+    getTarZoneList() {
+      this.tarZoneList = []
+      this.loading = true
+      this.$http.post('/PB/PB_Material/GetStorageMaterials').then(resJson => {
+        this.loading = false
+
+        this.materialList = resJson.Data
       })
     }
   }

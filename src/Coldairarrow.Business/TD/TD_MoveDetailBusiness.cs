@@ -36,6 +36,19 @@ namespace Coldairarrow.Business.TD
             return await q.GetPageResultAsync(input);
         }
 
+        public async Task<List<TD_MoveDetail>> GetDataListAsync(List<string> ids)
+        {
+            var q = GetIQueryable();
+
+            //筛选
+            if (ids.Count > 0)
+            {
+                q = q.Where(w => ids.Contains(w.Id));
+            }
+
+            return await q.ToListAsync();
+        }
+
         public async Task<TD_MoveDetail> GetTheDataAsync(string id)
         {
             return await GetEntityAsync(id);
