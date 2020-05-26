@@ -3,6 +3,7 @@ using Coldairarrow.Entity.PB;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Coldairarrow.Api.Controllers.PB
@@ -66,7 +67,6 @@ namespace Coldairarrow.Api.Controllers.PB
         {
             var list = await _pB_TrayMaterialBus.GetDataListAsync(typeId);
             var addList = new List<PB_TrayMaterial>();
-            var deleteList = new List<string>();
 
             foreach (var i in targetKeys)
             {
@@ -74,10 +74,16 @@ namespace Coldairarrow.Api.Controllers.PB
                 {
                     if(i == s.MaterialId)
                     {
-
+                        list.Remove(s);
                     }
                 }
+                addList.Add(new PB_TrayMaterial() { 
+                    TrayTypeId = typeId,
+                    MaterialId = i
+                });
             }
+            var deleteList = list.Select(s => s.MaterialId).ToList();
+
             await _pB_TrayMaterialBus.AddDataAsync(addList);
             await _pB_TrayMaterialBus.DeleteDataAsync(typeId, deleteList);
         }
