@@ -79,9 +79,6 @@ const columns = [
   { title: '物料名称', dataIndex: 'PB_Material.Name', width: '20%' },
   { title: '物料规格', dataIndex: 'PB_Material.Spec', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
-  // { title: '货区ID', dataIndex: 'AreaId', width: '10%' },
-  // { title: '物料ID', dataIndex: 'MaterialId', width: '10%' },
-  // { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
