@@ -16,16 +16,13 @@
       <a-form layout="inline">
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
-            <a-form-item label="查询类别">
-              <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="BarCode">BarCode</a-select-option>
-                <a-select-option key="BarCodeTypeId">条码类型ID</a-select-option>
-              </a-select>
+            <a-form-item>
+              <a-input v-model="queryParam.BarCode" placeholder="条码编号" />
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="关键字" />
+              <a-input v-model="queryParam.BarCodeTypeName" placeholder="条码类型" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -65,8 +62,11 @@
 import EditForm from './EditForm'
 
 const columns = [
-  { title: 'BarCode', dataIndex: 'BarCode', width: '10%' },
-  { title: '条码类型ID', dataIndex: 'BarCodeTypeId', width: '10%' },
+  { title: '条码编号', dataIndex: 'BarCode', width: '10%' },
+  { title: '条码类型编号', dataIndex: 'BarCodeType.Code', width: '10%' },
+  { title: '条码类型名称', dataIndex: 'BarCodeType.Name', width: '10%' },
+  { title: '创建人ID', dataIndex: 'CreatorId', width: '10%' },
+  { title: '创建时间', dataIndex: 'CreateTime', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
