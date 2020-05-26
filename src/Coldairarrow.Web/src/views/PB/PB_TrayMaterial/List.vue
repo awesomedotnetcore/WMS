@@ -49,9 +49,9 @@
 import EditForm from './EditForm'
 
 const columns = [
-  { title: '物料编码', dataIndex: 'PB_Material.Code', width: '10%' },
-  { title: '物料名称', dataIndex: 'PB_Material.Name', width: '10%' },
-  { title: '物料规格', dataIndex: 'PB_Material.Spec', width: '10%' },
+  { title: '物料编码', dataIndex: 'PB_Material.Code', width: '25%' },
+  { title: '物料名称', dataIndex: 'PB_Material.Name', width: '25%' },
+  { title: '物料规格', dataIndex: 'PB_Material.Spec', width: '25%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 

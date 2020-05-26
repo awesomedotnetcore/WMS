@@ -12,21 +12,23 @@ namespace Coldairarrow.Api.Controllers.TD
     {
         #region DI
 
-        public TD_MoveController(ITD_MoveBusiness tD_MoveBus)
+        public TD_MoveController(ITD_MoveBusiness tD_MoveBus,IOperator @op)
         {
             _tD_MoveBus = tD_MoveBus;
+            _Op = @op;
         }
 
         ITD_MoveBusiness _tD_MoveBus { get; }
+        IOperator _Op { get; }
 
         #endregion
 
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<TD_Move>> GetDataList(PageInput<ConditionDTO> input)
+        public async Task<PageResult<TD_Move>> GetDataList(PageInput<SearchCondition> input)
         {
-            return await _tD_MoveBus.GetDataListAsync(input);
+            return await _tD_MoveBus.GetDataListAsync(input, _Op.Property.DefaultStorageId);
         }
 
         [HttpPost]
@@ -45,6 +47,8 @@ namespace Coldairarrow.Api.Controllers.TD
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
+                data.StorId = _Op.Property.DefaultStorageId;
+                data.Status = (int)MoveStatus.待审核;
 
                 await _tD_MoveBus.AddDataAsync(data);
             }
