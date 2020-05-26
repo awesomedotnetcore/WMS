@@ -36,7 +36,7 @@ export default {
       title: '',
       materialList: [],
       targetKeys: [],
-      areaId
+      areaId:''
     }
   },
   methods: {
@@ -45,20 +45,20 @@ export default {
       this.materialList = []
       this.targetKeys = []
     },
-    openForm(areaId, title) {
-      var thisObj = this
-      this.areaId = areaId
+    openForm(id, title) {
+      this.areaId = id
       this.init()
       this.getMaterialList()
-      if (areaId) {
+      if (id) {
         this.loading = true
-        this.$http.post('/PB/PB_AreaMaterial/GetDataListByAreaId?areaId=' + areaId).then(resJson => {
+        this.$http.post('/PB/PB_AreaMaterial/GetDataListByAreaId?areaId=' + id).then(resJson => {
           this.loading = false
           resJson.Data.forEach(element => {
-            thisObj.targetKeys.push(element.PB_Material.Id)
+            this.targetKeys.push(element.PB_Material.Id)
           })
         })
       }
+      alert(id)
     },
     handleSubmit() {
         this.loading = true

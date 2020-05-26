@@ -1,5 +1,6 @@
 ﻿using Coldairarrow.Business.PB;
 using Coldairarrow.Entity.PB;
+using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -64,8 +65,11 @@ namespace Coldairarrow.Api.Controllers.PB
         }
 
         [HttpPost]
-        public async Task SaveDatas(string areaId, List<string> targetKeys)
+        public async Task SaveDatas(PBAreaMateriaConditionDTO data)
         {
+            var areaId = data.id;
+            var targetKeys = data.keys;
+
             var list = await _pB_AreaMaterialBus.GetDataListAsync(areaId);
             var addList = new List<PB_AreaMaterial>();
 
