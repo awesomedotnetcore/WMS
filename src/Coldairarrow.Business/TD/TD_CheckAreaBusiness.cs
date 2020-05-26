@@ -10,25 +10,25 @@ using System.Threading.Tasks;
 
 namespace Coldairarrow.Business.TD
 {
-    public partial class TD_CheckMaterialBusiness : BaseBusiness<TD_CheckMaterial>, ITD_CheckMaterialBusiness, ITransientDependency
+    public partial class TD_CheckAreaBusiness : BaseBusiness<TD_CheckArea>, ITD_CheckAreaBusiness, ITransientDependency
     {
-        public TD_CheckMaterialBusiness(IRepository repository)
+        public TD_CheckAreaBusiness(IRepository repository)
             : base(repository)
         {
         }
 
         #region 外部接口
 
-        public async Task<PageResult<TD_CheckMaterial>> GetDataListAsync(PageInput<ConditionDTO> input)
+        public async Task<PageResult<TD_CheckArea>> GetDataListAsync(PageInput<ConditionDTO> input)
         {
             var q = GetIQueryable();
-            var where = LinqHelper.True<TD_CheckMaterial>();
+            var where = LinqHelper.True<TD_CheckArea>();
             var search = input.Search;
 
             //筛选
             if (!search.Condition.IsNullOrEmpty() && !search.Keyword.IsNullOrEmpty())
             {
-                var newWhere = DynamicExpressionParser.ParseLambda<TD_CheckMaterial, bool>(
+                var newWhere = DynamicExpressionParser.ParseLambda<TD_CheckArea, bool>(
                     ParsingConfig.Default, false, $@"{search.Condition}.Contains(@0)", search.Keyword);
                 where = where.And(newWhere);
             }
@@ -36,17 +36,17 @@ namespace Coldairarrow.Business.TD
             return await q.Where(where).GetPageResultAsync(input);
         }
 
-        public async Task<TD_CheckMaterial> GetTheDataAsync(string id)
+        public async Task<TD_CheckArea> GetTheDataAsync(string id)
         {
             return await GetEntityAsync(id);
         }
 
-        public async Task AddDataAsync(TD_CheckMaterial data)
+        public async Task AddDataAsync(TD_CheckArea data)
         {
             await InsertAsync(data);
         }
 
-        public async Task UpdateDataAsync(TD_CheckMaterial data)
+        public async Task UpdateDataAsync(TD_CheckArea data)
         {
             await UpdateAsync(data);
         }

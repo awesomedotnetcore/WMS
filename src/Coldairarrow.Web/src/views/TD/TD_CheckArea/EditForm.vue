@@ -8,18 +8,12 @@
     @cancel="()=>{this.visible=false}"
   >
     <a-spin :spinning="loading">
-      <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">      
-        <a-form-model-item label="盘点时间" prop="CheckTime">
-          <a-date-picker v-model="entity.CheckTime" show-time format="YYYY-MM-DD HH:mm:ss" />
+      <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
+        <a-form-model-item label="CherkId" prop="CherkId">
+          <a-input v-model="entity.CherkId" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="关联单号" prop="RefCode">
-          <a-input v-model="entity.RefCode" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="盘点类型" prop="Type">
-          <enum-select code="CheckType" v-model="entity.Type" :allowClear="true"></enum-select>
-        </a-form-model-item>
-        <a-form-model-item v-if="entity.Type==='Area'" label="货区" prop="RefCode">
-          <storarea-select v-model="CheckArea"></storarea-select>
+        <a-form-model-item label="StoarAreaId" prop="StoarAreaId">
+          <a-input v-model="entity.StoarAreaId" autocomplete="off" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -27,13 +21,7 @@
 </template>
 
 <script>
-import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
-import StorareaSelect from '../../../components/PB/StorAreaSelect'
 export default {
-  components:{
-    EnumSelect,
-    StorareaSelect
-  },
   props: {
     parentObj: Object
   },
@@ -47,8 +35,7 @@ export default {
       loading: false,
       entity: {},
       rules: {},
-      title: '',
-      CheckArea:[]
+      title: ''
     }
   },
   methods: {
@@ -64,7 +51,7 @@ export default {
 
       if (id) {
         this.loading = true
-        this.$http.post('/TD/TD_Check/GetTheData', { id: id }).then(resJson => {
+        this.$http.post('/TD/TD_CheckArea/GetTheData', { id: id }).then(resJson => {
           this.loading = false
 
           this.entity = resJson.Data
@@ -77,7 +64,7 @@ export default {
           return
         }
         this.loading = true
-        this.$http.post('/TD/TD_Check/PushData', {Data:this.entity, Ids: this.CheckArea}).then(resJson => {
+        this.$http.post('/TD/TD_CheckArea/SaveData', this.entity).then(resJson => {
           this.loading = false
 
           if (resJson.Success) {
