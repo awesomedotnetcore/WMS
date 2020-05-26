@@ -22,18 +22,18 @@ namespace Coldairarrow.Business.TD
         public async Task<PageResult<TD_MoveDetail>> GetDataListAsync(PageInput<ConditionDTO> input)
         {
             var q = GetIQueryable();
-            var where = LinqHelper.True<TD_MoveDetail>();
             var search = input.Search;
+            q = q.Include(i => i.Src_Location).Include(i => i.Src_Tray).Include(i => i.Src_TrayZone)
+                .Include(i => i.Tar_Location).Include(i => i.Tar_Tray).Include(i => i.Tar_TrayZone)
+                .Include(i => i.PB_Material);
 
             //筛选
-            if (!search.Condition.IsNullOrEmpty() && !search.Keyword.IsNullOrEmpty())
+            if (!search.Keyword.IsNullOrEmpty())
             {
-                var newWhere = DynamicExpressionParser.ParseLambda<TD_MoveDetail, bool>(
-                    ParsingConfig.Default, false, $@"{search.Condition}.Contains(@0)", search.Keyword);
-                where = where.And(newWhere);
+                q = q.Where(w => w.MoveId == search.Keyword);
             }
 
-            return await q.Where(where).GetPageResultAsync(input);
+            return await q.GetPageResultAsync(input);
         }
 
         public async Task<TD_MoveDetail> GetTheDataAsync(string id)

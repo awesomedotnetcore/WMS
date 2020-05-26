@@ -1,22 +1,21 @@
 ﻿<template>
   <a-modal
+    ref="form"    
     :title="title"
-    width="40%"
+    width="70%"
     :visible="visible"
     :confirmLoading="loading"
     @ok="handleSubmit"
     @cancel="()=>{this.visible=false}"
   >
-    <a-spin :spinning="loading">
-      <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="货区ID" prop="AreaId">
-          <a-input v-model="entity.AreaId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="物料ID" prop="MaterialId">
-          <a-input v-model="entity.MaterialId" autocomplete="off" />
-        </a-form-model-item>
-      </a-form-model>
-    </a-spin>
+    <a-transfer 
+      :data-source="materialList"
+      show-search
+      :list-style="{width: '250px',height: '300px'}"
+      :target-keys="targetKeys"
+      :render="item => `${item.title}(${item.description})`"
+      @change="handleMaterialChange"
+    ></a-transfer>
   </a-modal>
 </template>
 
@@ -33,38 +32,37 @@ export default {
       },
       visible: false,
       loading: false,
-      entity: {},
       rules: {},
-      title: ''
+      title: '',
+      materialList: [],
+      targetKeys: [],
+      areaId:''
     }
   },
   methods: {
     init() {
       this.visible = true
-      this.entity = {}
-      this.$nextTick(() => {
-        this.$refs['form'].clearValidate()
-      })
+      this.materialList = []
+      this.targetKeys = []
     },
     openForm(id, title) {
+      this.areaId = id
       this.init()
-
+      this.getMaterialList()
       if (id) {
         this.loading = true
-        this.$http.post('/PB/PB_AreaMaterial/GetTheData', { id: id }).then(resJson => {
+        this.$http.post('/PB/PB_AreaMaterial/GetDataListByAreaId?areaId=' + id).then(resJson => {
           this.loading = false
-
-          this.entity = resJson.Data
+          resJson.Data.forEach(element => {
+            this.targetKeys.push(element.PB_Material.Id)
+          })
         })
       }
+      alert(id)
     },
     handleSubmit() {
-      this.$refs['form'].validate(valid => {
-        if (!valid) {
-          return
-        }
         this.loading = true
-        this.$http.post('/PB/PB_AreaMaterial/SaveData', this.entity).then(resJson => {
+        this.$http.post('/PB/PB_AreaMaterial/SaveDatas', {id:this.areaId,keys:this.targetKeys}).then(resJson => {
           this.loading = false
 
           if (resJson.Success) {
@@ -76,7 +74,25 @@ export default {
             this.$message.error(resJson.Msg)
           }
         })
+    },
+    getMaterialList() {
+      var thisObj = this
+      this.materialList = []
+      this.loading = true
+      this.$http.post('/PB/PB_Material/GetAllDataList').then(resJson => {
+        thisObj.loading = false
+        resJson.Data.forEach(element => {
+          thisObj.materialList.push({
+            key: element.Id,
+            title: element.Name,
+            description: element.Code,
+            chosen: false
+          })
+        })
       })
+    },
+    handleMaterialChange(selectedRowKeys) {
+      this.targetKeys = selectedRowKeys
     }
   }
 }

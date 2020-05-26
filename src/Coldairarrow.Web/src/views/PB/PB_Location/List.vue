@@ -59,21 +59,21 @@
           <a @click="handleEdit(record.Id)">编辑<br></a>
           <a-divider type="vertical" />
           <a @click="handleDelete([record.Id])">删除<br></a>
-          <a-divider type="vertical" />
-          <a @click="openTrayTypeList(record.Id)">设置托盘类型</a>
+          <!-- <a-divider type="vertical" />
+          <a @click="openTrayTypeList(record.Id)">设置托盘类型</a> -->
         </template>
       </span>
     </a-table>
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
-    <traytype-list ref="traytypeList" :parentObj="this"></traytype-list>
+    <!-- <traytype-list ref="traytypeList" :parentObj="this"></traytype-list> -->
   </a-card>
 </template>
 
 <script>
 import EditForm from './EditForm'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
-import TraytypeList from '../PB_LocalTrayType/List'
+// import TraytypeList from '../PB_LocalTrayType/List'
 
 const filterYesOrNo = (value, row, index) => {
   if (value) return '是'
@@ -100,7 +100,7 @@ export default {
   components: {
     EditForm,
     EnumName, 
-    TraytypeList,
+    // TraytypeList,
   },
   mounted() {
     this.getDataList()
@@ -203,9 +203,9 @@ export default {
         }
       })
     },
-    openTrayTypeList(typeId) {
-      this.$refs.traytypeList.openDrawer(typeId)
-    }
+    // openTrayTypeList(typeId) {
+    //   this.$refs.traytypeList.openDrawer(typeId)
+    // }
   }
 }
 </script>

@@ -50,6 +50,7 @@ export default {
     },
     openForm(typeId, title) {
       var thisObj = this
+      this.typeId = typeId
       this.init()
       this.getMaterialList()
       if (typeId) {
@@ -68,25 +69,18 @@ export default {
       }
     },
     handleSubmit() {
-      this.$refs['form'].validate(valid => {
-        if (!valid) {
-          return
+      this.loading = true
+      this.$http.post('/PB/PB_TrayMaterial/SaveDatas?typeId=' + this.typeId, this.targetKeys).then(resJson => {
+        this.loading = false
+
+        if (resJson.Success) {
+          this.$message.success('操作成功!')
+          this.visible = false
+
+          this.parentObj.getDataList()
+        } else {
+          this.$message.error(resJson.Msg)
         }
-        this.loading = true
-        this.$http
-          .post('/PB/PB_TrayMaterial/SaveDatas?typeId=', this.typeId, this.targetKeys)
-          .then(resJson => {
-            this.loading = false
-
-            if (resJson.Success) {
-              this.$message.success('操作成功!')
-              this.visible = false
-
-              this.parentObj.getDataList()
-            } else {
-              this.$message.error(resJson.Msg)
-            }
-          })
       })
     },
     getMaterialList() {

@@ -22,18 +22,32 @@ namespace Coldairarrow.Business.PB
         public async Task<PageResult<PB_AreaMaterial>> GetDataListAsync(PageInput<ConditionDTO> input)
         {
             var q = GetIQueryable();
-            var where = LinqHelper.True<PB_AreaMaterial>();
             var search = input.Search;
+            q = q.Include(i => i.PB_Material);
 
             //筛选
-            if (!search.Condition.IsNullOrEmpty() && !search.Keyword.IsNullOrEmpty())
+            if (!search.Keyword.IsNullOrEmpty())
             {
-                var newWhere = DynamicExpressionParser.ParseLambda<PB_AreaMaterial, bool>(
-                    ParsingConfig.Default, false, $@"{search.Condition}.Contains(@0)", search.Keyword);
-                where = where.And(newWhere);
+                q = q.Where(w => w.AreaId == search.Keyword);
             }
+            var res = await q.GetPageResultAsync(input);
 
-            return await q.Where(where).GetPageResultAsync(input);
+            return res;
+        }
+
+        public async Task<List<PB_AreaMaterial>> GetDataListAsync(string areaId)
+        {
+            var q = GetIQueryable();
+            q = q.Include(i => i.PB_Material);
+
+            //筛选
+            if (!areaId.IsNullOrEmpty())
+            {
+                q = q.Where(w => w.AreaId == areaId);
+            }
+            var res = await q.ToListAsync();
+
+            return res;
         }
 
         public async Task<PB_AreaMaterial> GetTheDataAsync(string id)
@@ -46,14 +60,33 @@ namespace Coldairarrow.Business.PB
             await InsertAsync(data);
         }
 
+        public async Task<int> AddDataAsync(List<PB_AreaMaterial> datas)
+        {
+            return await InsertAsync(datas);
+        }
+
         public async Task UpdateDataAsync(PB_AreaMaterial data)
         {
             await UpdateAsync(data);
         }
 
-        public async Task DeleteDataAsync(List<string> ids)
+        public async Task<int> UpdateDataAsync(List<PB_AreaMaterial> datas)
         {
-            await DeleteAsync(ids);
+            return await UpdateAsync(datas);
+        }
+
+        //public async Task DeleteDataAsync(List<string> ids)
+        //{
+        //    await DeleteAsync(ids);
+        //}
+
+        public async Task DeleteDataAsync(string AreaId, List<string> materialIds)
+        {
+
+            foreach (var key in materialIds)
+            {
+                await ExecuteSqlAsync(string.Format("delete from PB_AreaMaterial where AreaId='{0}' and MaterialId='{1}'", AreaId, key));
+            }
         }
 
         #endregion

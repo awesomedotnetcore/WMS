@@ -1,26 +1,17 @@
-﻿using Coldairarrow.Business.TD;
+﻿using Coldairarrow.Business.Base;
+using Coldairarrow.Business.TD;
 using Coldairarrow.Entity.TD;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Coldairarrow.Api.Controllers.TD
 {
     [Route("/TD/[controller]/[action]")]
-    public class TD_CheckController : BaseApiController
+    public partial class TD_CheckController : BaseApiController
     {
-        #region DI
-
-        public TD_CheckController(ITD_CheckBusiness tD_CheckBus)
-        {
-            _tD_CheckBus = tD_CheckBus;
-        }
-
-        ITD_CheckBusiness _tD_CheckBus { get; }
-
-        #endregion
-
         #region 获取
 
         [HttpPost]
@@ -45,6 +36,10 @@ namespace Coldairarrow.Api.Controllers.TD
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
+                data.StorId = (await _base_UserStorBus.GetStorage(_Op.UserId)).Where(p=>p.IsDefault==true).FirstOrDefault().Id;
+                data.EquId = "1";
+                data.IsComplete = false;
+                data.Status = 0;
 
                 await _tD_CheckBus.AddDataAsync(data);
             }
