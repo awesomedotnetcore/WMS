@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -23,5 +25,14 @@ namespace Coldairarrow.Entity.TD
         [Key, Column(Order = 2)]
         public String MaterialId { get; set; }
 
+    }
+
+    public class TD_CheckMaterialEntityTypeConfig : IEntityTypeConfiguration<TD_CheckMaterial>
+    {
+        public void Configure(EntityTypeBuilder<TD_CheckMaterial> builder)
+        {
+            builder
+                .HasKey(t => new { t.MaterialId, t.CheckId });
+        }
     }
 }
