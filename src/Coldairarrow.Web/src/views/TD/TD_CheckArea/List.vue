@@ -18,10 +18,8 @@
           <a-col :md="4" :sm="24">
             <a-form-item label="查询类别">
               <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="StorId">仓库ID</a-select-option>
-                <a-select-option key="RefCode">关联单号</a-select-option>
-                <a-select-option key="EquId">设备ID</a-select-option>
-                <a-select-option key="AuditUserId">审核人ID</a-select-option>
+                <a-select-option key="CherkId">CherkId</a-select-option>
+                <a-select-option key="StoarAreaId">StoarAreaId</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -50,19 +48,6 @@
       :bordered="true"
       size="small"
     >
-      <template slot="IsComplete" slot-scope="text, record">
-         <a-tag v-if="record.IsComplete===true">已盘</a-tag>
-         <a-tag v-else color="green">待盘</a-tag>
-      </template>
-      <template slot="Status" slot-scope="text, record">
-         <a-tag v-if="record.Status===0" color="green">待审核</a-tag>
-         <a-tag v-else-if="record.Status===1">审核通过</a-tag>
-         <a-tag v-else-if="record.Status===2" color="red">审核失败</a-tag>
-         <a-tag v-else color="green">待审核</a-tag>
-      </template>
-      <template slot="Type" slot-scope="text">
-        <enum-name code="CheckType" :value="text"></enum-name>
-      </template>
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -78,23 +63,16 @@
 
 <script>
 import EditForm from './EditForm'
-import EnumName from '../../../components/BaseEnum/BaseEnumName'
 
 const columns = [
-  { title: '盘点类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
-  { title: '盘点时间', dataIndex: 'CheckTime', width: '10%' },  
-  { title: '关联单号', dataIndex: 'RefCode', width: '10%' },
-  { title: '盘差状态', dataIndex: 'IsComplete', width: '10%', scopedSlots: { customRender: 'IsComplete' }  },
-  { title: '状态', dataIndex: 'Status', width: '10%', scopedSlots: { customRender: 'Status' }  },
-  { title: '审核人', dataIndex: 'AuditUserId', width: '10%' },
-  { title: '审核时间', dataIndex: 'AuditeTime', width: '10%' },
+  { title: 'CherkId', dataIndex: 'CherkId', width: '10%' },
+  { title: 'StoarAreaId', dataIndex: 'StoarAreaId', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
-    EditForm,
-    EnumName
+    EditForm
   },
   mounted() {
     this.getDataList()
@@ -127,7 +105,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/TD/TD_Check/GetDataList', {
+        .post('/TD/TD_CheckArea/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
@@ -161,7 +139,7 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/TD/TD_Check/DeleteData', ids).then(resJson => {
+            thisObj.$http.post('/TD/TD_CheckArea/DeleteData', ids).then(resJson => {
               resolve()
 
               if (resJson.Success) {

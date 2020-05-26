@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Coldairarrow.Business.TD
 {
-    public interface ITD_CheckMaterialBusiness
+    public partial interface ITD_CheckMaterialBusiness
     {
         Task<PageResult<TD_CheckMaterial>> GetDataListAsync(PageInput<ConditionDTO> input);
         Task<TD_CheckMaterial> GetTheDataAsync(string id);

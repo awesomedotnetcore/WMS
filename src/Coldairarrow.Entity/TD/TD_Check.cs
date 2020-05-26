@@ -30,7 +30,7 @@ namespace Coldairarrow.Entity.TD
         /// <summary>
         /// 盘点类型 整体盘点 区域盘点 特定物料盘点 随机物料盘点(百分比) 
         /// </summary>
-        public Int32 Type { get; set; }
+        public string Type { get; set; }
 
         /// <summary>
         /// 关联单号
