@@ -47,7 +47,7 @@ export default {
       this.keyword = q
       clearTimeout(this.timeout)
       this.timeout = setTimeout(() => {
-        this.$http.post('/PB/PB_Material/GetQueryData', { Id: this.curValue, Keyword: q, Take: 10 })
+        this.$http.post('/PB/PB_Location/GetQueryData', { Id: this.curValue, Keyword: q, Take: 10 })
           .then(resJson => {
             if (resJson.Success && q == this.keyword) {
               this.dataSource = resJson.Data
