@@ -8,7 +8,7 @@ namespace Coldairarrow.Business.PB
 {
     public partial interface IPB_MaterialBusiness
     {
-        Task<List<PB_Material>> GetQueryData(string id, string keyword);
+        Task<List<PB_Material>> GetQueryData(SelectQueryDTO search);
 
         Task<PageResult<PB_Material>> QueryDataListAsync(PageInput<PBMaterialConditionDTO> input);
     }
