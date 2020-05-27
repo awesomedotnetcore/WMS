@@ -16,9 +16,7 @@ namespace Coldairarrow.Api.Controllers.PB
         [HttpPost]
         public async Task<List<PB_StorArea>> Query()
         {
-            var storageId = (await _base_UserStorBus.GetStorage(_Op.UserId)).Where(p => p.IsDefault == true).FirstOrDefault().Id;
-
-            return await _pB_StorAreaBus.QueryAsync(storageId);
+            return await _pB_StorAreaBus.QueryAsync(_Op.Property.DefaultStorageId);
         }
     }
 }

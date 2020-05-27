@@ -21,7 +21,18 @@
         </a-row>
       </a-form>
     </div>
-    <a-table :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange,type:type }" :bordered="true" size="small">
+    <a-table 
+      :columns="columns" 
+      :rowKey="row => row.Id" 
+      :dataSource="data" 
+      :pagination="pagination" 
+      :loading="loading" @change="handleTableChange" 
+      :rowSelection="{ 
+        selectedRowKeys: selectedRowKeys, 
+        onChange: onSelectChange, 
+        type:type }" 
+      :bordered="true" 
+      size="small">
     </a-table>
   </a-modal>
 </template>
@@ -102,6 +113,7 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     openChoose() {
+      this.getDataList()
       this.visible = true
     },
     handleChoose() {

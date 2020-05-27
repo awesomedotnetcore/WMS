@@ -16,5 +16,10 @@ namespace Coldairarrow.Business.TD
         {
             await DeleteAsync(p => p.CheckId == checkId);
         }
+
+        public async Task PushDataAsync(List<TD_CheckData> data)
+        {
+            await base.InsertAsync(data);
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Coldairarrow.Entity.TD;
+﻿using Coldairarrow.Entity.PB;
+using Coldairarrow.Entity.TD;
 using Coldairarrow.Util;
 using EFCore.Sharding;
 using LinqKit;
@@ -22,6 +23,15 @@ namespace Coldairarrow.Business.TD
         public async Task PushAsync(List<TD_CheckMaterial> data)
         {
             await base.InsertAsync(data);
+        }
+
+        public async Task<List<PB_Material>> QueryAsync(string checkId)
+        {
+            var q = GetIQueryable();
+            q = q.Include(i => i.Material);
+            var where = LinqHelper.True<TD_CheckMaterial>();
+            where = where.And(p => p.CheckId == checkId);
+            return await q.Where(where).Select(u => u.Material).ToListAsync();
         }
     }
 }

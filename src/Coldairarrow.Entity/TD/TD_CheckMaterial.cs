@@ -10,7 +10,7 @@ namespace Coldairarrow.Entity.TD
     /// 盘点信息表
     /// </summary>
     [Table("TD_CheckMaterial")]
-    public class TD_CheckMaterial
+    public partial class TD_CheckMaterial
     {
 
         /// <summary>
@@ -25,14 +25,5 @@ namespace Coldairarrow.Entity.TD
         [Key, Column(Order = 2)]
         public String MaterialId { get; set; }
 
-    }
-
-    public class TD_CheckMaterialEntityTypeConfig : IEntityTypeConfiguration<TD_CheckMaterial>
-    {
-        public void Configure(EntityTypeBuilder<TD_CheckMaterial> builder)
-        {
-            builder
-                .HasKey(t => new { t.MaterialId, t.CheckId });
-        }
     }
 }
