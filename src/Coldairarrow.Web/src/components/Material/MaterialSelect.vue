@@ -1,11 +1,11 @@
 <template>
   <div>
-    <a-auto-complete placeholder="选择物料" v-model="curValue" @select="onSelect" @search="handleSearch">
+    <a-auto-complete placeholder="选择物料" :open="dropdownVisible" v-model="curValue" @select="onSelect" @search="handleSearch">
       <template slot="dataSource">
         <a-select-option v-for="item in dataSource" :key="item.Id" :value="item.Id">{{ item.Name }}({{ item.Code }})</a-select-option>
       </template>
       <a-input>
-        <a-button slot="suffix" style="margin-right: -12px" class="search-btn" type="primary" @click="$ref.materialChoose.openChoose">
+        <a-button slot="suffix" style="margin-right: -12px" class="search-btn" type="primary" @click="handleOpenChoose">
           <a-icon type="search" />
         </a-button>
       </a-input>
@@ -24,6 +24,7 @@ export default {
   },
   data() {
     return {
+      dropdownVisible: false,
       curValue: '',
       keyword: '',
       timeout: null,
@@ -48,15 +49,20 @@ export default {
           .then(resJson => {
             if (resJson.Success && q == this.keyword) {
               this.dataSource = resJson.Data
+              this.dropdownVisible = true
             }
           })
       }, 500)
     },
     onSelect(value, option) {
       this.$emit('input', value)
+      this.dropdownVisible = false
     },
     handleSearch(value) {
       this.reload(value)
+    },
+    handleOpenChoose() {
+      this.$refs.materialChoose.openChoose()
     },
     handleChoose(selectedRows) {
       this.dataSource = [...selectedRows]

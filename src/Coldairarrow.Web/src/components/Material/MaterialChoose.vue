@@ -1,5 +1,5 @@
 <template>
-  <a-modal title="物料选择" width="40%" :visible="visible" :confirmLoading="loading" okText="选择" @ok="handleChoose" @cancel="()=>{this.visible=false}">
+  <a-modal title="物料选择" width="60%" :visible="visible" :confirmLoading="loading" okText="选择" @ok="handleChoose" @cancel="()=>{this.visible=false}">
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
@@ -27,8 +27,8 @@
 </template>
 
 <script>
-import MaterialTypeSelect from '../../../components/PB/MaterialTypeSelect'
-import SupplierSelect from '../../../components/PB/SupplierSelect'
+import MaterialTypeSelect from '../PB/MaterialTypeSelect'
+import SupplierSelect from '../PB/SupplierSelect'
 const columns = [
   { title: '物料名称', dataIndex: 'Name', width: '15%' },
   { title: '物料编码', dataIndex: 'Code', width: '10%' },
@@ -42,7 +42,7 @@ const columns = [
 
 export default {
   props: {
-    type: { type: String, default: 'checkbox', required: false }
+    type: { type: String, default: 'radio', required: false }
   },
   components: {
     MaterialTypeSelect,
