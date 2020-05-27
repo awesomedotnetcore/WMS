@@ -26,7 +26,7 @@
           </a-select>
         </a-form-model-item>
         <a-form-model-item label="启用日期" prop="StartTime">
-          <a-input v-model="entity.StartTime" autocomplete="off" />
+          <a-date-picker show-time v-model="entity.StartTime"/>
         </a-form-model-item>
         <a-form-model-item label="备注" prop="Remarks">
           <a-input v-model="entity.Remarks" autocomplete="off" />
@@ -37,6 +37,8 @@
 </template>
 
 <script>
+import moment from 'moment'
+
 export default {
   props: {
     parentObj: Object
@@ -78,6 +80,7 @@ export default {
           this.loading = false
 
           this.entity = resJson.Data
+          this.entity.StartTime = moment(this.entity.StartTime)
         })
       } else {
         this.entity.Status = 1
