@@ -10,7 +10,7 @@
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">      
         <a-form-model-item label="盘点时间" prop="CheckTime">
-          <a-date-picker v-model="entity.CheckTime" show-time format="YYYY-MM-DD HH:mm:ss" />
+          <a-date-picker v-model="entity.CheckTime" show-time autocomplete="off"/>
         </a-form-model-item>
         <a-form-model-item label="关联单号" prop="RefCode">
           <a-input v-model="entity.RefCode" autocomplete="off" />
@@ -27,8 +27,10 @@
 </template>
 
 <script>
+
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import StorareaSelect from '../../../components/PB/StorAreaSelect'
+import moment from 'moment'
 export default {
   components:{
     EnumSelect,
@@ -68,6 +70,11 @@ export default {
           this.loading = false
 
           this.entity = resJson.Data
+          this.entity.CheckTime = moment(this.entity.CheckTime)
+        })
+
+        this.$http.post('/TD/TD_CheckArea/Query?checkId='+id).then(resJson => {
+          this.CheckArea = resJson.Data
         })
       }
     },

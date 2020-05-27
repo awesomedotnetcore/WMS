@@ -8,5 +8,7 @@ namespace Coldairarrow.Business.TD
     public partial interface ITD_CheckMaterialBusiness
     {
         Task ClearDataAsync(string checkId);
+
+        Task PushAsync(List<TD_CheckMaterial> data);
     }
 }

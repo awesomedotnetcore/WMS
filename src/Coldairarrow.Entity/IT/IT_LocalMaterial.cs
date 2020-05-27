@@ -8,7 +8,7 @@ namespace Coldairarrow.Entity.IT
     /// 库存表
     /// </summary>
     [Table("IT_LocalMaterial")]
-    public class IT_LocalMaterial
+    public partial class IT_LocalMaterial
     {
 
         /// <summary>
