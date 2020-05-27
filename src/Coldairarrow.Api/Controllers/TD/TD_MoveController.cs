@@ -61,17 +61,17 @@ namespace Coldairarrow.Api.Controllers.TD
         }
 
         [HttpPost]
-        public async Task UpdateData(string moveId, List<double> localNums, List<double> amounts)
+        public async Task UpdateData(UpdateMoveInfo updateMoveInfo)
         {
-            var data = await _tD_MoveBus.GetTheDataAsync(moveId);
+            var data = await _tD_MoveBus.GetTheDataAsync(updateMoveInfo.moveId);
             double moveNum = 0;
             double totalAmt = 0;
 
-            foreach (var i in localNums)
+            foreach (var i in updateMoveInfo.localNums)
             {
                 moveNum += i;
             }
-            foreach(var a in amounts)
+            foreach(var a in updateMoveInfo.amounts)
             {
                 totalAmt += a;
             }
