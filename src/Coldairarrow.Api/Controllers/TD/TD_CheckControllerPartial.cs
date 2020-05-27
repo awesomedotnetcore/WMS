@@ -1,9 +1,12 @@
 ﻿using Coldairarrow.Business.Base;
+using Coldairarrow.Business.PB;
 using Coldairarrow.Business.TD;
+using Coldairarrow.Entity.PB;
 using Coldairarrow.Entity.TD;
 using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
+using org.apache.zookeeper.data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,6 +25,8 @@ namespace Coldairarrow.Api.Controllers.TD
         ITD_CheckMaterialBusiness _tD_CheckMaterialBus { get; }
 
         ITD_CheckDataBusiness _tD_CheckDataBus { get; }
+
+        IPB_AreaMaterialBusiness _pB_AreaMaterialBus { get; }
         IOperator _Op { get; }
 
         public TD_CheckController(ITD_CheckBusiness tD_CheckBus
@@ -29,6 +34,7 @@ namespace Coldairarrow.Api.Controllers.TD
             , ITD_CheckAreaBusiness tD_CheckAreaBus
             , ITD_CheckMaterialBusiness tD_CheckMaterialBus
             , ITD_CheckDataBusiness tD_CheckDataBus
+            , IPB_AreaMaterialBusiness pB_AreaMaterialBus
             , IOperator op)
         {
             _tD_CheckBus = tD_CheckBus;
@@ -36,6 +42,7 @@ namespace Coldairarrow.Api.Controllers.TD
             _tD_CheckAreaBus = tD_CheckAreaBus;
             _tD_CheckMaterialBus = tD_CheckMaterialBus;
             _tD_CheckDataBus = tD_CheckDataBus;
+            _pB_AreaMaterialBus = pB_AreaMaterialBus;
             _Op = op;
         }
 
@@ -66,15 +73,21 @@ namespace Coldairarrow.Api.Controllers.TD
             if(data.Type=="Area")
             {
                 var areaList = new List<TD_CheckArea>();
-                foreach(var id in model.Ids)
+                var materList = new List<PB_AreaMaterial>();
+                foreach (var id in model.Ids)
                 {
                     TD_CheckArea area = new TD_CheckArea();
                     area.CherkId = data.Id;
                     area.StoarAreaId = id;
 
                     areaList.Add(area);
+
+                    materList.AddRange(await _pB_AreaMaterialBus.GetDataListAsync(id));
                 }
                 await _tD_CheckAreaBus.PushAsync(areaList);
+
+                var materialList = (from u in materList select new TD_CheckMaterial() { CheckId = data.Id, MaterialId = u.MaterialId }).Distinct().ToList();
+                await _tD_CheckMaterialBus.PushAsync(materialList);
             }
         }
     }

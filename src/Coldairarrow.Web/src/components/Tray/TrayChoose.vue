@@ -1,5 +1,5 @@
 <template>
-  <a-modal title="物料选择" width="60%" :visible="visible" :confirmLoading="loading" okText="选择" @ok="handleChoose" @cancel="()=>{this.visible=false}">
+  <a-modal title="托盘选择" width="60%" :visible="visible" :confirmLoading="loading" okText="选择" @ok="handleChoose" @cancel="()=>{this.visible=false}">
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
@@ -11,7 +11,7 @@
           </a-col>
           <a-col :md="3" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="物料名称或编号或条码" />
+              <a-input v-model="queryParam.keyword" placeholder="托盘名称或编码" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -27,14 +27,18 @@
 </template>
 
 <script>
-import MaterialTypeSelect from '../PB/MaterialTypeSelect'
-import SupplierSelect from '../PB/SupplierSelect'
+const filterYesOrNo = (value, row, index) => {
+  if (value) return '启用'
+  else return '停用'
+}
 const columns = [
-  { title: '物料名称', dataIndex: 'Name', width: '20%' },
-  { title: '物料编码', dataIndex: 'Code', width: '20%' },
-  { title: '条码', dataIndex: 'BarCode', width: '20%' },
-  { title: '物料简称', dataIndex: 'SimpleName', width: '20%' },
-  { title: '物料规格', dataIndex: 'Spec', width: '20%' }
+  { title: '托盘号', dataIndex: 'Code', width: '10%' },
+  { title: '托盘名称', dataIndex: 'Name', width: '10%' },
+  { title: '托盘类型', dataIndex: 'PB_TrayType.Name', width: '10%' },
+  { title: '货位', dataIndex: 'PB_Location.Name', width: '10%' },
+  { title: '启用日期', dataIndex: 'StartTime', width: '10%' },
+  { title: '托盘状态', dataIndex: 'Status', width: '10%', customRender: filterYesOrNo },
+  { title: '备注', dataIndex: 'Remarks', width: '10%' }
 ]
 
 export default {
@@ -42,8 +46,6 @@ export default {
     type: { type: String, default: 'radio', required: false }
   },
   components: {
-    MaterialTypeSelect,
-    SupplierSelect
   },
   mounted() {
     this.getDataList()
@@ -78,7 +80,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/PB/PB_Material/GetDataList', {
+        .post('/PB/PB_Tray/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',

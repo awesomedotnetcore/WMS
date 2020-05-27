@@ -1,6 +1,6 @@
 ﻿<template>
 <a-drawer
-    title="关联物料清单"
+    title="关联货位"
     placement="right"
     :closable="true"
     @close="onDrawerClose"
@@ -24,7 +24,7 @@
     <a-table
       ref="table"
       :columns="columns"
-      :rowKey="row => row.MaterialId"
+      :rowKey="row => row.LocalId"
       :dataSource="data"
       :pagination="pagination"
       :loading="loading"
@@ -37,7 +37,7 @@
         <template>
           <!-- <a @click="handleEdit(record.Id)">编辑</a>
           <a-divider type="vertical" /> -->
-          <a @click="handleDelete([record.MaterialId])">删除</a>
+          <a @click="handleDelete([record.LocalId])">删除</a>
         </template>
       </span>
     </a-table>
@@ -51,9 +51,9 @@
 import EditForm from './EditForm'
 
 const columns = [
-  { title: '物料编码', dataIndex: 'PB_Material.Code', width: '20%' },
-  { title: '物料名称', dataIndex: 'PB_Material.Name', width: '20%' },
-  { title: '物料规格', dataIndex: 'PB_Material.Spec', width: '10%' },
+  { title: '货位编号', dataIndex: 'PB_Location.Code', width: '20%' },
+  { title: '货位名称', dataIndex: 'PB_Location.Name', width: '20%' },
+  { title: '货位类型', dataIndex: 'PB_Location.Type', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -73,13 +73,13 @@ export default {
         showTotal: (total, range) => `总数:${total} 当前:${range[0]}-${range[1]}`
       },
       filters: {},
-      sorter: { field: 'MaterialId', order: 'asc' },
+      sorter: { field: 'LocalId', order: 'asc' },
       loading: false,
       columns,
       queryParam: {},
       selectedRowKeys: [],
       visible: false,
-      areaId: null,
+      typeId: null,
       ids: []
     }
   },
@@ -92,14 +92,14 @@ export default {
     },
     getDataList() {
       this.selectedRowKeys = []
-      this.queryParam.Keyword = this.areaId
+      this.queryParam.Keyword = this.typeId
 
       this.loading = true
       this.$http
-        .post('/PB/PB_AreaMaterial/GetDataList', {
+        .post('/PB/PB_LocalTray/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
-          SortField: this.sorter.field || 'MaterialId',
+          SortField: this.sorter.field || 'LocalId',
           SortType: this.sorter.order,
           Search: this.queryParam,
           ...this.filters
@@ -119,7 +119,7 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm(this.areaId)
+      this.$refs.editForm.openForm(this.typeId)
     },
     // handleEdit(id) {
     //   this.$refs.editForm.openForm(id)
@@ -131,7 +131,7 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/PB/PB_AreaMaterial/DeleteData?AreaId=' + thisObj.areaId, thisObj.ids)
+            thisObj.$http.post('/PB/PB_LocalTray/DeleteData?TrayTypeId' + thisObj.typeId, thisObj.ids)
             .then(resJson => {
               resolve()
               if (resJson.Success) {
@@ -145,10 +145,10 @@ export default {
         }
       })
     },
-    openDrawer(areaId) {
-      this.areaId = areaId
+    openDrawer(typeId) {
+      this.typeId = typeId
       this.visible = true
-      if (areaId != null) {
+      if (typeId != null) {
         this.getDataList()
       }
     },

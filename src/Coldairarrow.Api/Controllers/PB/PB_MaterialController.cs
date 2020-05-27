@@ -1,5 +1,6 @@
 ﻿using Coldairarrow.Business.PB;
 using Coldairarrow.Entity.PB;
+using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 namespace Coldairarrow.Api.Controllers.PB
 {
     [Route("/PB/[controller]/[action]")]
-    public class PB_MaterialController : BaseApiController
+    public partial class PB_MaterialController : BaseApiController
     {
         #region DI
 
@@ -43,10 +44,10 @@ namespace Coldairarrow.Api.Controllers.PB
             return await _pB_MaterialBus.GetTheDataAsync(input.id);
         }
 
-        [HttpGet]
-        public async Task<List<PB_Material>> GetQueryData(string id, string keyword)
+        [HttpPost]
+        public async Task<List<PB_Material>> GetQueryData(SelectQueryDTO search)
         {
-            return await _pB_MaterialBus.GetQueryData(id, keyword);
+            return await _pB_MaterialBus.GetQueryData(search);
         }
 
         #endregion

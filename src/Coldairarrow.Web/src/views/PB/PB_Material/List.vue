@@ -26,7 +26,7 @@
           </a-col>         
           <a-col :md="3" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="物料名称或编号或条码" />
+              <a-input v-model="queryParam.Keyword" placeholder="物料名称或编号或条码" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -117,7 +117,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/PB/PB_Material/GetDataList', {
+        .post('/PB/PB_Material/QueryDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',

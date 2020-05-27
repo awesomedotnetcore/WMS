@@ -1,8 +1,8 @@
 <template>
   <div>
-    <a-auto-complete placeholder="选择物料" :open="dropdownVisible" v-model="curValue" @select="onSelect" @search="handleSearch">
+    <a-auto-complete placeholder="选择货位" :open="dropdownVisible" v-model="curValue" @select="onSelect" @search="handleSearch">
       <template slot="dataSource">
-        <a-select-option v-for="item in dataSource" :key="item.Id" :value="item.Id">{{ item.Name }}({{ item.Code }})</a-select-option>
+        <a-select-option v-for="item in dataSource" :key="item.Id" :value="item.Id">{{ item.Name }} ({{ item.Code }})</a-select-option>
       </template>
       <a-input>
         <a-button slot="suffix" style="margin-right: -12px" class="search-btn" type="primary" @click="handleOpenChoose">
@@ -10,17 +10,17 @@
         </a-button>
       </a-input>
     </a-auto-complete>
-    <material-choose ref="materialChoose" @onChoose="handleChoose"></material-choose>
+    <location-choose ref="locationChoose" @onChoose="handleChoose"></location-choose>
   </div>
 </template>
 <script>
-import MaterialChoose from './MaterialChoose'
+import LocationChoose from './LocationChoose'
 export default {
   props: {
     value: { type: String, default: '', required: false }
   },
   components: {
-    MaterialChoose
+    LocationChoose
   },
   data() {
     return {
@@ -47,7 +47,7 @@ export default {
       this.keyword = q
       clearTimeout(this.timeout)
       this.timeout = setTimeout(() => {
-        this.$http.post('/PB/PB_Material/GetQueryData', { Id: this.curValue, Keyword: q, Take: 10 })
+        this.$http.post('/PB/PB_Location/GetQueryData', { Id: this.curValue, Keyword: q, Take: 10 })
           .then(resJson => {
             if (resJson.Success && q == this.keyword) {
               this.dataSource = resJson.Data
@@ -69,7 +69,7 @@ export default {
     },
     handleOpenChoose() {
       this.dropdownVisible = false
-      this.$refs.materialChoose.openChoose()
+      this.$refs.locationChoose.openChoose()
     },
     handleChoose(selectedRows) {
       this.dataSource = [...selectedRows]
