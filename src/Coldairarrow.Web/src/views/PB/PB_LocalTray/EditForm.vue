@@ -1,22 +1,21 @@
 ﻿<template>
   <a-modal
+    ref="form"    
     :title="title"
-    width="40%"
+    width="70%"
     :visible="visible"
     :confirmLoading="loading"
     @ok="handleSubmit"
     @cancel="()=>{this.visible=false}"
   >
-    <a-spin :spinning="loading">
-      <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="货位ID" prop="LocalId">
-          <a-input v-model="entity.LocalId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="托盘类型ID" prop="TrayTypeId">
-          <a-input v-model="entity.TrayTypeId" autocomplete="off" />
-        </a-form-model-item>
-      </a-form-model>
-    </a-spin>
+    <a-transfer 
+      :data-source="locationList"
+      show-search
+      :list-style="{width: '250px',height: '300px'}"
+      :target-keys="targetKeys"
+      :render="item => `${item.title}(${item.description})`"
+      @change="handlelocationChange"
+    ></a-transfer>
   </a-modal>
 </template>
 
@@ -33,38 +32,36 @@ export default {
       },
       visible: false,
       loading: false,
-      entity: {},
       rules: {},
-      title: ''
+      title: '',
+      locationList: [],
+      targetKeys: [],
+      typeId:''
     }
   },
   methods: {
     init() {
       this.visible = true
-      this.entity = {}
-      this.$nextTick(() => {
-        this.$refs['form'].clearValidate()
-      })
+      this.locationList = []
+      this.targetKeys = []
     },
     openForm(id, title) {
+     this.typeId = id
       this.init()
-
+      this.getLocationList()
       if (id) {
         this.loading = true
-        this.$http.post('/PB/PB_LocalTray/GetTheData', { id: id }).then(resJson => {
+        this.$http.post('/PB/PB_LocalTray/GetDataListByTypeId?TypeId=' + id).then(resJson => {
           this.loading = false
-
-          this.entity = resJson.Data
+          resJson.Data.forEach(element => {
+            this.targetKeys.push(element.PB_Location.Id)
+          })
         })
       }
     },
     handleSubmit() {
-      this.$refs['form'].validate(valid => {
-        if (!valid) {
-          return
-        }
         this.loading = true
-        this.$http.post('/PB/PB_LocalTray/SaveData', this.entity).then(resJson => {
+        this.$http.post('/PB/PB_LocalTray/SaveDatas', {id:this.typeId,keys:this.targetKeys}).then(resJson => {
           this.loading = false
 
           if (resJson.Success) {
@@ -76,7 +73,25 @@ export default {
             this.$message.error(resJson.Msg)
           }
         })
+    },
+    getLocationList() {
+      var thisObj = this
+      this.locationList = []
+      this.loading = true
+      this.$http.post('/PB/PB_Location/GetAllData').then(resJson => {
+        thisObj.loading = false
+        resJson.Data.forEach(element => {
+          thisObj.locationList.push({
+            key: element.Id,
+            title: element.Name,
+            description: element.Code,
+            chosen: false
+          })
+        })
       })
+    },
+    handlelocationChange(selectedRowKeys) {
+      this.targetKeys = selectedRowKeys
     }
   }
 }

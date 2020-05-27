@@ -58,7 +58,6 @@ export default {
           })
         })
       }
-      alert(id)
     },
     handleSubmit() {
         this.loading = true
