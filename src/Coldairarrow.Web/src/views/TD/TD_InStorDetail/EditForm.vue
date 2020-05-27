@@ -7,8 +7,8 @@
       <a-form-model-item label="货位" prop="LocalId">
         <location-select v-model="entity.LocalId" @select="handleLocalIdSelect"></location-select>
       </a-form-model-item>
-      <a-form-model-item label="托盘ID" prop="TrayId">
-        <a-input v-model="entity.TrayId" autocomplete="off" />
+      <a-form-model-item label="托盘" prop="TrayId">
+        <tray-select v-model="entity.TrayId" @select="handleTraySelect" :materialId="entity.MaterialId" :locartalId="entity.LocalId"></tray-select>
       </a-form-model-item>
       <a-form-model-item label="托盘分区ID" prop="ZoneId">
         <a-input v-model="entity.ZoneId" autocomplete="off" />
@@ -35,10 +35,12 @@
 <script>
 import MaterilaSelect from '../../../components/Material/MaterialSelect'
 import LocationSelect from '../../../components/Location/LocationSelect'
+import TraySelect from '../../../components/Tray/TraySelect'
 export default {
   components: {
     MaterilaSelect,
-    LocationSelect
+    LocationSelect,
+    TraySelect
   },
   data() {
     return {
@@ -71,6 +73,9 @@ export default {
     },
     handleLocalIdSelect(location) {
       console.log('handleLocalIdSelect', location)
+    },
+    handleTraySelect(tray) {
+      console.log('handleTraySelect', tray)
     }
   }
 }
