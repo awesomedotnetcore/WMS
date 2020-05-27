@@ -30,14 +30,11 @@
 import MaterialTypeSelect from '../PB/MaterialTypeSelect'
 import SupplierSelect from '../PB/SupplierSelect'
 const columns = [
-  { title: '物料名称', dataIndex: 'Name', width: '15%' },
-  { title: '物料编码', dataIndex: 'Code', width: '10%' },
-  { title: '条码', dataIndex: 'BarCode', width: '10%' },
-  { title: '物料简称', dataIndex: 'SimpleName', width: '10%' },
-  { title: '物料规格', dataIndex: 'Spec', width: '10%' },
-  { title: '上限数量', dataIndex: 'Max', width: '8%' },
-  { title: '下限数量', dataIndex: 'Min', width: '8%' },
-  { title: '备注', dataIndex: 'Remarks' }
+  { title: '物料名称', dataIndex: 'Name', width: '20%' },
+  { title: '物料编码', dataIndex: 'Code', width: '20%' },
+  { title: '条码', dataIndex: 'BarCode', width: '20%' },
+  { title: '物料简称', dataIndex: 'SimpleName', width: '20%' },
+  { title: '物料规格', dataIndex: 'Spec', width: '20%' }
 ]
 
 export default {

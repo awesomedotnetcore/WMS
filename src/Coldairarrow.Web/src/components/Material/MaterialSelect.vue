@@ -38,7 +38,9 @@ export default {
   },
   mounted() {
     this.curValue = this.value
-    this.reload('')
+    if (this.curValue != '' && this.curValue != undefined && this.curValue != null) {
+      this.reload('')
+    }
   },
   methods: {
     reload(q) {
@@ -56,17 +58,25 @@ export default {
     },
     onSelect(value, option) {
       this.$emit('input', value)
+      var rowQuery = this.dataSource.filter((val, index, arr) => { return val.Id == value })
+      if (rowQuery.length > 0) {
+        this.$emit('select', rowQuery[0])
+      }
       this.dropdownVisible = false
     },
     handleSearch(value) {
       this.reload(value)
     },
     handleOpenChoose() {
+      this.dropdownVisible = false
       this.$refs.materialChoose.openChoose()
     },
     handleChoose(selectedRows) {
       this.dataSource = [...selectedRows]
-      this.curValue = selectedRows[0].Id
+      var row = selectedRows[0]
+      this.curValue = row.Id
+      this.$emit('input', this.curValue)
+      this.$emit('select', row)
     }
   }
 }
