@@ -2,7 +2,7 @@
   <a-checkbox-group v-model="curValue" @change="handleSelected" v-bind="$attrs" style="width:100%;">
     <a-row style="width:100%;">
       <a-col v-for="item in areaList" :span="6" :key="item.Id">
-        <a-checkbox :value="item.Id">
+        <a-checkbox :value="item.Id" autocomplete="off">
           {{item.Name}}
         </a-checkbox>
       </a-col>

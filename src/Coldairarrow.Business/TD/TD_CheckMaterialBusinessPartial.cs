@@ -18,5 +18,10 @@ namespace Coldairarrow.Business.TD
 
             await base.ExecuteSqlAsync(sql);
         }
+
+        public async Task PushAsync(List<TD_CheckMaterial> data)
+        {
+            await base.InsertAsync(data);
+        }
     }
 }
