@@ -52,9 +52,9 @@
             <a-select-option :value="false" >否</a-select-option>
           </a-select>
         </a-form-model-item>
-        <a-form-model-item label="故障代码" prop="ErrorCode">
+        <!-- <a-form-model-item label="故障代码" prop="ErrorCode">
           <a-input v-model="entity.ErrorCode" autocomplete="off" />
-        </a-form-model-item>
+        </a-form-model-item> -->
         <a-form-model-item label="备注" prop="Remarks">
           <a-textarea v-model="entity.Remarks" autocomplete="off" />
         </a-form-model-item>

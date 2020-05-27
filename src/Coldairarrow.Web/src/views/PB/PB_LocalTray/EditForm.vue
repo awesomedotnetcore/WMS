@@ -9,12 +9,12 @@
     @cancel="()=>{this.visible=false}"
   >
     <a-transfer 
-      :data-source="materialList"
+      :data-source="locationList"
       show-search
       :list-style="{width: '250px',height: '300px'}"
       :target-keys="targetKeys"
       :render="item => `${item.title}(${item.description})`"
-      @change="handleMaterialChange"
+      @change="handlelocationChange"
     ></a-transfer>
   </a-modal>
 </template>
@@ -34,34 +34,34 @@ export default {
       loading: false,
       rules: {},
       title: '',
-      materialList: [],
+      locationList: [],
       targetKeys: [],
-      areaId:''
+      typeId:''
     }
   },
   methods: {
     init() {
       this.visible = true
-      this.materialList = []
+      this.locationList = []
       this.targetKeys = []
     },
     openForm(id, title) {
-      this.areaId = id
+     this.typeId = id
       this.init()
-      this.getMaterialList()
+      this.getLocationList()
       if (id) {
         this.loading = true
-        this.$http.post('/PB/PB_AreaMaterial/GetDataListByAreaId?areaId=' + id).then(resJson => {
+        this.$http.post('/PB/PB_LocalTray/GetDataListByTypeId?TypeId=' + id).then(resJson => {
           this.loading = false
           resJson.Data.forEach(element => {
-            this.targetKeys.push(element.PB_Material.Id)
+            this.targetKeys.push(element.PB_Location.Id)
           })
         })
       }
     },
     handleSubmit() {
         this.loading = true
-        this.$http.post('/PB/PB_AreaMaterial/SaveDatas', {id:this.areaId,keys:this.targetKeys}).then(resJson => {
+        this.$http.post('/PB/PB_LocalTray/SaveDatas', {id:this.typeId,keys:this.targetKeys}).then(resJson => {
           this.loading = false
 
           if (resJson.Success) {
@@ -74,14 +74,14 @@ export default {
           }
         })
     },
-    getMaterialList() {
+    getLocationList() {
       var thisObj = this
-      this.materialList = []
+      this.locationList = []
       this.loading = true
-      this.$http.post('/PB/PB_Material/GetAllDataList').then(resJson => {
+      this.$http.post('/PB/PB_Location/GetAllData').then(resJson => {
         thisObj.loading = false
         resJson.Data.forEach(element => {
-          thisObj.materialList.push({
+          thisObj.locationList.push({
             key: element.Id,
             title: element.Name,
             description: element.Code,
@@ -90,7 +90,7 @@ export default {
         })
       })
     },
-    handleMaterialChange(selectedRowKeys) {
+    handlelocationChange(selectedRowKeys) {
       this.targetKeys = selectedRowKeys
     }
   }

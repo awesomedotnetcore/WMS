@@ -1,5 +1,6 @@
 ﻿using Coldairarrow.Business.PB;
 using Coldairarrow.Entity.PB;
+using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -12,11 +13,12 @@ namespace Coldairarrow.Api.Controllers.PB
     {
         #region DI
 
-        public PB_LocationController(IPB_LocationBusiness pB_LocationBus)
+        public PB_LocationController(IPB_LocationBusiness pB_LocationBus,IOperator op)
         {
             _pB_LocationBus = pB_LocationBus;
+            _Op = op;
         }
-
+        IOperator _Op { get; }
         IPB_LocationBusiness _pB_LocationBus { get; }
 
         #endregion
@@ -41,6 +43,11 @@ namespace Coldairarrow.Api.Controllers.PB
             return await _pB_LocationBus.GetTheDataAsync(input.id);
         }
 
+        [HttpPost]
+        public async Task<List<PB_Location>> GetQueryData(SelectQueryDTO search)
+        {
+            return await _pB_LocationBus.GetQueryData(search, _Op.Property.DefaultStorageId);
+        }
         #endregion
 
         #region 提交

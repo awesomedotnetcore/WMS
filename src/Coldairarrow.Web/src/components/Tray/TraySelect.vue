@@ -1,8 +1,8 @@
 <template>
   <div>
-    <a-auto-complete placeholder="选择货位" :open="dropdownVisible" v-model="curValue" @select="onSelect" @search="handleSearch">
+    <a-auto-complete placeholder="选择托盘" :open="dropdownVisible" v-model="curValue" @select="onSelect" @search="handleSearch">
       <template slot="dataSource">
-        <a-select-option v-for="item in dataSource" :key="item.Id" :value="item.Id">{{ item.Name }} ({{ item.Code }})</a-select-option>
+        <a-select-option v-for="item in dataSource" :key="item.Id" :value="item.Id">{{ item.Name }}({{ item.Code }})</a-select-option>
       </template>
       <a-input>
         <a-button slot="suffix" style="margin-right: -12px" class="search-btn" type="primary" @click="handleOpenChoose">
@@ -10,17 +10,19 @@
         </a-button>
       </a-input>
     </a-auto-complete>
-    <location-choose ref="locationChoose" @onChoose="handleChoose"></location-choose>
+    <tray-choose ref="trayChoose" @onChoose="handleChoose"></tray-choose>
   </div>
 </template>
 <script>
-import LocationChoose from './LocationChoose'
+import TrayChoose from './TrayChoose'
 export default {
   props: {
+    materialId: { type: String, default: '', required: false },
+    locartalId: { type: String, default: '', required: false },
     value: { type: String, default: '', required: false }
   },
   components: {
-    LocationChoose
+    TrayChoose
   },
   data() {
     return {
@@ -47,7 +49,7 @@ export default {
       this.keyword = q
       clearTimeout(this.timeout)
       this.timeout = setTimeout(() => {
-        this.$http.post('/PB/PB_Location/GetQueryData', { Id: this.curValue, Keyword: q, Take: 10 })
+        this.$http.post('/PB/PB_Tray/GetQueryData', { Id: this.curValue, Keyword: q, Take: 10, MaterialId: this.materialId, LocationId: this.locartalId })
           .then(resJson => {
             if (resJson.Success && q == this.keyword) {
               this.dataSource = resJson.Data
@@ -69,7 +71,7 @@ export default {
     },
     handleOpenChoose() {
       this.dropdownVisible = false
-      this.$refs.locationChoose.openChoose()
+      this.$refs.trayChoose.openChoose()
     },
     handleChoose(selectedRows) {
       this.dataSource = [...selectedRows]

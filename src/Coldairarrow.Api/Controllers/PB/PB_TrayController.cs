@@ -1,5 +1,6 @@
 ﻿using Coldairarrow.Business.PB;
 using Coldairarrow.Entity.PB;
+using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -47,6 +48,12 @@ namespace Coldairarrow.Api.Controllers.PB
         public async Task DisableTheData(IdInputDTO input)
         {
             await _pB_TrayBus.DisableTheData(input.id);
+        }
+
+        [HttpPost]
+        public async Task<List<PB_Tray>> GetQueryData(TraySelectQueryDTO search)
+        {
+            return await _pB_TrayBus.GetQueryData(search);
         }
         #endregion
 

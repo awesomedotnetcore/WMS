@@ -1,11 +1,17 @@
 <template>
-  <a-modal title="货位选择" width="60%" :visible="visible" :confirmLoading="loading" okText="选择" @ok="handleChoose" @cancel="()=>{this.visible=false}">
+  <a-modal title="托盘选择" width="60%" :visible="visible" :confirmLoading="loading" okText="选择" @ok="handleChoose" @cancel="()=>{this.visible=false}">
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
-          <a-col :md="4" :sm="24">
+          <a-col :md="3" :sm="24">
+            <materialType-select v-model="queryParam.TypeId"></materialType-select>
+          </a-col>
+          <a-col :md="3" :sm="24">
+            <supplier-select v-model="queryParam.SupplierId"></supplier-select>
+          </a-col>
+          <a-col :md="3" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="货位编码或名称" />
+              <a-input v-model="queryParam.keyword" placeholder="托盘名称或编码" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -16,30 +22,23 @@
       </a-form>
     </div>
     <a-table :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange,type:type }" :bordered="true" size="small">
-      <template slot="Type" slot-scope="text">
-        <enum-name code="LocationType" :value="text"></enum-name>
-      </template>
     </a-table>
   </a-modal>
 </template>
 
 <script>
-import EnumName from '../BaseEnum/BaseEnumName'
 const filterYesOrNo = (value, row, index) => {
-  if (value) return '是'
-  else return '否'
+  if (value) return '启用'
+  else return '停用'
 }
 const columns = [
-  { title: '货位编号', dataIndex: 'Code', width: '15%' },
-  { title: '货位名称', dataIndex: 'Name', width: '15%' },
-  { title: '货位类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
-  { title: '仓库', dataIndex: 'PB_Storage.Name', width: '10%' },
-  { title: '货区', dataIndex: 'PB_StorArea.Name', width: '10%' },
-  { title: '巷道', dataIndex: 'PB_Laneway.Name', width: '10%' },
-  { title: '货架', dataIndex: 'PB_Rack.Name', width: '10%' },
-  { title: '剩余容量', dataIndex: 'OverVol', width: '10%' },
-  { title: '是否禁用', dataIndex: 'IsForbid', width: '5%', customRender: filterYesOrNo }, // 是否禁用
-  { title: '是否默认', dataIndex: 'IsDefault', width: '5%', customRender: filterYesOrNo }// 是否默认库位
+  { title: '托盘号', dataIndex: 'Code', width: '15%' },
+  { title: '托盘名称', dataIndex: 'Name', width: '15%' },
+  { title: '托盘类型', dataIndex: 'PB_TrayType.Name', width: '10%' },
+  { title: '货位', dataIndex: 'PB_Location.Name', width: '15%' },
+  { title: '启用日期', dataIndex: 'StartTime', width: '20%' },
+  { title: '托盘状态', dataIndex: 'Status', width: '10%', customRender: filterYesOrNo },
+  { title: '备注', dataIndex: 'Remarks', width: '15%' }
 ]
 
 export default {
@@ -47,7 +46,6 @@ export default {
     type: { type: String, default: 'radio', required: false }
   },
   components: {
-    EnumName
   },
   mounted() {
     this.getDataList()
@@ -82,7 +80,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/PB/PB_Location/GetDataList', {
+        .post('/PB/PB_Tray/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',

@@ -4,14 +4,14 @@
       <a-form-model-item label="物料" prop="MaterialId">
         <materila-select v-model="entity.MaterialId" @select="handleMaterialSelect"></materila-select>
       </a-form-model-item>
-      <a-form-model-item label="货位ID" prop="LocalId">
-        <a-input v-model="entity.LocalId" autocomplete="off" />
+      <a-form-model-item label="货位" prop="LocalId">
+        <location-select v-model="entity.LocalId" @select="handleLocalIdSelect"></location-select>
       </a-form-model-item>
-      <a-form-model-item label="托盘ID" prop="TrayId">
-        <a-input v-model="entity.TrayId" autocomplete="off" />
+      <a-form-model-item label="托盘" prop="TrayId">
+        <tray-select v-model="entity.TrayId" @select="handleTraySelect" :materialId="entity.MaterialId" :locartalId="entity.LocalId"></tray-select>
       </a-form-model-item>
-      <a-form-model-item label="托盘分区ID" prop="ZoneId">
-        <a-input v-model="entity.ZoneId" autocomplete="off" />
+      <a-form-model-item label="托盘分区" prop="ZoneId">
+        <zone-select :typeId="tray.TrayTypeId" v-model="entity.ZoneId"></zone-select>
       </a-form-model-item>
       <a-form-model-item label="批次号" prop="BatchNo">
         <a-input v-model="entity.BatchNo" autocomplete="off" />
@@ -34,9 +34,15 @@
 
 <script>
 import MaterilaSelect from '../../../components/Material/MaterialSelect'
+import LocationSelect from '../../../components/Location/LocationSelect'
+import TraySelect from '../../../components/Tray/TraySelect'
+import ZoneSelect from '../../../components/Tray/ZoneSelect'
 export default {
   components: {
-    MaterilaSelect
+    MaterilaSelect,
+    LocationSelect,
+    TraySelect,
+    ZoneSelect
   },
   data() {
     return {
@@ -46,7 +52,8 @@ export default {
       },
       visible: false,
       entity: {},
-      rules: {}
+      rules: {},
+      tray: {}
     }
   },
   mounted() {
@@ -66,6 +73,13 @@ export default {
     },
     handleMaterialSelect(material) {
       console.log('handleMaterialSelect', material)
+    },
+    handleLocalIdSelect(location) {
+      console.log('handleLocalIdSelect', location)
+    },
+    handleTraySelect(tray) {
+      console.log('handleTraySelect', tray)
+      this.tray = tray
     }
   }
 }

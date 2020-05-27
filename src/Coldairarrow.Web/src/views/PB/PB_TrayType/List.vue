@@ -49,6 +49,8 @@
           <a @click="openZoneList(record.Id)">分区管理</a>
           <a-divider type="vertical" />
           <a @click="openMaterialList(record.Id)">关联物料</a>
+          <a-divider type="vertical" />
+          <a @click="openLocationList(record.Id)">关联货位</a>
         </template>
       </span>
     </a-table>
@@ -56,6 +58,7 @@
     <edit-form ref="editForm" :parentObj="this"></edit-form>
     <zone-list ref="zoneList" :parentObj="this"></zone-list>
     <material-list ref="materialList" :parentObj="this"></material-list>
+    <location-list ref="locationList" :parentObj="this"></location-list>
   </a-card>
 </template>
 
@@ -63,6 +66,7 @@
 import EditForm from './EditForm'
 import ZoneList from '../PB_TrayZone/List'
 import MaterialList from '../PB_TrayMaterial/List'
+import LocationList from '../PB_LocalTray/List'
 
 const filterYesOrNo = (value, row, index) => {
   if (value) return '是'
@@ -82,7 +86,8 @@ export default {
   components: {
     EditForm,
     ZoneList,
-    MaterialList
+    MaterialList,
+    LocationList
   },
   mounted() {
     this.getDataList()
@@ -169,6 +174,9 @@ export default {
     },
     openMaterialList(typeId) {
       this.$refs.materialList.openDrawer(typeId)
+    },
+    openLocationList(typeId) {
+      this.$refs.locationList.openDrawer(typeId)
     }
   }
 }
