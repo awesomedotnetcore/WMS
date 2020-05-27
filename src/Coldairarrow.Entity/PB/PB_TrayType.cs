@@ -64,5 +64,7 @@ namespace Coldairarrow.Entity.PB
         public Boolean Deleted { get; set; }
 
         public List<PB_TrayMaterial> PB_TrayMaterials { get; set; }
+
+        public List<PB_LocalTray> PB_LocalTrays { get; set; }
     }
 }

@@ -91,7 +91,7 @@ const columns = [
   { title: '剩余容量', dataIndex: 'OverVol', width: '7%' },
   { title: '状态', dataIndex: 'IsForbid', width: '5%', scopedSlots: { customRender: 'IsForbid' }  },//是否禁用
   { title: '默认', dataIndex: 'IsDefault', width: '4%', customRender: filterYesOrNo },//是否默认库位
-  { title: '故障码', dataIndex: 'ErrorCode', width: '6' },
+  // { title: '故障码', dataIndex: 'ErrorCode', width: '6' },
   { title: '备注', dataIndex: 'Remarks', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
