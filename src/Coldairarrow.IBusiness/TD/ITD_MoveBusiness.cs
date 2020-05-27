@@ -19,4 +19,11 @@ namespace Coldairarrow.Business.TD
         public string Type { get; set; }
         public string Keyword { get; set; }
     }
+
+    public class UpdateMoveInfo
+    {
+        public string moveId { get; set; }
+        public List<double> localNums { get; set; }
+        public List<double> amounts { get; set; }
+    }
 }
