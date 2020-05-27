@@ -32,6 +32,7 @@
 <script>
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
+import moment from 'moment'
 
 export default {
   components: {
@@ -71,6 +72,7 @@ export default {
           this.loading = false
 
           this.entity = resJson.Data
+          this.entity.MoveTime = moment(this.entity.MoveTime)
         })
       }
     },

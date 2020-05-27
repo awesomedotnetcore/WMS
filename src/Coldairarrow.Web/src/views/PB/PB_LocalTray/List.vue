@@ -10,7 +10,7 @@
   >
   <a-card :bordered="false">
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
+      <a-button type="primary" icon="plus" @click="hanldleAdd()">添加</a-button>
       <a-button
         type="primary"
         icon="minus"
@@ -33,6 +33,10 @@
       :bordered="true"
       size="small"
     >
+      <template slot="Type" slot-scope="text">
+        <enum-name code="	LocationType" :value="text"></enum-name>
+      </template>
+
       <span slot="action" slot-scope="text, record">
         <template>
           <!-- <a @click="handleEdit(record.Id)">编辑</a>
@@ -49,17 +53,19 @@
 
 <script>
 import EditForm from './EditForm'
+import EnumName from '../../../components/BaseEnum/BaseEnumName'
 
 const columns = [
   { title: '货位编号', dataIndex: 'PB_Location.Code', width: '20%' },
   { title: '货位名称', dataIndex: 'PB_Location.Name', width: '20%' },
-  { title: '货位类型', dataIndex: 'PB_Location.Type', width: '10%' },
+  { title: '货位类型', dataIndex: 'PB_Location.Type', width: '10%' , scopedSlots: { customRender: 'Type' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
-    EditForm
+    EditForm,
+    EnumName, 
   },
   mounted() {
     this.getDataList()
@@ -131,7 +137,7 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/PB/PB_LocalTray/DeleteData?TrayTypeId' + thisObj.typeId, thisObj.ids)
+            thisObj.$http.post('/PB/PB_LocalTray/DeleteData?typeId=' + thisObj.typeId, thisObj.ids)
             .then(resJson => {
               resolve()
               if (resJson.Success) {
