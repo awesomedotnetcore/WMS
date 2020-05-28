@@ -44,12 +44,33 @@
         <enum-name code="	LocationType" :value="text"></enum-name>
       </template>
 
-      <span slot="IsForbid" slot-scope="text, record">    
+      <!-- <span slot="IsForbid" slot-scope="text, record">    
         <template>          
         <a-button :type="record.IsForbid?'primary':'danger'">
         <a v-if="record.IsForbid" @click="handleEnable(record,'IsForbid',false)">启用</a>
         <a v-else @click="handleEnable(record,'IsForbid',true)">停用</a>
         </a-button>
+        </template>
+      </span> -->
+      <span slot="IsForbid" slot-scope="text, record">
+        <template>
+          <a-tag v-if="record.IsForbid===false" color="red">
+          停用
+          </a-tag>
+          <a-tag v-else color="green">
+          启用
+          </a-tag>
+        </template>
+      </span>
+
+      <span slot="IsDefault" slot-scope="text, record">
+        <template>
+          <a-tag v-if="record.IsDefault===false" color="red">
+          否
+          </a-tag>
+          <a-tag v-else color="green">
+          是
+          </a-tag>
         </template>
       </span>
 
@@ -88,9 +109,9 @@ const columns = [
   { title: '货区', dataIndex: 'PB_StorArea.Name', width: '6%' },
   { title: '巷道', dataIndex: 'PB_Laneway.Name', width: '6%' },
   { title: '货架', dataIndex: 'PB_Rack.Name', width: '6%' },
-  { title: '剩余容量', dataIndex: 'OverVol', width: '7%' },
+  { title: '余量', dataIndex: 'OverVol', width: '5%' },
   { title: '状态', dataIndex: 'IsForbid', width: '5%', scopedSlots: { customRender: 'IsForbid' }  },//是否禁用
-  { title: '默认', dataIndex: 'IsDefault', width: '4%', customRender: filterYesOrNo },//是否默认库位
+  { title: '默认', dataIndex: 'IsDefault', width: '5%', scopedSlots: { customRender: 'IsDefault' }  },//是否默认库位
   // { title: '故障码', dataIndex: 'ErrorCode', width: '6' },
   { title: '备注', dataIndex: 'Remarks', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
