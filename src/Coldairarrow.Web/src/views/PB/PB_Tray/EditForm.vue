@@ -10,9 +10,10 @@
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
         <a-form-model-item label="货位" prop="LocalId">
-          <a-select v-model="entity.LocalId">
+          <!-- <a-select v-model="entity.LocalId">
             <a-select-option v-for="item in this.LocationList" :key="item.Id">{{item.Name}}</a-select-option>
-          </a-select>
+          </a-select> -->
+          <location-select v-model="entity.LocalId"></location-select>
         </a-form-model-item>
         <a-form-model-item label="托盘号" prop="Code">
           <a-input v-model="entity.Code" autocomplete="off" />
@@ -38,8 +39,12 @@
 
 <script>
 import moment from 'moment'
+import LocationSelect from '../../../components/Location/LocationSelect'
 
 export default {
+  components: {
+    LocationSelect
+  },
   props: {
     parentObj: Object
   },
