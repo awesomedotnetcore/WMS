@@ -136,7 +136,7 @@ export default {
     },
     getDataList() {
       this.selectedRowKeys = []
-
+      this.queryParam.Type = ''
       this.loading = true
       this.$http
         .post('/TD/TD_Move/GetDataList', {

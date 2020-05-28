@@ -1,5 +1,13 @@
 <template>
-  <a-modal title="物料选择" width="60%" :visible="visible" :confirmLoading="loading" okText="选择" @ok="handleChoose" @cancel="()=>{this.visible=false}">
+  <a-modal
+    title="物料选择"
+    width="60%"
+    :visible="visible"
+    :confirmLoading="loading"
+    okText="选择"
+    @ok="handleChoose"
+    @cancel="()=>{this.visible=false}"
+  >
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
@@ -21,19 +29,20 @@
         </a-row>
       </a-form>
     </div>
-    <a-table 
-      :columns="columns" 
-      :rowKey="row => row.Id" 
-      :dataSource="data" 
-      :pagination="pagination" 
-      :loading="loading" @change="handleTableChange" 
-      :rowSelection="{ 
-        selectedRowKeys: selectedRowKeys, 
-        onChange: onSelectChange, 
-        type:type }" 
-      :bordered="true" 
-      size="small">
-    </a-table>
+    <a-table
+      :columns="columns"
+      :rowKey="row => row.Id"
+      :dataSource="data"
+      :pagination="pagination"
+      :loading="loading"
+      @change="handleTableChange"
+      :rowSelection="{
+        selectedRowKeys: selectedRowKeys,
+        onChange: onSelectChange,
+        type:type }"
+      :bordered="true"
+      size="small"
+    ></a-table>
   </a-modal>
 </template>
 

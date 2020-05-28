@@ -10,26 +10,36 @@
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
         <a-form-model-item label="物料" prop="MaterialId">
-          <materila-select v-model="entity.MaterialId" @select="getSrcLocalList"></materila-select>
+          <materila-select v-model="entity.MaterialId" @select="handleMaterialSelect"></materila-select>
         </a-form-model-item>
-        <a-form-model-item label="原货位ID" prop="FromLocalId">
-          <a-input v-model="entity.FromLocalId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="原托盘分区" prop="FromZoneId">
-          <a-input v-model="entity.FromZoneId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="原托盘ID" prop="FromTrayId">
-          <a-input v-model="entity.FromTrayId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="目标货位ID" prop="ToLocalId">
-          <a-input v-model="entity.ToLocalId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="目标托盘ID" prop="ToTrayId">
-          <a-input v-model="entity.ToTrayId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="目标托盘分区" prop="ToZoneId">
-          <a-input v-model="entity.ToZoneId" autocomplete="off" />
-        </a-form-model-item>
+        <!-- <a-form-model-item label="原货位" prop="FromLocalId">
+          <location-select :materialId="this.SelectMaterialId" v-model="entity.FromLocalId" @select="handleSrcLocalSelect"></location-select>
+        </a-form-model-item> -->
+        <!-- <a-form-model-item label="原托盘" prop="FromTrayId">
+          <tray-select
+            v-model="entity.FromTrayId"
+            @select="handleSrcTraySelect"
+            :materialId="this.SelectMaterialId"
+            :locartalId="this.SelectSrcLocalId"
+          ></tray-select>
+        </a-form-model-item> -->
+        <!-- <a-form-model-item label="原托盘分区" prop="FromZoneId">
+          <zone-select :trayId="this.SelectSrcTrayId" v-model="entity.FromZoneId"></zone-select>
+        </a-form-model-item> -->
+        <!-- <a-form-model-item label="目标货位" prop="ToLocalId">
+          <location-select v-model="entity.ToLocalId" @select="handleTarLocalSelect"></location-select>
+        </a-form-model-item> -->
+        <!-- <a-form-model-item label="目标托盘" prop="ToTrayId">
+          <tray-select
+            v-model="entity.ToTrayId"
+            @select="handleTarTraySelect"
+            :materialId="this.SelectMaterialId"
+            :locartalId="this.SelectTarLocalId"
+          ></tray-select>
+        </a-form-model-item> -->
+        <!-- <a-form-model-item label="目标托盘分区" prop="ToZoneId">
+          <zone-select :trayId="this.SelectTarTrayId" v-model="entity.ToZoneId"></zone-select>
+        </a-form-model-item> -->
         <a-form-model-item label="条码" prop="BarCode">
           <a-input v-model="entity.BarCode" autocomplete="off" />
         </a-form-model-item>
@@ -48,7 +58,17 @@
 </template>
 
 <script>
+import MaterilaSelect from '../../../components/Material/MaterialSelect'
+import LocationSelect from '../../../components/Location/LocationSelect'
+import TraySelect from '../../../components/Tray/TraySelect'
+import ZoneSelect from '../../../components/Tray/ZoneSelect'
 export default {
+  components: {
+    MaterilaSelect,
+    LocationSelect,
+    TraySelect,
+    ZoneSelect
+  },
   props: {
     parentObj: Object
   },
@@ -63,26 +83,17 @@ export default {
       entity: {},
       rules: {},
       title: '',
-      materialList: [],
-      srcLocalList: [],
-      srcTrayList: [],
-      srcZoneList: [],
-      tarLocalList: [],
-      tarTrayList: [],
-      tarZoneList: []
+      SelectMaterialId: null,
+      SelectSrcLocalId: null,
+      SelectTarLocalId: null,
+      SelectSrcTrayId: null,
+      SelectTarTrayId: null
     }
   },
   methods: {
     init() {
       this.visible = true
       this.entity = {}
-      this.materialList = []
-      this.srcLocalList = []
-      this.srcTrayList = []
-      this.srcZoneList = []
-      this.tarLocalList = []
-      this.tarTrayList = []
-      this.tarZoneList = []
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })
@@ -96,6 +107,11 @@ export default {
           this.loading = false
 
           this.entity = resJson.Data
+          this.SelectMaterialId = this.entity.MaterialId
+          this.SelectSrcLocalId = this.entity.FromLocalId
+          this.SelectTarLocalId = this.entity.ToLocalId
+          this.SelectSrcTrayId = this.entity.FromTrayId
+          this.SelectTarTrayId = this.entity.ToTrayId
         })
       } else {
         this.entity.MoveId = moveId
@@ -121,59 +137,20 @@ export default {
         })
       })
     },
-    getSrcLocalList() {
-      this.srcLocalList = []
-      this.loading = true
-      this.$http.post('/PB/PB_Material/GetStorageMaterials').then(resJson => {
-        this.loading = false
-
-        this.materialList = resJson.Data
-      })
+    handleMaterialSelect(val) {
+      this.SelectMaterialId = val.Id
     },
-    getSrcTrayList() {
-      this.srcTrayList = []
-      this.loading = true
-      this.$http.post('/PB/PB_Material/GetStorageMaterials').then(resJson => {
-        this.loading = false
-
-        this.materialList = resJson.Data
-      })
+    handleSrcLocalSelect(val) {
+      // this.SelectSrcLocalId = val
     },
-    getSrcZoneList() {
-      this.srcZoneList = []
-      this.loading = true
-      this.$http.post('/PB/PB_Material/GetStorageMaterials').then(resJson => {
-        this.loading = false
-
-        this.materialList = resJson.Data
-      })
+    handleSrcTraySelect(val) {
+      // this.SelectSrcTrayId = val
     },
-    getTarLocalList() {
-      this.tarLocalList = []
-      this.loading = true
-      this.$http.post('/PB/PB_Material/GetStorageMaterials').then(resJson => {
-        this.loading = false
-
-        this.materialList = resJson.Data
-      })
+    handleTarLocalSelect(val) {
+      // this.SelectTarLocalId = val
     },
-    getTarTrayList() {
-      this.tarTrayList = []
-      this.loading = true
-      this.$http.post('/PB/PB_Material/GetStorageMaterials').then(resJson => {
-        this.loading = false
-
-        this.materialList = resJson.Data
-      })
-    },
-    getTarZoneList() {
-      this.tarZoneList = []
-      this.loading = true
-      this.$http.post('/PB/PB_Material/GetStorageMaterials').then(resJson => {
-        this.loading = false
-
-        this.materialList = resJson.Data
-      })
+    handleTarTraySelect(val) {
+      // this.SelectTarTrayId = val
     }
   }
 }
