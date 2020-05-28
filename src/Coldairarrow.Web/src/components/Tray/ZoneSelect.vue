@@ -1,10 +1,6 @@
 <template>
   <a-select v-model="curValue" placeholder="托盘分区" @select="handleSelected" v-bind="$attrs">
-    <a-select-option
-      v-for="item in listData"
-      :key="item.Id"
-      :value="item.Id"
-    >{{ item.Name }}({{ item.Code }})</a-select-option>
+    <a-select-option v-for="item in listData" :key="item.Id" :value="item.Id">{{ item.Name }}({{ item.Code }})</a-select-option>
   </a-select>
 </template>
 <script>
@@ -49,9 +45,9 @@ export default {
     },
     handleSelected(val) {
       this.$emit('input', val)
-      var rowQuery = this.listData.filter((val, index, arr) => { return val.Id == val })
+      var rowQuery = this.listData.filter((item, index, arr) => { return item.Id == val })
       if (rowQuery.length > 0) {
-        this.$emit('select', rowQuery[0])
+        this.$emit('select', { ...rowQuery[0] })
       }
     }
   }

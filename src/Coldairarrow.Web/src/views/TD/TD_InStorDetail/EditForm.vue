@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import MaterilaSelect from '../../../components/Material/MaterialSelect'
+import MaterilaSelect from '../../../components/Material/MaterialSelectNew'
 import LocationSelect from '../../../components/Location/LocationSelect'
 import TraySelect from '../../../components/Tray/TraySelect'
 import ZoneSelect from '../../../components/Tray/ZoneSelect'
@@ -52,7 +52,7 @@ export default {
       },
       visible: false,
       storage: {},
-      entity: {},
+      entity: { MaterialId: '' },
       rules: {},
       material: null,
       location: null,
@@ -61,7 +61,6 @@ export default {
     }
   },
   mounted() {
-    this.entity = this.value
     this.getCurStorage()
   },
   methods: {
