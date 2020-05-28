@@ -42,7 +42,7 @@
     >
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="changeStatus(record.Id, record.Status)">启停用</a>
+          <a @click="changeStatus(record.Id, record.Status)">{{ record.Status?'启用':'停用' }}</a>
           <a-divider type="vertical" />
           <a @click="handleEdit(record.Id)">编辑</a>
           <a-divider type="vertical" />
