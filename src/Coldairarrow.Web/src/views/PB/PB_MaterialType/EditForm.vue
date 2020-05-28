@@ -17,7 +17,7 @@
             treeDefaultExpandAll v-model="entity.ParentId"></a-tree-select>
         </a-form-model-item>        
         <a-form-model-item label="物料分类编码" prop="Code">
-          <a-input v-model="entity.Code" autocomplete="off"><a-icon slot="prefix" type="scan" /></a-input>
+          <a-input v-model="entity.Code" :disabled="$para('MaterialTypeCode')=='1'" placeholder="系统自动生成" autocomplete="off"><a-icon slot="prefix" type="scan" /></a-input>
         </a-form-model-item>
         <a-form-model-item label="物料分类名称" prop="Name">
           <a-input v-model="entity.Name" autocomplete="off"><a-icon slot="prefix" type="paper-clip" /></a-input>

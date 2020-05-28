@@ -13,7 +13,7 @@
           <materialType-select v-model="entity.MaterialTypeId"></materialType-select>
         </a-form-model-item>        
         <a-form-model-item label="物料编码" prop="Code">
-          <a-input v-model="entity.Code" autocomplete="off" ><a-icon slot="prefix" type="scan" /></a-input>
+          <a-input v-model="entity.Code" autocomplete="off" :disabled="$para('MaterialCode')=='1'" placeholder="系统自动生成"><a-icon slot="prefix" type="scan" /></a-input>
         </a-form-model-item>
         <a-form-model-item label="条码" prop="BarCode">
           <a-input v-model="entity.BarCode" autocomplete="off" ><a-icon slot="prefix" type="scan" /></a-input>

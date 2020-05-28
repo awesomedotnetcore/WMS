@@ -10,7 +10,7 @@
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">        
         <a-form-model-item label="客户编号" prop="Code">
-          <a-input v-model="entity.Code" autocomplete="off" ><a-icon slot="prefix" type="scan" /></a-input>
+          <a-input v-model="entity.Code" autocomplete="off" :disabled="$para('CustomerCode')=='1'" placeholder="系统自动生成"><a-icon slot="prefix" type="scan" /></a-input>
         </a-form-model-item>
         <a-form-model-item label="客户名称" prop="Name">
           <a-input v-model="entity.Name" autocomplete="off" ><a-icon slot="prefix" type="user" /></a-input>

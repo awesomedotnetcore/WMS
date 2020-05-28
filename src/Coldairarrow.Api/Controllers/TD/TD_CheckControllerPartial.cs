@@ -8,6 +8,7 @@ using Coldairarrow.Entity.TD;
 using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using org.apache.zookeeper.data;
 using System;
 using System.Collections.Generic;
@@ -21,40 +22,12 @@ namespace Coldairarrow.Api.Controllers.TD
         #region DI
         ITD_CheckBusiness _tD_CheckBus { get; }
 
-        IBase_UserStorBusiness _base_UserStorBus { get; }
+        IServiceProvider _provider { get; }
 
-        ITD_CheckAreaBusiness _tD_CheckAreaBus { get; }
-
-        ITD_CheckMaterialBusiness _tD_CheckMaterialBus { get; }
-
-        ITD_CheckDataBusiness _tD_CheckDataBus { get; }
-
-        IPB_AreaMaterialBusiness _pB_AreaMaterialBus { get; }
-
-        IPB_StorAreaBusiness _pB_StorAreaBus { get; }
-
-        IIT_LocalMaterialBusiness _iT_LocalMaterialBus { get; }
-        IOperator _Op { get; }
-
-        public TD_CheckController(ITD_CheckBusiness tD_CheckBus
-            , IBase_UserStorBusiness base_UserStorBus
-            , ITD_CheckAreaBusiness tD_CheckAreaBus
-            , ITD_CheckMaterialBusiness tD_CheckMaterialBus
-            , ITD_CheckDataBusiness tD_CheckDataBus
-            , IPB_AreaMaterialBusiness pB_AreaMaterialBus
-            , IPB_StorAreaBusiness pB_StorAreaBus
-            , IIT_LocalMaterialBusiness iT_LocalMaterialBus
-            , IOperator op)
+        public TD_CheckController(ITD_CheckBusiness tD_CheckBus, IServiceProvider provider)
         {
             _tD_CheckBus = tD_CheckBus;
-            _base_UserStorBus = base_UserStorBus;
-            _tD_CheckAreaBus = tD_CheckAreaBus;
-            _tD_CheckMaterialBus = tD_CheckMaterialBus;
-            _tD_CheckDataBus = tD_CheckDataBus;
-            _pB_AreaMaterialBus = pB_AreaMaterialBus;
-            _pB_StorAreaBus = pB_StorAreaBus;
-            _iT_LocalMaterialBus = iT_LocalMaterialBus;
-            _Op = op;
+            _provider = provider;
         }
 
         #endregion
@@ -62,11 +35,12 @@ namespace Coldairarrow.Api.Controllers.TD
         [HttpPost]
         public async Task PushData(TDCheckConditionDTO model)
         {
+            var _Op = _provider.GetRequiredService<IOperator>();
             var data = model.Data;
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
-                data.StorId = (await _base_UserStorBus.GetStorage(_Op.UserId)).Where(p => p.IsDefault == true).FirstOrDefault().Id;
+                data.StorId = _Op.Property.DefaultStorageId;
                 data.EquId = "1";
                 data.IsComplete = false;
                 data.Status = 0;
@@ -76,32 +50,42 @@ namespace Coldairarrow.Api.Controllers.TD
             else
             {
                 await _tD_CheckBus.UpdateDataAsync(data);
-                await _tD_CheckDataBus.ClearDataAsync(data.Id);
-                await _tD_CheckMaterialBus.ClearDataAsync(data.Id);
-                await _tD_CheckAreaBus.ClearDataAsync(data.Id);
+                await _provider.GetRequiredService<ITD_CheckDataBusiness>().ClearDataAsync(data.Id);
+                await _provider.GetRequiredService<ITD_CheckMaterialBusiness>().ClearDataAsync(data.Id);
+                await _provider.GetRequiredService<ITD_CheckAreaBusiness>().ClearDataAsync(data.Id);
             }
 
             if(data.Type== "Storage")
             {
-                var arealist= await _pB_StorAreaBus.QueryAsync(_Op.Property.DefaultStorageId);
+                var arealist= await _provider.GetRequiredService<IPB_StorAreaBusiness>().QueryAsync(_Op.Property.DefaultStorageId);
                 await BuildDataByAreaAsync((from u in arealist select u.Id).ToList(), data);
             }
             else if(data.Type=="Area")
             {
                 await BuildDataByAreaAsync(model.AreaIdList, data);
             }
-            else if(data.Type== "Material")
+            else if(data.Type== "Material" || data.Type == "Random")
             {
                 await BuildDataByMaterialAsync(model, data);
             }
         }
 
+        [HttpPost]
+        public async Task<List<PB_Material>> LoadRandomMaterial(int per)
+        {
+            return await _provider.GetRequiredService<IIT_LocalMaterialBusiness>()
+                .LoadMaterialByRandomAsync(_provider.GetRequiredService<IOperator>().Property.DefaultStorageId, per);
+        }
+
         private async Task BuildDataByMaterialAsync(TDCheckConditionDTO model, TD_Check data)
         {
-            var materialList = (from u in model.MaterialIdList select new TD_CheckMaterial() { CheckId = data.Id, MaterialId = u }).Distinct().ToList();
-            await _tD_CheckMaterialBus.PushAsync(materialList);
+            var _Op = _provider.GetRequiredService<IOperator>();
 
-            var localList = await _iT_LocalMaterialBus.LoadCheckDataByMaterialAsync(_Op.Property.DefaultStorageId, model.MaterialIdList);
+            var materialList = (from u in model.MaterialIdList select new TD_CheckMaterial() { CheckId = data.Id, MaterialId = u }).Distinct().ToList();
+            await _provider.GetRequiredService<ITD_CheckMaterialBusiness>().PushAsync(materialList);
+
+            var localList = await _provider.GetRequiredService<IIT_LocalMaterialBusiness>()
+                .LoadCheckDataByMaterialAsync(_Op.Property.DefaultStorageId, model.MaterialIdList);
             var checkdata = (from u in localList
                              select new TD_CheckData()
                              {
@@ -116,7 +100,7 @@ namespace Coldairarrow.Api.Controllers.TD
                                  StorId = u.StorId
                              }).ToList();
 
-            await _tD_CheckDataBus.PushDataAsync(checkdata);
+            await _provider.GetRequiredService<ITD_CheckDataBusiness>().PushDataAsync(checkdata);
         }
 
         private async Task BuildDataByAreaAsync(List<string> Ids, TD_Check data)
@@ -132,14 +116,15 @@ namespace Coldairarrow.Api.Controllers.TD
 
                 areaList.Add(area);
 
-                materList.AddRange(await _pB_AreaMaterialBus.GetDataListAsync(id));
+                materList.AddRange(await _provider.GetRequiredService<IPB_AreaMaterialBusiness>().GetDataListAsync(id));
 
-                localList.AddRange(await _iT_LocalMaterialBus.LoadCheckDataByAreaIdAsync(id));
+                localList.AddRange(await _provider.GetRequiredService<IIT_LocalMaterialBusiness>().LoadCheckDataByAreaIdAsync(id));
             }
-            await _tD_CheckAreaBus.PushAsync(areaList);
+            await _provider.GetRequiredService<ITD_CheckAreaBusiness>().PushAsync(areaList);
 
-            var materialList = (from u in materList select new TD_CheckMaterial() { CheckId = data.Id, MaterialId = u.MaterialId }).Distinct().ToList();
-            await _tD_CheckMaterialBus.PushAsync(materialList);
+            var idList = (from u in materList select u.MaterialId).Distinct().ToList();
+            var materialList = (from u in idList select new TD_CheckMaterial() { CheckId = data.Id, MaterialId = u }).ToList();
+            await _provider.GetRequiredService<ITD_CheckMaterialBusiness>().PushAsync(materialList);
 
             var checkdata = (from u in localList
                              select new TD_CheckData()
@@ -147,7 +132,7 @@ namespace Coldairarrow.Api.Controllers.TD
                                  BatchNo = u.BatchNo,
                                  CheckId = data.Id,
                                  CreateTime = DateTime.Now,
-                                 CreatorId = _Op.UserId,
+                                 CreatorId = _provider.GetRequiredService<IOperator>().UserId,
                                  Id = IdHelper.GetId(),
                                  localId = u.LocalId,
                                  LocalNum = u.Num,
@@ -155,7 +140,7 @@ namespace Coldairarrow.Api.Controllers.TD
                                  StorId = u.StorId
                              }).ToList();
 
-            await _tD_CheckDataBus.PushDataAsync(checkdata);
+            await _provider.GetRequiredService<ITD_CheckDataBusiness>().PushDataAsync(checkdata);
         }
     }
 }

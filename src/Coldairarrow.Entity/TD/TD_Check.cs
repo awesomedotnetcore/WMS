@@ -53,6 +53,11 @@ namespace Coldairarrow.Entity.TD
         public Int32? Status { get; set; }
 
         /// <summary>
+        /// 随机百分比
+        /// </summary>
+        public Int32? RandomPer { get; set; }
+
+        /// <summary>
         /// 审核人ID
         /// </summary>
         public String AuditUserId { get; set; }
