@@ -7,10 +7,10 @@
       <a-form-model-item label="货位" prop="LocalId">
         <location-select v-model="entity.LocalId" @select="handleLocalIdSelect"></location-select>
       </a-form-model-item>
-      <a-form-model-item label="托盘" prop="TrayId">
+      <a-form-model-item v-if="storage.IsTray" label="托盘" prop="TrayId">
         <tray-select v-model="entity.TrayId" @select="handleTraySelect" :materialId="entity.MaterialId" :locartalId="entity.LocalId"></tray-select>
       </a-form-model-item>
-      <a-form-model-item label="托盘分区" prop="ZoneId">
+      <a-form-model-item v-if="storage.IsTray && storage.IsZone" label="托盘分区" prop="ZoneId">
         <zone-select :trayId="entity.TrayId" v-model="entity.ZoneId" @select="handleZoneSelect"></zone-select>
       </a-form-model-item>
       <a-form-model-item label="批次号" prop="BatchNo">
@@ -51,26 +51,38 @@ export default {
         wrapperCol: { span: 18 }
       },
       visible: false,
+      storage: {},
       entity: {},
       rules: {},
-      material: {},
-      location: {},
-      tray: {},
-      trayZone: {}
+      material: null,
+      location: null,
+      tray: null,
+      trayZone: null
     }
   },
   mounted() {
     this.entity = this.value
+    this.getCurStorage()
   },
   methods: {
     openForm(entity) {
       this.entity = entity
       this.visible = true
     },
+    getCurStorage() {
+      this.$http.get('/PB/PB_Storage/GetCurStorage')
+        .then(resJson => {
+          this.storage = resJson.Data
+        })
+    },
     handleSubmit() {
       this.$refs['form'].validate(valid => {
         if (!valid) return
-        this.$emit('Submit', this.entity)
+        this.entity.Location = { ...this.location }
+        this.entity.Material = { ...this.material }
+        this.entity.Tray = { ...this.tray }
+        this.entity.TrayZone = { ...this.trayZone }
+        this.$emit('submit', { ...this.entity })
         this.visible = false
       })
     },
