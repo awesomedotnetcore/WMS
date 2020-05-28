@@ -23,5 +23,15 @@ namespace Coldairarrow.Business.IT
             return await q.ToListAsync();
 
         }
+
+        public async Task<List<IT_LocalMaterial>> LoadCheckDataByMaterialAsync(string storId, List<string> ids)
+        {
+            var q = GetIQueryable();
+            q = q.Include(i => i.Location).Include(i => i.Material).Include(i => i.Measure).Include(i => i.Tray);
+
+            q = q.Where(p => p.StorId== storId && ids.Contains(p.MaterialId));
+
+            return await q.ToListAsync();
+        }
     }
 }

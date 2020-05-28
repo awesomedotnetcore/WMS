@@ -16,10 +16,25 @@
       <a-form layout="inline">
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="货位编码或名称" />
+            <a-form-item label="查询类别">
+              <a-select allowClear v-model="queryParam.condition">
+                <a-select-option key="StorageId">仓库ID</a-select-option>
+                <a-select-option key="Code">出库单号</a-select-option>
+                <a-select-option key="OutType">出库类型(枚举)</a-select-option>
+                <a-select-option key="RefCode">关联单号</a-select-option>
+                <a-select-option key="EquId">设备ID</a-select-option>
+                <a-select-option key="CusId">客户ID</a-select-option>
+                <a-select-option key="AddrId">目标地址ID</a-select-option>
+                <a-select-option key="Remarks">备注</a-select-option>
+                <a-select-option key="AuditUserId">审核人ID</a-select-option>
+              </a-select>
             </a-form-item>
-          </a-col>         
+          </a-col>
+          <a-col :md="4" :sm="24">
+            <a-form-item>
+              <a-input v-model="queryParam.keyword" placeholder="关键字" />
+            </a-form-item>
+          </a-col>
           <a-col :md="6" :sm="24">
             <a-button type="primary" @click="getDataList">查询</a-button>
             <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
@@ -40,88 +55,43 @@
       :bordered="true"
       size="small"
     >
-      <template slot="Type" slot-scope="text">
-        <enum-name code="	LocationType" :value="text"></enum-name>
-      </template>
-
-      <!-- <span slot="IsForbid" slot-scope="text, record">    
-        <template>          
-        <a-button :type="record.IsForbid?'primary':'danger'">
-        <a v-if="record.IsForbid" @click="handleEnable(record,'IsForbid',false)">启用</a>
-        <a v-else @click="handleEnable(record,'IsForbid',true)">停用</a>
-        </a-button>
-        </template>
-      </span> -->
-      <span slot="IsForbid" slot-scope="text, record">
-        <template>
-          <a-tag v-if="record.IsForbid===false" color="red">
-          停用
-          </a-tag>
-          <a-tag v-else color="green">
-          启用
-          </a-tag>
-        </template>
-      </span>
-
-      <span slot="IsDefault" slot-scope="text, record">
-        <template>
-          <a-tag v-if="record.IsDefault===false" color="red">
-          否
-          </a-tag>
-          <a-tag v-else color="green">
-          是
-          </a-tag>
-        </template>
-      </span>
-
       <span slot="action" slot-scope="text, record">
         <template>
+          <a @click="handleEdit(record.Id)">编辑</a>
           <a-divider type="vertical" />
-          <a @click="handleEdit(record.Id)">编辑<br></a>
-          <a-divider type="vertical" />
-          <a @click="handleDelete([record.Id])">删除<br></a>
-          <!-- <a-divider type="vertical" />
-          <a @click="openTrayTypeList(record.Id)">设置托盘类型</a> -->
+          <a @click="handleDelete([record.Id])">删除</a>
         </template>
       </span>
     </a-table>
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
-    <!-- <traytype-list ref="traytypeList" :parentObj="this"></traytype-list> -->
   </a-card>
 </template>
 
 <script>
 import EditForm from './EditForm'
-import EnumName from '../../../components/BaseEnum/BaseEnumName'
-// import TraytypeList from '../PB_LocalTrayType/List'
-
-const filterYesOrNo = (value, row, index) => {
-  if (value) return '是'
-  else return '否'
-}
 
 const columns = [
-  { title: '货位编号', dataIndex: 'Code', width: '10%' },
-  { title: '货位名称', dataIndex: 'Name', width: '10%' },
-  { title: '货位类型', dataIndex: 'Type', width: '8%' , scopedSlots: { customRender: 'Type' } },
-  { title: '仓库', dataIndex: 'PB_Storage.Name', width: '8%' },
-  { title: '货区', dataIndex: 'PB_StorArea.Name', width: '6%' },
-  { title: '巷道', dataIndex: 'PB_Laneway.Name', width: '6%' },
-  { title: '货架', dataIndex: 'PB_Rack.Name', width: '6%' },
-  { title: '余量', dataIndex: 'OverVol', width: '5%' },
-  { title: '状态', dataIndex: 'IsForbid', width: '5%', scopedSlots: { customRender: 'IsForbid' }  },//是否禁用
-  { title: '默认', dataIndex: 'IsDefault', width: '5%', scopedSlots: { customRender: 'IsDefault' }  },//是否默认库位
-  // { title: '故障码', dataIndex: 'ErrorCode', width: '6' },
+  { title: '仓库ID', dataIndex: 'StorageId', width: '10%' },
+  { title: '出库单号', dataIndex: 'Code', width: '10%' },
+  { title: '出库时间', dataIndex: 'OutTime', width: '10%' },
+  { title: '出库类型(枚举)', dataIndex: 'OutType', width: '10%' },
+  { title: '关联单号', dataIndex: 'RefCode', width: '10%' },
+  { title: '出库数量', dataIndex: 'OutNum', width: '10%' },
+  { title: '总金额', dataIndex: 'TotalAmt', width: '10%' },
+  { title: '设备ID', dataIndex: 'EquId', width: '10%' },
+  { title: '状态', dataIndex: 'Status', width: '10%' },
+  { title: '客户ID', dataIndex: 'CusId', width: '10%' },
+  { title: '目标地址ID', dataIndex: 'AddrId', width: '10%' },
   { title: '备注', dataIndex: 'Remarks', width: '10%' },
+  { title: '审核人ID', dataIndex: 'AuditUserId', width: '10%' },
+  { title: '审核时间', dataIndex: 'AuditeTime', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
-    EditForm,
-    EnumName, 
-    // TraytypeList,
+    EditForm
   },
   mounted() {
     this.getDataList()
@@ -154,7 +124,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/PB/PB_Location/GetDataList', {
+        .post('/TD/TD_OutStorage/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
@@ -188,7 +158,7 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/PB/PB_Location/DeleteData', ids).then(resJson => {
+            thisObj.$http.post('/TD/TD_OutStorage/DeleteData', ids).then(resJson => {
               resolve()
 
               if (resJson.Success) {
@@ -202,31 +172,7 @@ export default {
           })
         }
       })
-    },
-    handleEnable(Location,prop, enable) {
-      var thisObj = this
-      var entity = { ...Location}
-      entity[prop] = enable   
-      this.$confirm({
-        title: '确认' + (enable ? '启用' : '停用' ) + '吗?',
-        onOk() {
-          return new Promise((resolve, reject) => {
-            thisObj.$http.post('/PB/PB_Location/SaveData', entity).then(resJson => {
-              resolve()
-              if (resJson.Success) {
-                thisObj.$message.success('操作成功!')
-                thisObj.getDataList()
-              } else {
-                thisObj.$message.error(resJson.Msg)
-              }
-            })
-          })
-        }
-      })
-    },
-    // openTrayTypeList(typeId) {
-    //   this.$refs.traytypeList.openDrawer(typeId)
-    // }
+    }
   }
 }
 </script>
