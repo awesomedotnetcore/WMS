@@ -16,8 +16,23 @@
       <a-form layout="inline">
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
+            <a-form-item label="查询类别">
+              <a-select allowClear v-model="queryParam.condition">
+                <a-select-option key="StorageId">仓库ID</a-select-option>
+                <a-select-option key="Code">出库单号</a-select-option>
+                <a-select-option key="OutType">出库类型(枚举)</a-select-option>
+                <a-select-option key="RefCode">关联单号</a-select-option>
+                <a-select-option key="EquId">设备ID</a-select-option>
+                <a-select-option key="CusId">客户ID</a-select-option>
+                <a-select-option key="AddrId">目标地址ID</a-select-option>
+                <a-select-option key="Remarks">备注</a-select-option>
+                <a-select-option key="AuditUserId">审核人ID</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="托盘名称或编码" />
+              <a-input v-model="queryParam.keyword" placeholder="关键字" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -42,8 +57,6 @@
     >
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="changeStatus(record.Id, record.Status)">{{ record.Status?'启用':'停用' }}</a>
-          <a-divider type="vertical" />
           <a @click="handleEdit(record.Id)">编辑</a>
           <a-divider type="vertical" />
           <a @click="handleDelete([record.Id])">删除</a>
@@ -58,18 +71,21 @@
 <script>
 import EditForm from './EditForm'
 
-const filterYesOrNo = (value, row, index) => {
-  if (value) return '启用'
-  else return '停用'
-}
 const columns = [
-  { title: '货位', dataIndex: 'PB_Location.Name', width: '10%' },
-  { title: '托盘号', dataIndex: 'Code', width: '10%' },
-  { title: '托盘名称', dataIndex: 'Name', width: '10%' },
-  { title: '托盘类型', dataIndex: 'PB_TrayType.Name', width: '10%' },
-  { title: '启用日期', dataIndex: 'StartTime', width: '10%' },
-  { title: '托盘状态', dataIndex: 'Status', width: '10%', customRender: filterYesOrNo },
+  { title: '仓库ID', dataIndex: 'StorageId', width: '10%' },
+  { title: '出库单号', dataIndex: 'Code', width: '10%' },
+  { title: '出库时间', dataIndex: 'OutTime', width: '10%' },
+  { title: '出库类型(枚举)', dataIndex: 'OutType', width: '10%' },
+  { title: '关联单号', dataIndex: 'RefCode', width: '10%' },
+  { title: '出库数量', dataIndex: 'OutNum', width: '10%' },
+  { title: '总金额', dataIndex: 'TotalAmt', width: '10%' },
+  { title: '设备ID', dataIndex: 'EquId', width: '10%' },
+  { title: '状态', dataIndex: 'Status', width: '10%' },
+  { title: '客户ID', dataIndex: 'CusId', width: '10%' },
+  { title: '目标地址ID', dataIndex: 'AddrId', width: '10%' },
   { title: '备注', dataIndex: 'Remarks', width: '10%' },
+  { title: '审核人ID', dataIndex: 'AuditUserId', width: '10%' },
+  { title: '审核时间', dataIndex: 'AuditeTime', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -108,7 +124,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/PB/PB_Tray/GetDataList', {
+        .post('/TD/TD_OutStorage/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
@@ -142,7 +158,7 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/PB/PB_Tray/DeleteData', ids).then(resJson => {
+            thisObj.$http.post('/TD/TD_OutStorage/DeleteData', ids).then(resJson => {
               resolve()
 
               if (resJson.Success) {
@@ -156,31 +172,6 @@ export default {
           })
         }
       })
-    },
-    changeStatus(Id, Status) {
-      var thisObj = this
-      if (Status == 1) {
-        this.$http.post('/PB/PB_Tray/DisableTheData', { Id: Id }).then(resJson => {
-          if (resJson.Success) {
-            thisObj.$message.success('操作成功!')
-
-            thisObj.getDataList()
-          } else {
-            thisObj.$message.error(resJson.Msg)
-          }
-        })
-      } else {
-        this.$http.post('/PB/PB_Tray/EnableTheData', { Id: Id }).then(resJson => {
-
-          if (resJson.Success) {
-            thisObj.$message.success('操作成功!')
-
-            thisObj.getDataList()
-          } else {
-            thisObj.$message.error(resJson.Msg)
-          }
-        })
-      }
     }
   }
 }
