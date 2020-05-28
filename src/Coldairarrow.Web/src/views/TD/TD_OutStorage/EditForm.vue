@@ -1,63 +1,68 @@
-﻿<template>
-  <a-modal
-    :title="title"
-    width="40%"
-    :visible="visible"
-    :confirmLoading="loading"
-    @ok="handleSubmit"
-    @cancel="()=>{this.visible=false}"
-  >
-    <a-spin :spinning="loading">
-      <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="仓库ID" prop="StorageId">
-          <a-input v-model="entity.StorageId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="出库单号" prop="Code">
-          <a-input v-model="entity.Code" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="出库时间" prop="OutTime">
-          <a-input v-model="entity.OutTime" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="出库类型(枚举)" prop="OutType">
-          <a-input v-model="entity.OutType" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="关联单号" prop="RefCode">
-          <a-input v-model="entity.RefCode" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="出库数量" prop="OutNum">
-          <a-input v-model="entity.OutNum" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="总金额" prop="TotalAmt">
-          <a-input v-model="entity.TotalAmt" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="设备ID" prop="EquId">
-          <a-input v-model="entity.EquId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="状态" prop="Status">
-          <a-input v-model="entity.Status" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="客户ID" prop="CusId">
-          <a-input v-model="entity.CusId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="目标地址ID" prop="AddrId">
-          <a-input v-model="entity.AddrId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="备注" prop="Remarks">
-          <a-input v-model="entity.Remarks" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="审核人ID" prop="AuditUserId">
-          <a-input v-model="entity.AuditUserId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="审核时间" prop="AuditeTime">
-          <a-input v-model="entity.AuditeTime" autocomplete="off" />
-        </a-form-model-item>
-      </a-form-model>
-    </a-spin>
-  </a-modal>
+﻿ <template>
+  <a-drawer title="出库" :width="1024" :maskClosable="false" placement="right" :visible="visible" @close="()=>{this.visible=false}" :body-style="{ paddingBottom: '80px' }">
+    <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
+      <a-row>
+        <a-col :span="8">
+          <a-form-model-item label="出库单号" prop="Code">
+            <a-input v-model="entity.Code" :disabled="$para('GenerateOutStorageCode')=='1'" placeholder="系统自动生成" autocomplete="off" />
+          </a-form-model-item>
+        </a-col>
+        <a-col :span="8">
+          <a-form-model-item label="出库时间" prop="OutTime">
+            <a-date-picker v-model="entity.OutTime" />
+          </a-form-model-item>
+        </a-col>
+        <a-col :span="8">
+          <a-form-model-item label="出库类型" prop="OutType">
+            <enum-select code="OutStorageType" v-model="entity.OutType"></enum-select>
+          </a-form-model-item>
+        </a-col>
+      </a-row>
+      <a-row>
+        <a-col :span="8">
+          <a-form-model-item label="关联单号" prop="RefCode">
+            <a-input v-model="entity.RefCode" autocomplete="off" />
+          </a-form-model-item>
+        </a-col>
+        <a-col :span="8">
+          <a-form-model-item label="客户" prop="CusId">
+            <cus-select v-model="entity.CusId"></cus-select>
+          </a-form-model-item>
+        </a-col>
+        <a-col :span="8">
+          <a-form-model-item label="客户地址" prop="AddrId">
+            <a-input v-model="entity.AddrId" />
+            <!-- <cus-select v-model="entity.CusId"></cus-select> -->
+          </a-form-model-item>
+        </a-col>
+        <a-col :span="8">
+          <a-form-model-item label="备注" prop="Remarks">
+            <a-input v-model="entity.Remarks" />
+          </a-form-model-item>
+        </a-col>
+      </a-row>
+    </a-form-model>
+    <list-detail v-model="listDetail"></list-detail>
+    <div :style="{ position:'absolute',right:0,bottom:0,width:'100%',borderTop:'1px solid #e9e9e9',padding:'10px 16px',background:'#fff',textAlign:'right',zIndex: 1}">
+      <a-button :style="{ marginRight: '8px' }">取消</a-button>
+      <a-button type="primary">确定</a-button>
+    </div>
+  </a-drawer>
 </template>
 
 <script>
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
+import EnumName from '../../../components/BaseEnum/BaseEnumName'
+import CusSelect from '../../../components/PB/CustomerSelect'
+import ListDetail from '../TD_OutStorDetail/List'
+
 export default {
+  components: {
+    EnumSelect,
+    EnumName,
+    CusSelect,
+    ListDetail
+  },
   props: {
     parentObj: Object
   },
@@ -113,7 +118,15 @@ export default {
           }
         })
       })
-    }
+    },
+    GetCusAddrList() {
+      var thisObj = this
+      this.loading = true
+      this.$http.post('/PB/PB_Address/QueryDataListAsync').then(resJson => {
+        this.loading = false
+        thisObj.SCusAddrList = resJson.Data
+      })
+    },
   }
 }
 </script>

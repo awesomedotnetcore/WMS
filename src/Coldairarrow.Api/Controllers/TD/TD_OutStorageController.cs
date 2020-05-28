@@ -1,7 +1,11 @@
-﻿using Coldairarrow.Business.TD;
+﻿using Coldairarrow.Business.PB;
+using Coldairarrow.Business.TD;
 using Coldairarrow.Entity.TD;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Quartz.Util;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,12 +16,15 @@ namespace Coldairarrow.Api.Controllers.TD
     {
         #region DI
 
-        public TD_OutStorageController(ITD_OutStorageBusiness tD_OutStorageBus)
+        public TD_OutStorageController(ITD_OutStorageBusiness tD_OutStorageBus, IServiceProvider provider)
         {
             _tD_OutStorageBus = tD_OutStorageBus;
+            _provider = provider;
         }
 
         ITD_OutStorageBusiness _tD_OutStorageBus { get; }
+
+        IServiceProvider _provider { get; }
 
         #endregion
 
@@ -45,6 +52,10 @@ namespace Coldairarrow.Api.Controllers.TD
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
+                if (data.Code.IsNullOrWhiteSpace())
+                {
+                    data.Code = await _provider.GetRequiredService<IPB_BarCodeTypeBusiness>().Generate("TD_OutStorage");
+                }
 
                 await _tD_OutStorageBus.AddDataAsync(data);
             }
