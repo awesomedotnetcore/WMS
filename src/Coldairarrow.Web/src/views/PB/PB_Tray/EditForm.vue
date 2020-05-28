@@ -76,7 +76,7 @@ export default {
     openForm(id, title) {
       this.init()
 
-      this.getLocationList()
+      // this.getLocationList()
       this.getTrayTypeList()
 
       if (id) {

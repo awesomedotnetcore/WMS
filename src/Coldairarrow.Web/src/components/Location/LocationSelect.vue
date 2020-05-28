@@ -1,8 +1,8 @@
 <template>
   <div>
-    <a-auto-complete placeholder="选择货位" :open="dropdownVisible" v-model="curValue" @select="onSelect" @search="handleSearch">
+    <a-auto-complete placeholder="选择货位" v-model="curValue" @select="onSelect" @search="handleSearch">
       <template slot="dataSource">
-        <a-select-option v-for="item in dataSource" :key="item.Id" :value="item.Id">{{ item.Name }} ({{ item.Code }})</a-select-option>
+        <a-select-option v-for="item in dataSource" :key="item.Id" :value="item.Id">{{ item.Name }}</a-select-option>
       </template>
       <a-input>
         <a-button slot="suffix" style="margin-right: -12px" class="search-btn" type="primary" @click="handleOpenChoose">
@@ -24,7 +24,6 @@ export default {
   },
   data() {
     return {
-      dropdownVisible: false,
       curValue: '',
       keyword: '',
       timeout: null,
@@ -34,13 +33,12 @@ export default {
   watch: {
     value(value) {
       this.curValue = value
+      this.reload('')
     }
   },
   mounted() {
     this.curValue = this.value
-    if (this.curValue != '' && this.curValue != undefined && this.curValue != null) {
-      this.reload('')
-    }
+    this.reload('')
   },
   methods: {
     reload(q) {
@@ -51,7 +49,6 @@ export default {
           .then(resJson => {
             if (resJson.Success && q == this.keyword) {
               this.dataSource = resJson.Data
-              this.dropdownVisible = true
             }
           })
       }, 500)
@@ -62,13 +59,11 @@ export default {
       if (rowQuery.length > 0) {
         this.$emit('select', rowQuery[0])
       }
-      this.dropdownVisible = false
     },
     handleSearch(value) {
       this.reload(value)
     },
     handleOpenChoose() {
-      this.dropdownVisible = false
       this.$refs.locationChoose.openChoose()
     },
     handleChoose(selectedRows) {
