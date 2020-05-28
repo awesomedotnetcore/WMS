@@ -1,4 +1,4 @@
-﻿using Coldairarrow.Entity.%areaName%;
+﻿using Coldairarrow.Entity.TD;
 using Coldairarrow.Util;
 using EFCore.Sharding;
 using LinqKit;
@@ -8,27 +8,27 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 
-namespace Coldairarrow.Business.%areaName%
+namespace Coldairarrow.Business.TD
 {
-    public partial class %entityName%Business : BaseBusiness<%entityName%>, I%entityName%Business, ITransientDependency
+    public partial class TD_OutStorageBusiness : BaseBusiness<TD_OutStorage>, ITD_OutStorageBusiness, ITransientDependency
     {
-        public %entityName%Business(IRepository repository)
+        public TD_OutStorageBusiness(IRepository repository)
             : base(repository)
         {
         }
 
         #region 外部接口
 
-        public async Task<PageResult<%entityName%>> GetDataListAsync(PageInput<ConditionDTO> input)
+        public async Task<PageResult<TD_OutStorage>> GetDataListAsync(PageInput<ConditionDTO> input)
         {
             var q = GetIQueryable();
-            var where = LinqHelper.True<%entityName%>();
+            var where = LinqHelper.True<TD_OutStorage>();
             var search = input.Search;
 
             //筛选
             if (!search.Condition.IsNullOrEmpty() && !search.Keyword.IsNullOrEmpty())
             {
-                var newWhere = DynamicExpressionParser.ParseLambda<%entityName%, bool>(
+                var newWhere = DynamicExpressionParser.ParseLambda<TD_OutStorage, bool>(
                     ParsingConfig.Default, false, $@"{search.Condition}.Contains(@0)", search.Keyword);
                 where = where.And(newWhere);
             }
@@ -36,17 +36,17 @@ namespace Coldairarrow.Business.%areaName%
             return await q.Where(where).GetPageResultAsync(input);
         }
 
-        public async Task<%entityName%> GetTheDataAsync(string id)
+        public async Task<TD_OutStorage> GetTheDataAsync(string id)
         {
             return await GetEntityAsync(id);
         }
 
-        public async Task AddDataAsync(%entityName% data)
+        public async Task AddDataAsync(TD_OutStorage data)
         {
             await InsertAsync(data);
         }
 
-        public async Task UpdateDataAsync(%entityName% data)
+        public async Task UpdateDataAsync(TD_OutStorage data)
         {
             await UpdateAsync(data);
         }
