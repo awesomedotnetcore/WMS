@@ -9,8 +9,8 @@
   >
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="物料ID" prop="MaterialId">
-          <a-input v-model="entity.MaterialId" autocomplete="off" />
+        <a-form-model-item label="物料" prop="MaterialId">
+          <materila-select v-model="entity.MaterialId" @select="getSrcLocalList"></materila-select>
         </a-form-model-item>
         <a-form-model-item label="原货位ID" prop="FromLocalId">
           <a-input v-model="entity.FromLocalId" autocomplete="off" />
@@ -119,14 +119,6 @@ export default {
             this.$message.error(resJson.Msg)
           }
         })
-      })
-    },
-    getMaterialList() {
-      this.loading = true
-      this.$http.post('/PB/PB_Material/GetStorageMaterials').then(resJson => {
-        this.loading = false
-
-        this.materialList = resJson.Data
       })
     },
     getSrcLocalList() {

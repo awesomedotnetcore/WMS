@@ -171,7 +171,6 @@ export default {
         })
       } else {
         this.$http.post('/PB/PB_Tray/EnableTheData', { Id: Id }).then(resJson => {
-
           if (resJson.Success) {
             thisObj.$message.success('操作成功!')
 
