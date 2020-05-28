@@ -1,5 +1,5 @@
 ﻿<template>
-  <a-drawer title="入库" :width="1024" :maskClosable="false" placement="right" :visible="visible" @close="()=>{this.visible=false}" :body-style="{ paddingBottom: '80px' }">
+  <a-drawer title="入库" :width="1200" :maskClosable="false" placement="right" :visible="visible" @close="()=>{this.visible=false}" :body-style="{ paddingBottom: '80px' }">
     <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
       <a-row>
         <a-col :span="8">
@@ -67,7 +67,7 @@ export default {
       },
       visible: false,
       loading: false,
-      entity: {},
+      entity: { InType: '' },
       listDetail: [],
       rules: {}
     }
@@ -75,7 +75,7 @@ export default {
   methods: {
     init() {
       this.visible = true
-      this.entity = {}
+      this.entity = { InType: '' }
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })

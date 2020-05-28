@@ -13,7 +13,7 @@
         </template>
       </span>
     </a-table>
-    <edit-form ref="editForm" v-model="curDetail"></edit-form>
+    <edit-form ref="editForm" @submit="handlerDetailSubmit"></edit-form>
   </div>
 </template>
 
@@ -26,31 +26,28 @@ const columns1 = [
   { title: '货位', dataIndex: 'Location.Name', width: '10%' },
   { title: '条码', dataIndex: 'BarCode', width: '10%' },
   { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
-  { title: '单价', dataIndex: 'Price', width: '10%' },
-  { title: '数量', dataIndex: 'Num', width: '10%' },
+  { title: '数量', dataIndex: 'Num', width: '5%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 const columns2 = [
   { title: '物料', dataIndex: 'Material.Name', width: '10%' },
   { title: '编码', dataIndex: 'Material.Code', width: '10%' },
   { title: '货位', dataIndex: 'Location.Name', width: '10%' },
+  { title: '托盘', dataIndex: 'Tray.Name', width: '10%' },
   { title: '条码', dataIndex: 'BarCode', width: '10%' },
   { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
-  { title: '托盘', dataIndex: 'Tray.Name', width: '10%' },
-  { title: '单价', dataIndex: 'Price', width: '10%' },
-  { title: '数量', dataIndex: 'Num', width: '10%' },
+  { title: '数量', dataIndex: 'Num', width: '5%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 const columns3 = [
   { title: '物料', dataIndex: 'Material.Name', width: '10%' },
   { title: '编码', dataIndex: 'Material.Code', width: '10%' },
   { title: '货位', dataIndex: 'Location.Name', width: '10%' },
-  { title: '条码', dataIndex: 'BarCode', width: '10%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
   { title: '托盘', dataIndex: 'Tray.Name', width: '10%' },
   { title: '托盘分区', dataIndex: 'TrayZone.Name', width: '10%' },
-  { title: '单价', dataIndex: 'Price', width: '10%' },
-  { title: '数量', dataIndex: 'Num', width: '10%' },
+  { title: '条码', dataIndex: 'BarCode', width: '10%' },
+  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
+  { title: '数量', dataIndex: 'Num', width: '5%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -59,7 +56,7 @@ export default {
     EditForm
   },
   props: {
-    value: { type: Object, required: true }
+    value: { type: Array, required: true }
   },
   data() {
     return {
@@ -108,13 +105,26 @@ export default {
     },
     hanldleAdd() {
       this.tempId += 1
-      this.curDetail = { Id: 'TEMP_' + this.tempId.toString(), LocalId: '', TrayId: '', ZoneId: '', MaterialId: '' }
-      this.data.push(this.curDetail)
-      this.$refs.editForm.openForm()
+      var curDetail = { Id: 'TEMP_' + this.tempId.toString(), LocalId: '', TrayId: '', ZoneId: '', MaterialId: '' }
+      this.$refs.editForm.openForm(curDetail)
     },
     handleEdit(item) {
-      this.curDetail = item
-      this.$refs.editForm.openForm()
+      this.$refs.editForm.openForm({ ...item })
+    },
+    handlerDetailSubmit(item) {
+      console.log('handlerDetailSubmit', item)
+      var isNew = true
+      this.data.forEach(element => {
+        if (element.Id === item.Id) {
+          isNew = false
+          Object.keys(item).forEach(prop => {
+            element[prop] = item[prop]
+          })
+        }
+      })
+      if (isNew) {
+        this.data.push({ ...item })
+      }
     },
     handleDelete(ids) {
       var thisObj = this
