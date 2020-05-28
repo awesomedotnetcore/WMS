@@ -2,6 +2,9 @@
 using Coldairarrow.Entity.PB;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Quartz.Util;
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
@@ -13,14 +16,16 @@ namespace Coldairarrow.Api.Controllers.PB
     {
         #region DI
 
-        public PB_StorageController(IPB_StorageBusiness PB_StorageBus,IOperator op)
+        public PB_StorageController(IPB_StorageBusiness PB_StorageBus,IOperator op, IServiceProvider provider)
         {
             _PB_StorageBus = PB_StorageBus;
             _Op = op;
+            _provider = provider;
         }
 
         IOperator _Op { get; }
         IPB_StorageBusiness _PB_StorageBus { get; }
+        IServiceProvider _provider { get; }
 
         #endregion
 
@@ -58,6 +63,10 @@ namespace Coldairarrow.Api.Controllers.PB
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
+                if (data.Code.IsNullOrWhiteSpace())
+                {
+                    data.Code = await _provider.GetRequiredService<IPB_BarCodeTypeBusiness>().Generate("PB_Storage");
+                }
 
                 await _PB_StorageBus.AddDataAsync(data);
             }

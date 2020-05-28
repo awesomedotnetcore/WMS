@@ -12,12 +12,14 @@ namespace Coldairarrow.Api.Controllers.IT
     {
         #region DI
 
-        public IT_LocalMaterialController(IIT_LocalMaterialBusiness iT_LocalMaterialBus)
+        public IT_LocalMaterialController(IIT_LocalMaterialBusiness iT_LocalMaterialBus, IOperator @op)
         {
             _iT_LocalMaterialBus = iT_LocalMaterialBus;
+            _Op = @op;
         }
 
         IIT_LocalMaterialBusiness _iT_LocalMaterialBus { get; }
+        IOperator _Op { get; }
 
         #endregion
 
@@ -27,6 +29,13 @@ namespace Coldairarrow.Api.Controllers.IT
         public async Task<PageResult<IT_LocalMaterial>> GetDataList(PageInput<ConditionDTO> input)
         {
             return await _iT_LocalMaterialBus.GetDataListAsync(input);
+        }
+
+        [HttpPost]
+        public async Task<PageResult<IT_LocalMaterial>> GetDataListByMaterialId(PageInput<ConditionDTO> input)
+        {
+            input.Search.Condition =  _Op.Property.DefaultStorageId;
+            return await _iT_LocalMaterialBus.GetDataListByMaterialId(input);
         }
 
         [HttpPost]

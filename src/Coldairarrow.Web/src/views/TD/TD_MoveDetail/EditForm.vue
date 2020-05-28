@@ -1,7 +1,7 @@
 ﻿<template>
   <a-modal
     :title="title"
-    width="40%"
+    width="85%"
     :visible="visible"
     :confirmLoading="loading"
     @ok="handleSubmit"
@@ -12,9 +12,28 @@
         <a-form-model-item label="物料" prop="MaterialId">
           <materila-select v-model="entity.MaterialId" @select="handleMaterialSelect"></materila-select>
         </a-form-model-item>
+        <a-table
+          ref="table"
+          :columns="columns"
+          :rowKey="row => row.Id"
+          :dataSource="data"
+          :pagination="pagination"
+          :loading="loading"
+          :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+          :bordered="true"
+          size="small"
+        >
+          <template slot="Value" slot-scope="text, record">
+            <editable-cell
+              :text="text"
+              type="number"
+              @change="onCellChange(record, 'Value', $event)"
+            />
+          </template>
+        </a-table>
         <!-- <a-form-model-item label="原货位" prop="FromLocalId">
           <location-select :materialId="this.SelectMaterialId" v-model="entity.FromLocalId" @select="handleSrcLocalSelect"></location-select>
-        </a-form-model-item> -->
+        </a-form-model-item>-->
         <!-- <a-form-model-item label="原托盘" prop="FromTrayId">
           <tray-select
             v-model="entity.FromTrayId"
@@ -22,13 +41,13 @@
             :materialId="this.SelectMaterialId"
             :locartalId="this.SelectSrcLocalId"
           ></tray-select>
-        </a-form-model-item> -->
+        </a-form-model-item>-->
         <!-- <a-form-model-item label="原托盘分区" prop="FromZoneId">
           <zone-select :trayId="this.SelectSrcTrayId" v-model="entity.FromZoneId"></zone-select>
-        </a-form-model-item> -->
+        </a-form-model-item>-->
         <!-- <a-form-model-item label="目标货位" prop="ToLocalId">
           <location-select v-model="entity.ToLocalId" @select="handleTarLocalSelect"></location-select>
-        </a-form-model-item> -->
+        </a-form-model-item>-->
         <!-- <a-form-model-item label="目标托盘" prop="ToTrayId">
           <tray-select
             v-model="entity.ToTrayId"
@@ -36,11 +55,11 @@
             :materialId="this.SelectMaterialId"
             :locartalId="this.SelectTarLocalId"
           ></tray-select>
-        </a-form-model-item> -->
+        </a-form-model-item>-->
         <!-- <a-form-model-item label="目标托盘分区" prop="ToZoneId">
           <zone-select :trayId="this.SelectTarTrayId" v-model="entity.ToZoneId"></zone-select>
-        </a-form-model-item> -->
-        <a-form-model-item label="条码" prop="BarCode">
+        </a-form-model-item>-->
+        <!-- <a-form-model-item label="条码" prop="BarCode">
           <a-input v-model="entity.BarCode" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="批次号" prop="BatchNo">
@@ -51,7 +70,7 @@
         </a-form-model-item>
         <a-form-model-item label="移库数量" prop="LocalNum">
           <a-input v-model="entity.LocalNum" autocomplete="off" />
-        </a-form-model-item>
+        </a-form-model-item>-->
       </a-form-model>
     </a-spin>
   </a-modal>
@@ -62,12 +81,28 @@ import MaterilaSelect from '../../../components/Material/MaterialSelect'
 import LocationSelect from '../../../components/Location/LocationSelect'
 import TraySelect from '../../../components/Tray/TraySelect'
 import ZoneSelect from '../../../components/Tray/ZoneSelect'
+import EditableCell from '../../../components/EditableCell/EditableCell'
+const columns = [
+  { title: '原货位', dataIndex: 'Location.Name', width: '10%' },
+  { title: '原托盘', dataIndex: 'Tray.Name', width: '10%' },
+  { title: '原分区', dataIndex: 'TrayZone.Name', width: '10%' },
+  { title: '物料', dataIndex: 'Material.Name', width: '10%' },
+  { title: '单位', dataIndex: 'Measure.Name', width: '5%' },
+  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
+  { title: '数量', dataIndex: 'Num', width: '5%' },
+  { title: '移库数量', dataIndex: 'LocalNum', width: '5%', scopedSlots: { customRender: 'Value' } },
+  { title: '目标货位', dataIndex: 'ToLocalName', width: '10%' },
+  { title: '目标托盘', dataIndex: 'ToTrayName', width: '10%' },
+  { title: '目标分区', dataIndex: 'ToZoneName', width: '10%' }
+]
+
 export default {
   components: {
     MaterilaSelect,
     LocationSelect,
     TraySelect,
-    ZoneSelect
+    ZoneSelect,
+    EditableCell
   },
   props: {
     parentObj: Object
@@ -83,11 +118,17 @@ export default {
       entity: {},
       rules: {},
       title: '',
-      SelectMaterialId: null,
-      SelectSrcLocalId: null,
-      SelectTarLocalId: null,
-      SelectSrcTrayId: null,
-      SelectTarTrayId: null
+      pagination: {
+        current: 1,
+        pageSize: 10,
+        showTotal: (total, range) => `总数:${total} 当前:${range[0]}-${range[1]}`
+      },
+      sorter: { field: 'Id', order: 'asc' },
+      filters: {},
+      queryParam: {},
+      columns,
+      data: [],
+      selectedRowKeys: []
     }
   },
   methods: {
@@ -107,11 +148,6 @@ export default {
           this.loading = false
 
           this.entity = resJson.Data
-          this.SelectMaterialId = this.entity.MaterialId
-          this.SelectSrcLocalId = this.entity.FromLocalId
-          this.SelectTarLocalId = this.entity.ToLocalId
-          this.SelectSrcTrayId = this.entity.FromTrayId
-          this.SelectTarTrayId = this.entity.ToTrayId
         })
       } else {
         this.entity.MoveId = moveId
@@ -138,19 +174,45 @@ export default {
       })
     },
     handleMaterialSelect(val) {
-      this.SelectMaterialId = val.Id
+      this.queryParam.keyword = val.Id
+      this.selectedRowKeys = []
+      this.data = []
+      this.loading = true
+      var thisObj = this
+      this.$http
+        .post('/IT/IT_LocalMaterial/GetDataListByMaterialId', {
+          PageIndex: this.pagination.current,
+          PageRows: this.pagination.pageSize,
+          SortField: this.sorter.field || 'Id',
+          SortType: this.sorter.order,
+          Search: this.queryParam,
+          ...this.filters
+        })
+        .then(resJson => {
+          this.loading = false
+          var addData = {}
+          resJson.Data.forEach(element => {
+            addData = element
+            addData.ToLocalId = null
+            addData.ToLocalName = null
+            addData.ToTrayId = null
+            addData.ToTrayName = null
+            addData.ToZoneId = null
+            addData.ToZoneName = null
+            addData.LocalNum = 0
+            addData.Amount = 0
+            thisObj.data.push(addData)
+          })
+          const pagination = { ...this.pagination }
+          pagination.total = resJson.Total
+          this.pagination = pagination
+        })
     },
-    handleSrcLocalSelect(val) {
-      // this.SelectSrcLocalId = val
+    onSelectChange(selectedRowKeys) {
+      this.selectedRowKeys = selectedRowKeys
     },
-    handleSrcTraySelect(val) {
-      // this.SelectSrcTrayId = val
-    },
-    handleTarLocalSelect(val) {
-      // this.SelectTarLocalId = val
-    },
-    handleTarTraySelect(val) {
-      // this.SelectTarTrayId = val
+    onCellChange(data, dataIndex, value) {
+      data[dataIndex] = value
     }
   }
 }

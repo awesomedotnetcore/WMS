@@ -36,6 +36,25 @@ namespace Coldairarrow.Business.IT
             return await q.Where(where).GetPageResultAsync(input);
         }
 
+        public async Task<PageResult<IT_LocalMaterial>> GetDataListByMaterialId(PageInput<ConditionDTO> input)
+        {
+            var q = GetIQueryable();
+            var search = input.Search;
+            q = q.Include(i => i.Location).Include(i => i.Tray).Include(i => i.TrayZone).Include(i => i.Material).Include(i => i.Measure);
+
+            //筛选
+            if (!search.Keyword.IsNullOrEmpty())
+            {
+                q = q.Where(w => w.MaterialId == search.Keyword);
+            }
+            if (!search.Condition.IsNullOrEmpty())
+            {
+                q = q.Where(w => w.StorId == search.Condition);
+            }
+
+            return await q.GetPageResultAsync(input);
+        }
+
         public async Task<IT_LocalMaterial> GetTheDataAsync(string id)
         {
             return await GetEntityAsync(id);

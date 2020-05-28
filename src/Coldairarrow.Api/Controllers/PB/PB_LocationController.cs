@@ -3,6 +3,9 @@ using Coldairarrow.Entity.PB;
 using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Quartz.Util;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -13,13 +16,15 @@ namespace Coldairarrow.Api.Controllers.PB
     {
         #region DI
 
-        public PB_LocationController(IPB_LocationBusiness pB_LocationBus,IOperator op)
+        public PB_LocationController(IPB_LocationBusiness pB_LocationBus,IOperator op, IServiceProvider provider)
         {
             _pB_LocationBus = pB_LocationBus;
             _Op = op;
+            _provider = provider;
         }
         IOperator _Op { get; }
         IPB_LocationBusiness _pB_LocationBus { get; }
+        IServiceProvider _provider { get; }
 
         #endregion
 
@@ -58,6 +63,10 @@ namespace Coldairarrow.Api.Controllers.PB
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
+                if (data.Code.IsNullOrWhiteSpace())
+                {
+                    data.Code = await _provider.GetRequiredService<IPB_BarCodeTypeBusiness>().Generate("PB_Location");
+                }
 
                 await _pB_LocationBus.AddDataAsync(data);
             }
