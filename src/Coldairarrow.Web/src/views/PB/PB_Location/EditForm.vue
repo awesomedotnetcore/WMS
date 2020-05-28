@@ -10,7 +10,7 @@
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
         <a-form-model-item label="货位编号" prop="Code">
-          <a-input v-model="entity.Code" autocomplete="off" />
+          <a-input v-model="entity.Code" :disabled="$para('GenerateLocationCode')=='1'" placeholder="系统自动生成" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="货位名称" prop="Name">
           <a-input v-model="entity.Name" autocomplete="off" />

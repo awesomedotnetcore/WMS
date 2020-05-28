@@ -3,6 +3,7 @@ using Coldairarrow.Business.TD;
 using Coldairarrow.Entity.TD;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,7 +37,7 @@ namespace Coldairarrow.Api.Controllers.TD
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
-                data.StorId = (await _base_UserStorBus.GetStorage(_Op.UserId)).Where(p=>p.IsDefault==true).FirstOrDefault().Id;
+                data.StorId = _provider.GetRequiredService<IOperator>().Property.DefaultStorageId;
                 data.EquId = "1";
                 data.IsComplete = false;
                 data.Status = 0;

@@ -3,6 +3,9 @@ using Coldairarrow.Business.PB;
 using Coldairarrow.Entity.PB;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Quartz.Util;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -15,14 +18,17 @@ namespace Coldairarrow.Api.Controllers.PB
         IBase_UserStorBusiness _base_UserStorBus { get; }
         IOperator _Op { get; }
 
-        public PB_StorAreaController(IPB_StorAreaBusiness pB_StorAreaBus, IBase_UserStorBusiness base_UserStorBus, IOperator op)
+        public PB_StorAreaController(IPB_StorAreaBusiness pB_StorAreaBus, IBase_UserStorBusiness base_UserStorBus, IOperator op, IServiceProvider provider)
         {
             _pB_StorAreaBus = pB_StorAreaBus;
             _base_UserStorBus = base_UserStorBus;
             _Op = op;
+            _provider = provider;
         }
 
         IPB_StorAreaBusiness _pB_StorAreaBus { get; }
+
+        IServiceProvider _provider { get; }
 
         #endregion
 
@@ -59,6 +65,10 @@ namespace Coldairarrow.Api.Controllers.PB
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
+                if (data.Code.IsNullOrWhiteSpace())
+                {
+                    data.Code = await _provider.GetRequiredService<IPB_BarCodeTypeBusiness>().Generate("PB_StorArea");
+                }
 
                 await _pB_StorAreaBus.AddDataAsync(data);
             }

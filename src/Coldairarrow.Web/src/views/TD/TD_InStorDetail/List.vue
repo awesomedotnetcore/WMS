@@ -13,7 +13,7 @@
         </template>
       </span>
     </a-table>
-    <edit-form ref="editForm" @Submit="onEditFormSubmit"></edit-form>
+    <edit-form ref="editForm" v-model="curDetail"></edit-form>
   </div>
 </template>
 
@@ -23,9 +23,9 @@ import EditForm from './EditForm'
 const columns1 = [
   { title: '物料', dataIndex: 'Material.Name', width: '10%' },
   { title: '编码', dataIndex: 'Material.Code', width: '10%' },
+  { title: '货位', dataIndex: 'Location.Name', width: '10%' },
   { title: '条码', dataIndex: 'BarCode', width: '10%' },
   { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
-  { title: '货位', dataIndex: 'Local.Name', width: '10%' },
   { title: '单价', dataIndex: 'Price', width: '10%' },
   { title: '数量', dataIndex: 'Num', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
@@ -33,9 +33,9 @@ const columns1 = [
 const columns2 = [
   { title: '物料', dataIndex: 'Material.Name', width: '10%' },
   { title: '编码', dataIndex: 'Material.Code', width: '10%' },
+  { title: '货位', dataIndex: 'Location.Name', width: '10%' },
   { title: '条码', dataIndex: 'BarCode', width: '10%' },
   { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
-  { title: '货位', dataIndex: 'Local.Name', width: '10%' },
   { title: '托盘', dataIndex: 'Tray.Name', width: '10%' },
   { title: '单价', dataIndex: 'Price', width: '10%' },
   { title: '数量', dataIndex: 'Num', width: '10%' },
@@ -44,11 +44,11 @@ const columns2 = [
 const columns3 = [
   { title: '物料', dataIndex: 'Material.Name', width: '10%' },
   { title: '编码', dataIndex: 'Material.Code', width: '10%' },
+  { title: '货位', dataIndex: 'Location.Name', width: '10%' },
   { title: '条码', dataIndex: 'BarCode', width: '10%' },
   { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
-  { title: '货位', dataIndex: 'Local.Name', width: '10%' },
   { title: '托盘', dataIndex: 'Tray.Name', width: '10%' },
-  { title: '托盘分区', dataIndex: 'Zone.Name', width: '10%' },
+  { title: '托盘分区', dataIndex: 'TrayZone.Name', width: '10%' },
   { title: '单价', dataIndex: 'Price', width: '10%' },
   { title: '数量', dataIndex: 'Num', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
@@ -67,6 +67,7 @@ export default {
       data: [],
       curDetail: {},
       columns: columns1,
+      tempId: 0,
       selectedRowKeys: []
     }
   },
@@ -106,15 +107,14 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.curDetail = {}
-      this.$refs.editForm.openForm(this.curDetail)
+      this.tempId += 1
+      this.curDetail = { Id: 'TEMP_' + this.tempId.toString(), LocalId: '', TrayId: '', ZoneId: '', MaterialId: '' }
+      this.data.push(this.curDetail)
+      this.$refs.editForm.openForm()
     },
     handleEdit(item) {
       this.curDetail = item
-      this.$refs.editForm.openForm(this.curDetail)
-    },
-    onEditFormSubmit(item) {
-      this.curDetail = item
+      this.$refs.editForm.openForm()
     },
     handleDelete(ids) {
       var thisObj = this

@@ -13,7 +13,7 @@
           <storage-select code="Storage" v-model="entity.StorId"></storage-select>
         </a-form-model-item>
         <a-form-model-item label="货架编号" prop="Code">
-          <a-input v-model="entity.Code" autocomplete="off" />
+          <a-input v-model="entity.Code" :disabled="$para('GenerateRackCode')=='1'" placeholder="系统自动生成" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="货架名称" prop="Name">
           <a-input v-model="entity.Name" autocomplete="off" />

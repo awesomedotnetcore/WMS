@@ -32,6 +32,17 @@
         <enum-name code="SystemType" :value="text"></enum-name>
       </template>
 
+      <span slot="IsSystem" slot-scope="text, record">
+        <template>
+          <a-tag v-if="record.IsSystem===false" color="red">
+          否
+          </a-tag>
+          <a-tag v-else color="green">
+          是
+          </a-tag>
+        </template>
+      </span>
+
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -60,7 +71,7 @@ const columns = [
   { title: '参数名称', dataIndex: 'Name', width: '15%' },
   { title: '参数值', dataIndex: 'Val', width: '10%' },
   { title: '描述', dataIndex: 'Remarks', width: '20%' },
-  { title: '系统必须', dataIndex: 'IsSystem', width: '10%', customRender: filterYesOrNo },
+  { title: '系统必须', dataIndex: 'IsSystem', width: '10%',  scopedSlots: { customRender: 'IsSystem' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 

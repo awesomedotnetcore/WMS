@@ -3,6 +3,7 @@ using Coldairarrow.Util;
 using EFCore.Sharding;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -12,9 +13,11 @@ namespace Coldairarrow.Business.PB
 {
     public partial class PB_BarCodeTypeBusiness : BaseBusiness<PB_BarCodeType>, IPB_BarCodeTypeBusiness, ITransientDependency
     {
-        public PB_BarCodeTypeBusiness(IRepository repository)
+        readonly IServiceProvider _serviceProvider;
+        public PB_BarCodeTypeBusiness(IRepository repository,IServiceProvider serviceProvider)
             : base(repository)
         {
+            _serviceProvider = serviceProvider;
         }
 
         #region 外部接口
