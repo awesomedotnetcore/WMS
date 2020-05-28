@@ -17,6 +17,10 @@ namespace Coldairarrow.Business.PB
         Task<List<PB_Storage>> QueryStorageDataAsync();
 
         Task<List<PB_Storage>> GetListAsync();
+
+        Task ModifyIsTrayAsync(string id);
+        Task ModifyIsZoneAsync(string id);
+        Task ModifyDisableAsync(string id);
     }
     public class PB_StorageQM
     {

@@ -40,7 +40,7 @@ namespace Coldairarrow.Entity.PB
         /// <summary>
         /// 事情启用分区管理 0  禁用：1启用
         /// </summary>
-        public Boolean? IsZone { get; set; }
+        public Boolean IsZone { get; set; }
 
         /// <summary>
         /// 启用：0  禁用：1启用

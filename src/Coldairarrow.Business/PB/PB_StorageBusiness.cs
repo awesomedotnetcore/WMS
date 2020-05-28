@@ -71,6 +71,52 @@ namespace Coldairarrow.Business.PB
 
             return await q.Where(where).ToListAsync();
         }
+
+        public async Task ModifyIsTrayAsync(string Id)
+        {
+            var entity = await GetEntityAsync(Id);
+            if (entity.IsTray)
+            {
+                entity.IsTray = false;
+                if (entity.IsZone) entity.IsZone = false;
+            }
+            else
+            {
+                entity.IsTray = true;
+            }
+
+            await UpdateAsync(entity);
+        }
+
+        public async Task ModifyIsZoneAsync(string Id)
+        {
+            var entity = await GetEntityAsync(Id);
+            if (entity.IsZone)
+            {
+                entity.IsZone = false;
+            }
+            else
+            {
+                entity.IsZone = true;
+            }
+
+            await UpdateAsync(entity);
+        }
+
+        public async Task ModifyDisableAsync(string Id)
+        {
+            var entity = await GetEntityAsync(Id);
+            if (entity.Disable)
+            {
+                entity.Disable = false;
+            }
+            else
+            {
+                entity.Disable = true;
+            }
+
+            await UpdateAsync(entity);
+        }
         #endregion
 
         #region 私有成员

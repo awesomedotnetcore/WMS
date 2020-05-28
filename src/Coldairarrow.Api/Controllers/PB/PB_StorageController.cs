@@ -91,6 +91,32 @@ namespace Coldairarrow.Api.Controllers.PB
             return await _PB_StorageBus.QueryStorageDataAsync();
         }
 
+        /// <summary>
+        /// 更新托盘管理状态
+        /// </summary>
+        [HttpPost]
+        public async Task ModifyIsTray(string id)
+        {
+            await _PB_StorageBus.ModifyIsTrayAsync(id);
+        }
+
+        /// <summary>
+        /// 更新托盘分区状态
+        /// </summary>
+        [HttpPost]
+        public async Task ModifyIsZone(string id)
+        {
+            await _PB_StorageBus.ModifyIsZoneAsync(id);
+        }
+
+        /// <summary>
+        /// 更新仓库是否启用
+        /// </summary>
+        [HttpPost]
+        public async Task ModifyDisable(string id)
+        {
+            await _PB_StorageBus.ModifyDisableAsync(id);
+        }
         #endregion
     }
 }

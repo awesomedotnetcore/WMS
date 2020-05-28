@@ -9,20 +9,25 @@
   >
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="仓库ID" prop="StorId">
+        <a-form-model-item label="仓库" prop="StorId">
           <storage-select v-model="entity.StorId"></storage-select>
         </a-form-model-item>
         <a-form-model-item label="货区编号" prop="Code">
           <a-input v-model="entity.Code" autocomplete="off" />
+           <!-- <a-input v-model="entity.Code" :disabled="$para('GenerateStorAreaCode')=='1'" placeholder="系统自动生成" autocomplete="off" /> -->
         </a-form-model-item>
         <a-form-model-item label="货区名称" prop="Name">
           <a-input v-model="entity.Name" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="是否缓存区" prop="IsCache">    
-          <a-select placeholder="请选择" v-model="entity.IsCache" autocomplete="off" @select="DataTypeChange">
-            <a-select-option :value="false" >否</a-select-option>
-            <a-select-option :value="true" >是</a-select-option>
-          </a-select>
+          <a-radio-group v-model="entity.IsCache">
+            <a-radio-button :value="true">
+              是
+            </a-radio-button>
+            <a-radio-button :value="false">
+              否
+            </a-radio-button>
+          </a-radio-group>
         </a-form-model-item>
       </a-form-model>
     </a-spin>
