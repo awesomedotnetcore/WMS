@@ -49,6 +49,10 @@ export default {
     },
     handleSelected(val) {
       this.$emit('input', val)
+      var rowQuery = this.listData.filter((val, index, arr) => { return val.Id == val })
+      if (rowQuery.length > 0) {
+        this.$emit('select', rowQuery[0])
+      }
     }
   }
 }
