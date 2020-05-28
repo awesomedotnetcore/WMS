@@ -45,6 +45,16 @@
       :bordered="true"
       size="small"
     >
+      <span slot="IsCache" slot-scope="text, record">
+        <template>
+          <a-tag v-if="record.IsCache===false" color="red">
+          否
+          </a-tag>
+          <a-tag v-else color="green">
+          是
+          </a-tag>
+        </template>
+      </span>
 
       <span slot="action" slot-scope="text, record">
         <template>
@@ -75,7 +85,7 @@ const columns = [
   { title: '仓库', dataIndex: 'PB_Storage.Name', width: '10%' },
   { title: '货区编号', dataIndex: 'Code', width: '10%' },
   { title: '货区名称', dataIndex: 'Name', width: '10%' },
-  { title: '是否缓存区', dataIndex: 'IsCache', width: '10%', customRender: filterYesOrNo },
+  { title: '缓存区', dataIndex: 'IsCache', width: '10%', scopedSlots: { customRender: 'IsCache' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 

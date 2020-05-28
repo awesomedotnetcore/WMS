@@ -37,30 +37,47 @@
         </a-radio>
       </template>
 
-      <span slot="IsTray" slot-scope="text, record">    
+      <!-- <span slot="IsTray" slot-scope="text, record">    
         <template>
         <a-button :type="record.IsTray?'primary':'danger'">
         <a v-if="record.IsTray" @click="handleEnable(record,'IsTray',false)">启用</a>
         <a v-else @click="handleEnable(record,'IsTray',true)">停用</a>
         </a-button>
         </template>
+      </span> -->
+      <span slot="IsTray" slot-scope="text, record">
+        <template>
+          <a-switch checked-children="启用" un-checked-children="停用" @click="handleModifyIsTray(record.Id)" v-model="record.IsTray" />
+        </template>
       </span>
 
       <span slot="IsZone" slot-scope="text, record">    
+        <template>
+          <a-switch checked-children="启用" un-checked-children="停用" @click="handleModifyIsZone(record.Id)" v-model="record.IsZone" />
+        </template>
+      </span>
+
+      <!-- <span slot="IsZone" slot-scope="text, record">    
         <template>
         <a-button :type="record.IsZone?'primary':'danger'">
         <a v-if="record.IsZone" @click="handleEnable(record,'IsZone',false)">启用</a>
         <a v-else @click="handleEnable(record,'IsZone',true)">停用</a>
         </a-button>
         </template>
-      </span>
+      </span> -->
 
-      <span slot="Disable" slot-scope="text, record">    
+      <!-- <span slot="Disable" slot-scope="text, record">    
         <template>
         <a-button :type="record.Disable?'primary':'danger'">
         <a v-if="record.Disable" @click="handleEnable(record,'Disable',false)">启用</a>
         <a v-else @click="handleEnable(record,'Disable',true)">停用</a>
         </a-button>
+        </template>
+      </span> -->
+
+      <span slot="Disable" slot-scope="text, record">    
+        <template>
+          <a-switch checked-children="启用" un-checked-children="停用" @click="handleModifyDisable(record.Id)" v-model="record.Disable" />
         </template>
       </span>
 
@@ -189,27 +206,27 @@ export default {
         }
       })
     },
-    handleEnable(Storage,prop, enable) {
-      var thisObj = this
-      var entity = { ...Storage}
-      entity[prop] = enable   
-      this.$confirm({
-        title: '确认' + (enable ? '启用' : '停用' ) + '吗?',
-        onOk() {
-          return new Promise((resolve, reject) => {
-            thisObj.$http.post('/PB/PB_Storage/SaveData', entity).then(resJson => {
-              resolve()
-              if (resJson.Success) {
-                thisObj.$message.success('操作成功!')
-                thisObj.getDataList()
-              } else {
-                thisObj.$message.error(resJson.Msg)
-              }
-            })
-          })
-        }
-      })
-    },
+    // handleEnable(Storage,prop, enable) {
+    //   var thisObj = this
+    //   var entity = { ...Storage}
+    //   entity[prop] = enable   
+    //   this.$confirm({
+    //     title: '确认' + (enable ? '启用' : '停用' ) + '吗?',
+    //     onOk() {
+    //       return new Promise((resolve, reject) => {
+    //         thisObj.$http.post('/PB/PB_Storage/SaveData', entity).then(resJson => {
+    //           resolve()
+    //           if (resJson.Success) {
+    //             thisObj.$message.success('操作成功!')
+    //             thisObj.getDataList()
+    //           } else {
+    //             thisObj.$message.error(resJson.Msg)
+    //           }
+    //         })
+    //       })
+    //     }
+    //   })
+    // },
     openLanewayList(value) {
       this.$refs.lanewayList.openDrawer(value)
     },
@@ -236,6 +253,27 @@ export default {
           })
         }
       })
+    },
+    handleModifyIsTray(id){
+      this.$http
+        .post('/PB/PB_Storage/ModifyIsTray?id='+id)
+        .then(resJson => {
+          this.getDataList()
+        })
+    },
+    handleModifyIsZone(id){
+      this.$http
+        .post('/PB/PB_Storage/ModifyIsZone?id='+id)
+        .then(resJson => {
+          this.getDataList()
+        })
+    },
+    handleModifyDisable(id){
+      this.$http
+        .post('/PB/PB_Storage/ModifyDisable?id='+id)
+        .then(resJson => {
+          this.getDataList()
+        })
     },
   }
 }

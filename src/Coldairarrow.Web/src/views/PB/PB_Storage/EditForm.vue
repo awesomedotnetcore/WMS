@@ -19,7 +19,7 @@
           <enum-select code="StorageType" v-model="entity.Type" >             
           </enum-select>
         </a-form-model-item>
-        <a-form-model-item label="默认仓库:" prop="IsDefault">
+        <!-- <a-form-model-item label="默认仓库:" prop="IsDefault">
           <a-select v-model="entity.IsDefault" autocomplete="off" @select="DataTypeChange" disabled>
             <a-select-option :value="false" >否</a-select-option>
             <a-select-option :value="true" >是</a-select-option>
@@ -42,7 +42,7 @@
             <a-select-option :value="false" >停用</a-select-option>
             <a-select-option :value="true" >启用</a-select-option>
           </a-select>
-        </a-form-model-item>        
+        </a-form-model-item>         -->
 
         <a-form-model-item label="备注" prop="Remarks">
           <a-textarea v-model="entity.Remarks" autocomplete="off" />
@@ -77,12 +77,9 @@ export default {
   methods: {
     init() {
       this.visible = true
-      //this.entity = {Type:entity.id,IsTray:false,IsZone:false,disable:false,IsDefault:false},
+      this.entity = {}
       //this.entity.Type=''
-      this.entity.IsTray= false
-      this.entity.IsZone= false
-      this.entity.disable= false
-      this.entity.IsDefault= false
+      
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })
@@ -90,6 +87,10 @@ export default {
     openForm(id, title) {
       this.init()
 
+      this.entity.IsTray= false
+      this.entity.IsZone= false
+      this.entity.disable= false
+      this.entity.IsDefault= false
       if (id) {
         this.loading = true
         this.$http.post('/PB/PB_Storage/GetTheData', { id: id }).then(resJson => {
