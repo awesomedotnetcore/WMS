@@ -1,11 +1,22 @@
 <template>
   <div>
-    <a-auto-complete placeholder="选择物料" v-model="curValue" @select="onSelect" @search="handleSearch">
+    <a-auto-complete
+      placeholder="选择物料"
+      v-model="curValue"
+      @select="onSelect"
+      @search="handleSearch"
+    >
       <template slot="dataSource">
         <a-select-option v-for="item in dataSource" :key="item.Id" :value="item.Id">{{ item.Name }}</a-select-option>
       </template>
       <a-input>
-        <a-button slot="suffix" style="margin-right: -12px" class="search-btn" type="primary" @click="handleOpenChoose">
+        <a-button
+          slot="suffix"
+          style="margin-right: -12px"
+          class="search-btn"
+          type="primary"
+          @click="handleOpenChoose"
+        >
           <a-icon type="search" />
         </a-button>
       </a-input>
@@ -44,6 +55,7 @@ export default {
   methods: {
     reload(q) {
       this.keyword = q
+      this.dataSource = []
       clearTimeout(this.timeout)
       this.timeout = setTimeout(() => {
         this.$http.post('/PB/PB_Material/GetQueryData', { Id: this.curValue, Keyword: q, Take: 10 })
