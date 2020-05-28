@@ -62,7 +62,7 @@ export default {
   methods: {
     init() {
       this.visible = true
-      // this.entity = {}
+       this.entity = {}
       this.entity.IsSystem= false
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
