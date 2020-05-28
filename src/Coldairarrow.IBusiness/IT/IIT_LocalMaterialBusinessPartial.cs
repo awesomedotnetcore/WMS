@@ -9,5 +9,7 @@ namespace Coldairarrow.Business.IT
     public partial interface IIT_LocalMaterialBusiness
     {
         Task<List<IT_LocalMaterial>> LoadCheckDataByAreaIdAsync(string id);
+
+        Task<List<IT_LocalMaterial>> LoadCheckDataByMaterialAsync(string storId, List<string> ids);
     }
 }

@@ -88,8 +88,35 @@ namespace Coldairarrow.Api.Controllers.TD
             }
             else if(data.Type=="Area")
             {
-                await BuildDataByAreaAsync(model.Ids, data);
+                await BuildDataByAreaAsync(model.AreaIdList, data);
             }
+            else if(data.Type== "Material")
+            {
+                await BuildDataByMaterialAsync(model, data);
+            }
+        }
+
+        private async Task BuildDataByMaterialAsync(TDCheckConditionDTO model, TD_Check data)
+        {
+            var materialList = (from u in model.MaterialIdList select new TD_CheckMaterial() { CheckId = data.Id, MaterialId = u }).Distinct().ToList();
+            await _tD_CheckMaterialBus.PushAsync(materialList);
+
+            var localList = await _iT_LocalMaterialBus.LoadCheckDataByMaterialAsync(_Op.Property.DefaultStorageId, model.MaterialIdList);
+            var checkdata = (from u in localList
+                             select new TD_CheckData()
+                             {
+                                 BatchNo = u.BatchNo,
+                                 CheckId = data.Id,
+                                 CreateTime = DateTime.Now,
+                                 CreatorId = _Op.UserId,
+                                 Id = IdHelper.GetId(),
+                                 localId = u.LocalId,
+                                 LocalNum = u.Num,
+                                 MaterialId = u.MaterialId,
+                                 StorId = u.StorId
+                             }).ToList();
+
+            await _tD_CheckDataBus.PushDataAsync(checkdata);
         }
 
         private async Task BuildDataByAreaAsync(List<string> Ids, TD_Check data)

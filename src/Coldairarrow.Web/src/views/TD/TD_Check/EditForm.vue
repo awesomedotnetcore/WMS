@@ -52,7 +52,8 @@ export default {
       entity: {},
       rules: {},
       title: '',
-      CheckArea:[]
+      CheckArea:[],
+      CheckMaterial:[]
     }
   },
   methods: {
@@ -83,22 +84,35 @@ export default {
       }
     },
     handleSubmit() {
+      if(this.entity.Type=='Material'){
+        this.CheckArea=[]
+        this.CheckMaterial=this.$refs.materialList.getAllKeys()
+      }else if(this.entity.Type=='Area'){
+        this.CheckMaterial=[]
+      }else{
+        this.CheckArea=[]
+        this.CheckMaterial=[]
+      }
+
       this.$refs['form'].validate(valid => {
         if (!valid) {
           return
         }
         this.loading = true
-        this.$http.post('/TD/TD_Check/PushData', {Data:this.entity, Ids: this.CheckArea}).then(resJson => {
-          this.loading = false
+        this.$http.post('/TD/TD_Check/PushData', {
+            Data:this.entity, 
+            AreaIdList: this.CheckArea, 
+            MaterialIdList: this.CheckMaterial
+          }).then(resJson => {
+            this.loading = false
+            if (resJson.Success) {
+              this.$message.success('操作成功!')
+              this.visible = false
 
-          if (resJson.Success) {
-            this.$message.success('操作成功!')
-            this.visible = false
-
-            this.parentObj.getDataList()
-          } else {
-            this.$message.error(resJson.Msg)
-          }
+              this.parentObj.getDataList()
+            } else {
+              this.$message.error(resJson.Msg)
+            }
         })
       })
     }

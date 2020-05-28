@@ -87,6 +87,13 @@ export default {
                 })
       }
     },
+    getAllKeys(){
+      var result=[]
+      this.data.forEach((item)=>{
+        result.push(item.Id)
+      })
+      return result
+    },
     onSelectChange(selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },
