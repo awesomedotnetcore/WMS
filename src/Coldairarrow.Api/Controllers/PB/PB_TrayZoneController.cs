@@ -12,12 +12,14 @@ namespace Coldairarrow.Api.Controllers.PB
     {
         #region DI
 
-        public PB_TrayZoneController(IPB_TrayZoneBusiness pB_TrayZoneBus)
+        public PB_TrayZoneController(IPB_TrayZoneBusiness pB_TrayZoneBus, IPB_TrayBusiness pB_TrayBusiness)
         {
             _pB_TrayZoneBus = pB_TrayZoneBus;
+            _pB_TrayBusiness = pB_TrayBusiness;
         }
 
         IPB_TrayZoneBusiness _pB_TrayZoneBus { get; }
+        IPB_TrayBusiness _pB_TrayBusiness { get; }
 
         #endregion
 
@@ -33,6 +35,14 @@ namespace Coldairarrow.Api.Controllers.PB
         public async Task<List<PB_TrayZone>> GetDataListByType(string typeId)
         {
             var res = await _pB_TrayZoneBus.GetDataListAsync(typeId);
+            return res;
+        }
+
+        [HttpPost]
+        public async Task<List<PB_TrayZone>> GetDataListByTray(string trayId)
+        {
+            var traydata = await _pB_TrayBusiness.GetTheDataAsync(trayId);
+            var res = await _pB_TrayZoneBus.GetDataListAsync(traydata.TrayTypeId);
             return res;
         }
 

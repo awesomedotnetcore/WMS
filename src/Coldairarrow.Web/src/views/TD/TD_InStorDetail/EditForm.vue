@@ -11,7 +11,7 @@
         <tray-select v-model="entity.TrayId" @select="handleTraySelect" :materialId="entity.MaterialId" :locartalId="entity.LocalId"></tray-select>
       </a-form-model-item>
       <a-form-model-item label="托盘分区" prop="ZoneId">
-        <zone-select :typeId="tray.TrayTypeId" v-model="entity.ZoneId"></zone-select>
+        <zone-select :trayId="entity.TrayId" v-model="entity.ZoneId" @select="handleZoneSelect"></zone-select>
       </a-form-model-item>
       <a-form-model-item label="批次号" prop="BatchNo">
         <a-input v-model="entity.BatchNo" autocomplete="off" />
@@ -53,7 +53,10 @@ export default {
       visible: false,
       entity: {},
       rules: {},
-      tray: {}
+      material: {},
+      location: {},
+      tray: {},
+      trayZone: {}
     }
   },
   mounted() {
@@ -73,13 +76,19 @@ export default {
     },
     handleMaterialSelect(material) {
       console.log('handleMaterialSelect', material)
+      this.material = material
     },
     handleLocalIdSelect(location) {
       console.log('handleLocalIdSelect', location)
+      this.location = location
     },
     handleTraySelect(tray) {
       console.log('handleTraySelect', tray)
       this.tray = tray
+    },
+    handleZoneSelect(zone) {
+      console.log('handleZoneSelect', zone)
+      this.trayZone = zone
     }
   }
 }

@@ -12,7 +12,7 @@
 <script>
 export default {
   props: {
-    value: { type: [], required: false }
+    value: { type: Array, required: false }
   },
   data() {
     return {

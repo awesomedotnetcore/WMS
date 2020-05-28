@@ -9,6 +9,8 @@ namespace Coldairarrow.IBusiness.DTO
     {
         public TD_Check Data { set; get; }
 
-        public List<string> Ids { set; get; }
+        public List<string> AreaIdList { set; get; }
+
+        public List<string> MaterialIdList { set; get; }
     }
 }

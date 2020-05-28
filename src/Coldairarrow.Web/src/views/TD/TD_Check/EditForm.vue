@@ -18,12 +18,17 @@
         <a-form-model-item label="盘点类型" prop="Type">
           <enum-select code="CheckType" v-model="entity.Type" :allowClear="true"></enum-select>
         </a-form-model-item>
-        <a-form-model-item v-if="entity.Type==='Area'" label="货区" prop="RefCode">
+        <a-form-model-item v-if="entity.Type==='Area'" label="货区" prop="CheckArea">
           <storarea-select v-model="CheckArea"></storarea-select>
+        </a-form-model-item>
+        <a-form-model-item v-else-if="entity.Type==='Random'" label="抽取百分比" prop="RandomPer">
+          <a-input-number v-model="entity.RandomPer" :defaultValue="1" :min="1" :max="100" :formatter="value => `${value}%`" :parser="value => value.replace('%', '')"/>
+          <a-button type="danger" :disabled="this.entity.RandomPer==null" @click="handleRandom">抽取</a-button>
         </a-form-model-item>
       </a-form-model>
     </a-spin>
-    <material-list v-if="entity.Type==='Material'" :checkId="entity.Id" ref="materialList"></material-list>    
+    <material-list v-if="entity.Type==='Material'" :checkId="entity.Id" ref="materialList"></material-list>
+    <random-material v-if="entity.Type==='Random'" :checkId="entity.Id" ref="randomMaterial"></random-material> 
   </a-modal>
 </template>
 
@@ -31,12 +36,14 @@
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import StorareaSelect from '../../../components/PB/StorAreaSelect'
 import MaterialList from './MaterialList'
+import RandomMaterial from './RandomMaterial'
 import moment from 'moment'
 export default {
   components:{
     EnumSelect,
     StorareaSelect,
-    MaterialList
+    MaterialList,
+    RandomMaterial
   },
   props: {
     parentObj: Object
@@ -52,13 +59,14 @@ export default {
       entity: {},
       rules: {},
       title: '',
-      CheckArea:[]
+      CheckArea:[],
+      CheckMaterial:[]
     }
   },
   methods: {
     init() {
       this.visible = true
-      this.entity = {}
+      this.entity = {Type : ""}
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })
@@ -83,24 +91,43 @@ export default {
       }
     },
     handleSubmit() {
+      if(this.entity.Type=='Material'){
+        this.CheckArea=[]
+        this.CheckMaterial=this.$refs.materialList.getAllKeys()
+      }else if(this.entity.Type=='Area'){
+        this.CheckMaterial=[]
+      }else if(this.entity.Type=='Random'){
+        this.CheckArea=[]
+        this.CheckMaterial=this.$refs.randomMaterial.getAllKeys()
+      }else{
+        this.CheckArea=[]
+        this.CheckMaterial=[]
+      }
+
       this.$refs['form'].validate(valid => {
         if (!valid) {
           return
         }
         this.loading = true
-        this.$http.post('/TD/TD_Check/PushData', {Data:this.entity, Ids: this.CheckArea}).then(resJson => {
-          this.loading = false
+        this.$http.post('/TD/TD_Check/PushData', {
+            Data:this.entity, 
+            AreaIdList: this.CheckArea, 
+            MaterialIdList: this.CheckMaterial
+          }).then(resJson => {
+            this.loading = false
+            if (resJson.Success) {
+              this.$message.success('操作成功!')
+              this.visible = false
 
-          if (resJson.Success) {
-            this.$message.success('操作成功!')
-            this.visible = false
-
-            this.parentObj.getDataList()
-          } else {
-            this.$message.error(resJson.Msg)
-          }
+              this.parentObj.getDataList()
+            } else {
+              this.$message.error(resJson.Msg)
+            }
         })
       })
+    },
+    handleRandom(){
+      this.$refs.randomMaterial.handleRandom(this.entity.RandomPer)
     }
   }
 }
