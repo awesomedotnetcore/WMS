@@ -90,10 +90,16 @@ namespace Coldairarrow.Api.Controllers.TD
             {
                 await BuildDataByAreaAsync(model.AreaIdList, data);
             }
-            else if(data.Type== "Material")
+            else if(data.Type== "Material" || data.Type == "Random")
             {
                 await BuildDataByMaterialAsync(model, data);
             }
+        }
+
+        [HttpPost]
+        public async Task<List<PB_Material>> LoadRandomMaterial(int per)
+        {
+            return await _iT_LocalMaterialBus.LoadMaterialByRandomAsync(_Op.Property.DefaultStorageId, per);
         }
 
         private async Task BuildDataByMaterialAsync(TDCheckConditionDTO model, TD_Check data)
@@ -138,7 +144,8 @@ namespace Coldairarrow.Api.Controllers.TD
             }
             await _tD_CheckAreaBus.PushAsync(areaList);
 
-            var materialList = (from u in materList select new TD_CheckMaterial() { CheckId = data.Id, MaterialId = u.MaterialId }).Distinct().ToList();
+            var idList = (from u in materList select u.MaterialId).Distinct().ToList();
+            var materialList = (from u in idList select new TD_CheckMaterial() { CheckId = data.Id, MaterialId = u }).ToList();
             await _tD_CheckMaterialBus.PushAsync(materialList);
 
             var checkdata = (from u in localList
