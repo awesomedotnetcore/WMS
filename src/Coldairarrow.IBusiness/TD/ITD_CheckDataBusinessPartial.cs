@@ -8,5 +8,7 @@ namespace Coldairarrow.Business.TD
     public partial interface ITD_CheckDataBusiness
     {
         Task ClearDataAsync(string checkId);
+
+        Task PushDataAsync(List<TD_CheckData> data);
     }
 }

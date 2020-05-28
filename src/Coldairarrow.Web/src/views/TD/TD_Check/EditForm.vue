@@ -23,18 +23,20 @@
         </a-form-model-item>
       </a-form-model>
     </a-spin>
+    <material-list v-if="entity.Type==='Material'" :checkId="entity.Id" ref="materialList"></material-list>    
   </a-modal>
 </template>
 
 <script>
-
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import StorareaSelect from '../../../components/PB/StorAreaSelect'
+import MaterialList from './MaterialList'
 import moment from 'moment'
 export default {
   components:{
     EnumSelect,
-    StorareaSelect
+    StorareaSelect,
+    MaterialList
   },
   props: {
     parentObj: Object
@@ -71,10 +73,12 @@ export default {
 
           this.entity = resJson.Data
           this.entity.CheckTime = moment(this.entity.CheckTime)
-        })
 
-        this.$http.post('/TD/TD_CheckArea/Query?checkId='+id).then(resJson => {
-          this.CheckArea = resJson.Data
+          if(this.entity.Type=='Area'){
+            this.$http.post('/TD/TD_CheckArea/Query?checkId='+id).then(resJson => {
+              this.CheckArea = resJson.Data
+            })
+          }
         })
       }
     },

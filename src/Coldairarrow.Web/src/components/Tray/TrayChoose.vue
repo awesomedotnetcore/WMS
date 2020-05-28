@@ -32,13 +32,13 @@ const filterYesOrNo = (value, row, index) => {
   else return '停用'
 }
 const columns = [
-  { title: '托盘号', dataIndex: 'Code', width: '10%' },
-  { title: '托盘名称', dataIndex: 'Name', width: '10%' },
+  { title: '托盘号', dataIndex: 'Code', width: '15%' },
+  { title: '托盘名称', dataIndex: 'Name', width: '15%' },
   { title: '托盘类型', dataIndex: 'PB_TrayType.Name', width: '10%' },
-  { title: '货位', dataIndex: 'PB_Location.Name', width: '10%' },
-  { title: '启用日期', dataIndex: 'StartTime', width: '10%' },
+  { title: '货位', dataIndex: 'PB_Location.Name', width: '15%' },
+  { title: '启用日期', dataIndex: 'StartTime', width: '20%' },
   { title: '托盘状态', dataIndex: 'Status', width: '10%', customRender: filterYesOrNo },
-  { title: '备注', dataIndex: 'Remarks', width: '10%' }
+  { title: '备注', dataIndex: 'Remarks', width: '15%' }
 ]
 
 export default {

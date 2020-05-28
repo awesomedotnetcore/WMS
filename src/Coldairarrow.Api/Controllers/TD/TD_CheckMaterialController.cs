@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Coldairarrow.Api.Controllers.TD
 {
     [Route("/TD/[controller]/[action]")]
-    public class TD_CheckMaterialController : BaseApiController
+    public partial class TD_CheckMaterialController : BaseApiController
     {
         #region DI
 
