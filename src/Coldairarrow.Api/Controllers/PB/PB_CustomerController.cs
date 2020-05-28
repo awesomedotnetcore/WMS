@@ -2,6 +2,9 @@
 using Coldairarrow.Entity.PB;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Quartz.Util;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,12 +15,15 @@ namespace Coldairarrow.Api.Controllers.PB
     {
         #region DI
 
-        public PB_CustomerController(IPB_CustomerBusiness pB_CustomerBus)
+        public PB_CustomerController(IPB_CustomerBusiness pB_CustomerBus, IServiceProvider provider)
         {
             _pB_CustomerBus = pB_CustomerBus;
+            _provider = provider;
         }
 
         IPB_CustomerBusiness _pB_CustomerBus { get; }
+
+        IServiceProvider _provider { get; }
 
         #endregion
 
@@ -45,6 +51,10 @@ namespace Coldairarrow.Api.Controllers.PB
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
+                if(data.Code.IsNullOrWhiteSpace())
+                {
+                    data.Code = await _provider.GetRequiredService<IPB_BarCodeTypeBusiness>().Generate("PB_Customer");
+                }
 
                 await _pB_CustomerBus.AddDataAsync(data);
             }

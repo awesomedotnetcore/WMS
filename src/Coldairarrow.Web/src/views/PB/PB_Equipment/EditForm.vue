@@ -16,7 +16,7 @@
           <a-input v-model="entity.Name" autocomplete="off" ><a-icon slot="prefix" type="paper-clip" /></a-input>
         </a-form-model-item>
         <a-form-model-item label="设备码" prop="EquNum">
-          <a-input v-model="entity.EquNum" autocomplete="off" ><a-icon slot="prefix" type="barcode" /></a-input>
+          <a-input v-model="entity.EquNum" :disabled="$para('EquipmentCode')=='1'" placeholder="系统自动生成" autocomplete="off" ><a-icon slot="prefix" type="barcode" /></a-input>
         </a-form-model-item>
         <a-form-model-item label="状态" prop="Status">
           <a-radio-group v-model="entity.Status">
