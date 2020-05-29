@@ -16,23 +16,27 @@ namespace Coldairarrow.Api.Controllers.TD
     {
         #region DI
 
-        public TD_OutStorageController(ITD_OutStorageBusiness tD_OutStorageBus, IServiceProvider provider)
+        public TD_OutStorageController(ITD_OutStorageBusiness tD_OutStorageBus, IServiceProvider provider, IOperator op)
         {
             _tD_OutStorageBus = tD_OutStorageBus;
             _provider = provider;
+            _Op = op;
         }
 
         ITD_OutStorageBusiness _tD_OutStorageBus { get; }
 
         IServiceProvider _provider { get; }
 
+        IOperator _Op { get; }
+
         #endregion
 
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<TD_OutStorage>> GetDataList(PageInput<ConditionDTO> input)
+        public async Task<PageResult<TD_OutStorage>> GetDataList(TD_OutStoragePageInput input)
         {
+            input.StorId = _Op.Property.DefaultStorageId;
             return await _tD_OutStorageBus.GetDataListAsync(input);
         }
 
@@ -52,17 +56,33 @@ namespace Coldairarrow.Api.Controllers.TD
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
-                if (data.Code.IsNullOrWhiteSpace())
+                data.StorageId = _Op.Property.DefaultStorageId;
+                foreach (var item in data.OutStorDetails)
                 {
-                    data.Code = await _provider.GetRequiredService<IPB_BarCodeTypeBusiness>().Generate("TD_OutStorage");
+                    InitEntity(item);
+                    item.StorId = data.StorageId;
+                    item.TotalAmt = item.Price * item.LocalNum;
                 }
-
                 await _tD_OutStorageBus.AddDataAsync(data);
             }
             else
             {
                 await _tD_OutStorageBus.UpdateDataAsync(data);
             }
+            //if (data.Id.IsNullOrEmpty())
+            //{
+            //    InitEntity(data);
+            //    if (data.Code.IsNullOrWhiteSpace())
+            //    {
+            //        data.Code = await _provider.GetRequiredService<IPB_BarCodeTypeBusiness>().Generate("TD_OutStorage");
+            //    }
+
+            //    await _tD_OutStorageBus.AddDataAsync(data);
+            //}
+            //else
+            //{
+            //    await _tD_OutStorageBus.UpdateDataAsync(data);
+            //}
         }
 
         [HttpPost]
