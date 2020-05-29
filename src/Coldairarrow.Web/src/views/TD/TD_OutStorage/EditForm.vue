@@ -1,6 +1,6 @@
 ﻿ <template>
-  <a-drawer title="出库" :width="1024" :maskClosable="false" placement="right" :visible="visible" @close="()=>{this.visible=false}" :body-style="{ paddingBottom: '80px' }">
-    <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
+  <a-drawer title="出库" :width="1200" :maskClosable="false" placement="right" :visible="visible" @close="()=>{this.visible=false}" :body-style="{ paddingBottom: '80px' }">
+    <a-form-model ref="form" :rules="rules" v-bind="layout">
       <a-row>
         <a-col :span="8">
           <a-form-model-item label="出库单号" prop="Code">
@@ -8,20 +8,26 @@
           </a-form-model-item>
         </a-col>
         <a-col :span="8">
+          <a-form-model-item label="关联单号" prop="RefCode">
+            <a-input v-model="entity.RefCode" autocomplete="off" />
+          </a-form-model-item>
+        </a-col>
+        <a-col :span="8">
           <a-form-model-item label="出库时间" prop="OutTime">
             <a-date-picker v-model="entity.OutTime" />
           </a-form-model-item>
-        </a-col>
+        </a-col>               
+      </a-row>
+      <a-row>
+        <!-- <a-col :span="8">
+          <a-form-model-item label="出库仓库" prop="StorageId">
+            <stor-select v-model="entity.StorageId"></stor-select>
+          </a-form-model-item>
+        </a-col> -->
+        
         <a-col :span="8">
           <a-form-model-item label="出库类型" prop="OutType">
             <enum-select code="OutStorageType" v-model="entity.OutType"></enum-select>
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-      <a-row>
-        <a-col :span="8">
-          <a-form-model-item label="关联单号" prop="RefCode">
-            <a-input v-model="entity.RefCode" autocomplete="off" />
           </a-form-model-item>
         </a-col>
         <a-col :span="8">
@@ -31,15 +37,16 @@
         </a-col>
         <a-col :span="8">
           <a-form-model-item label="客户地址" prop="AddrId">
-            <a-input v-model="entity.AddrId" />
-            <!-- <cus-select v-model="entity.CusId"></cus-select> -->
+            <a-select placeholder="请选择" v-model="entity.AddrId">
+            <a-select-option v-for="item in this.CusAddrList" :key="item.Id">{{item.Address}}</a-select-option>
+            </a-select>
           </a-form-model-item>
         </a-col>
         <a-col :span="8">
           <a-form-model-item label="备注" prop="Remarks">
-            <a-input v-model="entity.Remarks" />
+            <a-textarea v-model="entity.Remarks" />
           </a-form-model-item>
-        </a-col>
+        </a-col> 
       </a-row>
     </a-form-model>
     <list-detail v-model="listDetail"></list-detail>
@@ -54,6 +61,7 @@
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import CusSelect from '../../../components/PB/CustomerSelect'
+import StorSelect from '../../../components/Storage/StorageSelect'
 import ListDetail from '../TD_OutStorDetail/List'
 
 export default {
@@ -61,7 +69,8 @@ export default {
     EnumSelect,
     EnumName,
     CusSelect,
-    ListDetail
+    ListDetail,
+    StorSelect
   },
   props: {
     parentObj: Object
@@ -76,20 +85,31 @@ export default {
       loading: false,
       entity: {},
       rules: {},
-      title: ''
+      title: '',
+      CusAddrList:[],
+      listDetail:[]
     }
+  },
+  watch:{
+    entity:{
+      handler: function (val, oldVal) { /* ... */ },
+      deep:true//对象内部的属性监听，也叫深度监听
+    },
+    'entity.CusId':function(val,oldval){
+        this.GetCusAddrList()
+    },//键路径必须加上引号
   },
   methods: {
     init() {
       this.visible = true
-      this.entity = {}
+      this.CusAddrList = []
+      this.entity = {OutType:'',CusId:'',AddrId:''}
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })
     },
     openForm(id, title) {
       this.init()
-
       if (id) {
         this.loading = true
         this.$http.post('/TD/TD_OutStorage/GetTheData', { id: id }).then(resJson => {
@@ -98,7 +118,7 @@ export default {
           this.entity = resJson.Data
         })
       }
-    },
+    },    
     handleSubmit() {
       this.$refs['form'].validate(valid => {
         if (!valid) {
@@ -119,12 +139,21 @@ export default {
         })
       })
     },
-    GetCusAddrList() {
-      var thisObj = this
+    GetCusAddrList() {      
       this.loading = true
-      this.$http.post('/PB/PB_Address/QueryDataListAsync').then(resJson => {
+      this.$http.post('/PB/PB_Address/QueryDataList',{
+          PageIndex: 1,
+          PageRows: 50,
+          SortField: 'Id',
+          SortType: "asc",
+          Search: {
+            SupId:"",
+            CusId:this.entity.CusId
+          },
+          filters:{}
+        }).then(resJson => {
         this.loading = false
-        thisObj.SCusAddrList = resJson.Data
+        this.CusAddrList = resJson.Data
       })
     },
   }

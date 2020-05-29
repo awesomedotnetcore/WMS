@@ -9,10 +9,10 @@
         :disabled="!hasSelected()"
         :loading="loading"
       >删除</a-button>
-      <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
+      <!-- <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button> -->
     </div>
 
-    <div class="table-page-search-wrapper">
+    <!-- <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
@@ -40,7 +40,7 @@
           </a-col>
         </a-row>
       </a-form>
-    </div>
+    </div> -->
 
     <a-table
       ref="table"
@@ -71,17 +71,17 @@
 import EditForm from './EditForm'
 
 const columns = [
-  { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
-  { title: '出库ID', dataIndex: 'OutStorId', width: '10%' },
+  // { title: '出库ID', dataIndex: 'OutStorId', width: '10%' },
+  // { title: '仓库ID', dataIndex: 'StorId', width: '10%' }, 
+  { title: '物料ID', dataIndex: 'MaterialId', width: '10%' }, 
   { title: '货位ID', dataIndex: 'LocalId', width: '10%' },
   { title: '托盘ID', dataIndex: 'TrayId', width: '10%' },
   { title: '托盘分区ID', dataIndex: 'ZoneId', width: '10%' },
-  { title: '条码', dataIndex: 'BarCode', width: '10%' },
-  { title: '物料ID', dataIndex: 'MaterialId', width: '10%' },
+  { title: '条码', dataIndex: 'BarCode', width: '10%' },  
   { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
   { title: '单价', dataIndex: 'Price', width: '10%' },
   { title: '总额', dataIndex: 'Amount', width: '10%' },
-  { title: '出库数量', dataIndex: 'LocalNum', width: '10%' },
+  { title: '数量', dataIndex: 'LocalNum', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
