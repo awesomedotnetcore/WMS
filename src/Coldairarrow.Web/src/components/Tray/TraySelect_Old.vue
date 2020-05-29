@@ -1,28 +1,28 @@
 <template>
   <div>
-    <a-row>
-      <a-col :span="20">
-        <a-select placeholder="选择物料" v-model="curValue" @select="onSelect" @search="handleSearch" :allowClear="true" :showSearch="true" :filterOption="false">
-          <a-select-option v-for="item in dataSource" :key="item.Id" :value="item.Id">{{ item.Name }}</a-select-option>
-        </a-select>
-      </a-col>
-      <a-col :span="4">
-        <a-button type="primary" @click="handleOpenChoose">
+    <a-auto-complete placeholder="选择托盘" v-model="curValue" @select="onSelect" @search="handleSearch">
+      <template slot="dataSource">
+        <a-select-option v-for="item in dataSource" :key="item.Id" :value="item.Id">{{ item.Name }}</a-select-option>
+      </template>
+      <a-input>
+        <a-button slot="suffix" style="margin-right: -12px" class="search-btn" type="primary" @click="handleOpenChoose">
           <a-icon type="search" />
         </a-button>
-      </a-col>
-    </a-row>
-    <material-choose ref="materialChoose" @onChoose="handleChoose"></material-choose>
+      </a-input>
+    </a-auto-complete>
+    <tray-choose ref="trayChoose" @onChoose="handleChoose"></tray-choose>
   </div>
 </template>
 <script>
-import MaterialChoose from './MaterialChoose'
+import TrayChoose from './TrayChoose'
 export default {
   props: {
+    materialId: { type: String, default: '', required: false },
+    locartalId: { type: String, default: '', required: false },
     value: { type: String, default: '', required: false }
   },
   components: {
-    MaterialChoose
+    TrayChoose
   },
   data() {
     return {
@@ -48,7 +48,7 @@ export default {
       this.keyword = q
       clearTimeout(this.timeout)
       this.timeout = setTimeout(() => {
-        this.$http.post('/PB/PB_Material/GetQueryData', { Id: this.curValue, Keyword: q, Take: 10 })
+        this.$http.post('/PB/PB_Tray/GetQueryData', { Id: this.curValue, Keyword: q, Take: 10, MaterialId: this.materialId, LocationId: this.locartalId })
           .then(resJson => {
             if (resJson.Success && q == this.keyword) {
               this.dataSource = resJson.Data
@@ -67,7 +67,7 @@ export default {
       this.reload(value)
     },
     handleOpenChoose() {
-      this.$refs.materialChoose.openChoose()
+      this.$refs.trayChoose.openChoose()
     },
     handleChoose(selectedRows) {
       this.dataSource = [...selectedRows]

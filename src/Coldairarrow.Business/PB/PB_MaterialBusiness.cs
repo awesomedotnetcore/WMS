@@ -3,6 +3,7 @@ using Coldairarrow.Util;
 using EFCore.Sharding;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -15,6 +16,7 @@ namespace Coldairarrow.Business.PB
         public PB_MaterialBusiness(IRepository repository)
             : base(repository)
         {
+            repository.HandleSqlLog = Console.WriteLine;
         }
 
         #region 外部接口

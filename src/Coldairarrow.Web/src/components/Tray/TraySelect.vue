@@ -1,15 +1,17 @@
 <template>
   <div>
-    <a-auto-complete placeholder="选择托盘" v-model="curValue" @select="onSelect" @search="handleSearch">
-      <template slot="dataSource">
-        <a-select-option v-for="item in dataSource" :key="item.Id" :value="item.Id">{{ item.Name }}</a-select-option>
-      </template>
-      <a-input>
-        <a-button slot="suffix" style="margin-right: -12px" class="search-btn" type="primary" @click="handleOpenChoose">
+    <a-row>
+      <a-col :span="20">
+        <a-select placeholder="选择托盘" v-model="curValue" @select="onSelect" @search="handleSearch" :allowClear="true" :showSearch="true" :filterOption="false">
+          <a-select-option v-for="item in dataSource" :key="item.Id" :value="item.Id">{{ item.Name }}</a-select-option>
+        </a-select>
+      </a-col>
+      <a-col :span="2">
+        <a-button type="primary" @click="handleOpenChoose">
           <a-icon type="search" />
         </a-button>
-      </a-input>
-    </a-auto-complete>
+      </a-col>
+    </a-row>
     <tray-choose ref="trayChoose" @onChoose="handleChoose"></tray-choose>
   </div>
 </template>
@@ -36,12 +38,13 @@ export default {
   watch: {
     value(value) {
       this.curValue = value
-      this.reload('')
     }
   },
   mounted() {
     this.curValue = this.value
-    this.reload('')
+    if (this.curValue !== '' && this.curValue !== undefined && this.curValue !== null) {
+      this.reload('')
+    }
   },
   methods: {
     reload(q) {
