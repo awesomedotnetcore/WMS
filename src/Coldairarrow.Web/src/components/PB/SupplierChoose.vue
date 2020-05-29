@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    title="客户选择"
+    title="供应商选择"
     width="70%"
     :visible="visible"
     :confirmLoading="loading"
@@ -13,12 +13,12 @@
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <enum-select code="CustomerType" v-model="queryParam.Type"></enum-select>
+              <enum-select code="SupplierType" v-model="queryParam.Type"></enum-select>
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.KeyWord" placeholder="客户编号或名称" />
+              <a-input v-model="queryParam.KeyWord" placeholder="供应商编号或名称" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -44,7 +44,7 @@
       size="small"
     >
       <template slot="Type" slot-scope="text">
-        <enum-name code="CustomerType" :value="text"></enum-name>
+        <enum-name code="SupplierType" :value="text"></enum-name>
       </template>
     </a-table>
   </a-modal>
@@ -54,13 +54,14 @@
 import EnumName from '../BaseEnum/BaseEnumName'
 import EnumSelect from '../BaseEnum/BaseEnumSelect'
 const columns = [
-  { title: '客户编号', dataIndex: 'Code', width: '15%' },
-  { title: '客户名称', dataIndex: 'Name', width: '15%' },
-  { title: '客户类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
+  { title: '供应商编号', dataIndex: 'Code', width: '15%' },
+  { title: '供应商名称', dataIndex: 'Name', width: '15%' },
+  { title: '供应商类型', dataIndex: 'Type', width: '10%' , scopedSlots: { customRender: 'Type' }},
   { title: '电话', dataIndex: 'Phone', width: '10%' },
   { title: '传真', dataIndex: 'Fax', width: '10%' },
   { title: 'Email', dataIndex: 'Email', width: '15%' },
-  { title: '备注', dataIndex: 'Remarks'}
+  { title: '联系人', dataIndex: 'ContactName', width: '10%' },
+  { title: '备注', dataIndex: 'Remarks' }
 ]
 
 export default {
@@ -105,7 +106,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/PB/PB_Customer/QueryDataList', {
+        .post('/PB/PB_Supplier/QueryDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',

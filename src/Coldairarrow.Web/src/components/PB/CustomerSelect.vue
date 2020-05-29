@@ -45,11 +45,11 @@ export default {
   },
   methods: {
     getCustomerData() {
-        this.$http
+        /*this.$http
         .post('/PB/PB_Customer/QueryAllData')
         .then(resJson => {
           this.customerList = resJson.Data          
-        })
+        })*/
     },
     handleSelected(val) {
       this.$emit('input', val)
