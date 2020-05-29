@@ -38,8 +38,8 @@
     </a-form-model>
     <list-detail v-model="listDetail"></list-detail>
     <div :style="{ position:'absolute',right:0,bottom:0,width:'100%',borderTop:'1px solid #e9e9e9',padding:'10px 16px',background:'#fff',textAlign:'right',zIndex: 1}">
-      <a-button :style="{ marginRight: '8px' }">取消</a-button>
-      <a-button type="primary">确定</a-button>
+      <a-button :style="{ marginRight: '8px' }" @click="()=>{this.visible=false}">取消</a-button>
+      <a-button type="primary" @click="handleSubmit">确定</a-button>
     </div>
   </a-drawer>
 </template>
@@ -49,6 +49,7 @@ import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import SupSelect from '../../../components/PB/SupplierSelect'
 import ListDetail from '../TD_InStorDetail/List'
+import moment from 'moment'
 export default {
   components: {
     EnumSelect,
@@ -73,6 +74,7 @@ export default {
     }
   },
   methods: {
+    moment,
     init() {
       this.visible = true
       this.entity = { InType: '' }
@@ -87,8 +89,9 @@ export default {
         this.loading = true
         this.$http.post('/TD/TD_InStorage/GetTheData', { id: id }).then(resJson => {
           this.loading = false
-
           this.entity = resJson.Data
+          this.entity.InStorTime = moment(this.entity.InStorTime)
+          this.listDetail = [...resJson.Data.InStorDetails]
         })
       }
     },
@@ -98,7 +101,18 @@ export default {
           return
         }
         this.loading = true
-        this.$http.post('/TD/TD_InStorage/SaveData', this.entity).then(resJson => {
+        // 数据处理
+        var InStorDetails = [...this.listDetail]
+        InStorDetails.forEach(element => {
+          element.InStorage = null
+          element.Location = null
+          element.Tray = null
+          element.TrayZone = null
+          element.Material = null
+        })
+        var entityData = { ...this.entity }
+        entityData.InStorDetails = InStorDetails
+        this.$http.post('/TD/TD_InStorage/SaveData', entityData).then(resJson => {
           this.loading = false
 
           if (resJson.Success) {

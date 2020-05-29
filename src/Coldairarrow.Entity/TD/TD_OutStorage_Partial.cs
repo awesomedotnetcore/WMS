@@ -1,6 +1,5 @@
 ﻿using Coldairarrow.Entity.Base_Manage;
 using Coldairarrow.Entity.PB;
-using Dynamitey.DynamicObjects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,14 +8,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Coldairarrow.Entity.TD
 {
     /// <summary>
-    /// 入库表
+    /// 出库表
     /// </summary>
-    public partial class TD_InStorage
+    public partial class TD_OutStorage
     {
-        public List<TD_InStorDetail> InStorDetails { get; set; }
+        public List<TD_OutStorDetail> OutStorDetails { get; set; }
 
-        [ForeignKey(nameof(SupId))]
-        public PB_Supplier Supplier { get; set; }
+        [ForeignKey(nameof(CusId))]
+        public PB_Customer Customer { get; set; }
 
         [ForeignKey(nameof(CreatorId))]
         public Base_User CreateUser { get; set; }

@@ -38,6 +38,9 @@ export default {
   watch: {
     value(value) {
       this.curValue = value
+      if (this.curValue !== '' && this.curValue !== undefined && this.curValue !== null) {
+        this.reload('')
+      }
     }
   },
   mounted() {

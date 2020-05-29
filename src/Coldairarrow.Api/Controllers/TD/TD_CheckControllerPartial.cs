@@ -33,6 +33,12 @@ namespace Coldairarrow.Api.Controllers.TD
         #endregion
 
         [HttpPost]
+        public async Task<PageResult<TD_Check>> QueryDataList(PageInput<TDCheckQueryDTO> input)
+        {
+            return await _tD_CheckBus.QueryDataListAsync(_provider.GetRequiredService<IOperator>().Property.DefaultStorageId, input);
+        }
+
+        [HttpPost]
         public async Task PushData(TDCheckConditionDTO model)
         {
             var _Op = _provider.GetRequiredService<IOperator>();

@@ -60,12 +60,12 @@ namespace Coldairarrow.Entity.TD
         /// <summary>
         /// 单价
         /// </summary>
-        public Double? Price { get; set; }
+        public Double Price { get; set; }
 
         /// <summary>
         /// 总额
         /// </summary>
-        public Double? TotalAmt { get; set; }
+        public Double TotalAmt { get; set; }
 
         /// <summary>
         /// 入库数量

@@ -49,10 +49,25 @@ namespace Coldairarrow.Api.Controllers.TD
             {
                 InitEntity(data);
                 data.StorId = _Op.Property.DefaultStorageId;
+                foreach (var item in data.InStorDetails)
+                {
+                    InitEntity(item);
+                    item.InStorId = data.Id;
+                    item.StorId = data.StorId;
+                    item.TotalAmt = item.Price * item.Num;
+                }
                 await _tD_InStorageBus.AddDataAsync(data);
             }
             else
             {
+                foreach (var item in data.InStorDetails)
+                {
+                    if (item.Id.StartsWith("newid_"))
+                        InitEntity(item);
+                    item.InStorId = data.Id;
+                    item.StorId = data.StorId;
+                    item.TotalAmt = item.Price * item.Num;
+                }
                 await _tD_InStorageBus.UpdateDataAsync(data);
             }
         }

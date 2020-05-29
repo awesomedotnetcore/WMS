@@ -72,7 +72,7 @@
 import EditForm from './EditForm'
 
 const columns = [
-  { title: '仓库ID', dataIndex: 'StorageId', width: '10%' },
+  // { title: '仓库ID', dataIndex: 'StorageId', width: '10%' },
   { title: '出库单号', dataIndex: 'Code', width: '10%' },
   { title: '出库时间', dataIndex: 'OutTime', width: '10%' },
   { title: '出库类型', dataIndex: 'OutType', width: '10%' },
