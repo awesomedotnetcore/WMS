@@ -1,8 +1,10 @@
-﻿using Coldairarrow.Entity.TD;
+﻿using Coldairarrow.Business.PB;
+using Coldairarrow.Entity.TD;
 using Coldairarrow.Util;
 using EFCore.Sharding;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -14,7 +16,11 @@ namespace Coldairarrow.Business.TD
     {
         public async Task<PageResult<TD_InStorage>> GetDataListAsync(TD_InStoragePageInput input)
         {
-            var q = GetIQueryable().Where(w => w.StorId == input.StorId);
+            var q = GetIQueryable()
+                .Include(i=>i.Supplier)
+                .Include(i => i.CreateUser)
+                .Include(i => i.AuditUser)
+                .Where(w => w.StorId == input.StorId);
             var where = LinqHelper.True<TD_InStorage>();
             var search = input.Search;
 
@@ -32,7 +38,28 @@ namespace Coldairarrow.Business.TD
 
         public async Task<TD_InStorage> GetTheDataAsync(string id)
         {
-            return await this.GetIQueryable().Include(i => i.InStorDetails).SingleOrDefaultAsync(w => w.Id == id);
+            return await this.GetIQueryable()
+                .Include(i => i.InStorDetails)
+                    .ThenInclude(t => t.Location)
+                .Include(i => i.InStorDetails)
+                    .ThenInclude(t => t.Material)
+                .Include(i => i.InStorDetails)
+                    .ThenInclude(t => t.Tray)
+                .Include(i => i.InStorDetails)
+                    .ThenInclude(t => t.TrayZone)
+                .SingleOrDefaultAsync(w => w.Id == id);
+        }
+
+        public async Task AddDataAsync(TD_InStorage data)
+        {
+            if (data.Code.IsNullOrEmpty())
+            {
+                var codeSvc = _ServiceProvider.GetRequiredService<IPB_BarCodeTypeBusiness>();
+                data.Code = await codeSvc.Generate("TD_InStorage");
+            }
+            data.TotalNum = data.InStorDetails.Sum(s => s.Num);
+            data.TotalAmt = data.InStorDetails.Sum(s => s.TotalAmt);
+            await InsertAsync(data);
         }
     }
 }

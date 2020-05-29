@@ -2,14 +2,14 @@
   <div>
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()">删除</a-button>
+      <a-button type="primary" icon="minus" @click="handleDelete(selectedRows)" :disabled="!hasSelected()">删除</a-button>
     </div>
-    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record)">编辑</a>
           <a-divider type="vertical" />
-          <a @click="handleDelete([record.Id])">删除</a>
+          <a @click="handleDelete([record])">删除</a>
         </template>
       </span>
     </a-table>
@@ -65,7 +65,8 @@ export default {
       curDetail: {},
       columns: columns1,
       tempId: 0,
-      selectedRowKeys: []
+      selectedRowKeys: [],
+      selectedRows: []
     }
   },
   watch: {
@@ -78,12 +79,6 @@ export default {
     this.getCurStorage()
   },
   methods: {
-    handleTableChange(pagination, filters, sorter) {
-      this.pagination = { ...pagination }
-      this.filters = { ...filters }
-      this.sorter = { ...sorter }
-      this.getDataList()
-    },
     getCurStorage() {
       this.$http.get('/PB/PB_Storage/GetCurStorage')
         .then(resJson => {
@@ -97,15 +92,16 @@ export default {
           }
         })
     },
-    onSelectChange(selectedRowKeys) {
+    onSelectChange(selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
+      this.selectedRows = selectedRows
     },
     hasSelected() {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
       this.tempId += 1
-      var curDetail = { Id: 'TEMP_' + this.tempId.toString(), LocalId: '', TrayId: '', ZoneId: '', MaterialId: '' }
+      var curDetail = { Id: 'newid_' + this.tempId.toString(), LocalId: '', TrayId: '', ZoneId: '', MaterialId: '' }
       this.$refs.editForm.openForm(curDetail)
     },
     handleEdit(item) {
@@ -125,24 +121,22 @@ export default {
       if (isNew) {
         this.data.push({ ...item })
       }
+      this.$emit('input', [...this.data])
     },
-    handleDelete(ids) {
+    handleDelete(items) {
       var thisObj = this
       this.$confirm({
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/TD/TD_InStorDetail/DeleteData', ids).then(resJson => {
-              resolve()
-
-              if (resJson.Success) {
-                thisObj.$message.success('操作成功!')
-
-                thisObj.getDataList()
-              } else {
-                thisObj.$message.error(resJson.Msg)
-              }
+            items.forEach(element => {
+              var index = thisObj.data.indexOf(element)
+              thisObj.data.splice(index, 1)
+              var keyIndex = thisObj.selectedRowKeys.indexOf(element.Id)
+              thisObj.selectedRowKeys.splice(keyIndex, 1)
             })
+            this.$emit('input', [...thisObj.data])
+            resolve()
           })
         }
       })

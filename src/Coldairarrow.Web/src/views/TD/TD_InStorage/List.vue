@@ -11,7 +11,7 @@
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.Code" placeholder="入库类型" />
+              <enum-select code="InStorageType" v-model="queryParam.InType"></enum-select>
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
@@ -33,6 +33,9 @@
     </div>
 
     <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+      <template slot="InType" slot-scope="text">
+        <enum-name code="InStorageType" :value="text"></enum-name>
+      </template>
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -47,23 +50,40 @@
 </template>
 
 <script>
+import moment from 'moment'
 import EditForm from './EditForm'
-
+import EnumName from '../../../components/BaseEnum/BaseEnumName'
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
+const filterStatus = (value, row, index) => {
+  var status = '待审核'
+  switch (value) {
+    case 0: status = '待审核'; break
+    case 1: status = '审核通过'; break
+    case 2: status = '审核失败'; break
+    default: break
+  }
+  return status
+}
+const filterDate = (value, row, index) => {
+  return moment(value).format('YYYY-MM-DD')
+}
 const columns = [
   { title: '入库单号', dataIndex: 'Code', width: '10%' },
-  { title: '入库类型', dataIndex: 'InType', width: '10%' },
-  { title: '入库时间', dataIndex: 'InStorTime', width: '10%' },
-  { title: '状态', dataIndex: 'Status', width: '10%' },
-  { title: '供应商', dataIndex: 'SupId', width: '10%' },
+  { title: '入库类型', dataIndex: 'InType', width: '10%', scopedSlots: { customRender: 'InType' } },
+  { title: '入库时间', dataIndex: 'InStorTime', width: '10%', customRender: filterDate },
+  { title: '状态', dataIndex: 'Status', customRender: filterStatus, width: '10%' },
+  { title: '供应商', dataIndex: 'Supplier.Name', width: '10%' },
   { title: '入库数量', dataIndex: 'TotalNum', width: '10%' },
-  { title: '制单人', dataIndex: 'CreatorId', width: '10%' },
-  { title: '审核人', dataIndex: 'AuditUserId', width: '10%' },
+  { title: '制单人', dataIndex: 'CreateUser.RealName', width: '10%' },
+  { title: '审核人', dataIndex: 'AuditUser.RealName', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
-    EditForm
+    EditForm,
+    EnumName,
+    EnumSelect
   },
   mounted() {
     this.getDataList()
@@ -85,6 +105,7 @@ export default {
     }
   },
   methods: {
+    moment,
     handleTableChange(pagination, filters, sorter) {
       this.pagination = { ...pagination }
       this.filters = { ...filters }
