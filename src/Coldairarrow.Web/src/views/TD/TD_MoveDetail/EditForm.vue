@@ -1,7 +1,7 @@
 ﻿<template>
   <a-modal
     :title="title"
-    width="85%"
+    width="90%"
     :visible="visible"
     :confirmLoading="loading"
     @ok="handleSubmit"
@@ -30,49 +30,18 @@
               @change="onCellChange(record, 'Value', $event)"
             />
           </template>
+          <span slot="action" slot-scope="text, record">
+            <template>
+              <a
+                @click="handleSelectTarget(record.Id, record.ToLocalId, record.ToTrayId, record.ToZoneId)"
+              >目标选择</a>
+            </template>
+          </span>
         </a-table>
-        <!-- <a-form-model-item label="原货位" prop="FromLocalId">
-          <location-select :materialId="this.SelectMaterialId" v-model="entity.FromLocalId" @select="handleSrcLocalSelect"></location-select>
-        </a-form-model-item>-->
-        <!-- <a-form-model-item label="原托盘" prop="FromTrayId">
-          <tray-select
-            v-model="entity.FromTrayId"
-            @select="handleSrcTraySelect"
-            :materialId="this.SelectMaterialId"
-            :locartalId="this.SelectSrcLocalId"
-          ></tray-select>
-        </a-form-model-item>-->
-        <!-- <a-form-model-item label="原托盘分区" prop="FromZoneId">
-          <zone-select :trayId="this.SelectSrcTrayId" v-model="entity.FromZoneId"></zone-select>
-        </a-form-model-item>-->
-        <!-- <a-form-model-item label="目标货位" prop="ToLocalId">
-          <location-select v-model="entity.ToLocalId" @select="handleTarLocalSelect"></location-select>
-        </a-form-model-item>-->
-        <!-- <a-form-model-item label="目标托盘" prop="ToTrayId">
-          <tray-select
-            v-model="entity.ToTrayId"
-            @select="handleTarTraySelect"
-            :materialId="this.SelectMaterialId"
-            :locartalId="this.SelectTarLocalId"
-          ></tray-select>
-        </a-form-model-item>-->
-        <!-- <a-form-model-item label="目标托盘分区" prop="ToZoneId">
-          <zone-select :trayId="this.SelectTarTrayId" v-model="entity.ToZoneId"></zone-select>
-        </a-form-model-item>-->
-        <!-- <a-form-model-item label="条码" prop="BarCode">
-          <a-input v-model="entity.BarCode" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="批次号" prop="BatchNo">
-          <a-input v-model="entity.BatchNo" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="单价" prop="Price">
-          <a-input v-model="entity.Price" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="移库数量" prop="LocalNum">
-          <a-input v-model="entity.LocalNum" autocomplete="off" />
-        </a-form-model-item>-->
       </a-form-model>
     </a-spin>
+
+    <edit-target ref="editTarget" :parentObj="this"></edit-target>
   </a-modal>
 </template>
 
@@ -82,18 +51,19 @@ import LocationSelect from '../../../components/Location/LocationSelect'
 import TraySelect from '../../../components/Tray/TraySelect'
 import ZoneSelect from '../../../components/Tray/ZoneSelect'
 import EditableCell from '../../../components/EditableCell/EditableCell'
+import EditTarget from './EditTarget'
 const columns = [
   { title: '原货位', dataIndex: 'Location.Name', width: '10%' },
   { title: '原托盘', dataIndex: 'Tray.Name', width: '10%' },
   { title: '原分区', dataIndex: 'TrayZone.Name', width: '10%' },
   { title: '物料', dataIndex: 'Material.Name', width: '10%' },
-  { title: '单位', dataIndex: 'Measure.Name', width: '5%' },
   { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
   { title: '数量', dataIndex: 'Num', width: '5%' },
   { title: '移库数量', dataIndex: 'LocalNum', width: '5%', scopedSlots: { customRender: 'Value' } },
   { title: '目标货位', dataIndex: 'ToLocalName', width: '10%' },
   { title: '目标托盘', dataIndex: 'ToTrayName', width: '10%' },
-  { title: '目标分区', dataIndex: 'ToZoneName', width: '10%' }
+  { title: '目标分区', dataIndex: 'ToZoneName', width: '10%' },
+  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
@@ -102,7 +72,8 @@ export default {
     LocationSelect,
     TraySelect,
     ZoneSelect,
-    EditableCell
+    EditableCell,
+    EditTarget
   },
   props: {
     parentObj: Object
@@ -128,7 +99,10 @@ export default {
       queryParam: {},
       columns,
       data: [],
-      selectedRowKeys: []
+      selectedRowKeys: [],
+      tarGetInfo: [],
+      updataMatch: 0,
+      getDataMatch: 0
     }
   },
   methods: {
@@ -193,14 +167,29 @@ export default {
           var addData = {}
           resJson.Data.forEach(element => {
             addData = element
-            addData.ToLocalId = null
-            addData.ToLocalName = null
-            addData.ToTrayId = null
-            addData.ToTrayName = null
-            addData.ToZoneId = null
-            addData.ToZoneName = null
-            addData.LocalNum = 0
-            addData.Amount = 0
+            // this.tarGetInfo.forEach(i => {
+            //   if (i.Id == addData.Id) {
+            //     addData.ToLocalId = i.ToLocalId
+            //     addData.ToLocalName = i.ToLocalName
+            //     addData.ToTrayId = i.ToTrayId
+            //     addData.ToTrayName = i.ToTrayName
+            //     addData.ToZoneId = i.ToZoneId
+            //     addData.ToZoneName = i.ToZoneName
+            //     this.getDataMatch = 1
+            //   }
+            // })
+            if (this.getDataMatch == 0) {
+              addData.ToLocalId = ''
+              addData.ToLocalName = ''
+              addData.ToTrayId = ''
+              addData.ToTrayName = ''
+              addData.ToZoneId = ''
+              addData.ToZoneName = ''
+              addData.LocalNum = 0
+              addData.Amount = 0
+            } else {
+              this.getDataMatch = 0
+            }
             thisObj.data.push(addData)
           })
           const pagination = { ...this.pagination }
@@ -213,6 +202,44 @@ export default {
     },
     onCellChange(data, dataIndex, value) {
       data[dataIndex] = value
+    },
+    handleSelectTarget(id, locationId, trayId, zoneId) {
+      this.$refs.editTarget.openForm(id, locationId, trayId, zoneId)
+    },
+    handleUpdataTargetInfo(id, locationId, locationName, trayId, trayName, zoneId, zoneName) {
+      // this.tarGetInfo.forEach(i => {
+      //   if (i.Id == id) {
+      //     i.ToLocalId = locationId
+      //     i.ToLocalName = locationName
+      //     i.ToTrayId = trayId
+      //     i.ToTrayName = trayName
+      //     i.ToZoneId = zoneId
+      //     i.ToZoneName = zoneName
+      //     this.updataMatch = 1
+      //   }
+      // })
+      // if (this.updataMatch == 0) {
+      //   var addData = {}
+      //   addData.ToLocalId = locationId
+      //   addData.ToLocalName = locationName
+      //   addData.ToTrayId = trayId
+      //   addData.ToTrayName = trayName
+      //   addData.ToZoneId = zoneId
+      //   addData.ToZoneName = zoneName
+      //   this.tarGetInfo.push(addData)
+      // } else {
+      //   this.updataMatch = 0
+      // }
+      this.data.forEach(i => {
+        if (i.Id == id) {
+          i.ToLocalId = locationId
+          i.ToLocalName = locationName
+          i.ToTrayId = trayId
+          i.ToTrayName = trayName
+          i.ToZoneId = zoneId
+          i.ToZoneName = zoneName
+        }
+      })
     }
   }
 }
