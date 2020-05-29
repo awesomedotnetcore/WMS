@@ -1,4 +1,6 @@
 ﻿using Coldairarrow.Entity.PB;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -24,5 +26,13 @@ namespace Coldairarrow.Entity.TD
 
         [ForeignKey(nameof(MaterialId))]
         public PB_Material Material { get; set; }
+    }
+
+    public class Base_EnumEntityTypeConfig : IEntityTypeConfiguration<TD_InStorDetail>
+    {
+        public void Configure(EntityTypeBuilder<TD_InStorDetail> builder)
+        {
+            builder.HasQueryFilter(w => w.Deleted == false);
+        }
     }
 }

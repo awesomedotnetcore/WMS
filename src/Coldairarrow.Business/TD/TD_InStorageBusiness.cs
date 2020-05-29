@@ -23,10 +23,7 @@ namespace Coldairarrow.Business.TD
 
 
 
-        public async Task UpdateDataAsync(TD_InStorage data)
-        {
-            await UpdateAsync(data);
-        }
+        
 
         public async Task DeleteDataAsync(List<string> ids)
         {

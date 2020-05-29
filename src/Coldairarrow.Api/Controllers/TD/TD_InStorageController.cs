@@ -52,6 +52,7 @@ namespace Coldairarrow.Api.Controllers.TD
                 foreach (var item in data.InStorDetails)
                 {
                     InitEntity(item);
+                    item.InStorId = data.Id;
                     item.StorId = data.StorId;
                     item.TotalAmt = item.Price * item.Num;
                 }
@@ -59,6 +60,14 @@ namespace Coldairarrow.Api.Controllers.TD
             }
             else
             {
+                foreach (var item in data.InStorDetails)
+                {
+                    if (item.Id.StartsWith("newid_"))
+                        InitEntity(item);
+                    item.InStorId = data.Id;
+                    item.StorId = data.StorId;
+                    item.TotalAmt = item.Price * item.Num;
+                }
                 await _tD_InStorageBus.UpdateDataAsync(data);
             }
         }

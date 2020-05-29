@@ -49,6 +49,7 @@ import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import SupSelect from '../../../components/PB/SupplierSelect'
 import ListDetail from '../TD_InStorDetail/List'
+import moment from 'moment'
 export default {
   components: {
     EnumSelect,
@@ -73,6 +74,7 @@ export default {
     }
   },
   methods: {
+    moment,
     init() {
       this.visible = true
       this.entity = { InType: '' }
@@ -88,6 +90,7 @@ export default {
         this.$http.post('/TD/TD_InStorage/GetTheData', { id: id }).then(resJson => {
           this.loading = false
           this.entity = resJson.Data
+          this.entity.InStorTime = moment(this.entity.InStorTime)
           this.listDetail = [...resJson.Data.InStorDetails]
         })
       }
