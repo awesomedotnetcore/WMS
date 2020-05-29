@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Coldairarrow.Business.TD
 {
-    public class TD_CheckBusiness : BaseBusiness<TD_Check>, ITD_CheckBusiness, ITransientDependency
+    public partial class TD_CheckBusiness : BaseBusiness<TD_Check>, ITD_CheckBusiness, ITransientDependency
     {
         public TD_CheckBusiness(IRepository repository)
             : base(repository)

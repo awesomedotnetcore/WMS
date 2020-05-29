@@ -16,13 +16,13 @@ namespace Coldairarrow.Business.PB
         public async Task<List<PB_Location>> GetQueryData(SelectQueryDTO search, string storId)
         {
             var q = GetIQueryable().Where(w => w.StorId == storId);
-            var where = LinqHelper.True<PB_Location>();
+            var where = LinqHelper.False<PB_Location>();
 
-            if (!search.Id.IsNullOrEmpty())
-                where = where.And(w => w.Id == search.Id);
             if (!search.Keyword.IsNullOrEmpty())
                 where = where.Or(w => w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
 
+            if (!search.Id.IsNullOrEmpty())
+                where = where.Or(w => w.Id == search.Id);
             return await q.Where(where).OrderBy(o => o.Name).Take(search.Take).ToListAsync();
         }
     }

@@ -1,34 +1,29 @@
 <template>
   <div>
-    <a-row>
-      <a-col :span="20">
-        <a-select placeholder="选择托盘" v-model="curValue" @select="onSelect" @search="handleSearch" :allowClear="true" :showSearch="true" :filterOption="false">
-          <a-select-option v-for="item in dataSource" :key="item.Id" :value="item.Id">{{ item.Name }}</a-select-option>
-        </a-select>
-      </a-col>
-      <a-col :span="2">
-        <a-button type="primary" @click="handleOpenChoose">
+    <a-auto-complete placeholder="选择货位" v-model="curValue" @select="onSelect" @search="handleSearch">
+      <template slot="dataSource">
+        <a-select-option v-for="item in dataSource" :key="item.Id" :value="item.Id">{{ item.Name }}</a-select-option>
+      </template>
+      <a-input>
+        <a-button slot="suffix" style="margin-right: -12px" class="search-btn" type="primary" @click="handleOpenChoose">
           <a-icon type="search" />
         </a-button>
-      </a-col>
-    </a-row>
-    <tray-choose ref="trayChoose" @onChoose="handleChoose"></tray-choose>
+      </a-input>
+    </a-auto-complete>
+    <location-choose ref="locationChoose" @onChoose="handleChoose"></location-choose>
   </div>
 </template>
 <script>
-import TrayChoose from './TrayChoose'
+import LocationChoose from './LocationChoose'
 export default {
   props: {
-    materialId: { type: String, default: '', required: false },
-    locartalId: { type: String, default: '', required: false },
     value: { type: String, default: '', required: false }
   },
   components: {
-    TrayChoose
+    LocationChoose
   },
   data() {
     return {
-      dropdownVisible: false,
       curValue: '',
       keyword: '',
       timeout: null,
@@ -38,23 +33,19 @@ export default {
   watch: {
     value(value) {
       this.curValue = value
-      if (this.curValue !== '' && this.curValue !== undefined && this.curValue !== null) {
-        this.reload('')
-      }
+      this.reload('')
     }
   },
   mounted() {
     this.curValue = this.value
-    if (this.curValue !== '' && this.curValue !== undefined && this.curValue !== null) {
-      this.reload('')
-    }
+    this.reload('')
   },
   methods: {
     reload(q) {
       this.keyword = q
       clearTimeout(this.timeout)
       this.timeout = setTimeout(() => {
-        this.$http.post('/PB/PB_Tray/GetQueryData', { Id: this.curValue, Keyword: q, Take: 10, MaterialId: this.materialId, LocationId: this.locartalId })
+        this.$http.post('/PB/PB_Location/GetQueryData', { Id: this.curValue, Keyword: q, Take: 10 })
           .then(resJson => {
             if (resJson.Success && q == this.keyword) {
               this.dataSource = resJson.Data
@@ -73,7 +64,7 @@ export default {
       this.reload(value)
     },
     handleOpenChoose() {
-      this.$refs.trayChoose.openChoose()
+      this.$refs.locationChoose.openChoose()
     },
     handleChoose(selectedRows) {
       this.dataSource = [...selectedRows]

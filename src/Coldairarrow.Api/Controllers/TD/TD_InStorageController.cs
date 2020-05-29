@@ -49,6 +49,12 @@ namespace Coldairarrow.Api.Controllers.TD
             {
                 InitEntity(data);
                 data.StorId = _Op.Property.DefaultStorageId;
+                foreach (var item in data.InStorDetails)
+                {
+                    InitEntity(item);
+                    item.StorId = data.StorId;
+                    item.TotalAmt = item.Price * item.Num;
+                }
                 await _tD_InStorageBus.AddDataAsync(data);
             }
             else
