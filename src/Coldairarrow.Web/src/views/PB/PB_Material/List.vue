@@ -15,16 +15,16 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
-          <a-col :md="3" :sm="24">
+          <a-col :md="4" :sm="24">
             <materialType-select v-model="queryParam.TypeId"></materialType-select>
           </a-col>
-          <a-col :md="3" :sm="24">
+          <a-col :md="4" :sm="24">
             <customer-select v-model="queryParam.CustomerId"></customer-select>
           </a-col>
-          <a-col :md="3" :sm="24">
+          <a-col :md="4" :sm="24">
             <supplier-select v-model="queryParam.SupplierId"></supplier-select>
           </a-col>         
-          <a-col :md="3" :sm="24">
+          <a-col :md="4" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.Keyword" placeholder="物料名称或编号或条码" />
             </a-form-item>
