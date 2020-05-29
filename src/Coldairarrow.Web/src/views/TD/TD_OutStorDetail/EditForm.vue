@@ -14,7 +14,8 @@
         </a-form-model-item>
         <a-form-model-item label="仓库ID" prop="StorId">
           <a-input v-model="entity.StorId" autocomplete="off" />
-        </a-form-model-item>         -->
+        </a-form-model-item>     
+            -->
         <a-form-model-item label="物料" prop="MaterialId">
         <materila-select v-model="entity.MaterialId" @select="handleMaterialSelect"></materila-select>
         </a-form-model-item>
@@ -27,6 +28,7 @@
         <a-form-model-item v-if="storage.IsTray && storage.IsZone" label="托盘分区" prop="ZoneId">
           <zone-select :trayId="entity.TrayId" v-model="entity.ZoneId" @select="handleZoneSelect"></zone-select>
         </a-form-model-item>
+
        <!--  <a-form-model-item label="货位ID" prop="LocalId">
           <a-input v-model="entity.LocalId" autocomplete="off" />
         </a-form-model-item>
@@ -57,7 +59,7 @@
 </template>
 
 <script>
-import MaterilaSelect from '../../../components/Material/MaterialSelectNew'
+import MaterilaSelect from '../../../components/Material/MaterialSelect'
 import LocationSelect from '../../../components/Location/LocationSelect'
 import TraySelect from '../../../components/Tray/TraySelect'
 import ZoneSelect from '../../../components/Tray/ZoneSelect'
