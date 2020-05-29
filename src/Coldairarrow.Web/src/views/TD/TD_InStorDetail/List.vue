@@ -4,7 +4,7 @@
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
       <a-button type="primary" icon="minus" @click="handleDelete(selectedRows)" :disabled="!hasSelected()">删除</a-button>
     </div>
-    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :pagination="false" :dataSource="data" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record)">编辑</a>
@@ -135,7 +135,7 @@ export default {
               var keyIndex = thisObj.selectedRowKeys.indexOf(element.Id)
               thisObj.selectedRowKeys.splice(keyIndex, 1)
             })
-            this.$emit('input', [...thisObj.data])
+            thisObj.$emit('input', [...thisObj.data])
             resolve()
           })
         }
