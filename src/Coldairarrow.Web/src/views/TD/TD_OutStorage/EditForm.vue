@@ -1,6 +1,6 @@
 ﻿ <template>
   <a-drawer title="出库" :width="1200" :maskClosable="false" placement="right" :visible="visible" @close="()=>{this.visible=false}" :body-style="{ paddingBottom: '80px' }">
-    <a-form-model ref="form" :rules="rules" v-bind="layout">
+    <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
       <a-row>
         <a-col :span="8">
           <a-form-model-item label="出库单号" prop="Code">
@@ -61,8 +61,9 @@
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import CusSelect from '../../../components/PB/CustomerSelect'
-import StorSelect from '../../../components/Storage/StorageSelect'
+// import StorSelect from '../../../components/Storage/StorageSelect'
 import ListDetail from '../TD_OutStorDetail/List'
+import moment from 'moment'
 
 export default {
   components: {
@@ -70,7 +71,7 @@ export default {
     EnumName,
     CusSelect,
     ListDetail,
-    StorSelect
+    // StorSelect
   },
   props: {
     parentObj: Object
@@ -83,7 +84,7 @@ export default {
       },
       visible: false,
       loading: false,
-      entity: {},
+      entity: {OutType: ''},
       rules: {},
       title: '',
       CusAddrList:[],
@@ -100,6 +101,7 @@ export default {
     },//键路径必须加上引号
   },
   methods: {
+    moment,
     init() {
       this.visible = true
       this.CusAddrList = []
@@ -116,6 +118,7 @@ export default {
           this.loading = false
 
           this.entity = resJson.Data
+          this.entity.OutTime = moment(this.entity.OutTime)
           this.listDetail = [...resJson.Data.OutStorDetails]
         })
       }

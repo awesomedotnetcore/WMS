@@ -60,6 +60,7 @@ namespace Coldairarrow.Api.Controllers.TD
                 foreach (var item in data.OutStorDetails)
                 {
                     InitEntity(item);
+                    item.OutStorId = data.Id;
                     item.StorId = data.StorageId;
                     item.TotalAmt = item.Price * item.LocalNum;
                 }
@@ -67,22 +68,33 @@ namespace Coldairarrow.Api.Controllers.TD
             }
             else
             {
+                foreach (var item in data.OutStorDetails)
+                {
+                    if (item.Id.StartsWith("newid_"))
+                        InitEntity(item);
+                    item.OutStorId = data.Id;
+                    item.StorId = data.StorageId;
+                    item.TotalAmt = item.Price * item.LocalNum ;
+                }
                 await _tD_OutStorageBus.UpdateDataAsync(data);
             }
             //if (data.Id.IsNullOrEmpty())
             //{
             //    InitEntity(data);
-            //    if (data.Code.IsNullOrWhiteSpace())
+            //    data.StorageId = _Op.Property.DefaultStorageId;
+            //    foreach (var item in data.OutStorDetails)
             //    {
-            //        data.Code = await _provider.GetRequiredService<IPB_BarCodeTypeBusiness>().Generate("TD_OutStorage");
+            //        InitEntity(item);
+            //        item.StorId = data.StorageId;
+            //        item.TotalAmt = item.Price * item.LocalNum;
             //    }
-
             //    await _tD_OutStorageBus.AddDataAsync(data);
             //}
             //else
             //{
             //    await _tD_OutStorageBus.UpdateDataAsync(data);
             //}
+
         }
 
         [HttpPost]

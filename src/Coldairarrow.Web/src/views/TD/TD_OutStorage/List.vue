@@ -77,16 +77,15 @@ const columns = [
   { title: '出库时间', dataIndex: 'OutTime', width: '10%' },
   { title: '出库类型', dataIndex: 'OutType', width: '10%' },
   // { title: '关联单号', dataIndex: 'RefCode', width: '10%' },
-  // { title: '出库数量', dataIndex: 'OutNum', width: '10%' },
+   { title: '出库数量', dataIndex: 'OutNum', width: '10%' },
   // { title: '总金额', dataIndex: 'TotalAmt', width: '10%' },
   // { title: '设备ID', dataIndex: 'EquId', width: '10%' },
   { title: '状态', dataIndex: 'Status', width: '10%' },
-  // { title: '客户ID', dataIndex: 'CusId', width: '10%' },
+   { title: '客户ID', dataIndex: 'CusId', width: '10%' },
   // { title: '目标地址ID', dataIndex: 'AddrId', width: '10%' },
   // { title: '备注', dataIndex: 'Remarks', width: '10%' },
   { title: '制单人', dataIndex: 'CreatorId', width: '10%' },
   { title: '审核人ID', dataIndex: 'AuditUserId', width: '10%' },
-  { title: '审核时间', dataIndex: 'AuditeTime', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
