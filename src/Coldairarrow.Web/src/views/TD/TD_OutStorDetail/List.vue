@@ -7,49 +7,14 @@
         icon="minus"
         @click="handleDelete(selectedRowKeys)"
         :disabled="!hasSelected()"
-        :loading="loading"
       >删除</a-button>
-      <!-- <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button> -->
     </div>
-
-    <!-- <div class="table-page-search-wrapper">
-      <a-form layout="inline">
-        <a-row :gutter="10">
-          <a-col :md="4" :sm="24">
-            <a-form-item label="查询类别">
-              <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="StorId">仓库ID</a-select-option>
-                <a-select-option key="OutStorId">出库ID</a-select-option>
-                <a-select-option key="LocalId">货位ID</a-select-option>
-                <a-select-option key="TrayId">托盘ID</a-select-option>
-                <a-select-option key="ZoneId">托盘分区ID</a-select-option>
-                <a-select-option key="BarCode">条码</a-select-option>
-                <a-select-option key="MaterialId">物料ID</a-select-option>
-                <a-select-option key="BatchNo">批次号</a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
-          <a-col :md="4" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="关键字" />
-            </a-form-item>
-          </a-col>
-          <a-col :md="6" :sm="24">
-            <a-button type="primary" @click="getDataList">查询</a-button>
-            <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
-          </a-col>
-        </a-row>
-      </a-form>
-    </div> -->
 
     <a-table
       ref="table"
       :columns="columns"
       :rowKey="row => row.Id"
       :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
       :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       :bordered="true"
       size="small"
@@ -63,25 +28,41 @@
       </span>
     </a-table>
 
-    <edit-form ref="editForm" :parentObj="this"></edit-form>
+    <edit-form ref="editForm" @submit="handlerDetailSubmit">></edit-form>
   </a-card>
 </template>
 
 <script>
 import EditForm from './EditForm'
 
-const columns = [
-  // { title: '出库ID', dataIndex: 'OutStorId', width: '10%' },
-  // { title: '仓库ID', dataIndex: 'StorId', width: '10%' }, 
-  { title: '物料ID', dataIndex: 'MaterialId', width: '10%' }, 
-  { title: '货位ID', dataIndex: 'LocalId', width: '10%' },
-  { title: '托盘ID', dataIndex: 'TrayId', width: '10%' },
-  { title: '托盘分区ID', dataIndex: 'ZoneId', width: '10%' },
-  { title: '条码', dataIndex: 'BarCode', width: '10%' },  
+const columns1 = [
+  { title: '物料', dataIndex: 'Material.Name', width: '10%' },
+  { title: '编码', dataIndex: 'Material.Code', width: '10%' },
+  { title: '货位', dataIndex: 'Location.Name', width: '10%' },
+  { title: '条码', dataIndex: 'BarCode', width: '10%' },
   { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
-  { title: '单价', dataIndex: 'Price', width: '10%' },
-  { title: '总额', dataIndex: 'Amount', width: '10%' },
-  { title: '数量', dataIndex: 'LocalNum', width: '10%' },
+  { title: '数量', dataIndex: 'LocalNum', width: '5%' },
+  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+]
+const columns2 = [
+  { title: '物料', dataIndex: 'Material.Name', width: '10%' },
+  { title: '编码', dataIndex: 'Material.Code', width: '10%' },
+  { title: '货位', dataIndex: 'Location.Name', width: '10%' },
+  { title: '托盘', dataIndex: 'Tray.Name', width: '10%' },
+  { title: '条码', dataIndex: 'BarCode', width: '10%' },
+  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
+  { title: '数量', dataIndex: 'LocalNum', width: '5%' },
+  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+]
+const columns3 = [
+  { title: '物料', dataIndex: 'Material.Name', width: '10%' },
+  { title: '编码', dataIndex: 'Material.Code', width: '10%' },
+  { title: '货位', dataIndex: 'Location.Name', width: '10%' },
+  { title: '托盘', dataIndex: 'Tray.Name', width: '10%' },
+  { title: '托盘分区', dataIndex: 'TrayZone.Name', width: '10%' },
+  { title: '条码', dataIndex: 'BarCode', width: '10%' },
+  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
+  { title: '数量', dataIndex: 'LocalNum', width: '5%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -89,86 +70,92 @@ export default {
   components: {
     EditForm
   },
-  mounted() {
-    this.getDataList()
+  props: {
+    value: { type: Array, required: true }
   },
   data() {
     return {
+      storage: {},
       data: [],
-      pagination: {
-        current: 1,
-        pageSize: 10,
-        showTotal: (total, range) => `总数:${total} 当前:${range[0]}-${range[1]}`
-      },
-      filters: {},
-      sorter: { field: 'Id', order: 'asc' },
-      loading: false,
-      columns,
-      queryParam: {},
-      selectedRowKeys: []
+      curDetail: {},
+      columns: columns1,
+      tempId: 0,
+      selectedRowKeys: [],
+      selectedRows: []
     }
   },
+  watch: {
+    value(val) {
+      this.data = [...this.value]
+    }
+  },
+  mounted() {
+    this.data = [...this.value]
+    this.getCurStorage()
+  },  
   methods: {
-    handleTableChange(pagination, filters, sorter) {
-      this.pagination = { ...pagination }
-      this.filters = { ...filters }
-      this.sorter = { ...sorter }
-      this.getDataList()
-    },
-    getDataList() {
-      this.selectedRowKeys = []
-
-      this.loading = true
-      this.$http
-        .post('/TD/TD_OutStorDetail/GetDataList', {
-          PageIndex: this.pagination.current,
-          PageRows: this.pagination.pageSize,
-          SortField: this.sorter.field || 'Id',
-          SortType: this.sorter.order,
-          Search: this.queryParam,
-          ...this.filters
-        })
+    getCurStorage() {
+      this.$http.get('/PB/PB_Storage/GetCurStorage')
         .then(resJson => {
-          this.loading = false
-          this.data = resJson.Data
-          const pagination = { ...this.pagination }
-          pagination.total = resJson.Total
-          this.pagination = pagination
+          this.storage = resJson.Data
+          if (this.storage.IsTray && this.storage.IsZone) {
+            this.columns = columns3
+          } else if (this.storage.IsTray) {
+            this.columns = columns2
+          } else {
+            this.columns = columns1
+          }
         })
     },
-    onSelectChange(selectedRowKeys) {
+    onSelectChange(selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
+      this.selectedRows = selectedRows
     },
     hasSelected() {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm()
+      this.tempId += 1
+      var curDetail = { Id: 'newid_' + this.tempId.toString(), LocalId: '', TrayId: '', ZoneId: '', MaterialId: '' }
+      this.$refs.editForm.openForm(curDetail)
     },
-    handleEdit(id) {
-      this.$refs.editForm.openForm(id)
+    handleEdit(item) {
+      this.$refs.editForm.openForm({ ...item })
     },
-    handleDelete(ids) {
+    handlerDetailSubmit(item) {
+      console.log('handlerDetailSubmit', item)
+      var isNew = true
+      this.data.forEach(element => {
+        if (element.Id === item.Id) {
+          isNew = false
+          Object.keys(item).forEach(prop => {
+            element[prop] = item[prop]
+          })
+        }
+      })
+      if (isNew) {
+        this.data.push({ ...item })
+      }
+      this.$emit('input', [...this.data])
+    },
+    handleDelete(items) {
       var thisObj = this
       this.$confirm({
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/TD/TD_OutStorDetail/DeleteData', ids).then(resJson => {
-              resolve()
-
-              if (resJson.Success) {
-                thisObj.$message.success('操作成功!')
-
-                thisObj.getDataList()
-              } else {
-                thisObj.$message.error(resJson.Msg)
-              }
+            items.forEach(element => {
+              var index = thisObj.data.indexOf(element)
+              thisObj.data.splice(index, 1)
+              var keyIndex = thisObj.selectedRowKeys.indexOf(element.Id)
+              thisObj.selectedRowKeys.splice(keyIndex, 1)
             })
+            this.$emit('input', [...thisObj.data])
+            resolve()
           })
         }
       })
-    }
+    }    
   }
 }
 </script>

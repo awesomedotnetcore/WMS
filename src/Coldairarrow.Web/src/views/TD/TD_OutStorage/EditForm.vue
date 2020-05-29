@@ -51,8 +51,8 @@
     </a-form-model>
     <list-detail v-model="listDetail"></list-detail>
     <div :style="{ position:'absolute',right:0,bottom:0,width:'100%',borderTop:'1px solid #e9e9e9',padding:'10px 16px',background:'#fff',textAlign:'right',zIndex: 1}">
-      <a-button :style="{ marginRight: '8px' }">取消</a-button>
-      <a-button type="primary">确定</a-button>
+      <a-button :style="{ marginRight: '8px' }" @click="()=>{this.visible=false}">取消</a-button>
+      <a-button type="primary" @click="handleSubmit">确定</a-button>
     </div>
   </a-drawer>
 </template>
@@ -116,16 +116,28 @@ export default {
           this.loading = false
 
           this.entity = resJson.Data
+          this.listDetail = [...resJson.Data.OutStorDetails]
         })
       }
-    },    
+    },   
     handleSubmit() {
       this.$refs['form'].validate(valid => {
         if (!valid) {
           return
         }
         this.loading = true
-        this.$http.post('/TD/TD_OutStorage/SaveData', this.entity).then(resJson => {
+        // 数据处理
+        var OutStorDetails = [...this.listDetail]
+        OutStorDetails.forEach(element => {
+          element.OutStorage = null
+          element.Location = null
+          element.Tray = null
+          element.TrayZone = null
+          element.Material = null
+        })
+        var entityData = { ...this.entity }
+        entityData.OutStorDetails = OutStorDetails
+        this.$http.post('/TD/TD_OutStorage/SaveData', entityData).then(resJson => {
           this.loading = false
 
           if (resJson.Success) {
@@ -138,7 +150,27 @@ export default {
           }
         })
       })
-    },
+    }, 
+    // handleSubmit() {
+    //   this.$refs['form'].validate(valid => {
+    //     if (!valid) {
+    //       return
+    //     }
+    //     this.loading = true
+    //     this.$http.post('/TD/TD_OutStorage/SaveData', this.entity).then(resJson => {
+    //       this.loading = false
+
+    //       if (resJson.Success) {
+    //         this.$message.success('操作成功!')
+    //         this.visible = false
+
+    //         this.parentObj.getDataList()
+    //       } else {
+    //         this.$message.error(resJson.Msg)
+    //       }
+    //     })
+    //   })
+    // },
     GetCusAddrList() {      
       this.loading = true
       this.$http.post('/PB/PB_Address/QueryDataList',{

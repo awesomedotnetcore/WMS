@@ -28,16 +28,6 @@
         <a-form-model-item v-if="storage.IsTray && storage.IsZone" label="托盘分区" prop="ZoneId">
           <zone-select :trayId="entity.TrayId" v-model="entity.ZoneId" @select="handleZoneSelect"></zone-select>
         </a-form-model-item>
-
-       <!--  <a-form-model-item label="货位ID" prop="LocalId">
-          <a-input v-model="entity.LocalId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="托盘ID" prop="TrayId">
-          <a-input v-model="entity.TrayId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="托盘分区ID" prop="ZoneId">
-          <a-input v-model="entity.ZoneId" autocomplete="off" />
-        </a-form-model-item> -->
         <a-form-model-item label="条码" prop="BarCode">
           <a-input v-model="entity.BarCode" autocomplete="off" />
         </a-form-model-item>        
@@ -50,8 +40,8 @@
         <a-form-model-item label="单价" prop="Price">
           <a-input v-model="entity.Price" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="总额" prop="Amount">
-          <a-input v-model="entity.Amount" autocomplete="off" />
+        <a-form-model-item label="总额" prop="TotalAmt">
+          <a-input v-model="entity.TotalAmt" autocomplete="off" />
         </a-form-model-item>        
       </a-form-model>
     <!-- </a-spin> -->
@@ -84,7 +74,7 @@ export default {
       loading: false,
       entity: {MaterialId: '' },
       rules: {},
-       title: '',
+      title: '',
       storage: {},
       material: null,
       location: null,
@@ -96,68 +86,68 @@ export default {
     this.getCurStorage()
   },
   methods: {
-    init() {
-      this.visible = true
-      this.entity = {}
-      this.$nextTick(() => {
-        this.$refs['form'].clearValidate()
-      })
-    },
-    // openForm(entity) {
-    //   this.entity = entity
+    // init() {
     //   this.visible = true
+    //   this.entity = {}
+    //   this.$nextTick(() => {
+    //     this.$refs['form'].clearValidate()
+    //   })
     // },
+    openForm(entity) {
+      this.entity = entity
+      this.visible = true
+    },
     getCurStorage() {
       this.$http.get('/PB/PB_Storage/GetCurStorage')
         .then(resJson => {
           this.storage = resJson.Data
         })
     },    
-    // handleSubmit() {
-    //   this.$refs['form'].validate(valid => {
-    //     if (!valid) return
-    //     this.entity.Location = { ...this.location }
-    //     this.entity.Material = { ...this.material }
-    //     this.entity.Tray = { ...this.tray }
-    //     this.entity.TrayZone = { ...this.trayZone }
-    //     this.$emit('submit', { ...this.entity })
-    //     this.visible = false
-    //   })
-    // },
-    openForm(id, title) {
-      this.init()
-
-      if (id) {
-        this.loading = true
-        this.$http.post('/TD/TD_OutStorDetail/GetTheData', { id: id }).then(resJson => {
-          this.loading = false
-
-          this.entity = resJson.Data
-        })
-      }
-    },
     handleSubmit() {
       this.$refs['form'].validate(valid => {
-        if (!valid) {
-          return
-        }
-        this.loading = true
-        this.$http.post('/TD/TD_OutStorDetail/SaveData', this.entity).then(resJson => {
-          this.loading = false
-
-          if (resJson.Success) {
-            this.$message.success('操作成功!')
-            this.visible = false
-
-            this.parentObj.getDataList()
-          } else {
-            this.$message.error(resJson.Msg)
-          }
-        })
+        if (!valid) return
+        this.entity.Location = { ...this.location }
+        this.entity.Material = { ...this.material }
+        this.entity.Tray = { ...this.tray }
+        this.entity.TrayZone = { ...this.trayZone }
+        this.$emit('submit', { ...this.entity })
+        this.visible = false
       })
     },
+    // openForm(id, title) {
+    //   this.init()
+
+    //   if (id) {
+    //     this.loading = true
+    //     this.$http.post('/TD/TD_OutStorDetail/GetTheData', { id: id }).then(resJson => {
+    //       this.loading = false
+
+    //       this.entity = resJson.Data
+    //     })
+    //   }
+    // },
+    // handleSubmit() {
+    //   this.$refs['form'].validate(valid => {
+    //     if (!valid) {
+    //       return
+    //     }
+    //     this.loading = true
+    //     this.$http.post('/TD/TD_OutStorDetail/SaveData', this.entity).then(resJson => {
+    //       this.loading = false
+
+    //       if (resJson.Success) {
+    //         this.$message.success('操作成功!')
+    //         this.visible = false
+
+    //         this.parentObj.getDataList()
+    //       } else {
+    //         this.$message.error(resJson.Msg)
+    //       }
+    //     })
+    //   })
+    // },
     handleMaterialSelect(material) {
-      //console.log('handleMaterialSelect', material)
+      console.log('handleMaterialSelect', material)
       this.material = material
     },
     handleLocalIdSelect(location) {

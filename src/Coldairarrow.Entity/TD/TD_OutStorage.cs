@@ -50,7 +50,7 @@ namespace Coldairarrow.Entity.TD
         /// <summary>
         /// 总金额
         /// </summary>
-        public Double? TotalAmt { get; set; }
+        public Double TotalAmt { get; set; }
 
         /// <summary>
         /// 设备ID
@@ -101,6 +101,5 @@ namespace Coldairarrow.Entity.TD
         /// 删除状态：0=未删除；1＝已删除；
         /// </summary>
         public Boolean Deleted { get; set; }
-
     }
 }
