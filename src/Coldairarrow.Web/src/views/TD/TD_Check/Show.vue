@@ -5,7 +5,7 @@
     :visible="visible"
     :confirmLoading="loading"
     :footer="null"
-    :closable=false
+    :closable="false"
   >
     <a-spin :spinning="loading">
       <div style="background-color: #F5F5F5; padding: 12px;">
@@ -17,12 +17,25 @@
           <a-descriptions size="small" :column="3">
             <a-descriptions-item label="盘点时间">{{entity.CheckTime}}</a-descriptions-item>
             <a-descriptions-item label="关联单号">{{entity.RefCode}}</a-descriptions-item>
-            <a-descriptions-item label="盘点类型">{{entity.Type}}</a-descriptions-item>
-            <a-descriptions-item label="盘点区域">
-
+            <a-descriptions-item label="审核时间"><span v-if="entity.Status===1 || entity.Status===2">{{entity.AuditeTime}}</span></a-descriptions-item>
+            <a-descriptions-item label="盘点类型" >
+                <enum-name code="CheckType" :value="entity.Type"></enum-name></a-descriptions-item>
+            <a-descriptions-item label="盘点状态">
+              <a-tag v-if="entity.IsComplete===true">已盘</a-tag>
+              <a-tag v-else color="green">待盘</a-tag>
             </a-descriptions-item>
-            <a-descriptions-item label="盘点状态">{{entity.IsComplete}}</a-descriptions-item>
-            <a-descriptions-item label="审核状态">{{entity.Status}}</a-descriptions-item>
+            <a-descriptions-item label="审核状态">
+              <span v-if="entity.IsComplete===true">
+                <a-tag v-if="entity.Status===0" color="green">待审核</a-tag>
+                <a-tag v-else-if="entity.Status===1">审核通过</a-tag>
+                <a-tag v-else-if="entity.Status===2" color="red">审核失败</a-tag>
+                <a-tag v-else color="green">待审核</a-tag>
+              </span>
+              <span v-else>-</span>
+            </a-descriptions-item>            
+            <a-descriptions-item v-if="entity.Type==='Area'" label="盘点区域" :span="3">
+                 <storarea-show v-model="CheckArea" :disabled="true"></storarea-show>
+            </a-descriptions-item>            
           </a-descriptions>
         </a-page-header>
         <a-divider>物料盘差清单</a-divider>
@@ -35,6 +48,8 @@
 </template>
 
 <script>
+import EnumName from '../../../components/BaseEnum/BaseEnumName'
+import StorareaShow from '../../../components/PB/StorAreaShow'
 import moment from 'moment'
 const columns = [
   {
@@ -72,7 +87,10 @@ const data = [
 ]
 
 export default {
-  components: {},
+  components: {
+      StorareaShow,
+      EnumName
+  },
   props: {
     parentObj: Object
   },
@@ -97,9 +115,6 @@ export default {
     init() {
       this.visible = true
       this.entity = { Type: '' }
-      this.$nextTick(() => {
-        this.$refs['form'].clearValidate()
-      })
     },
     openForm(id, title) {
       this.init()
@@ -110,7 +125,11 @@ export default {
           this.loading = false
 
           this.entity = resJson.Data
-          this.entity.CheckTime = moment(this.entity.CheckTime)
+          this.entity.CheckTime = moment(this.entity.CheckTime).format('YYYY-MM-DD HH:mm:ss')
+          if(this.entity.Status===1 || this.entity.Status===2)
+          {
+              this.entity.AuditeTime = moment(this.entity.AuditeTime).format('YYYY-MM-DD HH:mm:ss')
+          }         
 
           if (this.entity.Type == 'Area') {
             this.$http.post('/TD/TD_CheckArea/Query?checkId=' + id).then(resJson => {

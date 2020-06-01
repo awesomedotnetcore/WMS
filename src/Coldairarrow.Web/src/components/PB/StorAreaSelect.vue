@@ -1,5 +1,5 @@
 <template>
-  <a-checkbox-group v-model="curValue" @change="handleSelected" v-bind="$attrs" style="width:100%;">
+  <a-checkbox-group v-model="curValue" :disabled="disabled" @change="handleSelected" v-bind="$attrs" style="width:100%;">
     <a-row style="width:100%;">
       <a-col v-for="item in areaList" :span="6" :key="item.Id">
         <a-checkbox :value="item.Id" autocomplete="off">
@@ -12,7 +12,8 @@
 <script>
 export default {
   props: {
-    value: { type: Array, required: false }
+    value: { type: Array, required: false },
+    disabled:{type:Boolean,default:false,required:false}
   },
   data() {
     return {
