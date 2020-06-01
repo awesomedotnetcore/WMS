@@ -55,6 +55,7 @@ namespace Coldairarrow.Business.TD
                 .SingleOrDefaultAsync(w => w.Id == id);
         }
 
+        [Transactional]
         public async Task AddDataAsync(TD_InStorage data)
         {
             if (data.Code.IsNullOrEmpty())
@@ -67,6 +68,7 @@ namespace Coldairarrow.Business.TD
             await InsertAsync(data);
         }
 
+        [Transactional]
         public async Task UpdateDataAsync(TD_InStorage data)
         {
             var curDetail = data.InStorDetails;
