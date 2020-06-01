@@ -151,15 +151,15 @@ export default {
       this.material = material
     },
     handleLocalIdSelect(location) {
-      //console.log('handleLocalIdSelect', location)
+      console.log('handleLocalIdSelect', location)
       this.location = location
     },
     handleTraySelect(tray) {
-      //console.log('handleTraySelect', tray)
+      console.log('handleTraySelect', tray)
       this.tray = tray
     },
     handleZoneSelect(zone) {
-      //console.log('handleZoneSelect', zone)
+      console.log('handleZoneSelect', zone)
       this.trayZone = zone
     }
   }

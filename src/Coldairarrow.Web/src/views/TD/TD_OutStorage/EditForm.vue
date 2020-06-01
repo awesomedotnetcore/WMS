@@ -4,17 +4,17 @@
       <a-row>
         <a-col :span="8">
           <a-form-model-item label="出库单号" prop="Code">
-            <a-input v-model="entity.Code" :disabled="$para('GenerateOutStorageCode')=='1'" placeholder="系统自动生成" autocomplete="off" />
+            <a-input v-model="entity.Code" :disabled="$para('GenerateOutStorageCode')=='1'|| disabled" placeholder="系统自动生成" autocomplete="off" />
           </a-form-model-item>
         </a-col>
         <a-col :span="8">
           <a-form-model-item label="关联单号" prop="RefCode">
-            <a-input v-model="entity.RefCode" autocomplete="off" />
+            <a-input v-model="entity.RefCode" autocomplete="off" :disabled="disabled"/>
           </a-form-model-item>
         </a-col>
         <a-col :span="8">
           <a-form-model-item label="出库时间" prop="OutTime">
-            <a-date-picker v-model="entity.OutTime" />
+            <a-date-picker v-model="entity.OutTime" :disabled="disabled"/>
           </a-form-model-item>
         </a-col>               
       </a-row>
@@ -27,18 +27,18 @@
         
         <a-col :span="8">
           <a-form-model-item label="出库类型" prop="OutType">
-            <enum-select code="OutStorageType" v-model="entity.OutType"></enum-select>
+            <enum-select code="OutStorageType" v-model="entity.OutType" :disabled="disabled"></enum-select>
           </a-form-model-item>
         </a-col>
         <a-col :span="8">
           <a-form-model-item label="客户" prop="CusId">
-            <cus-select v-model="entity.CusId"></cus-select>
+            <cus-select v-model="entity.CusId" :disabled="disabled"></cus-select>
           </a-form-model-item>
         </a-col>
         <a-col :span="8">
           <a-form-model-item label="客户地址" prop="AddrId">
-            <a-select placeholder="请选择" v-model="entity.AddrId">
-            <a-select-option v-for="item in this.CusAddrList" :key="item.Id">{{item.Address}}</a-select-option>
+            <a-select placeholder="请选择" v-model="entity.AddrId" :disabled="disabled">
+            <a-select-option v-for="item in this.CusAddrList" :key="item.Id" >{{item.Address}}</a-select-option>
             </a-select>
           </a-form-model-item>
         </a-col>
@@ -51,8 +51,11 @@
     </a-form-model>
     <list-detail v-model="listDetail"></list-detail>
     <div :style="{ position:'absolute',right:0,bottom:0,width:'100%',borderTop:'1px solid #e9e9e9',padding:'10px 16px',background:'#fff',textAlign:'right',zIndex: 1}">
-      <a-button :style="{ marginRight: '8px' }" @click="()=>{this.visible=false}">取消</a-button>
-      <a-button type="primary" @click="handleSubmit">确定</a-button>
+      <a-button :disabled="disabled" :style="{ marginRight: '8px' }" @click="()=>{this.visible=false}">取消</a-button>
+      <a-button :disabled="disabled" :style="{ marginRight: '8px' }" type="primary" @click="handleSubmit">保存</a-button>
+
+      <a-button :disabled="disabled" type="danger" :style="{ marginRight: '8px' }" @click="()=>{this.visible=false}">审核通过</a-button>
+      <a-button :disabled="disabled" type="danger" :style="{ marginRight: '8px' }" @click="()=>{this.visible=false}">审核不通过</a-button>
     </div>
   </a-drawer>
 </template>
@@ -74,7 +77,9 @@ export default {
     // StorSelect
   },
   props: {
-    parentObj: Object
+    // parentObj: Object
+    parentObj: { type: Object, required: true },
+    disabled: { type: Boolean, required: false, default: false }
   },
   data() {
     return {

@@ -95,10 +95,7 @@
 
       <span slot="action" slot-scope="text, record">
         <template>
-          <a-divider type="vertical" />
-          <a @click="handleEdit(record.Id)">查看</a>
-          <a-divider type="vertical" />
-          <a @click="handleEdit(record.Id)">审核</a>
+          <a @click="handleAudite(record.Id)">审核</a>
           <a-divider type="vertical" />
           <a @click="handleEdit(record.Id)">编辑</a>
           <a-divider type="vertical" />
@@ -107,7 +104,7 @@
       </span>
     </a-table>
 
-    <edit-form ref="editForm" :parentObj="this"></edit-form>
+    <edit-form ref="editForm" :disabled="disabled" :parentObj="this"></edit-form>
   </a-card>
 </template>
 
@@ -161,7 +158,8 @@ export default {
       loading: false,
       columns,
       queryParam: {},
-      selectedRowKeys: []
+      selectedRowKeys: [],
+      disabled: false,
     }
   },
   methods: {
@@ -199,9 +197,15 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
+       this.disabled = false
       this.$refs.editForm.openForm()
     },
     handleEdit(id) {
+       this.disabled = false
+      this.$refs.editForm.openForm(id)
+    },
+    handleAudite(id) {
+      this.disabled = true
       this.$refs.editForm.openForm(id)
     },
     handleDelete(ids) {
