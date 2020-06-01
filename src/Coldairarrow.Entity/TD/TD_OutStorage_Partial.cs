@@ -17,6 +17,9 @@ namespace Coldairarrow.Entity.TD
         [ForeignKey(nameof(CusId))]
         public PB_Customer Customer { get; set; }
 
+        [ForeignKey(nameof(AddrId))]
+        public PB_Address Address { get; set; }
+
         [ForeignKey(nameof(CreatorId))]
         public Base_User CreateUser { get; set; }
 

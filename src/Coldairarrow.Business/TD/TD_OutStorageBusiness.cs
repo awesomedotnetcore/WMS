@@ -53,10 +53,10 @@ namespace Coldairarrow.Business.TD
         //    await InsertAsync(data);
         //}
 
-        public async Task UpdateDataAsync(TD_OutStorage data)
-        {
-            await UpdateAsync(data);
-        }
+        //public async Task UpdateDataAsync(TD_OutStorage data)
+        //{
+        //    await UpdateAsync(data);
+        //}
 
         public async Task DeleteDataAsync(List<string> ids)
         {
