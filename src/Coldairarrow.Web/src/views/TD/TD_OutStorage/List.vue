@@ -88,7 +88,7 @@
 
       <template slot="Status" slot-scope="text, record">
         <a-tag v-if="record.Status===0" color="green">待审核</a-tag>
-        <a-tag v-else-if="record.Status===1">审核通过</a-tag>
+        <a-tag v-else-if="record.Status===1" color="#87d068">审核通过</a-tag>
         <a-tag v-else-if="record.Status===2" color="red">审核失败</a-tag>
         <a-tag v-else color="green">待审核</a-tag>
       </template>
@@ -121,17 +121,6 @@ const filterDate = (value, row, index) => {
   return moment(value).format('YYYY-MM-DD')
 }
 
-const filterStatus = (value, row, index) => {
-  var status = '待审核'
-  switch (value) {
-    case 0: status = '待审核'; break
-    case 1: status = '审核通过'; break
-    case 2: status = '审核失败'; break
-    default: break
-  }
-  return status
-}
-
 const columns = [
   // { title: '仓库ID', dataIndex: 'StorageId', width: '10%' },
   // { title: '关联单号', dataIndex: 'RefCode', width: '10%' },
@@ -142,7 +131,7 @@ const columns = [
   { title: '出库时间', dataIndex: 'OutTime', width: '10%' , customRender: filterDate },
   { title: '出库类型', dataIndex: 'OutType', width: '8%' , scopedSlots: { customRender: 'OutType' } },  
   { title: '出库数量', dataIndex: 'OutNum', width: '8%' },  
-  { title: '状态', dataIndex: 'Status', width: '7%', customRender: filterStatus },
+  { title: '状态', dataIndex: 'Status', width: '7%', scopedSlots: { customRender: 'Status' }  },
   { title: '客户', dataIndex: 'Customer.Name', width: '10%' },
   // { title: '客户地址', dataIndex: 'Address.Address', width: '10%' },  
   { title: '制单人', dataIndex: 'CreateUser.RealName', width: '10%' },
