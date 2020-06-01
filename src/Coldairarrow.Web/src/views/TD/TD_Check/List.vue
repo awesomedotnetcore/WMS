@@ -3,7 +3,7 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
-          <a-col :md="3" :sm="24">
+          <a-col :md="5" :lg="4" :sm="24">
             <a-form-item>
               <a-radio-group v-model="queryParam.IsComplete" :default-value="-1" button-style="solid" @change="getDataList">
                 <a-radio-button :value="-1">
@@ -18,7 +18,7 @@
               </a-radio-group>
             </a-form-item>
           </a-col>
-          <a-col :md="5" :sm="24">
+          <a-col :md="8" :lg="6" :sm="24">
             <a-form-item>
               <a-radio-group v-model="queryParam.Status" :default-value="-1" button-style="solid" @change="getDataList">
                 <a-radio-button :value="-1">
@@ -35,8 +35,10 @@
                 </a-radio-button>
               </a-radio-group>
             </a-form-item>
-          </a-col>
-          <a-col :md="3" :sm="24">
+          </a-col>          
+        </a-row>
+        <a-row>
+          <a-col :md="5" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.RefCode" placeholder="关联单号" />
             </a-form-item>
@@ -98,11 +100,13 @@
     </a-table>
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
+    <show ref="show" :parentObj="this"></show>
   </a-card>
 </template>
 
 <script>
 import EditForm from './EditForm'
+import Show from './Show'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 
 const columns = [
@@ -119,7 +123,8 @@ const columns = [
 export default {
   components: {
     EditForm,
-    EnumName
+    EnumName,
+    Show
   },
   mounted() {
     this.getDataList()
@@ -208,7 +213,7 @@ export default {
       })
     },
     handleCheck(id){
-
+      this.$refs.show.openForm(id)
     },
     handleReCheck(id){
 
