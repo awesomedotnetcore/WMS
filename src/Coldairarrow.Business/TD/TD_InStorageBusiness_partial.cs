@@ -55,6 +55,7 @@ namespace Coldairarrow.Business.TD
                 .SingleOrDefaultAsync(w => w.Id == id);
         }
 
+        [Transactional]
         public async Task AddDataAsync(TD_InStorage data)
         {
             if (data.Code.IsNullOrEmpty())
@@ -67,6 +68,7 @@ namespace Coldairarrow.Business.TD
             await InsertAsync(data);
         }
 
+        [Transactional]
         public async Task UpdateDataAsync(TD_InStorage data)
         {
             var curDetail = data.InStorDetails;
@@ -99,6 +101,7 @@ namespace Coldairarrow.Business.TD
             await UpdateAsync(data);
         }
 
+        [Transactional]
         public async Task Approve(AuditDTO audit)
         {
             var now = DateTime.Now;
@@ -224,7 +227,8 @@ namespace Coldairarrow.Business.TD
                 {
                     var rb = new IT_RecordBook();
                     rb.Id = IdHelper.GetId();
-                    rb.RefCode = "In";
+                    rb.RefCode = data.Code;
+                    rb.Type = "In";
                     rb.ToStorId = item.StorId;
                     rb.ToLocalId = item.LocalId;
                     rb.MaterialId = item.MaterialId;
@@ -272,6 +276,7 @@ namespace Coldairarrow.Business.TD
                 await UpdateAsync(data);
             }
         }
+
         public async Task Reject(AuditDTO audit)
         {
             var data = await this.GetEntityAsync(audit.Id);

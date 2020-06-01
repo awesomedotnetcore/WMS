@@ -38,11 +38,11 @@
       </template>
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="handleEdit(record.Id)">编辑</a>
-          <a-divider type="vertical" />
-          <a @click="handleDelete([record.Id])">删除</a>
-          <a-divider type="vertical" />
-          <a @click="handleShow(record.Id)">审核</a>
+          <a v-if="record.Status===0" @click="handleEdit(record.Id)">编辑</a>
+          <a-divider v-if="record.Status===0" type="vertical" />
+          <a v-if="record.Status===0" @click="handleDelete([record.Id])">删除</a>
+          <a-divider v-if="record.Status===0" type="vertical" />
+          <a @click="handleShow(record.Id)">{{ record.Status === 0?'审核':'查看' }}</a>
         </template>
       </span>
     </a-table>
@@ -136,8 +136,12 @@ export default {
           this.pagination = pagination
         })
     },
-    onSelectChange(selectedRowKeys) {
-      this.selectedRowKeys = selectedRowKeys
+    onSelectChange(selectedRowKeys, selectedRows) {
+      var ids = []
+      selectedRows.forEach((val, index, arr) => {
+        if (val.Status === 0) ids.push(val.Id)
+      })
+      this.selectedRowKeys = ids
     },
     onInStorTimeChange(dates, dateStrings) {
       this.queryParam.InStorTimeStart = dateStrings[0]
