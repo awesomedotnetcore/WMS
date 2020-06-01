@@ -26,6 +26,9 @@ namespace Coldairarrow.Business.TD
             var where = LinqHelper.True<TD_OutStorage>();
             var search = input.Search;
 
+            if (search.Status > -1) 
+                where = where.And(p => p.Status == search.Status);
+
             if (!search.Code.IsNullOrEmpty())
                 where = where.And(w => w.Code.Contains(search.Code));
             if (!search.OutType.IsNullOrEmpty())

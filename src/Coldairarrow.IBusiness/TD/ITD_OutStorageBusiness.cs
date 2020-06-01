@@ -17,6 +17,7 @@ namespace Coldairarrow.Business.TD
     public class TD_OutStorageQM
     {
         public string Code { get; set; }
+        public int Status { get; set; }
         public string OutType { get; set; }
         public DateTime? OutStorTimeStart { get; set; }
         public DateTime? OutStorTimeEnd { get; set; }
