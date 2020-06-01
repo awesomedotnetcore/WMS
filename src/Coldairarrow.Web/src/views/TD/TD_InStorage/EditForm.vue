@@ -38,10 +38,10 @@
     </a-form-model>
     <list-detail v-model="listDetail" :disabled="disabled"></list-detail>
     <div :style="{ position:'absolute',right:0,bottom:0,width:'100%',borderTop:'1px solid #e9e9e9',padding:'10px 16px',background:'#fff',textAlign:'right',zIndex: 1}">
-      <a-button :disabled="disabled" :style="{ marginRight: '8px' }" @click="()=>{this.visible=false}">取消</a-button>
-      <a-button :disabled="disabled" type="danger" :style="{ marginRight: '8px' }" @click="()=>{this.visible=false}">通过</a-button>
-      <a-button :disabled="disabled" type="danger" :style="{ marginRight: '8px' }" @click="()=>{this.visible=false}">驳回</a-button>
-      <a-button :disabled="disabled" type="primary" @click="handleSubmit">保存</a-button>
+      <a-button :style="{ marginRight: '8px' }" @click="()=>{this.visible=false}">取消</a-button>
+      <a-button type="danger" :style="{ marginRight: '8px' }" v-if="entity.Status === 0" @click="handleAudit(entity.Id,'Approve')">通过</a-button>
+      <a-button type="danger" :style="{ marginRight: '8px' }" v-if="entity.Status === 0" @click="handleAudit(entity.Id,'Reject')">驳回</a-button>
+      <a-button :disabled="disabled" type="primary" @click="handleSubmit" v-if="entity.Status === 0">保存</a-button>
     </div>
   </a-drawer>
 </template>
@@ -71,7 +71,7 @@ export default {
       },
       visible: false,
       loading: false,
-      entity: { InType: '' },
+      entity: { InType: '', Status: 0 },
       listDetail: [],
       rules: {}
     }
@@ -80,7 +80,7 @@ export default {
     moment,
     init() {
       this.visible = true
-      this.entity = { InType: '' }
+      this.entity = { InType: '', Status: 0 }
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })
@@ -127,6 +127,19 @@ export default {
             this.$message.error(resJson.Msg)
           }
         })
+      })
+    },
+    handleAudit(id, type) {
+      this.loading = true
+      this.$http.post('/TD/TD_InStorage/Audit', { Id: id, AuditType: type }).then(resJson => {
+        this.loading = false
+        if (resJson.Success) {
+          this.$message.success('操作成功!')
+          this.visible = false
+          this.parentObj.getDataList()
+        } else {
+          this.$message.error(resJson.Msg)
+        }
       })
     }
   }

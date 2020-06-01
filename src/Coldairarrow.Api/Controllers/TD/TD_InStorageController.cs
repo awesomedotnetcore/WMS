@@ -1,7 +1,10 @@
 ﻿using Coldairarrow.Business.TD;
 using Coldairarrow.Entity.TD;
+using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
+using Elasticsearch.Net;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -78,6 +81,17 @@ namespace Coldairarrow.Api.Controllers.TD
             await _tD_InStorageBus.DeleteDataAsync(ids);
         }
 
+        [HttpPost]
+        public async Task Audit(AuditDTO audit)
+        { 
+            audit.StorId = _Op.Property.DefaultStorageId;
+            audit.AuditUserId = _Op.UserId;
+            audit.AuditTime = DateTime.Now;
+            if (audit.AuditType == AuditType.Approve)
+                await _tD_InStorageBus.Approve(audit);
+            else
+                await _tD_InStorageBus.Reject(audit);
+        }
         #endregion
     }
 }
