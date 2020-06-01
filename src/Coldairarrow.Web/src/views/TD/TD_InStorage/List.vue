@@ -136,8 +136,12 @@ export default {
           this.pagination = pagination
         })
     },
-    onSelectChange(selectedRowKeys) {
-      this.selectedRowKeys = selectedRowKeys
+    onSelectChange(selectedRowKeys, selectedRows) {
+      var ids = []
+      selectedRows.forEach((val, index, arr) => {
+        if (val.Status === 0) ids.push(val.Id)
+      })
+      this.selectedRowKeys = ids
     },
     onInStorTimeChange(dates, dateStrings) {
       this.queryParam.InStorTimeStart = dateStrings[0]
