@@ -1,15 +1,15 @@
 ﻿<template>
   <div>
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button type="primary" icon="minus" @click="handleDelete(selectedRows)" :disabled="!hasSelected()">删除</a-button>
+      <a-button :disabled="disabled" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
+      <a-button type="primary" icon="minus" @click="handleDelete(selectedRows)" :disabled="!hasSelected() || disabled">删除</a-button>
     </div>
     <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :pagination="false" :dataSource="data" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="handleEdit(record)">编辑</a>
+          <a :disabled="disabled" @click="handleEdit(record)">编辑</a>
           <a-divider type="vertical" />
-          <a @click="handleDelete([record])">删除</a>
+          <a :disabled="disabled" @click="handleDelete([record])">删除</a>
         </template>
       </span>
     </a-table>
@@ -56,7 +56,8 @@ export default {
     EditForm
   },
   props: {
-    value: { type: Array, required: true }
+    value: { type: Array, required: true },
+    disabled: { type: Boolean, required: false, default: false }
   },
   data() {
     return {

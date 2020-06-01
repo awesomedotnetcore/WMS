@@ -63,5 +63,15 @@ namespace Coldairarrow.Business.IT
 
             return (from u in total where tackList.Contains(u.Id) select u).ToList();
         }
+
+        public async Task AddDataAsync(List<IT_LocalMaterial> list)
+        {
+            await InsertAsync(list);
+        }
+
+        public async Task UpdateDataAsync(List<IT_LocalMaterial> list)
+        {
+            await UpdateAsync(list);
+        }
     }
 }

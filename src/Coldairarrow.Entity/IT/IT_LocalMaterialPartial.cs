@@ -19,7 +19,7 @@ namespace Coldairarrow.Entity.IT
         [ForeignKey(nameof(StorId))]
         public PB_Storage Storage { set; get; }
 
-        [ForeignKey(nameof(ZonedId))]
+        [ForeignKey(nameof(ZoneId))]
         public PB_TrayZone TrayZone { set; get; }
 
         [ForeignKey(nameof(TrayId))]

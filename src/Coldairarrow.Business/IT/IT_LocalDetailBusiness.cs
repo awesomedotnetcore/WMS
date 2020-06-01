@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Coldairarrow.Business.IT
 {
-    public class IT_LocalDetailBusiness : BaseBusiness<IT_LocalDetail>, IIT_LocalDetailBusiness, ITransientDependency
+    public partial class IT_LocalDetailBusiness : BaseBusiness<IT_LocalDetail>, IIT_LocalDetailBusiness, ITransientDependency
     {
         public IT_LocalDetailBusiness(IRepository repository)
             : base(repository)

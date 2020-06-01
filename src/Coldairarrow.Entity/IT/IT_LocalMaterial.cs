@@ -35,7 +35,7 @@ namespace Coldairarrow.Entity.IT
         /// <summary>
         /// 托盘分区ID
         /// </summary>
-        public String ZonedId { get; set; }
+        public String ZoneId { get; set; }
 
         /// <summary>
         /// 物料ID
@@ -58,19 +58,9 @@ namespace Coldairarrow.Entity.IT
         public String BarCode { get; set; }
 
         /// <summary>
-        /// 单价
-        /// </summary>
-        public Double? Price { get; set; }
-
-        /// <summary>
         /// 数量
         /// </summary>
         public Double Num { get; set; }
-
-        /// <summary>
-        /// 总额
-        /// </summary>
-        public Double? TotalAmt { get; set; }
 
     }
 }

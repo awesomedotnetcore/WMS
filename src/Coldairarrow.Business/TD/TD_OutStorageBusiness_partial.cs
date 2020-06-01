@@ -19,11 +19,15 @@ namespace Coldairarrow.Business.TD
         {
             var q = GetIQueryable()
                 .Include(i => i.Customer)
+                .Include(i => i.Address)
                 .Include(i => i.CreateUser)
                 .Include(i => i.AuditUser)
                 .Where(w => w.StorageId == input.StorId);
             var where = LinqHelper.True<TD_OutStorage>();
             var search = input.Search;
+
+            if (search.Status > -1) 
+                where = where.And(p => p.Status == search.Status);
 
             if (!search.Code.IsNullOrEmpty())
                 where = where.And(w => w.Code.Contains(search.Code));
@@ -61,6 +65,38 @@ namespace Coldairarrow.Business.TD
             data.OutNum = data.OutStorDetails.Sum(s => s.LocalNum);
             data.TotalAmt = data.OutStorDetails.Sum(s => s.TotalAmt);
             await InsertAsync(data);
+        }
+
+        public async Task UpdateDataAsync(TD_OutStorage data)
+        {
+            var curDetail = data.OutStorDetails;
+            var listDetail = await Service.GetIQueryable<TD_OutStorDetail>().Where(w => w.OutStorId == data.Id).ToListAsync();
+
+            var curIds = curDetail.Select(s => s.Id).ToList();
+            var dbIds = listDetail.Select(s => s.Id).ToList();
+            var deleteIds = dbIds.Except(curIds).ToList();
+            var detailSvc = _ServiceProvider.GetRequiredService<ITD_OutStorDetailBusiness>();
+            if (deleteIds.Count > 0)
+                await detailSvc.DeleteDataAsync(deleteIds);
+
+            var addIds = curIds.Except(dbIds).ToList();
+            if (addIds.Count > 0)
+            {
+                var listAdds = curDetail.Where(w => addIds.Contains(w.Id)).ToList();
+                await detailSvc.AddDataAsync(listAdds);
+            }
+
+            var updateIds = curIds.Except(addIds).ToList();
+            if (updateIds.Count > 0)
+            {
+                var listUpdates = curDetail.Where(w => updateIds.Contains(w.Id)).ToList();
+                await detailSvc.UpdateDataAsync(listUpdates);
+            }
+
+            data.OutNum = data.OutStorDetails.Sum(s => s.LocalNum);
+            data.TotalAmt = data.OutStorDetails.Sum(s => s.TotalAmt);
+
+            await UpdateAsync(data);
         }
     }
 }
