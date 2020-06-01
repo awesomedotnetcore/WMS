@@ -9,5 +9,8 @@ namespace Coldairarrow.Business.PB
     public partial interface IPB_TrayBusiness
     {
         Task<List<PB_Tray>> GetQueryData(TraySelectQueryDTO search);
+
+        Task AddDataAsync(List<PB_Tray> list);
+        Task UpdateDataAsync(List<PB_Tray> list);
     }
 }

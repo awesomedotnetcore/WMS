@@ -41,11 +41,13 @@
           <a @click="handleEdit(record.Id)">编辑</a>
           <a-divider type="vertical" />
           <a @click="handleDelete([record.Id])">删除</a>
+          <a-divider type="vertical" />
+          <a @click="handleShow(record.Id)">审核</a>
         </template>
       </span>
     </a-table>
 
-    <edit-form ref="editForm" :parentObj="this"></edit-form>
+    <edit-form ref="editForm" :disabled="disabled" :parentObj="this"></edit-form>
   </a-card>
 </template>
 
@@ -101,7 +103,8 @@ export default {
       loading: false,
       columns,
       queryParam: {},
-      selectedRowKeys: []
+      selectedRowKeys: [],
+      disabled: false
     }
   },
   methods: {
@@ -144,9 +147,15 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
+      this.disabled = false
       this.$refs.editForm.openForm()
     },
     handleEdit(id) {
+      this.disabled = false
+      this.$refs.editForm.openForm(id)
+    },
+    handleShow(id) {
+      this.disabled = true
       this.$refs.editForm.openForm(id)
     },
     handleDelete(ids) {

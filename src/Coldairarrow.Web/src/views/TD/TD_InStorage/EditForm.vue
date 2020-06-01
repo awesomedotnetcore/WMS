@@ -4,42 +4,44 @@
       <a-row>
         <a-col :span="8">
           <a-form-model-item label="入库单号" prop="Code">
-            <a-input v-model="entity.Code" :disabled="$para('GenerateInStorageCode')=='1'" placeholder="系统自动生成" autocomplete="off" />
+            <a-input v-model="entity.Code" :disabled="$para('GenerateInStorageCode')=='1' || disabled" placeholder="系统自动生成" autocomplete="off" />
           </a-form-model-item>
         </a-col>
         <a-col :span="8">
           <a-form-model-item label="入库时间" prop="InStorTime">
-            <a-date-picker v-model="entity.InStorTime" />
+            <a-date-picker v-model="entity.InStorTime" :disabled="disabled" />
           </a-form-model-item>
         </a-col>
         <a-col :span="8">
           <a-form-model-item label="入库类型" prop="InType">
-            <enum-select code="InStorageType" v-model="entity.InType"></enum-select>
+            <enum-select code="InStorageType" v-model="entity.InType" :disabled="disabled"></enum-select>
           </a-form-model-item>
         </a-col>
       </a-row>
       <a-row>
         <a-col :span="8">
           <a-form-model-item label="关联单号" prop="RefCode">
-            <a-input v-model="entity.RefCode" autocomplete="off" />
+            <a-input v-model="entity.RefCode" autocomplete="off" :disabled="disabled" />
           </a-form-model-item>
         </a-col>
         <a-col :span="8">
           <a-form-model-item label="供应商" prop="SupId">
-            <sup-select v-model="entity.SupId"></sup-select>
+            <sup-select v-model="entity.SupId" :disabled="disabled"></sup-select>
           </a-form-model-item>
         </a-col>
         <a-col :span="8">
           <a-form-model-item label="备注" prop="Remarks">
-            <a-input v-model="entity.Remarks" />
+            <a-input v-model="entity.Remarks" :disabled="disabled" />
           </a-form-model-item>
         </a-col>
       </a-row>
     </a-form-model>
-    <list-detail v-model="listDetail"></list-detail>
+    <list-detail v-model="listDetail" :disabled="disabled"></list-detail>
     <div :style="{ position:'absolute',right:0,bottom:0,width:'100%',borderTop:'1px solid #e9e9e9',padding:'10px 16px',background:'#fff',textAlign:'right',zIndex: 1}">
-      <a-button :style="{ marginRight: '8px' }" @click="()=>{this.visible=false}">取消</a-button>
-      <a-button type="primary" @click="handleSubmit">确定</a-button>
+      <a-button :disabled="disabled" :style="{ marginRight: '8px' }" @click="()=>{this.visible=false}">取消</a-button>
+      <a-button :disabled="disabled" type="danger" :style="{ marginRight: '8px' }" @click="()=>{this.visible=false}">通过</a-button>
+      <a-button :disabled="disabled" type="danger" :style="{ marginRight: '8px' }" @click="()=>{this.visible=false}">驳回</a-button>
+      <a-button :disabled="disabled" type="primary" @click="handleSubmit">保存</a-button>
     </div>
   </a-drawer>
 </template>
@@ -58,7 +60,8 @@ export default {
     ListDetail
   },
   props: {
-    parentObj: { type: Object, required: true }
+    parentObj: { type: Object, required: true },
+    disabled: { type: Boolean, required: false, default: false }
   },
   data() {
     return {
