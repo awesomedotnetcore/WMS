@@ -33,23 +33,17 @@ export default {
   },
   watch: {
     value(value) {
-      this.curValue = value
-      if (this.curValue !== '' && this.curValue !== undefined && this.curValue !== null) {
-        this.reload('')
-      }
+      this.getCustomerData(value)      
     }
   },
-  mounted() {
-    this.curValue = this.value
-    this.getCustomerData()
-  },
   methods: {
-    getCustomerData() {
-        /*this.$http
-        .post('/PB/PB_Customer/QueryAllData')
-        .then(resJson => {
-          this.customerList = resJson.Data          
-        })*/
+    getCustomerData(cid) {
+      if (cid !== '' && cid !== undefined && cid !== null) {
+        this.$http.post('/PB/PB_Customer/GetTheData', { id: cid }).then(resJson => {
+          this.customerList.push(resJson.Data)
+          this.curValue = this.value
+        })
+      }
     },
     handleSelected(val) {
       this.$emit('input', val)

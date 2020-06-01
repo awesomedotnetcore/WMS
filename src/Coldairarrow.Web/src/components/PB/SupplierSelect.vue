@@ -32,23 +32,17 @@ export default {
   },
   watch: {
     value(value) {
-      this.curValue = value
-      if (this.curValue !== '' && this.curValue !== undefined && this.curValue !== null) {
-        this.reload('')
-      }
+      this.getSupplierData(value)
     }
   },
-  mounted() {
-    this.curValue = this.value
-    this.getSupplierData()
-  },
   methods: {
-    getSupplierData() {
-        /*this.$http
-        .post('/PB/PB_Supplier/QueryAllData')
-        .then(resJson => {
-          this.supplierList = resJson.Data          
-        })*/
+    getSupplierData(cid) {
+      if (cid !== '' && cid !== undefined && cid !== null) {
+        this.$http.post('/PB/PB_Supplier/GetTheData', { id: cid }).then(resJson => {
+          this.supplierList.push(resJson.Data)
+          this.curValue = this.value
+        })
+      }
     },
     handleSelected(val) {
       this.$emit('input', val)
