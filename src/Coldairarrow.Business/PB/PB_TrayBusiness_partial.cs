@@ -42,5 +42,15 @@ namespace Coldairarrow.Business.PB
 
             return await q.Where(where).OrderBy(o => o.Name).Take(search.Take).ToListAsync();
         }
+
+        public async Task AddDataAsync(List<PB_Tray> list)
+        {
+            await InsertAsync(list);
+        }
+
+        public async Task UpdateDataAsync(List<PB_Tray> list)
+        {
+            await UpdateAsync(list);
+        }
     }
 }

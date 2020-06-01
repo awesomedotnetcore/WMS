@@ -40,7 +40,7 @@ namespace Coldairarrow.Entity.IT
         /// <summary>
         /// 托盘分区ID
         /// </summary>
-        public String ZonedId { get; set; }
+        public String ZoneId { get; set; }
 
         /// <summary>
         /// 物料ID
@@ -65,7 +65,7 @@ namespace Coldairarrow.Entity.IT
         /// <summary>
         /// 入库时间
         /// </summary>
-        public String InputTime { get; set; }
+        public DateTime InputTime { get; set; }
 
         /// <summary>
         /// 总额
