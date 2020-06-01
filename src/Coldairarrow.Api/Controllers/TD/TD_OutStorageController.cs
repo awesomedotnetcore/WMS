@@ -78,23 +78,6 @@ namespace Coldairarrow.Api.Controllers.TD
                 }
                 await _tD_OutStorageBus.UpdateDataAsync(data);
             }
-            //if (data.Id.IsNullOrEmpty())
-            //{
-            //    InitEntity(data);
-            //    data.StorageId = _Op.Property.DefaultStorageId;
-            //    foreach (var item in data.OutStorDetails)
-            //    {
-            //        InitEntity(item);
-            //        item.StorId = data.StorageId;
-            //        item.TotalAmt = item.Price * item.LocalNum;
-            //    }
-            //    await _tD_OutStorageBus.AddDataAsync(data);
-            //}
-            //else
-            //{
-            //    await _tD_OutStorageBus.UpdateDataAsync(data);
-            //}
-
         }
 
         [HttpPost]

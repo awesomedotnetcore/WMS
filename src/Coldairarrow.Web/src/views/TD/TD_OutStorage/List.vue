@@ -1,41 +1,50 @@
 ﻿<template>
   <a-card :bordered="false">
-    <div class="table-operator">
+    
+
+    <!-- <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button
-        type="primary"
+      <a-button type="primary"
         icon="minus"
         @click="handleDelete(selectedRowKeys)"
         :disabled="!hasSelected()"
         :loading="loading"
       >删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
-    </div>
+    </div> -->
 
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
+          <a-col :md="3" :sm="24">
+            <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
+            <a-button type="primary"
+              icon="minus"
+              @click="handleDelete(selectedRowKeys)"
+              :disabled="!hasSelected()"
+              :loading="loading"
+            >删除</a-button>
+            <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
+          </a-col>
+ 
+              
           <a-col :md="4" :sm="24">
-            <a-form-item label="查询类别">
-              <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="StorageId">仓库ID</a-select-option>
-                <a-select-option key="Code">出库单号</a-select-option>
-                <a-select-option key="OutType">出库类型(枚举)</a-select-option>
-                <a-select-option key="RefCode">关联单号</a-select-option>
-                <a-select-option key="EquId">设备ID</a-select-option>
-                <a-select-option key="CusId">客户ID</a-select-option>
-                <a-select-option key="AddrId">目标地址ID</a-select-option>
-                <a-select-option key="Remarks">备注</a-select-option>
-                <a-select-option key="AuditUserId">审核人ID</a-select-option>
-              </a-select>
+            <a-form-item>
+              <enum-select code="OutStorageType" v-model="queryParam.OutType"></enum-select>
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="关键字" />
+              <a-input v-model="queryParam.Code" placeholder="出库单号" />
             </a-form-item>
           </a-col>
-          <a-col :md="6" :sm="24">
+          <a-col :md="3" :sm="24">
+            <a-form-item>
+              <a-range-picker @change="onOutStorTimeChange" />
+            </a-form-item>
+          </a-col>
+
+          <a-col :md="5" :sm="24">
             <a-button type="primary" @click="getDataList">查询</a-button>
             <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
           </a-col>
@@ -55,6 +64,10 @@
       :bordered="true"
       size="small"
     >
+      <template slot="OutType" slot-scope="text">
+        <enum-name code="OutStorageType" :value="text"></enum-name>
+      </template>
+
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -69,29 +82,49 @@
 </template>
 
 <script>
+import moment from 'moment'
 import EditForm from './EditForm'
+import EnumName from '../../../components/BaseEnum/BaseEnumName'
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
+
+const filterDate = (value, row, index) => {
+  return moment(value).format('YYYY-MM-DD')
+}
+
+const filterStatus = (value, row, index) => {
+  var status = '待审核'
+  switch (value) {
+    case 0: status = '待审核'; break
+    case 1: status = '审核通过'; break
+    case 2: status = '审核失败'; break
+    default: break
+  }
+  return status
+}
 
 const columns = [
   // { title: '仓库ID', dataIndex: 'StorageId', width: '10%' },
-  { title: '出库单号', dataIndex: 'Code', width: '10%' },
-  { title: '出库时间', dataIndex: 'OutTime', width: '10%' },
-  { title: '出库类型', dataIndex: 'OutType', width: '10%' },
+  { title: '出库单号', dataIndex: 'Code', width: '11%' },
+  { title: '出库时间', dataIndex: 'OutTime', width: '10%' , customRender: filterDate },
+  { title: '出库类型', dataIndex: 'OutType', width: '8%' , scopedSlots: { customRender: 'OutType' } },
   // { title: '关联单号', dataIndex: 'RefCode', width: '10%' },
-   { title: '出库数量', dataIndex: 'OutNum', width: '10%' },
+  { title: '出库数量', dataIndex: 'OutNum', width: '8%' },
   // { title: '总金额', dataIndex: 'TotalAmt', width: '10%' },
   // { title: '设备ID', dataIndex: 'EquId', width: '10%' },
-  { title: '状态', dataIndex: 'Status', width: '10%' },
-   { title: '客户ID', dataIndex: 'CusId', width: '10%' },
-  // { title: '目标地址ID', dataIndex: 'AddrId', width: '10%' },
+  { title: '状态', dataIndex: 'Status', width: '6%', customRender: filterStatus },
+  { title: '客户', dataIndex: 'Customer.Name', width: '10%' },
+  { title: '客户地址', dataIndex: 'Address.Address', width: '10%' },
   // { title: '备注', dataIndex: 'Remarks', width: '10%' },
-  { title: '制单人', dataIndex: 'CreatorId', width: '10%' },
-  { title: '审核人ID', dataIndex: 'AuditUserId', width: '10%' },
+  { title: '制单人', dataIndex: 'CreateUser.RealName', width: '10%' },
+  { title: '审核人', dataIndex: 'AuditUser.RealName', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
-    EditForm
+    EditForm,
+    EnumName, 
+    EnumSelect,
   },
   mounted() {
     this.getDataList()
@@ -172,7 +205,11 @@ export default {
           })
         }
       })
-    }
+    },
+    onOutStorTimeChange(dates, dateStrings) {
+      this.queryParam.OutStorTimeStart = dateStrings[0]
+      this.queryParam.OutStorTimeEnd = dateStrings[1]
+    },
   }
 }
 </script>

@@ -91,6 +91,7 @@ export default {
   },
   mounted() {
     this.data = [...this.value]
+    debugger
     this.getCurStorage()
   },  
   methods: {
