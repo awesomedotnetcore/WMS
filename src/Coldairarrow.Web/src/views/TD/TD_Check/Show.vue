@@ -40,7 +40,7 @@
         </a-page-header>
         <a-divider>物料盘差清单</a-divider>
         <a-card :bordered="false">
-          <check-data ref="checkData"></check-data>
+          <check-data ref="checkData" :checkId="entity.Id"></check-data>
         </a-card>
       </div>
     </a-spin>

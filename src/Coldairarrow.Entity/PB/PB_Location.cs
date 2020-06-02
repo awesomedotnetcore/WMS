@@ -9,7 +9,7 @@ namespace Coldairarrow.Entity.PB
     /// 货位管理
     /// </summary>
     [Table("PB_Location")]
-    public class PB_Location
+    public partial class PB_Location
     {
 
         /// <summary>
@@ -37,30 +37,22 @@ namespace Coldairarrow.Entity.PB
         /// 仓库ID
         /// </summary>
         public String StorId { get; set; }
-        [ForeignKey(nameof(StorId))]
-        public PB_Storage PB_Storage { get; set; }
-
+        
         /// <summary>
         /// 货区ID
         /// </summary>
         public String AreaId { get; set; }
-        [ForeignKey(nameof(AreaId))]
-        public PB_StorArea PB_StorArea { get; set; }
-
+        
         /// <summary>
         /// 巷道ID
         /// </summary>
         public String LanewayId { get; set; }
-        [ForeignKey(nameof(LanewayId))]
-        public PB_Laneway PB_Laneway { get; set; }
-
+        
         /// <summary>
         /// 货架ID
         /// </summary>
         public String RackId { get; set; }
-        [ForeignKey(nameof(RackId))]
-        public PB_Rack PB_Rack { get; set; }
-
+        
         /// <summary>
         /// 剩余容量
         /// </summary>
@@ -100,8 +92,5 @@ namespace Coldairarrow.Entity.PB
         /// 删除状态：0=未删除；1＝已删除；
         /// </summary>
         public Boolean Deleted { get; set; }
-
-        public List<PB_LocalTray> PB_LocalTrays { get; set; }
-
     }
 }

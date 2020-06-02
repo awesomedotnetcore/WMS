@@ -8,31 +8,31 @@ using System.Threading.Tasks;
 namespace Coldairarrow.Api.Controllers.TD
 {
     [Route("/TD/[controller]/[action]")]
-    public partial class TD_CheckDataController : BaseApiController
+    public class TD_BadDetailController : BaseApiController
     {
         #region DI
 
-        public TD_CheckDataController(ITD_CheckDataBusiness tD_CheckDataBus)
+        public TD_BadDetailController(ITD_BadDetailBusiness tD_BadDetailBus)
         {
-            _tD_CheckDataBus = tD_CheckDataBus;
+            _tD_BadDetailBus = tD_BadDetailBus;
         }
 
-        ITD_CheckDataBusiness _tD_CheckDataBus { get; }
+        ITD_BadDetailBusiness _tD_BadDetailBus { get; }
 
         #endregion
 
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<TD_CheckData>> GetDataList(PageInput<ConditionDTO> input)
+        public async Task<PageResult<TD_BadDetail>> GetDataList(PageInput<ConditionDTO> input)
         {
-            return await _tD_CheckDataBus.GetDataListAsync(input);
+            return await _tD_BadDetailBus.GetDataListAsync(input);
         }
 
         [HttpPost]
-        public async Task<TD_CheckData> GetTheData(IdInputDTO input)
+        public async Task<TD_BadDetail> GetTheData(IdInputDTO input)
         {
-            return await _tD_CheckDataBus.GetTheDataAsync(input.id);
+            return await _tD_BadDetailBus.GetTheDataAsync(input.id);
         }
 
         #endregion
@@ -40,24 +40,24 @@ namespace Coldairarrow.Api.Controllers.TD
         #region 提交
 
         [HttpPost]
-        public async Task SaveData(TD_CheckData data)
+        public async Task SaveData(TD_BadDetail data)
         {
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
 
-                await _tD_CheckDataBus.AddDataAsync(data);
+                await _tD_BadDetailBus.AddDataAsync(data);
             }
             else
             {
-                await _tD_CheckDataBus.UpdateDataAsync(data);
+                await _tD_BadDetailBus.UpdateDataAsync(data);
             }
         }
 
         [HttpPost]
         public async Task DeleteData(List<string> ids)
         {
-            await _tD_CheckDataBus.DeleteDataAsync(ids);
+            await _tD_BadDetailBus.DeleteDataAsync(ids);
         }
 
         #endregion

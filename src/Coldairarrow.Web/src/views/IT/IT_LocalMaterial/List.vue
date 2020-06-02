@@ -8,7 +8,7 @@
               <a-input v-model="queryParam.LocalName" placeholder="货位" />
             </a-form-item>
           </a-col>
-          <a-col :md="2" :sm="24">
+          <a-col v-if="storage.IsTray" :md="2" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.TrayName" placeholder="托盘" />
             </a-form-item>
@@ -40,7 +40,24 @@
 const filterCode = (value, row, index) => {
   return value.Name + '(' + value.Code + ')'
 }
-const columns = [
+const columns1 = [
+  { title: '货位', dataIndex: 'Location', customRender: filterCode, width: '15%' },
+  { title: '物料', dataIndex: 'Material', customRender: filterCode, width: '15%' },
+  { title: '单位', dataIndex: 'Measure.Name', width: '10%' },
+  { title: '批次号', dataIndex: 'BatchNo', width: '15%' },
+  { title: '条码', dataIndex: 'BarCode', width: '15%' },
+  { title: '数量', dataIndex: 'Num', width: '10%' }
+]
+const columns2 = [
+  { title: '货位', dataIndex: 'Location', customRender: filterCode, width: '15%' },
+  { title: '托盘', dataIndex: 'Tray', customRender: filterCode, width: '15%' },
+  { title: '物料', dataIndex: 'Material', customRender: filterCode, width: '15%' },
+  { title: '单位', dataIndex: 'Measure.Name', width: '10%' },
+  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
+  { title: '条码', dataIndex: 'BarCode', width: '15%' },
+  { title: '数量', dataIndex: 'Num', width: '10%' }
+]
+const columns3 = [
   { title: '货位', dataIndex: 'Location', customRender: filterCode, width: '15%' },
   { title: '托盘', dataIndex: 'Tray', customRender: filterCode, width: '15%' },
   { title: '托盘分区', dataIndex: 'TrayZone', customRender: filterCode, width: '15%' },
@@ -56,9 +73,11 @@ export default {
   },
   mounted() {
     this.getDataList()
+    this.getCurStorage()
   },
   data() {
     return {
+      storage: {},
       data: [],
       pagination: {
         current: 1,
@@ -68,11 +87,24 @@ export default {
       filters: {},
       sorter: { field: 'Id', order: 'asc' },
       loading: false,
-      columns,
+      columns: columns1,
       queryParam: {}
     }
   },
   methods: {
+    getCurStorage() {
+      this.$http.get('/PB/PB_Storage/GetCurStorage')
+        .then(resJson => {
+          this.storage = resJson.Data
+          if (this.storage.IsTray && this.storage.IsZone) {
+            this.columns = columns3
+          } else if (this.storage.IsTray) {
+            this.columns = columns2
+          } else {
+            this.columns = columns1
+          }
+        })
+    },
     getDataList() {
       this.selectedRowKeys = []
 

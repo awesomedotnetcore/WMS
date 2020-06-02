@@ -1,4 +1,5 @@
 ﻿using Coldairarrow.Entity.TD;
+using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using EFCore.Sharding;
 using LinqKit;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Coldairarrow.Business.TD
 {
-    public partial class TD_CheckDataBusiness : BaseBusiness<TD_CheckData>, ITD_CheckDataBusiness, ITransientDependency
+    public partial class TD_CheckDataBusiness
     {
         public async Task ClearDataAsync(string checkId)
         {
@@ -20,6 +21,44 @@ namespace Coldairarrow.Business.TD
         public async Task PushDataAsync(List<TD_CheckData> data)
         {
             await base.InsertAsync(data);
+        }
+
+        public async Task<PageResult<TDCheckDataDTO>> QueryDataListAsync(PageInput<TDCheckDataConditionDTO> input)
+        {
+            var q = GetIQueryable();
+            q=q.Include(i => i.Storage).Include(i => i.Material)
+                .Include(i => i.Location)
+                    .ThenInclude(i=>i.PB_Laneway)
+                .Include(i => i.Location)
+                    .ThenInclude(i => i.PB_Rack)
+                .Include(i => i.Location)
+                    .ThenInclude(i => i.PB_StorArea);
+
+            var where = LinqHelper.True<TD_CheckData>();
+            var search = input.Search;
+
+            where = where.And(p => p.CheckId == search.CheckId);
+
+            return await q.Where(where).Select(
+                u => new TDCheckDataDTO()
+                {
+                    CheckId = u.CheckId,
+                    CheckNum = u.CheckNum,
+                    DisNum = u.DisNum,
+                    Id = u.Id,
+                    LocationCode = u.Location.Code,
+                    LocationName = u.Location.Name,
+                    LanewayName = u.Location.PB_Laneway.Name,
+                    LocalNum = u.LocalNum,
+                    MaterialId = u.MaterialId,
+                    MaterialName = u.Material.Name,
+                    MaterialCode = u.Material.Code,
+                    BatchNo = u.BatchNo,
+                    RackName = u.Location.PB_Rack.Name,
+                    Remarks = u.Location.Remarks,
+                    AreaName = u.Location.PB_StorArea.Name,
+                })
+                .GetPageResultAsync(input);
         }
     }
 }

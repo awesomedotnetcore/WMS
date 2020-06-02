@@ -2,13 +2,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Coldairarrow.Entity.IT
+namespace Coldairarrow.Entity.TD
 {
     /// <summary>
-    /// 库存明细表
+    /// 报损表
     /// </summary>
-    [Table("IT_LocalDetail")]
-    public partial class IT_LocalDetail
+    [Table("TD_Bad")]
+    public partial class TD_Bad
     {
 
         /// <summary>
@@ -18,59 +18,64 @@ namespace Coldairarrow.Entity.IT
         public String Id { get; set; }
 
         /// <summary>
+        /// 报损单号
+        /// </summary>
+        public String Code { get; set; }
+
+        /// <summary>
         /// 仓库ID
         /// </summary>
         public String StorId { get; set; }
 
         /// <summary>
-        /// 入库ID
+        /// 报损时间
         /// </summary>
-        public String InStorId { get; set; }
+        public DateTime BadTime { get; set; }
 
         /// <summary>
-        /// 货位ID
+        /// 报损类型(枚举)
         /// </summary>
-        public String LocalId { get; set; }
+        public String Type { get; set; }
 
         /// <summary>
-        /// 托盘号ID
+        /// 关联单号
         /// </summary>
-        public String TrayId { get; set; }
+        public String RefCode { get; set; }
 
         /// <summary>
-        /// 托盘分区ID
+        /// 报损数量
         /// </summary>
-        public String ZoneId { get; set; }
+        public Double BadNum { get; set; }
 
         /// <summary>
-        /// 物料ID
+        /// 总金额
         /// </summary>
-        public String MaterialId { get; set; }
+        public Double? TotalAmt { get; set; }
 
         /// <summary>
-        /// 单位ID
+        /// 设备ID
         /// </summary>
-        public String MeasureId { get; set; }
+        public String EquId { get; set; }
 
         /// <summary>
-        /// 批次号
+        /// 状态
         /// </summary>
-        public String BatchNo { get; set; }
+        public Int32 Status { get; set; }
 
         /// <summary>
-        /// 条码
+        /// 备注
         /// </summary>
-        public String BarCode { get; set; }
+        public String Remarks { get; set; }
 
         /// <summary>
-        /// 入库时间
+        /// 审核人ID
         /// </summary>
-        public DateTime InTime { get; set; }
+        public String AuditUserId { get; set; }
 
         /// <summary>
-        /// 总额
+        /// 审核时间
         /// </summary>
-        public Double? Amount { get; set; }
+        public DateTime? AuditeTime { get; set; }
 
         /// <summary>
         /// 创建时间
@@ -78,24 +83,14 @@ namespace Coldairarrow.Entity.IT
         public DateTime CreateTime { get; set; }
 
         /// <summary>
-        /// 创建人
+        /// 创建人ID
         /// </summary>
         public String CreatorId { get; set; }
-
-        /// <summary>
-        /// 单价
-        /// </summary>
-        public Double? Price { get; set; }
 
         /// <summary>
         /// 删除状态：0=未删除；1＝已删除；
         /// </summary>
         public Boolean Deleted { get; set; }
-
-        /// <summary>
-        /// 数量
-        /// </summary>
-        public Double? Num { get; set; }
 
     }
 }

@@ -2,20 +2,25 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Coldairarrow.Entity.IT
+namespace Coldairarrow.Entity.TD
 {
     /// <summary>
-    /// 库存明细表
+    /// 报损明细
     /// </summary>
-    [Table("IT_LocalDetail")]
-    public partial class IT_LocalDetail
+    [Table("TD_BadDetail")]
+    public partial class TD_BadDetail
     {
 
         /// <summary>
-        /// Id
+        /// ID
         /// </summary>
         [Key, Column(Order = 1)]
         public String Id { get; set; }
+
+        /// <summary>
+        /// 报损ID
+        /// </summary>
+        public String BadId { get; set; }
 
         /// <summary>
         /// 仓库ID
@@ -23,17 +28,12 @@ namespace Coldairarrow.Entity.IT
         public String StorId { get; set; }
 
         /// <summary>
-        /// 入库ID
+        /// 原货位iD
         /// </summary>
-        public String InStorId { get; set; }
+        public String FromLocalId { get; set; }
 
         /// <summary>
-        /// 货位ID
-        /// </summary>
-        public String LocalId { get; set; }
-
-        /// <summary>
-        /// 托盘号ID
+        /// 原托盘ID
         /// </summary>
         public String TrayId { get; set; }
 
@@ -43,14 +43,14 @@ namespace Coldairarrow.Entity.IT
         public String ZoneId { get; set; }
 
         /// <summary>
+        /// 目标货位ID
+        /// </summary>
+        public String ToLocalId { get; set; }
+
+        /// <summary>
         /// 物料ID
         /// </summary>
         public String MaterialId { get; set; }
-
-        /// <summary>
-        /// 单位ID
-        /// </summary>
-        public String MeasureId { get; set; }
 
         /// <summary>
         /// 批次号
@@ -63,9 +63,19 @@ namespace Coldairarrow.Entity.IT
         public String BarCode { get; set; }
 
         /// <summary>
-        /// 入库时间
+        /// 残余值
         /// </summary>
-        public DateTime InTime { get; set; }
+        public Double? Surplus { get; set; }
+
+        /// <summary>
+        /// 报损数量
+        /// </summary>
+        public Double LocalNum { get; set; }
+
+        /// <summary>
+        /// 单价
+        /// </summary>
+        public Double? Price { get; set; }
 
         /// <summary>
         /// 总额
@@ -78,24 +88,14 @@ namespace Coldairarrow.Entity.IT
         public DateTime CreateTime { get; set; }
 
         /// <summary>
-        /// 创建人
+        /// 创建人ID
         /// </summary>
         public String CreatorId { get; set; }
-
-        /// <summary>
-        /// 单价
-        /// </summary>
-        public Double? Price { get; set; }
 
         /// <summary>
         /// 删除状态：0=未删除；1＝已删除；
         /// </summary>
         public Boolean Deleted { get; set; }
-
-        /// <summary>
-        /// 数量
-        /// </summary>
-        public Double? Num { get; set; }
 
     }
 }
