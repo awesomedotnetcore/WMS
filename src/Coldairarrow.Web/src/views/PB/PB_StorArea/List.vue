@@ -24,7 +24,7 @@
             <a-form-item>
               <a-input v-model="queryParam.Name" placeholder="名称" />
             </a-form-item>
-          </a-col> 
+          </a-col>
           <a-col :md="6" :sm="24">
             <a-button type="primary" @click="getDataList">查询</a-button>
             <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
@@ -47,12 +47,8 @@
     >
       <span slot="IsCache" slot-scope="text, record">
         <template>
-          <a-tag v-if="record.IsCache===false" color="red">
-          否
-          </a-tag>
-          <a-tag v-else color="green">
-          是
-          </a-tag>
+          <a-tag v-if="record.IsCache===false" color="red">否</a-tag>
+          <a-tag v-else color="green">是</a-tag>
         </template>
       </span>
 
@@ -76,10 +72,10 @@
 import EditForm from './EditForm'
 import MaterialList from '../PB_AreaMaterial/List'
 
-const filterYesOrNo = (value, row, index) => {
-  if (value) return '是'
-  else return '否'
-}
+// const filterYesOrNo = (value, row, index) => {
+//   if (value) return '是'
+//   else return '否'
+// }
 
 const columns = [
   { title: '仓库', dataIndex: 'PB_Storage.Name', width: '10%' },
@@ -92,7 +88,7 @@ const columns = [
 export default {
   components: {
     EditForm,
-    MaterialList,
+    MaterialList
   },
   mounted() {
     this.getDataList()

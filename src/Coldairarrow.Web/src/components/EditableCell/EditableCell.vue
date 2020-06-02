@@ -1,8 +1,8 @@
 <template>
   <div class="editable-cell">
     <div v-if="editable" class="editable-cell-input-wrapper">
-      <a-input v-if="type != 'number'" :type="type" style="width: 70%" size="small" :value="value" @change="handleChange" @pressEnter="check" />
-      <a-input-number v-else style="width: 70%" size="small" :value="value" @change="handleChange" @pressEnter="check" />
+      <a-input v-if="type != 'number'" :type="type" style="width: 70%" size="small" :value="value" @change="handleChange" @pressEnter="check" v-bind="$attrs" />
+      <a-input-number v-else style="width: 70%" size="small" :value="value" @change="handleChange" @pressEnter="check" v-bind="$attrs" />
       <a-icon type="check" class="editable-cell-icon-check" @click="check" />
     </div>
     <div v-else class="editable-cell-text-wrapper">

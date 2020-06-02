@@ -49,6 +49,20 @@ namespace Coldairarrow.Business.TD
             return await q.ToListAsync();
         }
 
+        public async Task<List<TD_MoveDetail>> GetDataListByMoveIdsAsync(List<string> moveIds)
+        {
+            var q = GetIQueryable();
+            q = q.Include(i => i.PB_Material);
+
+            //筛选
+            if (moveIds.Count > 0)
+            {
+                q = q.Where(w => moveIds.Contains(w.MoveId));
+            }
+
+            return await q.ToListAsync();
+        }
+
         public async Task<TD_MoveDetail> GetTheDataAsync(string id)
         {
             return await GetEntityAsync(id);
@@ -59,9 +73,19 @@ namespace Coldairarrow.Business.TD
             await InsertAsync(data);
         }
 
+        public async Task AddDatasAsync(List<TD_MoveDetail> datas)
+        {
+            await InsertAsync(datas);
+        }
+
         public async Task UpdateDataAsync(TD_MoveDetail data)
         {
             await UpdateAsync(data);
+        }
+
+        public async Task UpdateDatasAsync(List<TD_MoveDetail> datas)
+        {
+            await UpdateAsync(datas);
         }
 
         public async Task DeleteDataAsync(List<string> ids)

@@ -2,6 +2,7 @@
 using Coldairarrow.Entity.PB;
 using Coldairarrow.Entity.TD;
 using Coldairarrow.Util;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -17,5 +18,68 @@ namespace Coldairarrow.Business.IT
 
         Task AddDataAsync(List<IT_LocalMaterial> list);
         Task UpdateDataAsync(List<IT_LocalMaterial> list);
+
+        Task UpdataDatasByBussiness(List<BusinessInfo> list);
+
+        Task<IT_LocalMaterial> GetDataByBussiness(BusinessInfo businessInfo);
+    }
+
+    public class BusinessInfo
+    {
+        /// <summary>
+        /// 仓库ID
+        /// </summary>
+        public String StorId { get; set; }
+
+        /// <summary>
+        /// 货位ID
+        /// </summary>
+        public String LocalId { get; set; }
+
+        /// <summary>
+        /// 托盘号ID
+        /// </summary>
+        public String TrayId { get; set; }
+
+        /// <summary>
+        /// 托盘分区ID
+        /// </summary>
+        public String ZoneId { get; set; }
+
+        /// <summary>
+        /// 物料ID
+        /// </summary>
+        public String MaterialId { get; set; }
+
+        /// <summary>
+        /// 批次号
+        /// </summary>
+        public String BatchNo { get; set; }
+
+        /// <summary>
+        /// 条码
+        /// </summary>
+        public String BarCode { get; set; }
+
+        /// <summary>
+        /// 数量
+        /// </summary>
+        public Double Num { get; set; }
+
+        /// <summary>
+        /// 操作（1 出库； 2 入库）
+        /// </summary>
+        public int ActionType { get; set; }
+
+        /// <summary>
+        /// 单位ID
+        /// </summary>
+        public String MeasureId { get; set; }
+    }
+
+    public enum ActionTypeEnum
+    {
+        出库 = 1,
+        入库
     }
 }

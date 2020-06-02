@@ -44,6 +44,14 @@ namespace Coldairarrow.Api.Controllers.IT
             return await _iT_LocalMaterialBus.GetTheDataAsync(input.id);
         }
 
+
+        [HttpPost]
+        public async Task<IT_LocalMaterial> GetTheLocalMaterial(BusinessInfo businessInfo)
+        {
+            businessInfo.StorId = _Op.Property.DefaultStorageId;
+            return await _iT_LocalMaterialBus.GetDataByBussiness(businessInfo);
+        }
+
         #endregion
 
         #region 提交
