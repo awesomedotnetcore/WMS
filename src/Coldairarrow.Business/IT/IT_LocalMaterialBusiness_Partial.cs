@@ -1,6 +1,7 @@
 ﻿using Coldairarrow.Entity.IT;
 using Coldairarrow.Entity.PB;
 using Coldairarrow.Entity.TD;
+using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using EFCore.Sharding;
 using LinqKit;
@@ -95,6 +96,19 @@ namespace Coldairarrow.Business.IT
                 where = where.And(w => w.BatchNo.Contains(search.Code) || w.BarCode.Contains(search.Code));
 
             return await q.Where(where).GetPageResultAsync(input);
+        }
+
+        public async Task<List<IT_LocalMaterial>> GetQueryData(SelectQueryDTO search, string storId)
+        {
+            var q = GetIQueryable().Include(i => i.Material).Where(w => w.StorId == storId);
+            var where = LinqHelper.False<IT_LocalMaterial>();
+
+            if (!search.Keyword.IsNullOrEmpty())
+                where = where.Or(w => w.Material.Name.Contains(search.Keyword) || w.Material.Code.Contains(search.Keyword));
+
+            if (!search.Id.IsNullOrEmpty())
+                where = where.Or(w => w.Id == search.Id);
+            return await q.Where(where).OrderBy(o => o.Material.Name).Take(search.Take).ToListAsync();
         }
     }
 }

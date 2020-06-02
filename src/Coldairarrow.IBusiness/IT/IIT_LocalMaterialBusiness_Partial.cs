@@ -1,6 +1,7 @@
 ﻿using Coldairarrow.Entity.IT;
 using Coldairarrow.Entity.PB;
 using Coldairarrow.Entity.TD;
+using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -19,6 +20,8 @@ namespace Coldairarrow.Business.IT
         Task UpdateDataAsync(List<IT_LocalMaterial> list);
 
         Task<PageResult<IT_LocalMaterial>> GetDataListAsync(IT_LocalMaterialPageInput input);
+
+        Task<List<IT_LocalMaterial>> GetQueryData(SelectQueryDTO search, string storId);
     }
     public class IT_LocalMaterialQM
     {

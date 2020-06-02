@@ -3,7 +3,7 @@
     <a-row>
       <a-col :span="20">
         <a-select placeholder="选择库存" v-model="curValue" @select="onSelect" @search="handleSearch" :allowClear="true" :showSearch="true" :filterOption="false">
-          <a-select-option v-for="item in dataSource" :key="item.Id" :value="item.Id">{{ item.Name }}</a-select-option>
+          <a-select-option v-for="item in dataSource" :key="item.Id" :value="item.Id">{{ item.Material.Name }}( {{ item.Material.Code }} )</a-select-option>
         </a-select>
       </a-col>
       <a-col :span="2">
@@ -52,7 +52,7 @@ export default {
       this.keyword = q
       clearTimeout(this.timeout)
       this.timeout = setTimeout(() => {
-        this.$http.post('/IT/IT_LocalMaterial/GetTheData', { Id: this.curValue, Keyword: q, Take: 10 })
+        this.$http.post('/IT/IT_LocalMaterial/GetQueryData', { Id: this.curValue, Keyword: q, Take: 10 })
           .then(resJson => {
             if (resJson.Success && q == this.keyword) {
               this.dataSource = resJson.Data
