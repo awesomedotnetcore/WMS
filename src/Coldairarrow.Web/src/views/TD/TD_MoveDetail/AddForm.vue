@@ -27,6 +27,7 @@
             <editable-cell
               :text="text"
               :max="record.Num"
+              :min="0"
               type="number"
               @change="onCellChange(record, 'LocalNum', $event)"
             />
@@ -34,7 +35,7 @@
           <span slot="action" slot-scope="text, record">
             <template>
               <a
-                @click="handleSelectTarget(record.Id, record.MaterialId, record.ToLocalId, record.ToTrayId, record.ToZoneId)"
+                @click="handleSelectTarget(record.Id, record.MaterialId, record.FromLocalId, record.FromTrayId, record.FromZoneId, record.ToLocalId, record.ToTrayId, record.ToZoneId)"
               >目标选择</a>
             </template>
           </span>
@@ -191,8 +192,8 @@ export default {
     onCellChange(data, dataIndex, value) {
       data[dataIndex] = value
     },
-    handleSelectTarget(id, materialId, locationId, trayId, zoneId) {
-      this.$refs.editTarget.openForm(id, materialId, locationId, trayId, zoneId)
+    handleSelectTarget(id, materialId, FromLocalId, FromTrayId, FromZoneId, ToLocalId, ToTrayId, ToZoneId) {
+      this.$refs.editTarget.openForm(id, materialId, FromLocalId, FromTrayId, FromZoneId, ToLocalId, ToTrayId, ToZoneId)
     },
     handleUpdataTargetInfo(id, locationId, locationName, trayId, trayName, zoneId, zoneName) {
       this.data.forEach(i => {

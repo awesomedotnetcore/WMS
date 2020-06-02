@@ -10,22 +10,23 @@
   >
     <a-card :bordered="false">
       <div class="table-operator">
-        <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
+        <a-button v-if="this.state == 0" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
         <a-button
           type="primary"
           icon="minus"
+          v-if="this.state == 0"
           @click="handleDelete(selectedRowKeys)"
           :disabled="!hasSelected()"
           :loading="loading"
         >删除</a-button>
         <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
-        <a-button type="primary" icon="check" @click="approveData()">审批</a-button>
-        <a-button type="primary" icon="close" @click="rejectData()">驳回</a-button>
+        <a-button v-if="this.state == 0" type="primary" icon="check" @click="approveData()">审批</a-button>
+        <a-button v-if="this.state == 0" type="primary" icon="close" @click="rejectData()">驳回</a-button>
       </div>
 
       <a-table
         ref="table"
-        :columns="columns"
+        :columns="computedColumns"
         :rowKey="row => row.Id"
         :dataSource="data"
         :pagination="pagination"
@@ -55,6 +56,19 @@
 <script>
 import EditForm from './EditForm'
 import AddForm from './AddForm'
+
+const columnsApproved = [
+  { title: '原货位', dataIndex: 'Src_Location.Name', width: '10%' },
+  { title: '原托盘', dataIndex: 'Src_Tray.Name', width: '10%' },
+  { title: '原托盘分区', dataIndex: 'Src_TrayZone.Name', width: '10%' },
+  { title: '目标货位', dataIndex: 'Tar_Location.Name', width: '10%' },
+  { title: '目标托盘', dataIndex: 'Tar_Tray.Name', width: '10%' },
+  { title: '目标托盘分区', dataIndex: 'Tar_TrayZone.Name', width: '10%' },
+  { title: '条码', dataIndex: 'BarCode', width: '10%' },
+  { title: '物料', dataIndex: 'PB_Material.Name', width: '10%' },
+  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
+  { title: '移库数量', dataIndex: 'LocalNum', width: '6%' }
+]
 
 const columns = [
   { title: '原货位', dataIndex: 'Src_Location.Name', width: '8%' },
@@ -91,11 +105,28 @@ export default {
       sorter: { field: 'Id', order: 'asc' },
       loading: false,
       columns,
+      columnsApproved,
       queryParam: {},
       selectedRowKeys: [],
       visible: false,
       moveId: null,
       state: null
+    }
+  },
+  computed: {
+    computedColumns() {
+      if (this.state == 0) {
+        return columns
+      } else {
+        return columnsApproved
+      }
+    },
+    computedrowSelection() {
+      if (this.state == 0) {
+        return columns
+      } else {
+        return false
+      }
     }
   },
   methods: {

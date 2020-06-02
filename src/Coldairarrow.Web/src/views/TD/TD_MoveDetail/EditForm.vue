@@ -31,7 +31,12 @@
           <a-input v-model="localMaterial.Num" :disabled="true" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="移库数量" prop="Remarks">
-          <a-input-number v-model="entity.LocalNum" :max="localMaterial.Num" autocomplete="off" />
+          <a-input-number
+            v-model="entity.LocalNum"
+            :max="localMaterial.Num"
+            :min="0"
+            autocomplete="off"
+          />
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -113,6 +118,13 @@ export default {
       this.loading = true
       if (this.entity.LocalNum > this.localMaterial.Num) {
         this.$message.error('超过现有库存!')
+        this.loading = false
+      } else if (
+        this.entity.ToLocalId == this.localMaterial.LocalId &&
+        this.entity.ToTrayId == this.localMaterial.TrayId &&
+        this.entity.ToZoneId == this.localMaterial.ZoneId
+      ) {
+        this.$message.error('地址错误：目标地址与原地址一致!')
         this.loading = false
       } else {
         this.$http.post('/TD/TD_MoveDetail/SaveData', this.entity).then(resJson => {
