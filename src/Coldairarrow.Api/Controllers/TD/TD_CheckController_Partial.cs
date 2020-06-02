@@ -77,6 +77,40 @@ namespace Coldairarrow.Api.Controllers.TD
         }
 
         [HttpPost]
+        public async Task<AjaxResult> Complete(string Id)
+        {
+            AjaxResult result = new AjaxResult();
+            var completed = await _provider.GetRequiredService<ITD_CheckDataBusiness>().AllCompletedAsync(Id);
+            if (completed)
+            {
+                try
+                {
+                    var entity = await _tD_CheckBus.GetTheDataAsync(Id);
+                    entity.IsComplete = true;
+                    entity.Status = 0;
+                    entity.CheckTime = DateTime.Now;
+
+                    await _tD_CheckBus.UpdateDataAsync(entity);
+                    result.Success = true;
+                }
+                catch(Exception e)
+                {
+                    result.Success = false;
+                    result.ErrorCode = 502;
+                    result.Msg = e.Message;
+                }
+            }
+            else
+            {
+                result.Success = false;
+                result.ErrorCode = 502;
+                result.Msg = "存在未盘点项目";
+            }
+
+            return result;
+        }
+
+        [HttpPost]
         public async Task<List<PB_Material>> LoadRandomMaterial(int per)
         {
             return await _provider.GetRequiredService<IIT_LocalMaterialBusiness>()

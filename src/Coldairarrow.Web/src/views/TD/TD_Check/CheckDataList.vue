@@ -1,40 +1,42 @@
 <template>
+<div>
+  <a-spin :spinning="loading">
   <a-table
-      ref="table"
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :bordered="true"
-      size="small"
-    >
-      <template slot="LocalNum" slot-scope="text, record">
-        <span v-if="NumVisible===true">
-          {{record.LocalNum}}
-        </span>
-        <span v-else>
-          -
-        </span>
-      </template>
-      <template slot="CheckNum" slot-scope="text, record">
-        <span v-if="NumVisible===true">
-          {{record.CheckNum}}
-        </span>
-        <span v-else>
-          -
-        </span>
-      </template>
-      <template slot="DisNum" slot-scope="text, record">
-        <span v-if="NumVisible===true">
-          {{record.DisNum}}
-        </span>
-        <span v-else>
-          -
-        </span>
-      </template>
-    </a-table>
+    ref="table"
+    :columns="columns"
+    :rowKey="row => row.Id"
+    :dataSource="data"
+    :pagination="pagination"
+    :loading="loading"
+    @change="handleTableChange"
+    :bordered="true"
+    size="small"
+  >
+    <template slot="LocalNum" slot-scope="text, record">
+      <span v-if="NumVisible===true">{{record.LocalNum}}</span>
+      <span v-else>-</span>
+    </template>
+    <template slot="CheckNum" slot-scope="text, record">
+      <span v-if="Enabled===true">
+        <a-input type="number" v-model="record.CheckNum" 
+          :key="record.Id"
+          :min="0" 
+          :addon-after="record.MeasureName"
+          @blur="e =>handleCheckNumChange(e.target, record)">
+        </a-input>
+      </span>
+      <span v-else>
+        <span v-if="NumVisible===true">{{record.CheckNum}}</span>
+      <span v-else>-</span>
+      </span>
+    </template>
+    <template slot="DisNum" slot-scope="text, record">
+      <span v-if="NumVisible===true">{{record.DisNum}}</span>
+      <span v-else>-</span>
+    </template>
+  </a-table>
+  </a-spin>
+</div>
 </template>
 
 <script>
@@ -44,32 +46,44 @@ const columns = [
   { title: '货架', dataIndex: 'RackName', width: '7%' },
   { title: '货位编码', dataIndex: 'LocationCode', width: '7%' },
   { title: '货位名称', dataIndex: 'LocationName', width: '7%' },
-  { title: '物料编码', dataIndex: 'MaterialCode', width: '10%' },
-  { title: '物料名称', dataIndex: 'MaterialName' },
   { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
-  { title: '库存数量', dataIndex: 'LocalNum', width: '7%' , scopedSlots: { customRender: 'LocalNum' }},
-  { title: '盘点数量', dataIndex: 'CheckNum', width: '7%', scopedSlots: { customRender: 'CheckNum' } },
-  { title: '盘差数量', dataIndex: 'DisNum', width: '7%' , scopedSlots: { customRender: 'DisNum' }}
+  { title: '物料编码', dataIndex: 'MaterialCode', width: '10%' },
+  { title: '物料名称', dataIndex: 'MaterialName' },  
+  { title: '库存数量', dataIndex: 'LocalNum', width: '10%', scopedSlots: { customRender: 'LocalNum' } },
+  { title: '盘点数量', dataIndex: 'CheckNum', width: '13%', scopedSlots: { customRender: 'CheckNum' } },
+  { title: '盘差数量', dataIndex: 'DisNum', width: '10%', scopedSlots: { customRender: 'DisNum' } }
 ]
 
 export default {
   props: {
     checkId: { type: String, required: false },
-    isComplete: { type:Boolean, default:false, required:false}
+    isCompleted: { type: Boolean, required: true },
+    isCheckd: { type: Boolean, required: true }
   },
-  watch:{
-    checkId(id){
-      this.queryParam.CheckId=id
-      this.pagination.current=1
+  watch: {
+    checkId(id) {
+      this.queryParam.CheckId = id
       this.getDataList()
-    },isComplete(val){
-      this.NumVisible=val
+    },
+    isCompleted(val) {
+      this.NumVisible = val
+    },
+    isCheckd(val) {
+      this.Enabled = val
     }
+  },
+  mounted(){
+    this.queryParam.CheckId = this.checkId
+    this.NumVisible = this.isCompleted
+    this.Enabled = this.isCheckd
+
+    this.pagination.current = 1
   },
   data() {
     return {
       data: [],
-      NumVisible:false,
+      NumVisible: false,
+      Enabled: false,
       pagination: {
         current: 1,
         pageSize: 10,
@@ -88,6 +102,19 @@ export default {
       this.filters = { ...filters }
       this.sorter = { ...sorter }
       this.getDataList()
+    },
+    handleCheckNumChange(target, data){
+      this.loading = true
+      if(target.value>=0){
+        this.$http.post('/TD/TD_CheckData/ModifyCheckNum', { Id: data.Id, CheckNum:target.value })
+        .then(resJson => {
+          this.loading = false
+        })
+      }
+      else{
+        target.value=null
+        this.loading = false
+      }
     },
     getDataList() {
       this.loading = true
