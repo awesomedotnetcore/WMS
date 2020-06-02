@@ -111,6 +111,82 @@ namespace Coldairarrow.Api.Controllers.TD
         }
 
         [HttpPost]
+        public async Task<AjaxResult> Pass(string Id)
+        {
+            var _Op = _provider.GetRequiredService<IOperator>();
+            AjaxResult result = new AjaxResult();
+            try
+            {
+                var entity = await _tD_CheckBus.GetTheDataAsync(Id);
+                entity.Status = 1;
+                entity.AuditeTime = DateTime.Now;
+                entity.AuditUserId = _Op.UserId;
+
+                await _tD_CheckBus.UpdateDataAsync(entity);
+                result.Success = true;
+            }
+            catch (Exception e)
+            {
+                result.Success = false;
+                result.ErrorCode = 502;
+                result.Msg = e.Message;
+            }
+
+            return result;
+        }
+
+        [HttpPost]
+        public async Task<AjaxResult> Reject(string Id)
+        {
+            var _Op = _provider.GetRequiredService<IOperator>();
+            AjaxResult result = new AjaxResult();
+            try
+            {
+                var entity = await _tD_CheckBus.GetTheDataAsync(Id);
+                entity.Status = 2;
+                entity.AuditeTime = DateTime.Now;
+                entity.AuditUserId = _Op.UserId;
+
+                await _tD_CheckBus.UpdateDataAsync(entity);
+                result.Success = true;
+            }
+            catch (Exception e)
+            {
+                result.Success = false;
+                result.ErrorCode = 502;
+                result.Msg = e.Message;
+            }
+
+            return result;
+        }
+
+        [HttpPost]
+        public async Task<AjaxResult> Back(string Id)
+        {
+            var _Op = _provider.GetRequiredService<IOperator>();
+            AjaxResult result = new AjaxResult();
+            try
+            {
+                var entity = await _tD_CheckBus.GetTheDataAsync(Id);
+                entity.IsComplete = false;
+                entity.Status = 0;
+                entity.AuditeTime = DateTime.Now;
+                entity.AuditUserId = _Op.UserId;
+
+                await _tD_CheckBus.UpdateDataAsync(entity);
+                result.Success = true;
+            }
+            catch (Exception e)
+            {
+                result.Success = false;
+                result.ErrorCode = 502;
+                result.Msg = e.Message;
+            }
+
+            return result;
+        }
+
+        [HttpPost]
         public async Task<List<PB_Material>> LoadRandomMaterial(int per)
         {
             return await _provider.GetRequiredService<IIT_LocalMaterialBusiness>()
