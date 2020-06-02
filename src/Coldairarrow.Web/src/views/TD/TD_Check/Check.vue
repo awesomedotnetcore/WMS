@@ -120,20 +120,20 @@ export default {
             okText: '确定',
             cancelText: '取消',
             onOk() {
-            base.loading = true
-            base.$http.post('/TD/TD_Check/Complete?Id='+base.entity.Id)
-            .then(resJson => {
-                base.loading = false                
-                if(resJson.Success){
-                    base.visible = false
-                    base.parentObj.getDataList()
-                }else{
-                    base.$error({
-                        title: '错误',
-                        content: resJson.Msg,
-                    });
-                }
-            })
+                base.loading = true
+                base.$http.post('/TD/TD_Check/Complete?Id='+base.entity.Id)
+                .then(resJson => {
+                    base.loading = false                
+                    if(resJson.Success){
+                        base.visible = false
+                        base.parentObj.getDataList()
+                    }else{
+                        base.$error({
+                            title: '错误',
+                            content: resJson.Msg,
+                        });
+                    }
+                })
             },
             class: 'test'
         })
