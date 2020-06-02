@@ -1,6 +1,7 @@
 ﻿using Coldairarrow.Business.PB;
 using Coldairarrow.Business.TD;
 using Coldairarrow.Entity.TD;
+using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -84,6 +85,18 @@ namespace Coldairarrow.Api.Controllers.TD
         public async Task DeleteData(List<string> ids)
         {
             await _tD_OutStorageBus.DeleteDataAsync(ids);
+        }
+
+        [HttpPost]
+        public async Task Audit(AuditDTO audit)
+        {
+            audit.StorId = _Op.Property.DefaultStorageId;
+            audit.AuditUserId = _Op.UserId;
+            audit.AuditTime = DateTime.Now;
+            if (audit.AuditType == AuditType.Approve)
+                await _tD_OutStorageBus.Approve(audit);
+            else
+                await _tD_OutStorageBus.Reject(audit);
         }
 
         #endregion

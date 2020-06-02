@@ -18,13 +18,7 @@
           </a-form-model-item>
         </a-col>               
       </a-row>
-      <a-row>
-        <!-- <a-col :span="8">
-          <a-form-model-item label="出库仓库" prop="StorageId">
-            <stor-select v-model="entity.StorageId"></stor-select>
-          </a-form-model-item>
-        </a-col> -->
-        
+      <a-row>        
         <a-col :span="8">
           <a-form-model-item label="出库类型" prop="OutType">
             <enum-select code="OutStorageType" v-model="entity.OutType" :disabled="disabled"></enum-select>
@@ -49,13 +43,12 @@
         </a-col> 
       </a-row>
     </a-form-model>
-    <list-detail v-model="listDetail"></list-detail>
+    <list-detail v-model="listDetail" :disabled="disabled"></list-detail>
     <div :style="{ position:'absolute',right:0,bottom:0,width:'100%',borderTop:'1px solid #e9e9e9',padding:'10px 16px',background:'#fff',textAlign:'right',zIndex: 1}">
       <a-button :disabled="disabled" :style="{ marginRight: '8px' }" @click="()=>{this.visible=false}">取消</a-button>
-      <a-button :disabled="disabled" :style="{ marginRight: '8px' }" type="primary" @click="handleSubmit">保存</a-button>
-
-      <a-button :disabled="disabled" type="danger" :style="{ marginRight: '8px' }" @click="()=>{this.visible=false}">审核通过</a-button>
-      <a-button :disabled="disabled" type="danger" :style="{ marginRight: '8px' }" @click="()=>{this.visible=false}">审核不通过</a-button>
+      <a-button :disabled="disabled" :style="{ marginRight: '8px' }" type="primary" @click="handleSubmit">保存</a-button>      
+      <a-button  type="primary" :style="{ marginRight: '8px' }" v-if="entity.Id !== '' && entity.Status === 0" @click="handleAudit(entity.Id,'Reject')">审核不通过</a-button>     
+      <a-button  type="danger" :style="{ marginRight: '8px' }" v-if="entity.Id !== '' && entity.Status === 0" @click="handleAudit(entity.Id,'Approve')">审核通过</a-button>
     </div>
   </a-drawer>
 </template>
@@ -89,9 +82,9 @@ export default {
       },
       visible: false,
       loading: false,
-      entity: {OutType: ''},
+      entity: {Id: '', OutType: '', Status: 0 },
       rules: {},
-      title: '',
+      // title: '',
       CusAddrList:[],
       listDetail:[]
     }
@@ -110,7 +103,8 @@ export default {
     init() {
       this.visible = true
       this.CusAddrList = []
-      this.entity = {OutType:'',CusId:'',AddrId:''}
+      this.entity = { Id: '', OutType:'',CusId:'',AddrId:'', Status: 0 }
+      this.listDetail = []
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })
@@ -159,26 +153,6 @@ export default {
         })
       })
     }, 
-    // handleSubmit() {
-    //   this.$refs['form'].validate(valid => {
-    //     if (!valid) {
-    //       return
-    //     }
-    //     this.loading = true
-    //     this.$http.post('/TD/TD_OutStorage/SaveData', this.entity).then(resJson => {
-    //       this.loading = false
-
-    //       if (resJson.Success) {
-    //         this.$message.success('操作成功!')
-    //         this.visible = false
-
-    //         this.parentObj.getDataList()
-    //       } else {
-    //         this.$message.error(resJson.Msg)
-    //       }
-    //     })
-    //   })
-    // },
     GetCusAddrList() {      
       this.loading = true
       this.$http.post('/PB/PB_Address/QueryDataList',{
@@ -196,6 +170,19 @@ export default {
         this.CusAddrList = resJson.Data
       })
     },
+    handleAudit(id, type) {
+      this.loading = true
+      this.$http.post('/TD/TD_OutStorage/Audit', { Id: id, AuditType: type }).then(resJson => {
+        this.loading = false
+        if (resJson.Success) {
+          this.$message.success('操作成功!')
+          this.visible = false
+          this.parentObj.getDataList()
+        } else {
+          this.$message.error(resJson.Msg)
+        }
+      })
+    }
   }
 }
 </script>
