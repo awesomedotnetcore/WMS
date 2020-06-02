@@ -1,4 +1,5 @@
 ﻿using Coldairarrow.Entity.TD;
+using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,5 +11,7 @@ namespace Coldairarrow.Business.TD
         Task ClearDataAsync(string checkId);
 
         Task PushDataAsync(List<TD_CheckData> data);
+
+        Task<PageResult<TDCheckDataDTO>> QueryDataListAsync(PageInput<TDCheckDataConditionDTO> input);
     }
 }

@@ -10,36 +10,66 @@
       :bordered="true"
       size="small"
     >
+      <template slot="LocalNum" slot-scope="text, record">
+        <span v-if="NumVisible===true">
+          {{record.LocalNum}}
+        </span>
+        <span v-else>
+          -
+        </span>
+      </template>
+      <template slot="CheckNum" slot-scope="text, record">
+        <span v-if="NumVisible===true">
+          {{record.CheckNum}}
+        </span>
+        <span v-else>
+          -
+        </span>
+      </template>
+      <template slot="DisNum" slot-scope="text, record">
+        <span v-if="NumVisible===true">
+          {{record.DisNum}}
+        </span>
+        <span v-else>
+          -
+        </span>
+      </template>
     </a-table>
 </template>
 
 <script>
 const columns = [
-  { title: '盘点ID', dataIndex: 'CheckId', width: '10%' },
-  { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
-  { title: '货位ID', dataIndex: 'localId', width: '10%' },
-  { title: '物料ID', dataIndex: 'MaterialId', width: '10%' },
+  { title: '库区', dataIndex: 'AreaName', width: '7%' },
+  { title: '巷道', dataIndex: 'LanewayName', width: '7%' },
+  { title: '货架', dataIndex: 'RackName', width: '7%' },
+  { title: '货位编码', dataIndex: 'LocationCode', width: '7%' },
+  { title: '货位名称', dataIndex: 'LocationName', width: '7%' },
+  { title: '物料编码', dataIndex: 'MaterialCode', width: '10%' },
+  { title: '物料名称', dataIndex: 'MaterialName' },
   { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
-  { title: '库存数量', dataIndex: 'LocalNum', width: '10%' },
-  { title: '盘点数量', dataIndex: 'CheckNum', width: '10%' },
-  { title: '盘差数量', dataIndex: 'DisNum', width: '10%' },
-  { title: '盘点人ID', dataIndex: 'CheckUserId', width: '10%' }
+  { title: '库存数量', dataIndex: 'LocalNum', width: '7%' , scopedSlots: { customRender: 'LocalNum' }},
+  { title: '盘点数量', dataIndex: 'CheckNum', width: '7%', scopedSlots: { customRender: 'CheckNum' } },
+  { title: '盘差数量', dataIndex: 'DisNum', width: '7%' , scopedSlots: { customRender: 'DisNum' }}
 ]
 
 export default {
   props: {
-    checkId: { type: String, required: false }
+    checkId: { type: String, required: false },
+    isComplete: { type:Boolean, default:false, required:false}
   },
   watch:{
     checkId(id){
-      this.queryParam.checkId=id
+      this.queryParam.CheckId=id
       this.pagination.current=1
-      getDataList()
+      this.getDataList()
+    },isComplete(val){
+      this.NumVisible=val
     }
   },
   data() {
     return {
       data: [],
+      NumVisible:false,
       pagination: {
         current: 1,
         pageSize: 10,
@@ -62,7 +92,7 @@ export default {
     getDataList() {
       this.loading = true
       this.$http
-        .post('/TD/TD_CheckData/GetDataList', {
+        .post('/TD/TD_CheckData/QueryDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
