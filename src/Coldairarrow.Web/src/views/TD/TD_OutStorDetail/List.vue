@@ -1,20 +1,14 @@
 ﻿<template>
-  <!-- <a-card :bordered="false"> -->
     <div>
     <div class="table-operator">
-      <a-button :disabled="disabled" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button
-        type="primary"
-        icon="minus"
-        @click="handleDelete(selectedRowKeys)"
-        :disabled="!hasSelected() || disabled"
-      >删除</a-button>
+      <a-button :disabled="disabled" type="primary" icon="plus" @click="hanldleAdd()"  >新建</a-button>
+      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected() || disabled" >删除</a-button>
     </div>
-
     <a-table
       ref="table"
       :columns="columns"
       :rowKey="row => row.Id"
+      :pagination="false" 
       :dataSource="data"
       :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       :bordered="true"
@@ -22,16 +16,15 @@
     >
       <span slot="action" slot-scope="text, record">
         <template>
-          <a :disabled="disabled" @click="handleEdit(record.Id)">编辑</a>
+          <a :disabled="disabled" @click="handleEdit(record)">编辑</a>
           <a-divider type="vertical" />
-          <a :disabled="disabled" @click="handleDelete([record.Id])">删除</a>
+          <a :disabled="disabled" @click="handleDelete(record)">删除</a>
         </template>
       </span>
     </a-table>
 
     <edit-form ref="editForm" @submit="handlerDetailSubmit"></edit-form>
   </div>  
-  <!-- </a-card> -->
 </template>
 
 <script>

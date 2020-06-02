@@ -26,8 +26,9 @@ namespace Coldairarrow.Api.Controllers.IT
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<IT_LocalMaterial>> GetDataList(PageInput<ConditionDTO> input)
+        public async Task<PageResult<IT_LocalMaterial>> GetDataList(IT_LocalMaterialPageInput input)
         {
+            input.StorId = _Op.Property.DefaultStorageId;
             return await _iT_LocalMaterialBus.GetDataListAsync(input);
         }
 
