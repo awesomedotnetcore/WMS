@@ -11,9 +11,10 @@
       <div style="background-color: #F5F5F5; padding: 12px;">
         <a-page-header :ghost="false" title="物料盘差" sub-title="盘点管理">
           <template slot="extra">
-            <a-button key="1" type="primary">同意</a-button>
-            <a-button key="1" type="danger">不同意</a-button>
-            <a-button key="2" @click="()=>{this.visible=false}">关闭</a-button>
+            <a-button key="1" type="primary" @click="handlePass">同意</a-button>
+            <a-button key="2" @click="handleBack">退回重盘</a-button>
+            <a-button key="3" type="danger" @click="handleReject">不同意</a-button>            
+            <a-button key="4" @click="()=>{this.visible=false}">关闭</a-button>
           </template>
           <a-descriptions size="small" :column="3">
             <a-descriptions-item label="盘点时间">{{entity.CheckTime}}</a-descriptions-item>
@@ -106,8 +107,83 @@ export default {
         })
       }
     },
-    handleRandom() {
-      this.$refs.randomMaterial.handleRandom(this.entity.RandomPer)
+    handlePass(){
+        var base=this;
+        this.$confirm({
+            title: '确定同意吗?',
+            content: h => <div style="color:red;">点击'确定'，将更新库存数据，完成此次盘点。</div>,
+            okText: '确定',
+            cancelText: '取消',
+            onOk() {
+                base.loading = true
+                base.$http.post('/TD/TD_Check/Pass?Id='+base.entity.Id)
+                .then(resJson => {
+                    base.loading = false                
+                    if(resJson.Success){
+                        base.visible = false
+                        base.parentObj.getDataList()
+                    }else{
+                        base.$error({
+                            title: '错误',
+                            content: resJson.Msg,
+                        });
+                    }
+                })
+            },
+            class: 'test'
+        })
+    },
+    handleReject(){
+        var base=this;
+        this.$confirm({
+            title: '确定不同意吗?',
+            content: h => <div style="color:red;">点击'确定'，结束此次盘点，库存数据不会更新。</div>,
+            okText: '确定',
+            cancelText: '取消',
+            onOk() {
+                base.loading = true
+                base.$http.post('/TD/TD_Check/Reject?Id='+base.entity.Id)
+                .then(resJson => {
+                    base.loading = false                
+                    if(resJson.Success){
+                        base.visible = false
+                        base.parentObj.getDataList()
+                    }else{
+                        base.$error({
+                            title: '错误',
+                            content: resJson.Msg,
+                        });
+                    }
+                })
+            },
+            class: 'test'
+        })
+    },
+    handleBack(){
+        var base=this;
+        this.$confirm({
+            title: '确定退回重盘吗?',
+            content: h => <div style="color:red;">点击'确定'，要求盘点人员重新盘差。</div>,
+            okText: '确定',
+            cancelText: '取消',
+            onOk() {
+                base.loading = true
+                base.$http.post('/TD/TD_Check/Back?Id='+base.entity.Id)
+                .then(resJson => {
+                    base.loading = false                
+                    if(resJson.Success){
+                        base.visible = false
+                        base.parentObj.getDataList()
+                    }else{
+                        base.$error({
+                            title: '错误',
+                            content: resJson.Msg,
+                        });
+                    }
+                })
+            },
+            class: 'test'
+        })
     }
   }
 }

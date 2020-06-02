@@ -11,7 +11,7 @@
       <div style="background-color: #F5F5F5; padding: 12px;">
         <a-page-header :ghost="false" title="物料盘差" sub-title="盘点管理">
           <template slot="extra">
-            <a-button key="1" type="primary">导出Excel</a-button>
+            <a-button key="1" v-if="entity.IsComplete===false" type="primary">导出Excel</a-button>
             <a-button key="2" @click="()=>{this.visible=false}">关闭</a-button>
           </template>
           <a-descriptions size="small" :column="3">
@@ -104,9 +104,6 @@ export default {
           }
         })
       }
-    },
-    handleRandom() {
-      this.$refs.randomMaterial.handleRandom(this.entity.RandomPer)
     }
   }
 }
