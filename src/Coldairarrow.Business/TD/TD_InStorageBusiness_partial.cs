@@ -129,7 +129,7 @@ namespace Coldairarrow.Business.TD
                     ld.MeasureId = dicMUnit[item.MaterialId];
                     ld.BatchNo = item.BatchNo;
                     ld.BarCode = item.BarCode;
-                    ld.InputTime = audit.AuditTime;
+                    ld.InTime = audit.AuditTime;
                     ld.Amount = item.TotalAmt;
                     ld.CreateTime = now;
                     ld.CreatorId = audit.AuditUserId;
