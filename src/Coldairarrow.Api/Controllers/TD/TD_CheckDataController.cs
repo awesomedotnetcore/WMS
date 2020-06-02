@@ -2,22 +2,26 @@
 using Coldairarrow.Entity.TD;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Coldairarrow.Api.Controllers.TD
 {
     [Route("/TD/[controller]/[action]")]
-    public class TD_CheckDataController : BaseApiController
+    public partial class TD_CheckDataController : BaseApiController
     {
         #region DI
 
-        public TD_CheckDataController(ITD_CheckDataBusiness tD_CheckDataBus)
+        public TD_CheckDataController(ITD_CheckDataBusiness tD_CheckDataBus, IServiceProvider provider)
         {
             _tD_CheckDataBus = tD_CheckDataBus;
+            _provider = provider;
         }
 
         ITD_CheckDataBusiness _tD_CheckDataBus { get; }
+
+        IServiceProvider _provider { get; }
 
         #endregion
 

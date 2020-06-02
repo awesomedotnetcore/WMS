@@ -1,23 +1,15 @@
 ﻿<template>
   <a-modal
-    :title="title"
+    title="入库"
     width="40%"
     :visible="visible"
-    :confirmLoading="loading"
     @ok="handleSubmit"
     @cancel="()=>{this.visible=false}"
   >
-    <!-- <a-spin :spinning="loading"> -->
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <!-- <a-form-model-item label="出库ID" prop="OutStorId">
-          <a-input v-model="entity.OutStorId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="仓库ID" prop="StorId">
-          <a-input v-model="entity.StorId" autocomplete="off" />
-        </a-form-model-item>     
-            -->
         <a-form-model-item label="物料" prop="MaterialId">
-        <materila-select v-model="entity.MaterialId" @select="handleMaterialSelect"></materila-select>
+        <Localmaterial-select v-model="entity.MaterialId" @select="handleMaterialSelect"></Localmaterial-select>
+        <!-- <materila-select v-model="entity.MaterialId" @select="handleMaterialSelect"></materila-select> -->
         </a-form-model-item>
         <a-form-model-item label="货位" prop="LocalId">
           <location-select v-model="entity.LocalId" @select="handleLocalIdSelect"></location-select>
@@ -44,19 +36,20 @@
           <a-input v-model="entity.TotalAmt" autocomplete="off" />
         </a-form-model-item>        
       </a-form-model>
-    <!-- </a-spin> -->
   </a-modal>
 </template>
 
 <script>
-import MaterilaSelect from '../../../components/Material/MaterialSelect'
+// import MaterilaSelect from '../../../components/Material/MaterialSelect'
+import LocalmaterialSelect from '../../../components/IT/LocalMaterialSelect'
 import LocationSelect from '../../../components/Location/LocationSelect'
 import TraySelect from '../../../components/Tray/TraySelect'
 import ZoneSelect from '../../../components/Tray/ZoneSelect'
 
 export default {
   components: {
-    MaterilaSelect,
+    // MaterilaSelect,
+    LocalmaterialSelect,
     LocationSelect,
     TraySelect,
     ZoneSelect
@@ -71,10 +64,8 @@ export default {
         wrapperCol: { span: 18 }
       },
       visible: false,
-      loading: false,
       entity: {MaterialId: '' },
       rules: {},
-      title: '',
       storage: {},
       material: null,
       location: null,
@@ -86,13 +77,6 @@ export default {
     this.getCurStorage()
   },
   methods: {
-    // init() {
-    //   this.visible = true
-    //   this.entity = {}
-    //   this.$nextTick(() => {
-    //     this.$refs['form'].clearValidate()
-    //   })
-    // },
     openForm(entity) {
       this.entity = entity
       this.visible = true
@@ -113,39 +97,7 @@ export default {
         this.$emit('submit', { ...this.entity })
         this.visible = false
       })
-    },
-    // openForm(id, title) {
-    //   this.init()
-
-    //   if (id) {
-    //     this.loading = true
-    //     this.$http.post('/TD/TD_OutStorDetail/GetTheData', { id: id }).then(resJson => {
-    //       this.loading = false
-
-    //       this.entity = resJson.Data
-    //     })
-    //   }
-    // },
-    // handleSubmit() {
-    //   this.$refs['form'].validate(valid => {
-    //     if (!valid) {
-    //       return
-    //     }
-    //     this.loading = true
-    //     this.$http.post('/TD/TD_OutStorDetail/SaveData', this.entity).then(resJson => {
-    //       this.loading = false
-
-    //       if (resJson.Success) {
-    //         this.$message.success('操作成功!')
-    //         this.visible = false
-
-    //         this.parentObj.getDataList()
-    //       } else {
-    //         this.$message.error(resJson.Msg)
-    //       }
-    //     })
-    //   })
-    // },
+    },    
     handleMaterialSelect(material) {
       console.log('handleMaterialSelect', material)
       this.material = material

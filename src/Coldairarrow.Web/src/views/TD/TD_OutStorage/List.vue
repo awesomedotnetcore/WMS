@@ -95,11 +95,11 @@
 
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="handleAudite(record.Id)">审核</a>
+          <a @click="handleAudite(record.Id)">{{ record.Status === 0?'审核':'查看' }}</a>
           <a-divider type="vertical" />
-          <a @click="handleEdit(record.Id)">编辑</a>
+          <a v-if="record.Status===0" @click="handleEdit(record.Id)">编辑</a>
           <a-divider type="vertical" />
-          <a @click="handleDelete([record.Id])">删除</a>          
+          <a v-if="record.Status===0" @click="handleDelete([record.Id])">删除</a>          
         </template>
       </span>
     </a-table>

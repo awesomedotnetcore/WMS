@@ -1,7 +1,9 @@
 ﻿using Coldairarrow.Business.IT;
 using Coldairarrow.Entity.IT;
+using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,22 +14,25 @@ namespace Coldairarrow.Api.Controllers.IT
     {
         #region DI
 
-        public IT_LocalMaterialController(IIT_LocalMaterialBusiness iT_LocalMaterialBus, IOperator @op)
+        public IT_LocalMaterialController(IIT_LocalMaterialBusiness iT_LocalMaterialBus, IOperator op, IServiceProvider provider)
         {
             _iT_LocalMaterialBus = iT_LocalMaterialBus;
-            _Op = @op;
+            _Op = op;
+            _provider = provider;
         }
 
         IIT_LocalMaterialBusiness _iT_LocalMaterialBus { get; }
         IOperator _Op { get; }
+        IServiceProvider _provider { get; }
 
         #endregion
 
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<IT_LocalMaterial>> GetDataList(PageInput<ConditionDTO> input)
+        public async Task<PageResult<IT_LocalMaterial>> GetDataList(IT_LocalMaterialPageInput input)
         {
+            input.StorId = _Op.Property.DefaultStorageId;
             return await _iT_LocalMaterialBus.GetDataListAsync(input);
         }
 
@@ -50,6 +55,12 @@ namespace Coldairarrow.Api.Controllers.IT
         {
             businessInfo.StorId = _Op.Property.DefaultStorageId;
             return await _iT_LocalMaterialBus.GetDataByBussiness(businessInfo);
+        }
+
+        [HttpPost]
+        public async Task<List<IT_LocalMaterial>> GetQueryData(SelectQueryDTO search)
+        {
+            return await _iT_LocalMaterialBus.GetQueryData(search, _Op.Property.DefaultStorageId);
         }
 
         #endregion
