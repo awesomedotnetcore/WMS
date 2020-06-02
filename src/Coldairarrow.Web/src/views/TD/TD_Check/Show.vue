@@ -40,7 +40,7 @@
         </a-page-header>
         <a-divider>物料盘差清单</a-divider>
         <a-card :bordered="false">
-          <a-table :columns="columns" :data-source="data" size="small" />
+          <check-data ref="checkData"></check-data>
         </a-card>
       </div>
     </a-spin>
@@ -50,46 +50,14 @@
 <script>
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import StorareaShow from '../../../components/PB/StorAreaShow'
+import CheckData from './CheckDataList'
 import moment from 'moment'
-const columns = [
-  {
-    title: 'Name',
-    dataIndex: 'name'
-  },
-  {
-    title: 'Age',
-    dataIndex: 'age'
-  },
-  {
-    title: 'Address',
-    dataIndex: 'address'
-  }
-]
-const data = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park'
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park'
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park'
-  }
-]
 
 export default {
   components: {
       StorareaShow,
-      EnumName
+      EnumName,
+      CheckData
   },
   props: {
     parentObj: Object
@@ -105,8 +73,6 @@ export default {
       entity: {},
       rules: {},
       title: '',
-      data,
-      columns,
       CheckArea: [],
       CheckMaterial: []
     }
