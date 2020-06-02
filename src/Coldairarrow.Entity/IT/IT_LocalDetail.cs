@@ -8,7 +8,7 @@ namespace Coldairarrow.Entity.IT
     /// 库存明细表
     /// </summary>
     [Table("IT_LocalDetail")]
-    public class IT_LocalDetail
+    public partial class IT_LocalDetail
     {
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Coldairarrow.Entity.IT
         /// <summary>
         /// 入库时间
         /// </summary>
-        public DateTime InputTime { get; set; }
+        public DateTime InTime { get; set; }
 
         /// <summary>
         /// 总额

@@ -12,11 +12,12 @@ namespace Coldairarrow.Api.Controllers.IT
     {
         #region DI
 
-        public IT_LocalDetailController(IIT_LocalDetailBusiness iT_LocalDetailBus)
+        public IT_LocalDetailController(IIT_LocalDetailBusiness iT_LocalDetailBus,IOperator op)
         {
             _iT_LocalDetailBus = iT_LocalDetailBus;
+            _Op = op;
         }
-
+        IOperator _Op { get; }
         IIT_LocalDetailBusiness _iT_LocalDetailBus { get; }
 
         #endregion
@@ -24,8 +25,9 @@ namespace Coldairarrow.Api.Controllers.IT
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<IT_LocalDetail>> GetDataList(PageInput<ConditionDTO> input)
+        public async Task<PageResult<IT_LocalDetail>> GetDataList(IT_LocalDetailPageInput input)
         {
+            input.StorId = _Op.Property.DefaultStorageId;
             return await _iT_LocalDetailBus.GetDataListAsync(input);
         }
 
