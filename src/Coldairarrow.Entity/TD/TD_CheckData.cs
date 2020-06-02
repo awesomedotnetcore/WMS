@@ -8,7 +8,7 @@ namespace Coldairarrow.Entity.TD
     /// 盘差表
     /// </summary>
     [Table("TD_CheckData")]
-    public class TD_CheckData
+    public partial class TD_CheckData
     {
 
         /// <summary>
