@@ -57,7 +57,8 @@ export default {
       ToZoneId: '',
       ToZoneName: '',
       moveDetailId: '',
-      materialId: ''
+      materialId: '',
+      localMaterialId: ''
     }
   },
   methods: {
@@ -67,10 +68,11 @@ export default {
       this.ToTrayId = null
       this.ToZoneId = null
       this.materialId = null
+      this.localMaterialId = null
     },
-    openForm(id, materialId, locationId, trayId, zoneId) {
+    openForm(localMaterialId, materialId, locationId, trayId, zoneId) {
       this.init()
-      this.moveDetailId = id
+      this.localMaterialId = localMaterialId
       this.materialId = materialId
       this.ToLocalId = locationId
       this.ToTrayId = trayId
@@ -79,7 +81,7 @@ export default {
     handleSubmit() {
       this.visible = false
       this.parentObj.handleUpdataTargetInfo(
-        this.moveDetailId,
+        this.localMaterialId,
         this.ToLocalId,
         this.ToLocalName,
         this.ToTrayId,
