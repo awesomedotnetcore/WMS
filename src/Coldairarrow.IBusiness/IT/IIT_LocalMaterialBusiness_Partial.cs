@@ -23,6 +23,10 @@ namespace Coldairarrow.Business.IT
         Task UpdataDatasByBussiness(List<BusinessInfo> list);
 
         Task<IT_LocalMaterial> GetDataByBussiness(BusinessInfo businessInfo);
+
+        Task<PageResult<IT_LocalMaterial>> GetDataListAsync(IT_LocalMaterialPageInput input);
+
+        Task<List<IT_LocalMaterial>> GetQueryData(SelectQueryDTO search, string storId);
     }
 
     public class BusinessInfo
@@ -82,10 +86,6 @@ namespace Coldairarrow.Business.IT
     {
         出库 = 1,
         入库
-
-        Task<PageResult<IT_LocalMaterial>> GetDataListAsync(IT_LocalMaterialPageInput input);
-
-        Task<List<IT_LocalMaterial>> GetQueryData(SelectQueryDTO search, string storId);
     }
     public class IT_LocalMaterialQM
     {
