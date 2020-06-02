@@ -30,8 +30,12 @@ export default {
   props: {
     checkId: { type: String, required: false }
   },
-  mounted() {
-    this.getDataList()
+  watch:{
+    checkId(id){
+      this.queryParam.checkId=id
+      this.pagination.current=1
+      getDataList()
+    }
   },
   data() {
     return {

@@ -73,5 +73,28 @@ namespace Coldairarrow.Business.IT
         {
             await UpdateAsync(list);
         }
+
+        public async Task<PageResult<IT_LocalMaterial>> GetDataListAsync(IT_LocalMaterialPageInput input)
+        {
+            var q = GetIQueryable()
+                .Include(i=>i.Location)
+                .Include(i=>i.Tray)
+                .Include(i=>i.TrayZone)
+                .Include(i=>i.Material)
+                .Include(i=>i.Measure);
+            var where = LinqHelper.True<IT_LocalMaterial>();
+            where = where.And(w => w.StorId == input.StorId);
+            var search = input.Search;
+            if (!search.LocalName.IsNullOrEmpty())
+                where = where.And(w => w.Location.Code.Contains(search.LocalName) || w.Location.Name.Contains(search.LocalName));
+            if (!search.TrayName.IsNullOrEmpty())
+                where = where.And(w => w.Tray.Code.Contains(search.TrayName) || w.Tray.Name.Contains(search.TrayName));
+            if (!search.MaterialName.IsNullOrEmpty())
+                where = where.And(w => w.Material.Code.Contains(search.MaterialName) || w.Material.Name.Contains(search.MaterialName));
+            if (!search.Code.IsNullOrEmpty())
+                where = where.And(w => w.BatchNo.Contains(search.Code) || w.BarCode.Contains(search.Code));
+
+            return await q.Where(where).GetPageResultAsync(input);
+        }
     }
 }

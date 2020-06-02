@@ -17,5 +17,18 @@ namespace Coldairarrow.Business.IT
 
         Task AddDataAsync(List<IT_LocalMaterial> list);
         Task UpdateDataAsync(List<IT_LocalMaterial> list);
+
+        Task<PageResult<IT_LocalMaterial>> GetDataListAsync(IT_LocalMaterialPageInput input);
+    }
+    public class IT_LocalMaterialQM
+    {
+        public string LocalName { get; set; }
+        public string TrayName { get; set; }
+        public string MaterialName { get; set; }
+        public string Code { get; set; }
+    }
+    public class IT_LocalMaterialPageInput:PageInput<IT_LocalMaterialQM>
+    {
+        public string StorId { get; set; }
     }
 }
