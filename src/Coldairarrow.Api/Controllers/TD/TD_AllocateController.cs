@@ -8,34 +8,31 @@ using System.Threading.Tasks;
 namespace Coldairarrow.Api.Controllers.TD
 {
     [Route("/TD/[controller]/[action]")]
-    public class TD_BadController : BaseApiController
+    public class TD_AllocateController : BaseApiController
     {
         #region DI
 
-        public TD_BadController(ITD_BadBusiness tD_BadBus,IOperator op)
+        public TD_AllocateController(ITD_AllocateBusiness tD_AllocateBus)
         {
-            _tD_BadBus = tD_BadBus;
-            _Op = op;
+            _tD_AllocateBus = tD_AllocateBus;
         }
 
-        IOperator _Op { get; }
-        ITD_BadBusiness _tD_BadBus { get; }
+        ITD_AllocateBusiness _tD_AllocateBus { get; }
 
         #endregion
 
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<TD_Bad>> GetDataList(TD_BadPageInput input)
+        public async Task<PageResult<TD_Allocate>> GetDataList(PageInput<ConditionDTO> input)
         {
-            input.StorId = _Op.Property.DefaultStorageId;
-            return await _tD_BadBus.GetDataListAsync(input);
+            return await _tD_AllocateBus.GetDataListAsync(input);
         }
 
         [HttpPost]
-        public async Task<TD_Bad> GetTheData(IdInputDTO input)
+        public async Task<TD_Allocate> GetTheData(IdInputDTO input)
         {
-            return await _tD_BadBus.GetTheDataAsync(input.id);
+            return await _tD_AllocateBus.GetTheDataAsync(input.id);
         }
 
         #endregion
@@ -43,24 +40,24 @@ namespace Coldairarrow.Api.Controllers.TD
         #region 提交
 
         [HttpPost]
-        public async Task SaveData(TD_Bad data)
+        public async Task SaveData(TD_Allocate data)
         {
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
 
-                await _tD_BadBus.AddDataAsync(data);
+                await _tD_AllocateBus.AddDataAsync(data);
             }
             else
             {
-                await _tD_BadBus.UpdateDataAsync(data);
+                await _tD_AllocateBus.UpdateDataAsync(data);
             }
         }
 
         [HttpPost]
         public async Task DeleteData(List<string> ids)
         {
-            await _tD_BadBus.DeleteDataAsync(ids);
+            await _tD_AllocateBus.DeleteDataAsync(ids);
         }
 
         #endregion

@@ -5,10 +5,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Coldairarrow.Entity.TD
 {
     /// <summary>
-    /// 盘点表
+    /// 调拨明细
     /// </summary>
-    [Table("TD_Check")]
-    public class TD_Check
+    [Table("TD_AllocateDetail")]
+    public partial class TD_AllocateDetail
     {
 
         /// <summary>
@@ -18,59 +18,69 @@ namespace Coldairarrow.Entity.TD
         public String Id { get; set; }
 
         /// <summary>
-        /// 仓库ID
+        /// 调拨ID
         /// </summary>
-        public String StorId { get; set; }
+        public String AllocateId { get; set; }
 
         /// <summary>
-        /// 盘点时间
+        /// 原仓库ID
         /// </summary>
-        public DateTime CheckTime { get; set; }
+        public String FromStorId { get; set; }
 
         /// <summary>
-        /// 盘点类型 整体盘点 区域盘点 特定物料盘点 随机物料盘点(百分比) 
+        /// 原货位ID
         /// </summary>
-        public string Type { get; set; }
+        public String FromlocalId { get; set; }
 
         /// <summary>
-        /// 关联单号
+        /// 原托盘ID
         /// </summary>
-        public String RefCode { get; set; }
+        public String FromTrayId { get; set; }
 
         /// <summary>
-        /// 设备ID
+        /// 原托盘分区ID
         /// </summary>
-        public String EquId { get; set; }
+        public String FromZoneId { get; set; }
 
         /// <summary>
-        /// 是否盘差状态(0待盘 1已盘)
+        /// 目标仓库ID
         /// </summary>
-        public Boolean? IsComplete { get; set; }
+        public String ToStorId { get; set; }
 
         /// <summary>
-        /// 状态(0待审核;1审核通过;2审核失败;3退回)
+        /// 目标货位ID
         /// </summary>
-        public Int32? Status { get; set; }
+        public String TolocalId { get; set; }
 
         /// <summary>
-        /// 备注
+        /// 条码
         /// </summary>
-        public string Remarks { get; set; }
+        public String BarCode { get; set; }
 
         /// <summary>
-        /// 随机百分比
+        /// 物料ID
         /// </summary>
-        public Int32? RandomPer { get; set; }
+        public String MaterialId { get; set; }
 
         /// <summary>
-        /// 审核人ID
+        /// 批次号
         /// </summary>
-        public String AuditUserId { get; set; }
+        public String BatchNo { get; set; }
 
         /// <summary>
-        /// 审核时间
+        /// 单价
         /// </summary>
-        public DateTime? AuditeTime { get; set; }
+        public Double? Price { get; set; }
+
+        /// <summary>
+        /// 总额
+        /// </summary>
+        public Double? Amount { get; set; }
+
+        /// <summary>
+        /// 调拨数量
+        /// </summary>
+        public Double? LocalNum { get; set; }
 
         /// <summary>
         /// 创建时间

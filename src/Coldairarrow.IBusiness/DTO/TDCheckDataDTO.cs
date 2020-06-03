@@ -17,6 +17,42 @@ namespace Coldairarrow.IBusiness.DTO
         public String CheckId { get; set; }
 
         /// <summary>
+        /// 仓库ID
+        /// </summary>
+        public String StorId { get; set; }
+
+        /// <summary>
+        /// 货位ID
+        /// </summary>
+        public String localId { get; set; }
+
+        /// <summary>
+        /// 物料ID
+        /// </summary>
+        public String MaterialId { get; set; }
+
+        /// <summary>
+        /// 单位ID
+        /// </summary>
+        public string MeasureId { get; set; }
+
+        /// <summary>
+        /// 托盘号ID
+        /// </summary>
+        public string TrayId { get; set; }
+
+        /// <summary>
+        /// 托盘分区ID
+        /// </summary>
+        public string ZoneId { get; set; }
+
+        /// <summary>
+        /// 物料条码
+        /// </summary>
+        public string BarCode { get; set; }
+
+
+        /// <summary>
         /// 货位编码
         /// </summary>
         public string LocationCode { set; get; }
@@ -42,6 +78,16 @@ namespace Coldairarrow.IBusiness.DTO
         public string RackName { set; get; }
 
         /// <summary>
+        /// 托盘名称
+        /// </summary>
+        public string TrayName { set; get; }
+
+        /// <summary>
+        /// 托盘分区名称
+        /// </summary>
+        public string ZoneName { set; get; }
+
+        /// <summary>
         /// 物料名称
         /// </summary>
         public string MaterialName { set; get; }
@@ -55,11 +101,6 @@ namespace Coldairarrow.IBusiness.DTO
         /// 单位
         /// </summary>
         public string MeasureName { set; get; }
-
-        /// <summary>
-        /// 物料ID
-        /// </summary>
-        public String MaterialId { get; set; }
 
         /// <summary>
         /// 批次号

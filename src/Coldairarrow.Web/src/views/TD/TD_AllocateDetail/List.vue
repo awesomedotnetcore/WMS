@@ -2,35 +2,38 @@
   <a-card :bordered="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
+      <a-button
+        type="primary"
+        icon="minus"
+        @click="handleDelete(selectedRowKeys)"
+        :disabled="!hasSelected()"
+        :loading="loading"
+      >删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
 
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
-          <a-col :md="2" :sm="24">
-            <a-form-item>
-              <enum-select code="BadType" v-model="queryParam.Type"></enum-select>
-            </a-form-item>
-          </a-col>
-          <a-col :md="2" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.Code" placeholder="单号" />
+          <a-col :md="4" :sm="24">
+            <a-form-item label="查询类别">
+              <a-select allowClear v-model="queryParam.condition">
+                <a-select-option key="AllocateId">调拨ID</a-select-option>
+                <a-select-option key="FromStorId">原仓库ID</a-select-option>
+                <a-select-option key="FromlocalId">原货位ID</a-select-option>
+                <a-select-option key="FromTrayId">原托盘ID</a-select-option>
+                <a-select-option key="FromZoneId">原托盘分区ID</a-select-option>
+                <a-select-option key="ToStorId">目标仓库ID</a-select-option>
+                <a-select-option key="TolocalId">目标货位ID</a-select-option>
+                <a-select-option key="BarCode">条码</a-select-option>
+                <a-select-option key="MaterialId">物料ID</a-select-option>
+                <a-select-option key="BatchNo">批次号</a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-range-picker @change="onBadTimeChange" />
-            </a-form-item>
-          </a-col>
-          <a-col :md="2" :sm="24">
-            <a-form-item>
-              <a-select v-model="queryParam.Status" placeholder="状态" :allowClear="true">
-                <a-select-option :key="0" :value="0">待审核</a-select-option>
-                <a-select-option :key="1" :value="1">审核通过</a-select-option>
-                <a-select-option :key="2" :value="2">审核失败</a-select-option>
-              </a-select>
+              <a-input v-model="queryParam.keyword" placeholder="关键字" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -41,10 +44,18 @@
       </a-form>
     </div>
 
-    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
-      <template slot="Type" slot-scope="text">
-        <enum-name code="BadType" :value="text"></enum-name>
-      </template>
+    <a-table
+      ref="table"
+      :columns="columns"
+      :rowKey="row => row.Id"
+      :dataSource="data"
+      :pagination="pagination"
+      :loading="loading"
+      @change="handleTableChange"
+      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+      :bordered="true"
+      size="small"
+    >
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -59,41 +70,28 @@
 </template>
 
 <script>
-import moment from 'moment'
-import EnumName from '../../../components/BaseEnum/BaseEnumName'
-import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import EditForm from './EditForm'
-const filterStatus = (value, row, index) => {
-  var status = '待审核'
-  switch (value) {
-    case 0: status = '待审核'; break
-    case 1: status = '审核通过'; break
-    case 2: status = '审核失败'; break
-    default: break
-  }
-  return status
-}
-const filterDate = (value, row, index) => {
-  return moment(value).format('YYYY-MM-DD')
-}
+
 const columns = [
-  { title: '报损单号', dataIndex: 'Code', width: '10%' },
-  { title: '报损时间', dataIndex: 'BadTime', customRender: filterDate, width: '10%' },
-  { title: '报损类型', dataIndex: 'Type', scopedSlots: { customRender: 'Type' }, width: '10%' },
-  { title: '报损数量', dataIndex: 'BadNum', width: '10%' },
-  { title: '总金额', dataIndex: 'TotalAmt', width: '10%' },
-  { title: '状态', dataIndex: 'Status', customRender: filterStatus, width: '10%' },
-  { title: '制单人', dataIndex: 'CreateUser.RealName', width: '10%' },
-  { title: '审核人', dataIndex: 'AuditUser.RealName', width: '10%' },
-  { title: '审核时间', dataIndex: 'AuditeTime', customRender: filterDate, width: '10%' },
+  { title: '调拨ID', dataIndex: 'AllocateId', width: '10%' },
+  { title: '原仓库ID', dataIndex: 'FromStorId', width: '10%' },
+  { title: '原货位ID', dataIndex: 'FromlocalId', width: '10%' },
+  { title: '原托盘ID', dataIndex: 'FromTrayId', width: '10%' },
+  { title: '原托盘分区ID', dataIndex: 'FromZoneId', width: '10%' },
+  { title: '目标仓库ID', dataIndex: 'ToStorId', width: '10%' },
+  { title: '目标货位ID', dataIndex: 'TolocalId', width: '10%' },
+  { title: '条码', dataIndex: 'BarCode', width: '10%' },
+  { title: '物料ID', dataIndex: 'MaterialId', width: '10%' },
+  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
+  { title: '单价', dataIndex: 'Price', width: '10%' },
+  { title: '总额', dataIndex: 'Amount', width: '10%' },
+  { title: '调拨数量', dataIndex: 'LocalNum', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
-    EditForm,
-    EnumName,
-    EnumSelect
+    EditForm
   },
   mounted() {
     this.getDataList()
@@ -126,7 +124,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/TD/TD_Bad/GetDataList', {
+        .post('/TD/TD_AllocateDetail/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
@@ -148,10 +146,6 @@ export default {
     hasSelected() {
       return this.selectedRowKeys.length > 0
     },
-    onBadTimeChange(dates, dateStrings) {
-      this.queryParam.BadTimeStart = dateStrings[0]
-      this.queryParam.BadTimeEnd = dateStrings[1]
-    },
     hanldleAdd() {
       this.$refs.editForm.openForm()
     },
@@ -164,7 +158,7 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/TD/TD_Bad/DeleteData', ids).then(resJson => {
+            thisObj.$http.post('/TD/TD_AllocateDetail/DeleteData', ids).then(resJson => {
               resolve()
 
               if (resJson.Success) {

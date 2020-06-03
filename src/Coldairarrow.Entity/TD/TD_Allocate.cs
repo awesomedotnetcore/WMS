@@ -5,10 +5,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Coldairarrow.Entity.TD
 {
     /// <summary>
-    /// 盘点表
+    /// 调拨表
     /// </summary>
-    [Table("TD_Check")]
-    public class TD_Check
+    [Table("TD_Allocate")]
+    public partial class TD_Allocate
     {
 
         /// <summary>
@@ -18,19 +18,29 @@ namespace Coldairarrow.Entity.TD
         public String Id { get; set; }
 
         /// <summary>
+        /// 调拨单号
+        /// </summary>
+        public String Code { get; set; }
+
+        /// <summary>
+        /// 调拨时间
+        /// </summary>
+        public DateTime AllocateTime { get; set; }
+
+        /// <summary>
+        /// 调拨类型
+        /// </summary>
+        public Int32 Type { get; set; }
+
+        /// <summary>
         /// 仓库ID
         /// </summary>
         public String StorId { get; set; }
 
         /// <summary>
-        /// 盘点时间
+        /// 目标仓库ID
         /// </summary>
-        public DateTime CheckTime { get; set; }
-
-        /// <summary>
-        /// 盘点类型 整体盘点 区域盘点 特定物料盘点 随机物料盘点(百分比) 
-        /// </summary>
-        public string Type { get; set; }
+        public String ToStorId { get; set; }
 
         /// <summary>
         /// 关联单号
@@ -38,29 +48,29 @@ namespace Coldairarrow.Entity.TD
         public String RefCode { get; set; }
 
         /// <summary>
+        /// 总额
+        /// </summary>
+        public Double? Amount { get; set; }
+
+        /// <summary>
+        /// 调拨数量
+        /// </summary>
+        public Double AllocateNum { get; set; }
+
+        /// <summary>
         /// 设备ID
         /// </summary>
         public String EquId { get; set; }
 
         /// <summary>
-        /// 是否盘差状态(0待盘 1已盘)
+        /// 状态(0待审核;1审核通过;2审核失败)
         /// </summary>
-        public Boolean? IsComplete { get; set; }
-
-        /// <summary>
-        /// 状态(0待审核;1审核通过;2审核失败;3退回)
-        /// </summary>
-        public Int32? Status { get; set; }
+        public Int32 Status { get; set; }
 
         /// <summary>
         /// 备注
         /// </summary>
-        public string Remarks { get; set; }
-
-        /// <summary>
-        /// 随机百分比
-        /// </summary>
-        public Int32? RandomPer { get; set; }
+        public String Remarks { get; set; }
 
         /// <summary>
         /// 审核人ID
