@@ -7,7 +7,7 @@
 export default {
   props: {
     code: { type: String, required: true },
-    value: { type: String, required: true }
+    value: { type: String, required: false }
   },
   data() {
     return {

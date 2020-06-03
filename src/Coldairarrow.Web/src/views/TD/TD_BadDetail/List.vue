@@ -1,41 +1,47 @@
 ﻿<template>
   <div>
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="hanldleAdd()" :disabled="disabled">新建</a-button>
+      <a-button type="primary" icon="plus" @click="hanldleAdd()" :disabled="disabled">增加</a-button>
       <a-button type="primary" icon="minus" @click="handleDelete(selectedRows)" :disabled="!hasSelected() || disabled">删除</a-button>
     </div>
-    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+      <template slot="BadNum" slot-scope="text, record">
+        <a-input-number :disabled="disabled" :value="text" :max="record.LocalNum" :min="1" @change="e=>handleValChange(e,'BadNum',record)"></a-input-number>
+      </template>
+      <template slot="Surplus" slot-scope="text, record">
+        <a-input-number :disabled="disabled" :value="text" :max="100" :min="0" @change="e=>handleValChange(e,'Surplus',record)" :formatter="value => `${value}%`" :parser="value => value.replace('%', '')"></a-input-number>
+      </template>
       <span slot="action" slot-scope="text, record">
         <template>
-          <a :disabled="disabled" @click="handleEdit(record)">编辑</a>
-          <a-divider type="vertical" />
           <a :disabled="disabled" @click="handleDelete([record])">删除</a>
         </template>
       </span>
     </a-table>
+    <bad-choose ref="badChoose" @choose="handleBadChoose"></bad-choose>
   </div>
 </template>
 
 <script>
+import BadChoose from './BadChoose'
 const columns1 = [
   { title: '货位', dataIndex: 'FromLocal.Name', width: '15%' },
   { title: '物料', dataIndex: 'Material.Name', width: '15%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '15%' },
+  { title: '批次', dataIndex: 'BatchNo', width: '15%' },
   { title: '条码', dataIndex: 'BarCode', width: '15%' },
-  { title: '单价', dataIndex: 'Price', width: '5%' },
-  { title: '残余值', dataIndex: 'Surplus', width: '5%' },
-  { title: '报损数量', dataIndex: 'LocalNum', width: '5%' },
+  { title: '库存', dataIndex: 'LocalNum', width: '5%' },
+  { title: '报损', dataIndex: 'BadNum', width: '5%', scopedSlots: { customRender: 'BadNum' } },
+  { title: '残余', dataIndex: 'Surplus', width: '5%', scopedSlots: { customRender: 'Surplus' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 const columns2 = [
   { title: '货位', dataIndex: 'FromLocal.Name', width: '15%' },
   { title: '托盘', dataIndex: 'Tray.Name', width: '15%' },
   { title: '物料', dataIndex: 'Material.Name', width: '15%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
+  { title: '批次', dataIndex: 'BatchNo', width: '10%' },
   { title: '条码', dataIndex: 'BarCode', width: '15%' },
-  { title: '单价', dataIndex: 'Price', width: '5%' },
-  { title: '残余值', dataIndex: 'Surplus', width: '5%' },
-  { title: '报损数量', dataIndex: 'LocalNum', width: '5%' },
+  { title: '库存', dataIndex: 'LocalNum', width: '5%' },
+  { title: '报损', dataIndex: 'BadNum', width: '5%', scopedSlots: { customRender: 'BadNum' } },
+  { title: '残余', dataIndex: 'Surplus', width: '5%', scopedSlots: { customRender: 'Surplus' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 const columns3 = [
@@ -43,16 +49,17 @@ const columns3 = [
   { title: '托盘', dataIndex: 'Tray.Name', width: '10%' },
   { title: '分区', dataIndex: 'TrayZone.Name', width: '5%' },
   { title: '物料', dataIndex: 'Material.Name', width: '10%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
+  { title: '批次', dataIndex: 'BatchNo', width: '10%' },
   { title: '条码', dataIndex: 'BarCode', width: '10%' },
-  { title: '单价', dataIndex: 'Price', width: '5%' },
-  { title: '残余值', dataIndex: 'Surplus', width: '6%' },
-  { title: '数量', dataIndex: 'LocalNum', width: '5%' },
+  { title: '库存', dataIndex: 'LocalNum', width: '5%' },
+  { title: '报损', dataIndex: 'BadNum', width: '5%', scopedSlots: { customRender: 'BadNum' } },
+  { title: '残余', dataIndex: 'Surplus', width: '5%', scopedSlots: { customRender: 'Surplus' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
+    BadChoose
   },
   props: {
     value: { type: Array, required: true },
@@ -99,10 +106,7 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      // this.$refs.editForm.openForm()
-    },
-    handleEdit(id) {
-      // this.$refs.editForm.openForm(id)
+      this.$refs.badChoose.openChoose()
     },
     handleDelete(items) {
       var thisObj = this
@@ -121,6 +125,29 @@ export default {
           })
         }
       })
+    },
+    handleBadChoose(rows) {
+      console.log('handleBadChoose', rows)
+      rows.forEach(element => {
+        this.tempId += 1
+        var item = { ...element }
+        delete item.Id
+        delete item.Location
+        delete item.LocalId
+        item.Id = 'newid_' + this.tempId
+        item.FromLocal = { ...element.Location }
+        item.FromLocalId = element.LocalId
+        item.LocalNum = element.Num
+        item.BadNum = 1
+        item.Surplus = 0
+        item.Price = element.Material.Price
+        this.data.push(item)
+      })
+      this.$emit('input', [...this.data])
+    },
+    handleValChange(val, name, item) {
+      item[name] = val
+      this.$emit('input', [...this.data])
     }
   }
 }
