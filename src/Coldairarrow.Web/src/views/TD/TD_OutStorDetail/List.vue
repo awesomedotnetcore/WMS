@@ -23,12 +23,14 @@
       </span>
     </a-table>
 
-    <edit-form ref="editForm" @submit="handlerDetailSubmit"></edit-form>
+    <!-- <edit-form ref="editForm" @submit="handlerDetailSubmit"></edit-form> -->
+    <Localmaterial-list ref="localmaterialList" @submit="handlerDetailSubmit"></Localmaterial-list>
   </div>  
 </template>
 
 <script>
-import EditForm from './EditForm'
+import LocalmaterialList from './LocalMaterialList'
+// import EditForm from './EditForm'
 
 const columns1 = [
   { title: '物料', dataIndex: 'Material.Name', width: '10%' },
@@ -63,7 +65,8 @@ const columns3 = [
 
 export default {
   components: {
-    EditForm
+    // EditForm,
+    LocalmaterialList
   },
   props: {
     value: { type: Array, required: true },
@@ -113,10 +116,12 @@ export default {
     hanldleAdd() {
       this.tempId += 1
       var curDetail = { Id: 'newid_' + this.tempId.toString(), LocalId: '', TrayId: '', ZoneId: '', MaterialId: '' }
-      this.$refs.editForm.openForm(curDetail)
+      // this.$refs.editForm.openForm(curDetail)
+      this.$refs.localmaterialList.openForm(curDetail)
     },
     handleEdit(item) {
-      this.$refs.editForm.openForm({ ...item })
+      // this.$refs.editForm.openForm({ ...item })
+      this.$refs.localmaterialList.openForm({ ...item })
     },
     handlerDetailSubmit(item) {
       console.log('handlerDetailSubmit', item)

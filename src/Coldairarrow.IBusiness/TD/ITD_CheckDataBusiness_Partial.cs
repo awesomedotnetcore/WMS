@@ -13,5 +13,9 @@ namespace Coldairarrow.Business.TD
         Task PushDataAsync(List<TD_CheckData> data);
 
         Task<PageResult<TDCheckDataDTO>> QueryDataListAsync(PageInput<TDCheckDataConditionDTO> input);
+
+        Task ModifyCheckNumAsync(string userId,TDCheckNumModifyDTO data);
+
+        Task<bool> AllCompletedAsync(string CheckId);
     }
 }

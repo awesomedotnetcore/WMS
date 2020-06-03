@@ -5,26 +5,28 @@
     :closable="true"
     @close="onDrawerClose"
     :visible="visible"
-    :width="1600"
+    width="90%"
     :getContainer="false"
   >
     <a-card :bordered="false">
       <div class="table-operator">
-        <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
+        <a-button v-if="this.state == 0" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
         <a-button
           type="primary"
           icon="minus"
+          v-if="this.state == 0"
           @click="handleDelete(selectedRowKeys)"
           :disabled="!hasSelected()"
           :loading="loading"
         >删除</a-button>
         <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
-        <a-button type="primary" icon="check" @click="getDataList()">审批</a-button>
+        <a-button v-if="this.state == 0" type="primary" icon="check" @click="approveData()">审批</a-button>
+        <a-button v-if="this.state == 0" type="primary" icon="close" @click="rejectData()">驳回</a-button>
       </div>
 
       <a-table
         ref="table"
-        :columns="columns"
+        :columns="computedColumns"
         :rowKey="row => row.Id"
         :dataSource="data"
         :pagination="pagination"
@@ -36,7 +38,9 @@
       >
         <span slot="action" slot-scope="text, record">
           <template>
-            <a @click="handleEdit(record.Id)">编辑</a>
+            <a
+              @click="handleEdit(record.Id, record.FromLocalId, record.FromTrayId, record.FromZoneId, record.MaterialId, record.BatchNo, record.BarCode)"
+            >编辑</a>
             <a-divider type="vertical" />
             <a @click="handleDelete([record.Id])">删除</a>
           </template>
@@ -44,12 +48,27 @@
       </a-table>
 
       <edit-form ref="editForm" :parentObj="this"></edit-form>
+      <add-form ref="addForm" :parentObj="this"></add-form>
     </a-card>
   </a-drawer>
 </template>
 
 <script>
 import EditForm from './EditForm'
+import AddForm from './AddForm'
+
+const columnsApproved = [
+  { title: '原货位', dataIndex: 'Src_Location.Name', width: '10%' },
+  { title: '原托盘', dataIndex: 'Src_Tray.Name', width: '10%' },
+  { title: '原托盘分区', dataIndex: 'Src_TrayZone.Name', width: '10%' },
+  { title: '目标货位', dataIndex: 'Tar_Location.Name', width: '10%' },
+  { title: '目标托盘', dataIndex: 'Tar_Tray.Name', width: '10%' },
+  { title: '目标托盘分区', dataIndex: 'Tar_TrayZone.Name', width: '10%' },
+  { title: '条码', dataIndex: 'BarCode', width: '10%' },
+  { title: '物料', dataIndex: 'PB_Material.Name', width: '10%' },
+  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
+  { title: '移库数量', dataIndex: 'LocalNum', width: '6%' }
+]
 
 const columns = [
   { title: '原货位', dataIndex: 'Src_Location.Name', width: '8%' },
@@ -61,9 +80,7 @@ const columns = [
   { title: '条码', dataIndex: 'BarCode', width: '8%' },
   { title: '物料', dataIndex: 'PB_Material.Name', width: '8%' },
   { title: '批次号', dataIndex: 'BatchNo', width: '8%' },
-  { title: '单价', dataIndex: 'Price', width: '5%' },
   { title: '移库数量', dataIndex: 'LocalNum', width: '5%' },
-  { title: '总额', dataIndex: 'Amount', width: '5%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -72,7 +89,8 @@ export default {
     parentObj: Object
   },
   components: {
-    EditForm
+    EditForm,
+    AddForm
   },
   mounted() {},
   data() {
@@ -87,11 +105,28 @@ export default {
       sorter: { field: 'Id', order: 'asc' },
       loading: false,
       columns,
+      columnsApproved,
       queryParam: {},
       selectedRowKeys: [],
       visible: false,
       moveId: null,
       state: null
+    }
+  },
+  computed: {
+    computedColumns() {
+      if (this.state == 0) {
+        return columns
+      } else {
+        return columnsApproved
+      }
+    },
+    computedrowSelection() {
+      if (this.state == 0) {
+        return columns
+      } else {
+        return false
+      }
     }
   },
   methods: {
@@ -131,10 +166,10 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm()
+      this.$refs.addForm.openForm(this.moveId)
     },
-    handleEdit(id) {
-      this.$refs.editForm.openForm(id)
+    handleEdit(id, LocalId, TrayId, ZoneId, MaterialId, BatchNo, BarCode) {
+      this.$refs.editForm.openForm(this.moveId, id, LocalId, TrayId, ZoneId, MaterialId, BatchNo, BarCode)
     },
     handleDelete(ids) {
       var thisObj = this
@@ -168,6 +203,26 @@ export default {
     onDrawerClose() {
       this.visible = false
       this.parentObj.getDataList()
+    },
+    approveData() {
+      var thisObj = this
+      this.$http.post('/TD/TD_Move/ApproveDatas', [this.moveId]).then(resJson => {
+        if (resJson.Success) {
+          thisObj.$message.success('操作成功!')
+        } else {
+          thisObj.$message.error(resJson.Msg)
+        }
+      })
+    },
+    rejectData() {
+      var thisObj = this
+      this.$http.post('/TD/TD_Move/RejectDatas', [this.moveId]).then(resJson => {
+        if (resJson.Success) {
+          thisObj.$message.success('操作成功!')
+        } else {
+          thisObj.$message.error(resJson.Msg)
+        }
+      })
     }
   }
 }

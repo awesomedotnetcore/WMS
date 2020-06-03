@@ -1,7 +1,7 @@
 ﻿<template>
   <a-modal
     :title="title"
-    width="90%"
+    width="40%"
     :visible="visible"
     :confirmLoading="loading"
     @ok="handleSubmit"
@@ -9,71 +9,50 @@
   >
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="物料" prop="MaterialId">
-          <materila-select v-model="entity.MaterialId" @select="handleMaterialSelect"></materila-select>
+        <a-form-model-item label="目标货位" prop="ToLocalId">
+          <location-select v-model="entity.ToLocalId" @select="handleLocalSelect"></location-select>
         </a-form-model-item>
-        <a-table
-          ref="table"
-          :columns="columns"
-          :rowKey="row => row.Id"
-          :dataSource="data"
-          :pagination="pagination"
-          :loading="loading"
-          :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-          :bordered="true"
-          size="small"
-        >
-          <template slot="Value" slot-scope="text, record">
-            <editable-cell
-              :text="text"
-              type="number"
-              @change="onCellChange(record, 'Value', $event)"
-            />
-          </template>
-          <span slot="action" slot-scope="text, record">
-            <template>
-              <a
-                @click="handleSelectTarget(record.Id, record.ToLocalId, record.ToTrayId, record.ToZoneId)"
-              >目标选择</a>
-            </template>
-          </span>
-        </a-table>
+        <a-form-model-item label="目标托盘" prop="ToTrayId">
+          <tray-select
+            v-model="entity.ToTrayId"
+            @select="handleTraySelect"
+            :materialId="entity.MaterialId"
+            :locartalId="entity.ToLocalId"
+          ></tray-select>
+        </a-form-model-item>
+        <a-form-model-item label="目标托盘分区" prop="ToZoneId">
+          <zone-select
+            :trayId="entity.ToTrayId"
+            @select="handleZoneSelect"
+            v-model="entity.ToZoneId"
+          ></zone-select>
+        </a-form-model-item>
+        <a-form-model-item label="现有库存" prop="Remarks">
+          <a-input v-model="localMaterial.Num" :disabled="true" autocomplete="off" />
+        </a-form-model-item>
+        <a-form-model-item label="移库数量" prop="Remarks">
+          <a-input-number
+            v-model="entity.LocalNum"
+            :max="localMaterial.Num"
+            :min="0"
+            autocomplete="off"
+          />
+        </a-form-model-item>
       </a-form-model>
     </a-spin>
-
-    <edit-target ref="editTarget" :parentObj="this"></edit-target>
   </a-modal>
 </template>
 
 <script>
-import MaterilaSelect from '../../../components/Material/MaterialSelect'
 import LocationSelect from '../../../components/Location/LocationSelect'
 import TraySelect from '../../../components/Tray/TraySelect'
 import ZoneSelect from '../../../components/Tray/ZoneSelect'
-import EditableCell from '../../../components/EditableCell/EditableCell'
-import EditTarget from './EditTarget'
-const columns = [
-  { title: '原货位', dataIndex: 'Location.Name', width: '10%' },
-  { title: '原托盘', dataIndex: 'Tray.Name', width: '10%' },
-  { title: '原分区', dataIndex: 'TrayZone.Name', width: '10%' },
-  { title: '物料', dataIndex: 'Material.Name', width: '10%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
-  { title: '数量', dataIndex: 'Num', width: '5%' },
-  { title: '移库数量', dataIndex: 'LocalNum', width: '5%', scopedSlots: { customRender: 'Value' } },
-  { title: '目标货位', dataIndex: 'ToLocalName', width: '10%' },
-  { title: '目标托盘', dataIndex: 'ToTrayName', width: '10%' },
-  { title: '目标分区', dataIndex: 'ToZoneName', width: '10%' },
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
-]
 
 export default {
   components: {
-    MaterilaSelect,
     LocationSelect,
     TraySelect,
-    ZoneSelect,
-    EditableCell,
-    EditTarget
+    ZoneSelect
   },
   props: {
     parentObj: Object
@@ -87,34 +66,29 @@ export default {
       visible: false,
       loading: false,
       entity: {},
+      localMaterial: {},
       rules: {},
       title: '',
-      pagination: {
-        current: 1,
-        pageSize: 10,
-        showTotal: (total, range) => `总数:${total} 当前:${range[0]}-${range[1]}`
-      },
-      sorter: { field: 'Id', order: 'asc' },
-      filters: {},
-      queryParam: {},
-      columns,
-      data: [],
-      selectedRowKeys: [],
-      tarGetInfo: [],
-      updataMatch: 0,
-      getDataMatch: 0
+      moveId: null,
+      materialId: '',
+      LocalId: null,
+      TrayId: null,
+      ZoneId: null,
+      MaterialId: null,
+      BatchNo: null,
+      BarCode: null
     }
   },
   methods: {
     init() {
       this.visible = true
       this.entity = {}
-      this.$nextTick(() => {
-        this.$refs['form'].clearValidate()
-      })
+      this.moveId = null
+      this.materialId = null
     },
-    openForm(moveId, id, title) {
+    openForm(moveId, id, LocalId, TrayId, ZoneId, MaterialId, BatchNo, BarCode, title) {
       this.init()
+      this.moveId = moveId
 
       if (id) {
         this.loading = true
@@ -123,16 +97,36 @@ export default {
 
           this.entity = resJson.Data
         })
-      } else {
-        this.entity.MoveId = moveId
+        this.loading = true
+        this.$http
+          .post('/IT/IT_LocalMaterial/GetTheLocalMaterial', {
+            LocalId: LocalId,
+            TrayId: TrayId,
+            ZoneId: ZoneId,
+            MaterialId: MaterialId,
+            BatchNo: BatchNo,
+            BarCode: BarCode
+          })
+          .then(resJson => {
+            this.loading = false
+
+            this.localMaterial = resJson.Data
+          })
       }
     },
     handleSubmit() {
-      this.$refs['form'].validate(valid => {
-        if (!valid) {
-          return
-        }
-        this.loading = true
+      this.loading = true
+      if (this.entity.LocalNum > this.localMaterial.Num) {
+        this.$message.error('超过现有库存!')
+        this.loading = false
+      } else if (
+        this.entity.ToLocalId == this.localMaterial.LocalId &&
+        this.entity.ToTrayId == this.localMaterial.TrayId &&
+        this.entity.ToZoneId == this.localMaterial.ZoneId
+      ) {
+        this.$message.error('地址错误：目标地址与原地址一致!')
+        this.loading = false
+      } else {
         this.$http.post('/TD/TD_MoveDetail/SaveData', this.entity).then(resJson => {
           this.loading = false
 
@@ -145,101 +139,16 @@ export default {
             this.$message.error(resJson.Msg)
           }
         })
-      })
+      }
     },
-    handleMaterialSelect(val) {
-      this.queryParam.keyword = val.Id
-      this.selectedRowKeys = []
-      this.data = []
-      this.loading = true
-      var thisObj = this
-      this.$http
-        .post('/IT/IT_LocalMaterial/GetDataListByMaterialId', {
-          PageIndex: this.pagination.current,
-          PageRows: this.pagination.pageSize,
-          SortField: this.sorter.field || 'Id',
-          SortType: this.sorter.order,
-          Search: this.queryParam,
-          ...this.filters
-        })
-        .then(resJson => {
-          this.loading = false
-          var addData = {}
-          resJson.Data.forEach(element => {
-            addData = element
-            // this.tarGetInfo.forEach(i => {
-            //   if (i.Id == addData.Id) {
-            //     addData.ToLocalId = i.ToLocalId
-            //     addData.ToLocalName = i.ToLocalName
-            //     addData.ToTrayId = i.ToTrayId
-            //     addData.ToTrayName = i.ToTrayName
-            //     addData.ToZoneId = i.ToZoneId
-            //     addData.ToZoneName = i.ToZoneName
-            //     this.getDataMatch = 1
-            //   }
-            // })
-            if (this.getDataMatch == 0) {
-              addData.ToLocalId = ''
-              addData.ToLocalName = ''
-              addData.ToTrayId = ''
-              addData.ToTrayName = ''
-              addData.ToZoneId = ''
-              addData.ToZoneName = ''
-              addData.LocalNum = 0
-              addData.Amount = 0
-            } else {
-              this.getDataMatch = 0
-            }
-            thisObj.data.push(addData)
-          })
-          const pagination = { ...this.pagination }
-          pagination.total = resJson.Total
-          this.pagination = pagination
-        })
+    handleLocalSelect(data) {
+      this.entity.ToLocalId = data.Id
     },
-    onSelectChange(selectedRowKeys) {
-      this.selectedRowKeys = selectedRowKeys
+    handleTraySelect(data) {
+      this.entity.ToTrayId = data.Id
     },
-    onCellChange(data, dataIndex, value) {
-      data[dataIndex] = value
-    },
-    handleSelectTarget(id, locationId, trayId, zoneId) {
-      this.$refs.editTarget.openForm(id, locationId, trayId, zoneId)
-    },
-    handleUpdataTargetInfo(id, locationId, locationName, trayId, trayName, zoneId, zoneName) {
-      // this.tarGetInfo.forEach(i => {
-      //   if (i.Id == id) {
-      //     i.ToLocalId = locationId
-      //     i.ToLocalName = locationName
-      //     i.ToTrayId = trayId
-      //     i.ToTrayName = trayName
-      //     i.ToZoneId = zoneId
-      //     i.ToZoneName = zoneName
-      //     this.updataMatch = 1
-      //   }
-      // })
-      // if (this.updataMatch == 0) {
-      //   var addData = {}
-      //   addData.ToLocalId = locationId
-      //   addData.ToLocalName = locationName
-      //   addData.ToTrayId = trayId
-      //   addData.ToTrayName = trayName
-      //   addData.ToZoneId = zoneId
-      //   addData.ToZoneName = zoneName
-      //   this.tarGetInfo.push(addData)
-      // } else {
-      //   this.updataMatch = 0
-      // }
-      this.data.forEach(i => {
-        if (i.Id == id) {
-          i.ToLocalId = locationId
-          i.ToLocalName = locationName
-          i.ToTrayId = trayId
-          i.ToTrayName = trayName
-          i.ToZoneId = zoneId
-          i.ToZoneName = zoneName
-        }
-      })
+    handleZoneSelect(data) {
+      this.entity.ToZoneId = data.Id
     }
   }
 }

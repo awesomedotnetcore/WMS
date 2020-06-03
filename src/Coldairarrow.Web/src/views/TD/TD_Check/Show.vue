@@ -11,8 +11,8 @@
       <div style="background-color: #F5F5F5; padding: 12px;">
         <a-page-header :ghost="false" title="物料盘差" sub-title="盘点管理">
           <template slot="extra">
-            <a-button key="1" type="primary">导出Excel</a-button>
-            <a-button key="2" type="danger" @click="()=>{this.visible=false}">关闭</a-button>
+            <a-button key="1" v-if="entity.IsComplete===false" type="primary">导出Excel</a-button>
+            <a-button key="2" @click="()=>{this.visible=false}">关闭</a-button>
           </template>
           <a-descriptions size="small" :column="3">
             <a-descriptions-item label="盘点时间">{{entity.CheckTime}}</a-descriptions-item>
@@ -40,7 +40,7 @@
         </a-page-header>
         <a-divider>物料盘差清单</a-divider>
         <a-card :bordered="false">
-          <check-data ref="checkData" :checkId="entity.Id"></check-data>
+          <check-data ref="checkData" :checkId="entity.Id" :isCompleted="entity.IsComplete" :isCheckd="false"></check-data>
         </a-card>
       </div>
     </a-spin>
@@ -80,7 +80,7 @@ export default {
   methods: {
     init() {
       this.visible = true
-      this.entity = { Type: '' }
+      this.entity = { Type: '', IsComplete:false }
     },
     openForm(id, title) {
       this.init()
@@ -104,9 +104,6 @@ export default {
           }
         })
       }
-    },
-    handleRandom() {
-      this.$refs.randomMaterial.handleRandom(this.entity.RandomPer)
     }
   }
 }

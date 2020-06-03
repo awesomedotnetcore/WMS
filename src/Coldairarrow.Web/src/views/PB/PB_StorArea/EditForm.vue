@@ -14,19 +14,20 @@
         </a-form-model-item>
         <a-form-model-item label="货区编号" prop="Code">
           <!-- <a-input v-model="entity.Code" autocomplete="off" /> -->
-           <a-input v-model="entity.Code" :disabled="$para('GenerateStorAreaCode')=='1'" placeholder="系统自动生成" autocomplete="off" />
+          <a-input
+            v-model="entity.Code"
+            :disabled="$para('GenerateStorAreaCode')=='1'"
+            placeholder="系统自动生成"
+            autocomplete="off"
+          />
         </a-form-model-item>
         <a-form-model-item label="货区名称" prop="Name">
           <a-input v-model="entity.Name" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="是否缓存区" prop="IsCache">    
+        <a-form-model-item label="是否缓存区" prop="IsCache">
           <a-radio-group v-model="entity.IsCache">
-            <a-radio-button :value="true">
-              是
-            </a-radio-button>
-            <a-radio-button :value="false">
-              否
-            </a-radio-button>
+            <a-radio-button :value="true">是</a-radio-button>
+            <a-radio-button :value="false">否</a-radio-button>
           </a-radio-group>
         </a-form-model-item>
       </a-form-model>
@@ -39,7 +40,7 @@ import StorageSelect from '../../../components/Storage/StorageSelect'
 
 export default {
   components: {
-    StorageSelect,
+    StorageSelect
   },
   props: {
     parentObj: Object

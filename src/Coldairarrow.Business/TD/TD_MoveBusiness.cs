@@ -62,6 +62,25 @@ namespace Coldairarrow.Business.TD
             await DeleteAsync(ids);
         }
 
+        public async Task ApproveDataAsync(string id)
+        {
+            await UpdateWhereAsync( w => w.Id == id, e => { e.Status = (int)MoveStatus.审核通过; });
+        }
+
+        public async Task RejectDataAsync(string id)
+        {
+            await UpdateWhereAsync(w => w.Id == id, e => { e.Status = (int)MoveStatus.审核失败; });
+        }
+
+        public async Task ApproveDatasAsync(List<string> ids)
+        {
+            await UpdateWhereAsync(w => ids.Contains(w.Id), e => { e.Status = (int)MoveStatus.审核通过; });
+        }
+
+        public async Task RejectDatasAsync(List<string> ids)
+        {
+            await UpdateWhereAsync(w => ids.Contains(w.Id), e => { e.Status = (int)MoveStatus.审核失败; });
+        }
         #endregion
 
         #region 私有成员

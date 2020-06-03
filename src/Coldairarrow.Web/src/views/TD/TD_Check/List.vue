@@ -101,12 +101,16 @@
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
     <show ref="show" :parentObj="this"></show>
+    <check ref="check" :parentObj="this"></check>
+    <audite ref="audite" :parentObj="this"></audite>
   </a-card>
 </template>
 
 <script>
 import EditForm from './EditForm'
 import Show from './Show'
+import Check from './Check'
+import Audite from './Audite'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 
 const columns = [
@@ -124,7 +128,9 @@ export default {
   components: {
     EditForm,
     EnumName,
-    Show
+    Show,
+    Check,
+    Audite
   },
   mounted() {
     this.getDataList()
@@ -216,10 +222,10 @@ export default {
       this.$refs.show.openForm(id)
     },
     handleReCheck(id){
-
+      this.$refs.check.openForm(id)
     },
     handleAudit(id){
-      
+      this.$refs.audite.openForm(id)
     }
   }
 }

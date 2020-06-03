@@ -52,6 +52,11 @@ namespace Coldairarrow.IBusiness.DTO
         public string MaterialCode { set; get; }
 
         /// <summary>
+        /// 单位
+        /// </summary>
+        public string MeasureName { set; get; }
+
+        /// <summary>
         /// 物料ID
         /// </summary>
         public String MaterialId { get; set; }

@@ -8,20 +8,22 @@
     @cancel="()=>{this.visible=false}"
   >
     <a-spin :spinning="loading">
-      <a-form-model-item label="目标货位" prop="ToLocalId">
-        <location-select v-model="ToLocalId" @select="handleLocalSelect"></location-select>
-      </a-form-model-item>
-      <a-form-model-item label="目标托盘" prop="ToTrayId">
-        <tray-select
-          v-model="ToTrayId"
-          @select="handleTraySelect"
-          :materialId="this.materialId"
-          :locartalId="this.ToLocalId"
-        ></tray-select>
-      </a-form-model-item>
-      <a-form-model-item label="目标托盘分区" prop="ToZoneId">
-        <zone-select :trayId="this.ToTrayId" @select="handleZoneSelect" v-model="ToZoneId"></zone-select>
-      </a-form-model-item>
+      <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
+        <a-form-model-item label="目标货位" prop="ToLocalId">
+          <location-select v-model="ToLocalId" @select="handleLocalSelect"></location-select>
+        </a-form-model-item>
+        <a-form-model-item label="目标托盘" prop="ToTrayId">
+          <tray-select
+            v-model="ToTrayId"
+            @select="handleTraySelect"
+            :materialId="this.materialId"
+            :locartalId="this.ToLocalId"
+          ></tray-select>
+        </a-form-model-item>
+        <a-form-model-item label="目标托盘分区" prop="ToZoneId">
+          <zone-select :trayId="this.ToTrayId" @select="handleZoneSelect" v-model="ToZoneId"></zone-select>
+        </a-form-model-item>
+      </a-form-model>
     </a-spin>
   </a-modal>
 </template>
@@ -57,7 +59,11 @@ export default {
       ToZoneId: '',
       ToZoneName: '',
       moveDetailId: '',
-      materialId: ''
+      materialId: '',
+      localMaterialId: '',
+      FromLocalId: '',
+      FromTrayId: '',
+      FromZoneId: ''
     }
   },
   methods: {
@@ -67,26 +73,34 @@ export default {
       this.ToTrayId = null
       this.ToZoneId = null
       this.materialId = null
+      this.localMaterialId = null
     },
-    openForm(id, materialId, locationId, trayId, zoneId) {
+    openForm(localMaterialId, materialId, FromLocalId, FromTrayId, FromZoneId, ToLocalId, ToTrayId, ToZoneId) {
       this.init()
-      this.moveDetailId = id
+      this.localMaterialId = localMaterialId
       this.materialId = materialId
-      this.ToLocalId = locationId
-      this.ToTrayId = trayId
-      this.ToZoneId = zoneId
+      this.ToLocalId = ToLocalId
+      this.ToTrayId = ToTrayId
+      this.ToZoneId = ToZoneId
+      this.FromLocalId = FromLocalId
+      this.FromTrayId = FromTrayId
+      this.FromZoneId = FromZoneId
     },
     handleSubmit() {
-      this.visible = false
-      this.parentObj.handleUpdataTargetInfo(
-        this.moveDetailId,
-        this.ToLocalId,
-        this.ToLocalName,
-        this.ToTrayId,
-        this.ToTrayName,
-        this.ToZoneId,
-        this.ToZoneName
-      )
+      if (this.FromLocalId == this.ToLocalId && this.FromTrayId == this.ToTrayId && this.FromZoneId == this.ToZoneId) {
+        this.$message.error('地址错误：目标地址与原地址一致!')
+      } else {
+        this.visible = false
+        this.parentObj.handleUpdataTargetInfo(
+          this.localMaterialId,
+          this.ToLocalId,
+          this.ToLocalName,
+          this.ToTrayId,
+          this.ToTrayName,
+          this.ToZoneId,
+          this.ToZoneName
+        )
+      }
     },
     handleLocalSelect(data) {
       this.ToLocalId = data.Id
