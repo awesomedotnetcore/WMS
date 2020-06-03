@@ -62,25 +62,33 @@ namespace Coldairarrow.Entity.TD
         /// </summary>
         public String BarCode { get; set; }
 
-        /// <summary>
-        /// 残余值
-        /// </summary>
-        public Double? Surplus { get; set; }
+        
 
         /// <summary>
-        /// 报损数量
+        /// 库存数量
         /// </summary>
         public Double LocalNum { get; set; }
 
         /// <summary>
+        /// 报损数量
+        /// </summary>
+        public Double BadNum { get; set; }
+
+
+        /// <summary>
+        /// 残余值
+        /// </summary>
+        public Double Surplus { get; set; }
+
+        /// <summary>
         /// 单价
         /// </summary>
-        public Double? Price { get; set; }
+        public Double Price { get; set; }
 
         /// <summary>
         /// 总额
         /// </summary>
-        public Double? Amount { get; set; }
+        public Double Amount { get; set; }
 
         /// <summary>
         /// 创建时间

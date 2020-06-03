@@ -12,7 +12,7 @@ namespace Coldairarrow.Api.Controllers.TD
     {
         #region DI
 
-        public TD_BadController(ITD_BadBusiness tD_BadBus,IOperator op)
+        public TD_BadController(ITD_BadBusiness tD_BadBus, IOperator op)
         {
             _tD_BadBus = tD_BadBus;
             _Op = op;
