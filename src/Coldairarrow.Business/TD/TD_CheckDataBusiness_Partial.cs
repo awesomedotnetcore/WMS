@@ -26,15 +26,19 @@ namespace Coldairarrow.Business.TD
         public async Task<PageResult<TDCheckDataDTO>> QueryDataListAsync(PageInput<TDCheckDataConditionDTO> input)
         {
             var q = GetIQueryable();
-            q=q.Include(i => i.Storage)
+            q=q.Include(i => i.Storage)                
                 .Include(i => i.Material)
-                    .ThenInclude(i=>i.Measure)
+                    .ThenInclude(i=>i.Measure)                
                 .Include(i => i.Location)
                     .ThenInclude(i=>i.PB_Laneway)
                 .Include(i => i.Location)
+                    .ThenInclude(i => i.PB_Rack)                
+                .Include(i => i.Location)
                     .ThenInclude(i => i.PB_Rack)
                 .Include(i => i.Location)
-                    .ThenInclude(i => i.PB_StorArea);
+                    .ThenInclude(i => i.PB_StorArea)
+                .Include(i => i.Tray)
+                .Include(i => i.Zone);
 
             var where = LinqHelper.True<TD_CheckData>();
             var search = input.Search;
@@ -48,20 +52,78 @@ namespace Coldairarrow.Business.TD
                     CheckNum = u.CheckNum,
                     DisNum = u.DisNum,
                     Id = u.Id,
+                    BarCode = u.Material.BarCode,
+                    localId = u.localId,
+                    MeasureId = u.Material.MeasureId,
+                    StorId = u.StorId,
+                    TrayId = u.TrayId,
+                    ZoneId = u.ZoneId,
                     LocationCode = u.Location.Code,
                     LocationName = u.Location.Name,
                     LanewayName = u.Location.PB_Laneway.Name,
+                    TrayName = u.Tray.Name,
+                    ZoneName = u.Zone.Name,
                     LocalNum = u.LocalNum,
                     MaterialId = u.MaterialId,
                     MaterialName = u.Material.Name,
                     MaterialCode = u.Material.Code,
-                    MeasureName=u.Material.Measure.Name,
+                    MeasureName = u.Material.Measure.Name,
                     BatchNo = u.BatchNo,
                     RackName = u.Location.PB_Rack.Name,
                     Remarks = u.Location.Remarks,
                     AreaName = u.Location.PB_StorArea.Name,
                 })
                 .GetPageResultAsync(input);
+        }
+
+        public async Task<List<TDCheckDataDTO>> AllCheckDataListAsync(string checkId)
+        {
+            var q = GetIQueryable();
+            q = q.Include(i => i.Storage)
+                .Include(i => i.Material)
+                    .ThenInclude(i => i.Measure)
+                .Include(i => i.Location)
+                    .ThenInclude(i => i.PB_Laneway)
+                .Include(i => i.Location)
+                    .ThenInclude(i => i.PB_Rack)
+                .Include(i => i.Location)
+                    .ThenInclude(i => i.PB_Rack)
+                .Include(i => i.Location)
+                    .ThenInclude(i => i.PB_StorArea)
+                .Include(i => i.Tray)
+                .Include(i => i.Zone);
+
+            var where = LinqHelper.True<TD_CheckData>();
+            where = where.And(p => p.CheckId == checkId);
+
+            return await q.Where(where).Select(
+                u => new TDCheckDataDTO()
+                {
+                    CheckId = u.CheckId,
+                    CheckNum = u.CheckNum,
+                    DisNum = u.DisNum,
+                    Id = u.Id,
+                    BarCode = u.Material.BarCode,
+                    localId = u.localId,
+                    MeasureId = u.Material.MeasureId,
+                    StorId = u.StorId,
+                    TrayId = u.TrayId,
+                    ZoneId = u.ZoneId,
+                    LocationCode = u.Location.Code,
+                    LocationName = u.Location.Name,
+                    LanewayName = u.Location.PB_Laneway.Name,
+                    TrayName = u.Tray.Name,
+                    ZoneName = u.Zone.Name,
+                    LocalNum = u.LocalNum,
+                    MaterialId = u.MaterialId,
+                    MaterialName = u.Material.Name,
+                    MaterialCode = u.Material.Code,
+                    MeasureName = u.Material.Measure.Name,
+                    BatchNo = u.BatchNo,
+                    RackName = u.Location.PB_Rack.Name,
+                    Remarks = u.Location.Remarks,
+                    AreaName = u.Location.PB_StorArea.Name,
+                }).ToListAsync();
         }
 
         public async Task ModifyCheckNumAsync(string userId, TDCheckNumModifyDTO data)

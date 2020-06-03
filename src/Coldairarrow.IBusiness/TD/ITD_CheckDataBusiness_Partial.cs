@@ -14,6 +14,8 @@ namespace Coldairarrow.Business.TD
 
         Task<PageResult<TDCheckDataDTO>> QueryDataListAsync(PageInput<TDCheckDataConditionDTO> input);
 
+        Task<List<TDCheckDataDTO>> AllCheckDataListAsync(string checkId);
+
         Task ModifyCheckNumAsync(string userId,TDCheckNumModifyDTO data);
 
         Task<bool> AllCompletedAsync(string CheckId);

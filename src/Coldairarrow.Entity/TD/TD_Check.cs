@@ -48,9 +48,14 @@ namespace Coldairarrow.Entity.TD
         public Boolean? IsComplete { get; set; }
 
         /// <summary>
-        /// 状态(0待审核;1审核通过;2审核失败)
+        /// 状态(0待审核;1审核通过;2审核失败;3退回)
         /// </summary>
         public Int32? Status { get; set; }
+
+        /// <summary>
+        /// 备注
+        /// </summary>
+        public string Remarks { get; set; }
 
         /// <summary>
         /// 随机百分比

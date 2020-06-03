@@ -18,5 +18,11 @@ namespace Coldairarrow.Entity.TD
 
         [ForeignKey(nameof(MaterialId))]
         public PB_Material Material { set; get; }
+
+        [ForeignKey(nameof(ZoneId))]
+        public PB_TrayZone Zone { set; get; }
+
+        [ForeignKey(nameof(TrayId))]
+        public PB_Tray Tray { set; get; }
     }
 }
