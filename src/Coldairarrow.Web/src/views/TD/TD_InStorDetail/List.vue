@@ -63,7 +63,6 @@ export default {
     return {
       storage: {},
       data: [],
-      curDetail: {},
       columns: columns1,
       tempId: 0,
       selectedRowKeys: [],

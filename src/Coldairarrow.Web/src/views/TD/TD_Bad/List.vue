@@ -2,35 +2,35 @@
   <a-card :bordered="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button
-        type="primary"
-        icon="minus"
-        @click="handleDelete(selectedRowKeys)"
-        :disabled="!hasSelected()"
-        :loading="loading"
-      >删除</a-button>
+      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
 
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
-          <a-col :md="4" :sm="24">
-            <a-form-item label="查询类别">
-              <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="Code">报损单号</a-select-option>
-                <a-select-option key="StorId">仓库ID</a-select-option>
-                <a-select-option key="Type">报损类型(枚举)</a-select-option>
-                <a-select-option key="RefCode">关联单号</a-select-option>
-                <a-select-option key="EquId">设备ID</a-select-option>
-                <a-select-option key="Remarks">备注</a-select-option>
-                <a-select-option key="AuditUserId">审核人ID</a-select-option>
-              </a-select>
+          <a-col :md="2" :sm="24">
+            <a-form-item>
+              <enum-select code="BadType" v-model="queryParam.Type"></enum-select>
+            </a-form-item>
+          </a-col>
+          <a-col :md="2" :sm="24">
+            <a-form-item>
+              <a-input v-model="queryParam.Code" placeholder="单号" />
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="关键字" />
+              <a-range-picker @change="onBadTimeChange" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="2" :sm="24">
+            <a-form-item>
+              <a-select v-model="queryParam.Status" placeholder="状态" :allowClear="true">
+                <a-select-option :key="0" :value="0">待审核</a-select-option>
+                <a-select-option :key="1" :value="1">审核通过</a-select-option>
+                <a-select-option :key="2" :value="2">审核失败</a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -41,18 +41,10 @@
       </a-form>
     </div>
 
-    <a-table
-      ref="table"
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      :bordered="true"
-      size="small"
-    >
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+      <template slot="Type" slot-scope="text">
+        <enum-name code="BadType" :value="text"></enum-name>
+      </template>
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -67,27 +59,41 @@
 </template>
 
 <script>
+import moment from 'moment'
+import EnumName from '../../../components/BaseEnum/BaseEnumName'
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import EditForm from './EditForm'
-
+const filterStatus = (value, row, index) => {
+  var status = '待审核'
+  switch (value) {
+    case 0: status = '待审核'; break
+    case 1: status = '审核通过'; break
+    case 2: status = '审核失败'; break
+    default: break
+  }
+  return status
+}
+const filterDate = (value, row, index) => {
+  return moment(value).format('YYYY-MM-DD')
+}
 const columns = [
   { title: '报损单号', dataIndex: 'Code', width: '10%' },
-  { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
-  { title: '报损时间', dataIndex: 'BadTime', width: '10%' },
-  { title: '报损类型(枚举)', dataIndex: 'Type', width: '10%' },
-  { title: '关联单号', dataIndex: 'RefCode', width: '10%' },
+  { title: '报损时间', dataIndex: 'BadTime', customRender: filterDate, width: '10%' },
+  { title: '报损类型', dataIndex: 'Type', scopedSlots: { customRender: 'Type' }, width: '10%' },
   { title: '报损数量', dataIndex: 'BadNum', width: '10%' },
   { title: '总金额', dataIndex: 'TotalAmt', width: '10%' },
-  { title: '设备ID', dataIndex: 'EquId', width: '10%' },
-  { title: '状态', dataIndex: 'Status', width: '10%' },
-  { title: '备注', dataIndex: 'Remarks', width: '10%' },
-  { title: '审核人ID', dataIndex: 'AuditUserId', width: '10%' },
-  { title: '审核时间', dataIndex: 'AuditeTime', width: '10%' },
+  { title: '状态', dataIndex: 'Status', customRender: filterStatus, width: '10%' },
+  { title: '制单人', dataIndex: 'CreateUser.RealName', width: '10%' },
+  { title: '审核人', dataIndex: 'AuditUser.RealName', width: '10%' },
+  { title: '审核时间', dataIndex: 'AuditeTime', customRender: filterDate, width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
-    EditForm
+    EditForm,
+    EnumName,
+    EnumSelect
   },
   mounted() {
     this.getDataList()
@@ -141,6 +147,10 @@ export default {
     },
     hasSelected() {
       return this.selectedRowKeys.length > 0
+    },
+    onBadTimeChange(dates, dateStrings) {
+      this.queryParam.BadTimeStart = dateStrings[0]
+      this.queryParam.BadTimeEnd = dateStrings[1]
     },
     hanldleAdd() {
       this.$refs.editForm.openForm()

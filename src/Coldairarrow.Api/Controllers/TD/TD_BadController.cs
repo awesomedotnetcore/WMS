@@ -12,11 +12,13 @@ namespace Coldairarrow.Api.Controllers.TD
     {
         #region DI
 
-        public TD_BadController(ITD_BadBusiness tD_BadBus)
+        public TD_BadController(ITD_BadBusiness tD_BadBus,IOperator op)
         {
             _tD_BadBus = tD_BadBus;
+            _Op = op;
         }
 
+        IOperator _Op { get; }
         ITD_BadBusiness _tD_BadBus { get; }
 
         #endregion
@@ -24,8 +26,9 @@ namespace Coldairarrow.Api.Controllers.TD
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<TD_Bad>> GetDataList(PageInput<ConditionDTO> input)
+        public async Task<PageResult<TD_Bad>> GetDataList(TD_BadPageInput input)
         {
+            input.StorId = _Op.Property.DefaultStorageId;
             return await _tD_BadBus.GetDataListAsync(input);
         }
 

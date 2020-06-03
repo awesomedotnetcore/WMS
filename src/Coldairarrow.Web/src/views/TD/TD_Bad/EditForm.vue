@@ -1,59 +1,58 @@
 ﻿<template>
-  <a-modal
-    :title="title"
-    width="40%"
-    :visible="visible"
-    :confirmLoading="loading"
-    @ok="handleSubmit"
-    @cancel="()=>{this.visible=false}"
-  >
-    <a-spin :spinning="loading">
-      <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="报损单号" prop="Code">
-          <a-input v-model="entity.Code" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="仓库ID" prop="StorId">
-          <a-input v-model="entity.StorId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="报损时间" prop="BadTime">
-          <a-input v-model="entity.BadTime" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="报损类型(枚举)" prop="Type">
-          <a-input v-model="entity.Type" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="关联单号" prop="RefCode">
-          <a-input v-model="entity.RefCode" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="报损数量" prop="BadNum">
-          <a-input v-model="entity.BadNum" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="总金额" prop="TotalAmt">
-          <a-input v-model="entity.TotalAmt" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="设备ID" prop="EquId">
-          <a-input v-model="entity.EquId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="状态" prop="Status">
-          <a-input v-model="entity.Status" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="备注" prop="Remarks">
-          <a-input v-model="entity.Remarks" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="审核人ID" prop="AuditUserId">
-          <a-input v-model="entity.AuditUserId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="审核时间" prop="AuditeTime">
-          <a-input v-model="entity.AuditeTime" autocomplete="off" />
-        </a-form-model-item>
-      </a-form-model>
-    </a-spin>
-  </a-modal>
+  <a-drawer title="报损" :width="1200" :maskClosable="false" placement="right" :visible="visible" @close="()=>{this.visible=false}" :body-style="{ paddingBottom: '80px' }">
+    <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
+      <a-row>
+        <a-col :span="8">
+          <a-form-model-item label="报损单号" prop="Code">
+            <a-input v-model="entity.Code" :disabled="$para('GenerateBadCode')=='1' || disabled" placeholder="系统自动生成" autocomplete="off" />
+          </a-form-model-item>
+        </a-col>
+        <a-col :span="8">
+          <a-form-model-item label="报损时间" prop="BadTime">
+            <a-date-picker v-model="entity.BadTime" :disabled="disabled" />
+          </a-form-model-item>
+        </a-col>
+        <a-col :span="8">
+          <a-form-model-item label="报损类型" prop="Type">
+            <enum-select code="BadType" v-model="entity.Type" :disabled="disabled"></enum-select>
+          </a-form-model-item>
+        </a-col>
+      </a-row>
+      <a-row>
+        <a-col :span="8">
+          <a-form-model-item label="关联单号" prop="RefCode">
+            <a-input v-model="entity.RefCode" autocomplete="off" />
+          </a-form-model-item>
+        </a-col>
+        <a-col :span="16">
+          <a-form-model-item label="备注" prop="Remarks">
+            <a-input v-model="entity.Remarks" autocomplete="off" />
+          </a-form-model-item>
+        </a-col>
+      </a-row>
+    </a-form-model>
+    <bad-detail :disabled="disabled" v-model="listDetail"></bad-detail>
+    <div :style="{ position:'absolute',right:0,bottom:0,width:'100%',borderTop:'1px solid #e9e9e9',padding:'10px 16px',background:'#fff',textAlign:'right',zIndex: 1}">
+      <a-button :style="{ marginRight: '8px' }" @click="()=>{this.visible=false}">取消</a-button>
+      <a-button type="danger" :style="{ marginRight: '8px' }" v-if="entity.Id !== '' && entity.Status === 0 && disabled" @click="handleAudit(entity.Id,'Approve')">通过</a-button>
+      <a-button type="danger" :style="{ marginRight: '8px' }" v-if="entity.Id !== '' && entity.Status === 0 && disabled" @click="handleAudit(entity.Id,'Reject')">驳回</a-button>
+      <a-button :disabled="disabled" type="primary" @click="handleSubmit" v-if="entity.Status === 0">保存</a-button>
+    </div>
+  </a-drawer>
 </template>
 
 <script>
+import moment from 'moment'
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
+import BadDetail from '../TD_BadDetail/List'
 export default {
+  components: {
+    EnumSelect,
+    BadDetail
+  },
   props: {
-    parentObj: Object
+    parentObj: { type: Object, required: true },
+    disabled: { type: Boolean, required: false, default: false }
   },
   data() {
     return {
@@ -63,28 +62,30 @@ export default {
       },
       visible: false,
       loading: false,
-      entity: {},
-      rules: {},
-      title: ''
+      entity: { Id: '', Type: '', Status: 0 },
+      listDetail: [],
+      rules: {}
     }
   },
   methods: {
+    moment,
     init() {
       this.visible = true
-      this.entity = {}
+      this.entity = { Id: '', Type: '', Status: 0 }
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })
     },
-    openForm(id, title) {
+    openForm(id) {
       this.init()
 
       if (id) {
         this.loading = true
         this.$http.post('/TD/TD_Bad/GetTheData', { id: id }).then(resJson => {
           this.loading = false
-
           this.entity = resJson.Data
+          this.entity.BadTime = moment(this.entity.BadTime)
+          this.listDetail = [...resJson.Data.BadDetails]
         })
       }
     },
