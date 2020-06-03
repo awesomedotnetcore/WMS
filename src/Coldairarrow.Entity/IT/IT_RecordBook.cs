@@ -8,7 +8,7 @@ namespace Coldairarrow.Entity.IT
     /// 台账表
     /// </summary>
     [Table("IT_RecordBook")]
-    public class IT_RecordBook
+    public partial class IT_RecordBook
     {
 
         /// <summary>
@@ -87,6 +87,7 @@ namespace Coldairarrow.Entity.IT
         /// 删除状态：0=未删除；1＝已删除；
         /// </summary>
         public Boolean Deleted { get; set; }
+
 
     }
 }

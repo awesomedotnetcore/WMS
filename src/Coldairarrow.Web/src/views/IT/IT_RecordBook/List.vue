@@ -1,39 +1,31 @@
 ﻿<template>
   <a-card :bordered="false">
-    <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button
-        type="primary"
-        icon="minus"
-        @click="handleDelete(selectedRowKeys)"
-        :disabled="!hasSelected()"
-        :loading="loading"
-      >删除</a-button>
-      <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
-    </div>
-
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
-          <a-col :md="4" :sm="24">
-            <a-form-item label="查询类别">
-              <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="RefCode">相关单号</a-select-option>
-                <a-select-option key="Type">台账类型</a-select-option>
-                <a-select-option key="FromStorId">原仓库ID</a-select-option>
-                <a-select-option key="FromLocalId">原货位ID</a-select-option>
-                <a-select-option key="ToStorId">目标仓库</a-select-option>
-                <a-select-option key="ToLocalId">目标货位ID</a-select-option>
-                <a-select-option key="MaterialId">物料ID</a-select-option>
-                <a-select-option key="MeasureId">单位ID</a-select-option>
-                <a-select-option key="BarCode">物料条码</a-select-option>
-                <a-select-option key="BatchNo">批次号</a-select-option>
-              </a-select>
+          <a-col :md="2" :sm="24">
+            <a-form-item>
+              <a-input v-model="queryParam.RefCode" placeholder="单号" />
             </a-form-item>
           </a-col>
-          <a-col :md="4" :sm="24">
+          <a-col :md="2" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="关键字" />
+              <enum-select code="RecordBookType" v-model="queryParam.Type"></enum-select>
+            </a-form-item>
+          </a-col>
+          <a-col :md="2" :sm="24">
+            <a-form-item>
+              <a-input v-model="queryParam.LocalName" placeholder="原/目标 货架" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="2" :sm="24">
+            <a-form-item>
+              <a-input v-model="queryParam.MaterialName" placeholder="物料" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="2" :sm="24">
+            <a-form-item>
+              <a-input v-model="queryParam.BarCodeBatchNo" placeholder="条码/批次" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -56,40 +48,32 @@
       :bordered="true"
       size="small"
     >
-      <span slot="action" slot-scope="text, record">
-        <template>
-          <a @click="handleEdit(record.Id)">编辑</a>
-          <a-divider type="vertical" />
-          <a @click="handleDelete([record.Id])">删除</a>
-        </template>
-      </span>
     </a-table>
-
-    <edit-form ref="editForm" :parentObj="this"></edit-form>
   </a-card>
 </template>
 
 <script>
 import EditForm from './EditForm'
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 
 const columns = [
   { title: '相关单号', dataIndex: 'RefCode', width: '10%' },
   { title: '台账类型', dataIndex: 'Type', width: '10%' },
-  { title: '原仓库ID', dataIndex: 'FromStorId', width: '10%' },
-  { title: '原货位ID', dataIndex: 'FromLocalId', width: '10%' },
-  { title: '目标仓库', dataIndex: 'ToStorId', width: '10%' },
-  { title: '目标货位ID', dataIndex: 'ToLocalId', width: '10%' },
-  { title: '物料ID', dataIndex: 'MaterialId', width: '10%' },
-  { title: '单位ID', dataIndex: 'MeasureId', width: '10%' },
+  { title: '原仓库', dataIndex: 'FromStorage.Name', width: '10%' },
+  { title: '原货位', dataIndex: 'FromLocation.Name', width: '10%' },
+  { title: '目标仓库', dataIndex: 'ToStorage.Name', width: '10%' },
+  { title: '目标货位', dataIndex: 'ToLocation.Name', width: '10%' },
+  { title: '物料', dataIndex: 'Material.Name', width: '10%' },
+  { title: '单位', dataIndex: 'Measure.Name', width: '10%' },
   { title: '物料条码', dataIndex: 'BarCode', width: '10%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
-  { title: '数量', dataIndex: 'Num', width: '10%' },
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+  { title: '批次号', dataIndex: 'BatchNo', width: '5%' },
+  { title: '数量', dataIndex: 'Num', width: '5%' }
 ]
 
 export default {
   components: {
-    EditForm
+    EditForm,
+    EnumSelect
   },
   mounted() {
     this.getDataList()
@@ -137,39 +121,6 @@ export default {
           pagination.total = resJson.Total
           this.pagination = pagination
         })
-    },
-    onSelectChange(selectedRowKeys) {
-      this.selectedRowKeys = selectedRowKeys
-    },
-    hasSelected() {
-      return this.selectedRowKeys.length > 0
-    },
-    hanldleAdd() {
-      this.$refs.editForm.openForm()
-    },
-    handleEdit(id) {
-      this.$refs.editForm.openForm(id)
-    },
-    handleDelete(ids) {
-      var thisObj = this
-      this.$confirm({
-        title: '确认删除吗?',
-        onOk() {
-          return new Promise((resolve, reject) => {
-            thisObj.$http.post('/IT/IT_RecordBook/DeleteData', ids).then(resJson => {
-              resolve()
-
-              if (resJson.Success) {
-                thisObj.$message.success('操作成功!')
-
-                thisObj.getDataList()
-              } else {
-                thisObj.$message.error(resJson.Msg)
-              }
-            })
-          })
-        }
-      })
     }
   }
 }

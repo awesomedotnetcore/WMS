@@ -24,7 +24,7 @@ namespace Coldairarrow.Api.Controllers.IT
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<IT_RecordBook>> GetDataList(PageInput<ConditionDTO> input)
+        public async Task<PageResult<IT_RecordBook>> GetDataList(IT_RecordBookPageInput input)
         {
             return await _iT_RecordBookBus.GetDataListAsync(input);
         }
