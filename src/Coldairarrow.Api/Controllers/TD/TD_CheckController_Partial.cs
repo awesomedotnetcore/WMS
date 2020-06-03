@@ -114,6 +114,7 @@ namespace Coldairarrow.Api.Controllers.TD
         public async Task<AjaxResult> Pass(string Id)
         {
             var _Op = _provider.GetRequiredService<IOperator>();
+            var _checkSvc = _provider.GetRequiredService<ITD_CheckDataBusiness>();
             AjaxResult result = new AjaxResult();
             try
             {
@@ -122,7 +123,46 @@ namespace Coldairarrow.Api.Controllers.TD
                 entity.AuditeTime = DateTime.Now;
                 entity.AuditUserId = _Op.UserId;
 
-                await _tD_CheckBus.UpdateDataAsync(entity);
+                var checkDataList = await _checkSvc.AllCheckDataListAsync(entity.Id);
+
+                //库存更新数据
+                var localData = (from u in checkDataList
+                                 where u.DisNum.HasValue
+                                 select new BusinessInfo()
+                                 {
+                                     ActionType = 2,
+                                     BarCode = u.BarCode,
+                                     BatchNo = u.BatchNo,
+                                     LocalId = u.localId,
+                                     MaterialId = u.MaterialId,
+                                     MeasureId = u.MeasureId,
+                                     Num = Convert.ToDouble(u.DisNum),
+                                     StorId = u.StorId,
+                                     ZoneId = u.ZoneId,
+                                     TrayId = u.TrayId
+                                 }).ToList();
+
+                //台账数据
+                var recordData = (from u in checkDataList
+                                  where u.DisNum.HasValue
+                                  select new IT_RecordBook()
+                                  {
+                                      Id = IdHelper.GetId(),
+                                      BarCode = u.BarCode,
+                                      BatchNo = u.BatchNo,
+                                      CreateTime = DateTime.Now,
+                                      CreatorId = _Op.UserId,
+                                      Deleted = false,
+                                      FromLocalId = u.localId,
+                                      FromStorId = u.StorId,
+                                      MaterialId = u.MaterialId,
+                                      MeasureId = u.MeasureId,
+                                      Num = System.Math.Abs(Convert.ToDouble(u.DisNum)),
+                                      RefCode = entity.RefCode,
+                                      Type = Convert.ToDouble(u.DisNum) > 0 ? "Panying" : "Deficit"
+                                  }).ToList();
+
+                await _tD_CheckBus.PassHandleAsync(entity, localData, recordData);
                 result.Success = true;
             }
             catch (Exception e)
@@ -169,7 +209,7 @@ namespace Coldairarrow.Api.Controllers.TD
             {
                 var entity = await _tD_CheckBus.GetTheDataAsync(Id);
                 entity.IsComplete = false;
-                entity.Status = 0;
+                entity.Status = 3;
                 entity.AuditeTime = DateTime.Now;
                 entity.AuditUserId = _Op.UserId;
 
@@ -251,6 +291,8 @@ namespace Coldairarrow.Api.Controllers.TD
                                  CreatorId = _provider.GetRequiredService<IOperator>().UserId,
                                  Id = IdHelper.GetId(),
                                  localId = u.LocalId,
+                                 TrayId = u.TrayId,
+                                 ZoneId = u.ZoneId,
                                  LocalNum = u.Num,
                                  MaterialId = u.MaterialId,
                                  StorId = u.StorId

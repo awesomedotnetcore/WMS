@@ -33,6 +33,16 @@ namespace Coldairarrow.Entity.TD
         public String localId { get; set; }
 
         /// <summary>
+        /// 托盘ID
+        /// </summary>
+        public string TrayId { get; set; }
+
+        /// <summary>
+        /// 托盘分区ID
+        /// </summary>
+        public string ZoneId { set; get; }
+
+        /// <summary>
         /// 物料ID
         /// </summary>
         public String MaterialId { get; set; }
