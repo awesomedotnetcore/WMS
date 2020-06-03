@@ -2,13 +2,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Coldairarrow.Entity.IT
+namespace Coldairarrow.Entity.TD
 {
     /// <summary>
-    /// 台账表
+    /// 调拨表
     /// </summary>
-    [Table("IT_RecordBook")]
-    public partial class IT_RecordBook
+    [Table("TD_Allocate")]
+    public partial class TD_Allocate
     {
 
         /// <summary>
@@ -18,60 +18,69 @@ namespace Coldairarrow.Entity.IT
         public String Id { get; set; }
 
         /// <summary>
-        /// 相关单号
+        /// 调拨单号
         /// </summary>
-        public String RefCode { get; set; }
+        public String Code { get; set; }
 
         /// <summary>
-        /// 台账类型
-        /// 入库 出库 移库 调拨出 调拨入 报损 盘亏 盘盈
+        /// 调拨时间
         /// </summary>
-        public String Type { get; set; }
+        public DateTime AllocateTime { get; set; }
 
         /// <summary>
-        /// 原仓库ID
+        /// 调拨类型
         /// </summary>
-        public String FromStorId { get; set; }
+        public Int32 Type { get; set; }
 
         /// <summary>
-        /// 原货位ID
+        /// 仓库ID
         /// </summary>
-        public String FromLocalId { get; set; }
+        public String StorId { get; set; }
 
         /// <summary>
-        /// 目标仓库
+        /// 目标仓库ID
         /// </summary>
         public String ToStorId { get; set; }
 
         /// <summary>
-        /// 目标货位ID
+        /// 关联单号
         /// </summary>
-        public String ToLocalId { get; set; }
+        public String RefCode { get; set; }
 
         /// <summary>
-        /// 物料ID
+        /// 总额
         /// </summary>
-        public String MaterialId { get; set; }
+        public Double? Amount { get; set; }
 
         /// <summary>
-        /// 单位ID
+        /// 调拨数量
         /// </summary>
-        public String MeasureId { get; set; }
+        public Double AllocateNum { get; set; }
 
         /// <summary>
-        /// 物料条码
+        /// 设备ID
         /// </summary>
-        public String BarCode { get; set; }
+        public String EquId { get; set; }
 
         /// <summary>
-        /// 批次号
+        /// 状态(0待审核;1审核通过;2审核失败)
         /// </summary>
-        public String BatchNo { get; set; }
+        public Int32 Status { get; set; }
 
         /// <summary>
-        /// 数量
+        /// 备注
         /// </summary>
-        public Double Num { get; set; }
+        public String Remarks { get; set; }
+
+        /// <summary>
+        /// 审核人ID
+        /// </summary>
+        public String AuditUserId { get; set; }
+
+        /// <summary>
+        /// 审核时间
+        /// </summary>
+        public DateTime? AuditeTime { get; set; }
 
         /// <summary>
         /// 创建时间
@@ -87,7 +96,6 @@ namespace Coldairarrow.Entity.IT
         /// 删除状态：0=未删除；1＝已删除；
         /// </summary>
         public Boolean Deleted { get; set; }
-
 
     }
 }

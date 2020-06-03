@@ -2,13 +2,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Coldairarrow.Entity.IT
+namespace Coldairarrow.Entity.TD
 {
     /// <summary>
-    /// 台账表
+    /// 调拨明细
     /// </summary>
-    [Table("IT_RecordBook")]
-    public partial class IT_RecordBook
+    [Table("TD_AllocateDetail")]
+    public partial class TD_AllocateDetail
     {
 
         /// <summary>
@@ -18,15 +18,9 @@ namespace Coldairarrow.Entity.IT
         public String Id { get; set; }
 
         /// <summary>
-        /// 相关单号
+        /// 调拨ID
         /// </summary>
-        public String RefCode { get; set; }
-
-        /// <summary>
-        /// 台账类型
-        /// 入库 出库 移库 调拨出 调拨入 报损 盘亏 盘盈
-        /// </summary>
-        public String Type { get; set; }
+        public String AllocateId { get; set; }
 
         /// <summary>
         /// 原仓库ID
@@ -36,17 +30,32 @@ namespace Coldairarrow.Entity.IT
         /// <summary>
         /// 原货位ID
         /// </summary>
-        public String FromLocalId { get; set; }
+        public String FromlocalId { get; set; }
 
         /// <summary>
-        /// 目标仓库
+        /// 原托盘ID
+        /// </summary>
+        public String FromTrayId { get; set; }
+
+        /// <summary>
+        /// 原托盘分区ID
+        /// </summary>
+        public String FromZoneId { get; set; }
+
+        /// <summary>
+        /// 目标仓库ID
         /// </summary>
         public String ToStorId { get; set; }
 
         /// <summary>
         /// 目标货位ID
         /// </summary>
-        public String ToLocalId { get; set; }
+        public String TolocalId { get; set; }
+
+        /// <summary>
+        /// 条码
+        /// </summary>
+        public String BarCode { get; set; }
 
         /// <summary>
         /// 物料ID
@@ -54,24 +63,24 @@ namespace Coldairarrow.Entity.IT
         public String MaterialId { get; set; }
 
         /// <summary>
-        /// 单位ID
-        /// </summary>
-        public String MeasureId { get; set; }
-
-        /// <summary>
-        /// 物料条码
-        /// </summary>
-        public String BarCode { get; set; }
-
-        /// <summary>
         /// 批次号
         /// </summary>
         public String BatchNo { get; set; }
 
         /// <summary>
-        /// 数量
+        /// 单价
         /// </summary>
-        public Double Num { get; set; }
+        public Double? Price { get; set; }
+
+        /// <summary>
+        /// 总额
+        /// </summary>
+        public Double? Amount { get; set; }
+
+        /// <summary>
+        /// 调拨数量
+        /// </summary>
+        public Double? LocalNum { get; set; }
 
         /// <summary>
         /// 创建时间
@@ -87,7 +96,6 @@ namespace Coldairarrow.Entity.IT
         /// 删除状态：0=未删除；1＝已删除；
         /// </summary>
         public Boolean Deleted { get; set; }
-
 
     }
 }

@@ -17,5 +17,7 @@ namespace Coldairarrow.IBusiness.DTO
         public int Status { set; get; }
 
         public string RefCode { set; get; }
+
+        public string[] RangeDate { set; get; }
     }
 }
