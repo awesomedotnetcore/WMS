@@ -12,10 +12,7 @@ namespace Coldairarrow.Business.TD
 {
     public partial class TD_BadBusiness : BaseBusiness<TD_Bad>, ITD_BadBusiness, ITransientDependency
     {
-        public TD_BadBusiness(IRepository repository)
-            : base(repository)
-        {
-        }
+        
 
         #region 外部接口
 
@@ -38,15 +35,7 @@ namespace Coldairarrow.Business.TD
 
         
 
-        public async Task AddDataAsync(TD_Bad data)
-        {
-            await InsertAsync(data);
-        }
-
-        public async Task UpdateDataAsync(TD_Bad data)
-        {
-            await UpdateAsync(data);
-        }
+        
 
         public async Task DeleteDataAsync(List<string> ids)
         {

@@ -13,7 +13,7 @@ namespace Coldairarrow.Business.TD
 {
     public partial class TD_InStorageBusiness : BaseBusiness<TD_InStorage>, ITD_InStorageBusiness, ITransientDependency
     {
-        public TD_InStorageBusiness(IRepository repository,IServiceProvider svcProvider)
+        public TD_InStorageBusiness(IRepository repository, IServiceProvider svcProvider)
             : base(repository)
         {
             _ServiceProvider = svcProvider;
@@ -22,9 +22,6 @@ namespace Coldairarrow.Business.TD
         readonly IServiceProvider _ServiceProvider;
         #region 外部接口
 
-
-
-        
 
         public async Task DeleteDataAsync(List<string> ids)
         {
