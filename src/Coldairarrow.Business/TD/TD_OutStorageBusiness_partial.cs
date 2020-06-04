@@ -66,7 +66,7 @@ namespace Coldairarrow.Business.TD
                 var codeSvc = _ServiceProvider.GetRequiredService<IPB_BarCodeTypeBusiness>();
                 data.Code = await codeSvc.Generate("TD_OutStorage");
             }
-            data.OutNum = data.OutStorDetails.Sum(s => s.LocalNum);
+            data.OutNum = data.OutStorDetails.Sum(s => s.OutNum);
             data.TotalAmt = data.OutStorDetails.Sum(s => s.TotalAmt);
             await InsertAsync(data);
         }
@@ -97,7 +97,7 @@ namespace Coldairarrow.Business.TD
                 await detailSvc.UpdateDataAsync(listUpdates);
             }
 
-            data.OutNum = data.OutStorDetails.Sum(s => s.LocalNum);
+            data.OutNum = data.OutStorDetails.Sum(s => s.OutNum);
             data.TotalAmt = data.OutStorDetails.Sum(s => s.TotalAmt);
 
             await UpdateAsync(data);
@@ -116,7 +116,7 @@ namespace Coldairarrow.Business.TD
             {
                 var ldGrout = detail
                     .GroupBy(g => new { g.StorId, g.LocalId, g.TrayId, g.ZoneId, g.MaterialId, g.BatchNo, g.BarCode, g.Price })
-                    .Select(s => new { s.Key.StorId, s.Key.LocalId, s.Key.TrayId, s.Key.ZoneId, s.Key.MaterialId, s.Key.BatchNo, s.Key.BarCode, s.Key.Price, TotalAmt = s.Sum(o => o.TotalAmt), Num = s.Sum(o => o.LocalNum) })
+                    .Select(s => new { s.Key.StorId, s.Key.LocalId, s.Key.TrayId, s.Key.ZoneId, s.Key.MaterialId, s.Key.BatchNo, s.Key.BarCode, s.Key.Price, TotalAmt = s.Sum(o => o.TotalAmt), Num = s.Sum(o => o.OutNum) })
                     .ToList();
                 var listLd = new List<IT_LocalDetail>();
                 foreach (var item in ldGrout)
@@ -144,7 +144,8 @@ namespace Coldairarrow.Business.TD
                 if (listLd.Count > 0)
                 {
                     var localdetailSvc = _ServiceProvider.GetRequiredService<IIT_LocalDetailBusiness>();
-                    await localdetailSvc.AddDataAsync(listLd);
+                   // await localdetailSvc.AddDataAsync(listLd);
+                    await localdetailSvc.UpdateDataAsync(listLd);
                 }
             }
 
@@ -152,7 +153,7 @@ namespace Coldairarrow.Business.TD
             {
                 var lmGrout = detail
                     .GroupBy(g => new { g.StorId, g.LocalId, g.TrayId, g.ZoneId, g.MaterialId, g.BatchNo, g.BarCode })
-                    .Select(s => new { s.Key.StorId, s.Key.LocalId, s.Key.TrayId, s.Key.ZoneId, s.Key.MaterialId, s.Key.BatchNo, s.Key.BarCode, Num = s.Sum(o => o.LocalNum) })
+                    .Select(s => new { s.Key.StorId, s.Key.LocalId, s.Key.TrayId, s.Key.ZoneId, s.Key.MaterialId, s.Key.BatchNo, s.Key.BarCode, Num = s.Sum(o => o.OutNum) })
                     .ToList();
                 //查询当前库存记录
                 var localIds = lmGrout.Select(s => s.LocalId).ToList();
@@ -193,19 +194,6 @@ namespace Coldairarrow.Business.TD
                     }
                     else
                     {
-                        //当前库存不存在此物料，则提示
-                        //var lm = new IT_LocalMaterial();
-                        //lm.Id = IdHelper.GetId();
-                        //lm.StorId = item.StorId;
-                        //lm.LocalId = item.LocalId;
-                        //lm.TrayId = item.TrayId;
-                        //lm.ZoneId = item.ZoneId;
-                        //lm.MaterialId = item.MaterialId;
-                        //lm.MeasureId = dicMUnit[item.MaterialId];
-                        //lm.BatchNo = item.BatchNo;
-                        //lm.BarCode = item.BarCode;
-                        //lm.Num = item.Num;
-                        //listLmAdd.Add(lm);
                     }
                 }
                 if (listLmAdd.Count > 0)
@@ -222,7 +210,7 @@ namespace Coldairarrow.Business.TD
             {
                 var lmGrout = detail
                     .GroupBy(g => new { g.StorId, g.LocalId, g.TrayId, g.ZoneId, g.MaterialId, g.BatchNo, g.BarCode })
-                    .Select(s => new { s.Key.StorId, s.Key.LocalId, s.Key.TrayId, s.Key.ZoneId, s.Key.MaterialId, s.Key.BatchNo, s.Key.BarCode, Num = s.Sum(o => o.LocalNum) })
+                    .Select(s => new { s.Key.StorId, s.Key.LocalId, s.Key.TrayId, s.Key.ZoneId, s.Key.MaterialId, s.Key.BatchNo, s.Key.BarCode, Num = s.Sum(o => o.OutNum) })
                     .ToList();
 
                 var listRB = new List<IT_RecordBook>();

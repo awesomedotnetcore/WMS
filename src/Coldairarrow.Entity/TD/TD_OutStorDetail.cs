@@ -68,9 +68,14 @@ namespace Coldairarrow.Entity.TD
         public Double TotalAmt { get; set; }
 
         /// <summary>
-        /// 出库数量
+        /// 库存数量
         /// </summary>
         public Double LocalNum { get; set; }
+
+        /// <summary>
+        /// 出库数量
+        /// </summary>
+        public Double OutNum { get; set; }
 
         /// <summary>
         /// 创建时间
