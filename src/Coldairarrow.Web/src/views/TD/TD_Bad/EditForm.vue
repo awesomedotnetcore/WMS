@@ -95,7 +95,20 @@ export default {
           return
         }
         this.loading = true
-        this.$http.post('/TD/TD_Bad/SaveData', this.entity).then(resJson => {
+        // 数据处理
+        var badDetails = this.listDetail.map((v, i, arr) => {
+          var result = { ...v }
+          result.FromLocal = null
+          result.Tray = null
+          result.TrayZone = null
+          result.Material = null
+          result.Measure = null
+          return result
+        })
+        var entityData = { ...this.entity }
+        entityData.BadDetails = badDetails
+
+        this.$http.post('/TD/TD_Bad/SaveData', entityData).then(resJson => {
           this.loading = false
 
           if (resJson.Success) {

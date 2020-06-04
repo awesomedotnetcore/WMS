@@ -6,10 +6,10 @@
     </div>
     <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
       <template slot="BadNum" slot-scope="text, record">
-        <a-input-number :disabled="disabled" :value="text" :max="record.LocalNum" :min="1" @change="e=>handleValChange(e,'BadNum',record)"></a-input-number>
+        <a-input-number size="small" :disabled="disabled" :value="text" :max="record.LocalNum" :min="1" @change="e=>handleValChange(e,'BadNum',record)"></a-input-number>
       </template>
       <template slot="Surplus" slot-scope="text, record">
-        <a-input-number :disabled="disabled" :value="text" :max="100" :min="0" @change="e=>handleValChange(e,'Surplus',record)" :formatter="value => `${value}%`" :parser="value => value.replace('%', '')"></a-input-number>
+        <a-input-number size="small" :disabled="disabled" :value="text" :max="100" :min="0" @change="e=>handleValChange(e,'Surplus',record)" :formatter="value => `${value}%`" :parser="value => value.replace('%', '')"></a-input-number>
       </template>
       <span slot="action" slot-scope="text, record">
         <template>

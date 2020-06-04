@@ -74,7 +74,11 @@ const filterStatus = (value, row, index) => {
   return status
 }
 const filterDate = (value, row, index) => {
-  return moment(value).format('YYYY-MM-DD')
+  if (value) {
+    return moment(value).format('YYYY-MM-DD')
+  } else {
+    return ' '
+  }
 }
 const columns = [
   { title: '报损单号', dataIndex: 'Code', width: '10%' },
