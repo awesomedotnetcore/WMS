@@ -52,6 +52,10 @@
         </template>
       </span>
 
+      <template slot="Type" slot-scope="text">
+        <enum-name code="StorAreaType" :value="text"></enum-name>
+      </template>
+
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -71,6 +75,7 @@
 <script>
 import EditForm from './EditForm'
 import MaterialList from '../PB_AreaMaterial/List'
+import EnumName from '../../../components/BaseEnum/BaseEnumName'
 
 // const filterYesOrNo = (value, row, index) => {
 //   if (value) return '是'
@@ -81,6 +86,7 @@ const columns = [
   { title: '仓库', dataIndex: 'PB_Storage.Name', width: '10%' },
   { title: '货区编号', dataIndex: 'Code', width: '10%' },
   { title: '货区名称', dataIndex: 'Name', width: '10%' },
+  { title: '货区类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
   { title: '缓存区', dataIndex: 'IsCache', width: '10%', scopedSlots: { customRender: 'IsCache' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
@@ -88,7 +94,8 @@ const columns = [
 export default {
   components: {
     EditForm,
-    MaterialList
+    MaterialList,
+    EnumName
   },
   mounted() {
     this.getDataList()

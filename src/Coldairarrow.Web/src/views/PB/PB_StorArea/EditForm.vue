@@ -24,6 +24,11 @@
         <a-form-model-item label="货区名称" prop="Name">
           <a-input v-model="entity.Name" autocomplete="off" />
         </a-form-model-item>
+        <a-form-model-item label="货区类型" prop="Type">
+          <!-- <a-input v-model="entity.Type" autocomplete="off" /> -->
+          <enum-select code="StorAreaType" v-model="entity.Type" >             
+          </enum-select>
+        </a-form-model-item>
         <a-form-model-item label="是否缓存区" prop="IsCache">
           <a-radio-group v-model="entity.IsCache">
             <a-radio-button :value="true">是</a-radio-button>
@@ -37,10 +42,12 @@
 
 <script>
 import StorageSelect from '../../../components/Storage/StorageSelect'
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 
 export default {
   components: {
-    StorageSelect
+    StorageSelect,
+    EnumSelect
   },
   props: {
     parentObj: Object

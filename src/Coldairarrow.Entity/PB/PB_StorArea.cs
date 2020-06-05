@@ -36,6 +36,11 @@ namespace Coldairarrow.Entity.PB
         public String Name { get; set; }
 
         /// <summary>
+        /// 货区类型
+        /// </summary>
+        public String Type { get; set; }
+
+        /// <summary>
         /// 是否缓存区
         /// </summary>
         public Boolean IsCache { get; set; }
