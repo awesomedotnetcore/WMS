@@ -47,14 +47,16 @@
       </template>
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="handleEdit(record.Id)">编辑</a>
-          <a-divider type="vertical" />
-          <a @click="handleDelete([record.Id])">删除</a>
+          <a v-if="record.Status===0" @click="handleEdit(record.Id)">编辑</a>
+          <a-divider v-if="record.Status===0" type="vertical" />
+          <a v-if="record.Status===0" @click="handleDelete([record.Id])">删除</a>
+          <a-divider v-if="record.Status===0" type="vertical" />
+          <a @click="handleShow(record.Id)">{{ record.Status === 0?'审核':'查看' }}</a>
         </template>
       </span>
     </a-table>
 
-    <edit-form ref="editForm" :parentObj="this"></edit-form>
+    <edit-form ref="editForm" :disabled="disabled" :parentObj="this"></edit-form>
   </a-card>
 </template>
 
@@ -84,8 +86,8 @@ const columns = [
   { title: '报损单号', dataIndex: 'Code', width: '10%' },
   { title: '报损时间', dataIndex: 'BadTime', customRender: filterDate, width: '10%' },
   { title: '报损类型', dataIndex: 'Type', scopedSlots: { customRender: 'Type' }, width: '10%' },
-  { title: '报损数量', dataIndex: 'BadNum', width: '10%' },
-  { title: '总金额', dataIndex: 'TotalAmt', width: '10%' },
+  { title: '报损数量', dataIndex: 'BadNum', width: '5%' },
+  { title: '总金额', dataIndex: 'TotalAmt', width: '5%' },
   { title: '状态', dataIndex: 'Status', customRender: filterStatus, width: '10%' },
   { title: '制单人', dataIndex: 'CreateUser.RealName', width: '10%' },
   { title: '审核人', dataIndex: 'AuditUser.RealName', width: '10%' },
@@ -115,7 +117,8 @@ export default {
       loading: false,
       columns,
       queryParam: {},
-      selectedRowKeys: []
+      selectedRowKeys: [],
+      disabled: false
     }
   },
   methods: {
@@ -157,9 +160,15 @@ export default {
       this.queryParam.BadTimeEnd = dateStrings[1]
     },
     hanldleAdd() {
+      this.disabled = false
       this.$refs.editForm.openForm()
     },
     handleEdit(id) {
+      this.disabled = false
+      this.$refs.editForm.openForm(id)
+    },
+    handleShow(id) {
+      this.disabled = true
       this.$refs.editForm.openForm(id)
     },
     handleDelete(ids) {

@@ -206,5 +206,11 @@ namespace Coldairarrow.Business.IT
                 where = where.Or(w => w.Id == search.Id);
             return await q.Where(where).OrderBy(o => o.Material.Name).Take(search.Take).ToListAsync();
         }
+
+
+        public async Task DeleteDataAsync(List<IT_LocalMaterial> list)
+        {
+            await DeleteAsync(list);
+        }
     }
 }

@@ -1,5 +1,9 @@
-﻿using Coldairarrow.Business.PB;
+﻿using Coldairarrow.Business.IT;
+using Coldairarrow.Business.PB;
+using Coldairarrow.Entity.IT;
+using Coldairarrow.Entity.PB;
 using Coldairarrow.Entity.TD;
+using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using EFCore.Sharding;
 using LinqKit;
@@ -59,6 +63,7 @@ namespace Coldairarrow.Business.TD
                 .SingleOrDefaultAsync(w => w.Id == id);
         }
 
+        [Transactional]
         public async Task AddDataAsync(TD_Bad data)
         {
             if (data.Code.IsNullOrEmpty())
@@ -71,6 +76,7 @@ namespace Coldairarrow.Business.TD
             await InsertAsync(data);
         }
 
+        [Transactional]
         public async Task UpdateDataAsync(TD_Bad data)
         {
             var curDetail = data.BadDetails;
@@ -101,6 +107,269 @@ namespace Coldairarrow.Business.TD
             data.TotalAmt = data.BadDetails.Sum(s => s.Amount);
 
             await UpdateAsync(data);
+        }
+
+
+
+        [Transactional]
+        public async Task Approve(AuditDTO audit)
+        {
+            var now = DateTime.Now;
+            var data = await this.GetTheDataAsync(audit.Id);
+            var detail = data.BadDetails;
+            var dicMUnit = detail.Select(s => s.Material).Distinct().ToDictionary(k => k.Id, v => v.MeasureId);
+
+            PB_Location defaultBadLocation = null;
+            // 找到默认的报损货位
+            {
+                var localSvc = Service.GetIQueryable<PB_Location>();
+                defaultBadLocation = await localSvc.Where(w => w.StorId == audit.StorId && w.Type == "Bad").OrderByDescending(o => o.IsDefault).FirstOrDefaultAsync();
+                if (defaultBadLocation == null) throw new Exception("没有指定默认报损货位");
+            }
+
+            var lmSvc = _ServiceProvider.GetRequiredService<IIT_LocalMaterialBusiness>();
+            var ldSvc = _ServiceProvider.GetRequiredService<IIT_LocalDetailBusiness>();
+            
+            
+
+
+            // 原库位出库
+            {
+                var badGroup = detail
+                    .GroupBy(w => new { w.FromLocalId, w.TrayId, w.ZoneId, w.MaterialId, w.BatchNo, w.BarCode })
+                    .Select(s => new { s.Key.FromLocalId, s.Key.TrayId, s.Key.ZoneId, s.Key.MaterialId, s.Key.BatchNo, s.Key.BarCode, BadNum = s.Sum(o => o.BadNum) })
+                    .ToList();
+                var localIds = badGroup.Select(s => s.FromLocalId).ToList();
+                var trayIds = badGroup.Select(s => s.TrayId).ToList();
+                var zoneIds = badGroup.Select(s => s.ZoneId).ToList();
+                var materialIds = badGroup.Select(s => s.MaterialId).ToList();
+                var batchNos = badGroup.Select(s => s.BatchNo).ToList();
+                var barCodes = badGroup.Select(s => s.BarCode).ToList();
+
+                //修改库存
+                {
+                    var lmQuery = Service.GetIQueryable<IT_LocalMaterial>();
+                    if (localIds.Count > 0)
+                        lmQuery = lmQuery.Where(w => localIds.Contains(w.LocalId));
+                    if (trayIds.Count > 0)
+                        lmQuery = lmQuery.Where(w => trayIds.Contains(w.TrayId));
+                    if (zoneIds.Count > 0)
+                        lmQuery = lmQuery.Where(w => zoneIds.Contains(w.ZoneId));
+                    if (materialIds.Count > 0)
+                        lmQuery = lmQuery.Where(w => materialIds.Contains(w.MaterialId));
+                    if (batchNos.Count > 0)
+                        lmQuery = lmQuery.Where(w => batchNos.Contains(w.BatchNo));
+                    if (barCodes.Count > 0)
+                        lmQuery = lmQuery.Where(w => barCodes.Contains(w.BarCode));
+
+                    var listLM = await lmQuery.ToListAsync();
+                    var listDel = new List<IT_LocalMaterial>();
+                    var listUpdate = new List<IT_LocalMaterial>();
+                    var listRB = new List<IT_RecordBook>();
+                    foreach (var bad in badGroup)
+                    {
+                        var lm = listLM.Where(w => w.StorId == audit.StorId && w.LocalId == bad.FromLocalId && w.TrayId == bad.TrayId && w.ZoneId == bad.ZoneId && w.MaterialId == bad.MaterialId && w.BatchNo == bad.BatchNo && w.BarCode == bad.BarCode).SingleOrDefault();
+                        if (lm == null || lm.Num < bad.BadNum) throw new Exception($"没有找到对应物料的库存数据/库存数量不够({bad.BadNum})");
+                        if (lm.Num == bad.BadNum) listDel.Add(lm);
+                        else if (lm.Num > bad.BadNum)
+                        {
+                            lm.Num -= bad.BadNum;
+                            listUpdate.Add(lm);
+                        }
+                        // 增加（报损-出）BadOut台帐
+                        var rbOut = new IT_RecordBook()
+                        {
+                            Id = IdHelper.GetId(),
+                            RefCode = data.Code,
+                            Type = "BadOut",
+                            FromStorId = audit.StorId,
+                            FromLocalId = bad.FromLocalId,
+                            ToStorId = audit.StorId,
+                            ToLocalId = defaultBadLocation.Id,
+                            MaterialId = bad.MaterialId,
+                            MeasureId = dicMUnit[bad.MaterialId],
+                            BarCode = bad.BarCode,
+                            BatchNo = bad.BatchNo,
+                            Num = bad.BadNum,
+                            CreateTime = audit.AuditTime,
+                            CreatorId = audit.AuditUserId,
+                            Deleted = false
+                        };
+                        listRB.Add(rbOut);
+                        // 增加（报损-入）BadOut台帐
+                        var rbIn = new IT_RecordBook()
+                        {
+                            Id = IdHelper.GetId(),
+                            RefCode = data.Code,
+                            Type = "BadIn",
+                            FromStorId = audit.StorId,
+                            FromLocalId = bad.FromLocalId,
+                            ToStorId = audit.StorId,
+                            ToLocalId = defaultBadLocation.Id,
+                            MaterialId = bad.MaterialId,
+                            MeasureId = dicMUnit[bad.MaterialId],
+                            BarCode = bad.BarCode,
+                            BatchNo = bad.BatchNo,
+                            Num = bad.BadNum,
+                            CreateTime = audit.AuditTime,
+                            CreatorId = audit.AuditUserId,
+                            Deleted = false
+                        };
+                        listRB.Add(rbIn);
+                    }
+                    if (listDel.Count > 0) await lmSvc.DeleteDataAsync(listDel);
+                    if (listUpdate.Count > 0) await lmSvc.UpdateDataAsync(listUpdate);
+
+                    // 保存数据台帐
+                    var rbSvc = _ServiceProvider.GetRequiredService<IIT_RecordBookBusiness>();
+                    await rbSvc.AddDataAsync(listRB);
+                }
+
+                // 修改库存明细
+                {
+                    var ldQuery = Service.GetIQueryable<IT_LocalDetail>();
+                    if (localIds.Count > 0)
+                        ldQuery = ldQuery.Where(w => localIds.Contains(w.LocalId));
+                    if (trayIds.Count > 0)
+                        ldQuery = ldQuery.Where(w => trayIds.Contains(w.TrayId));
+                    if (zoneIds.Count > 0)
+                        ldQuery = ldQuery.Where(w => zoneIds.Contains(w.ZoneId));
+                    if (materialIds.Count > 0)
+                        ldQuery = ldQuery.Where(w => materialIds.Contains(w.MaterialId));
+                    if (batchNos.Count > 0)
+                        ldQuery = ldQuery.Where(w => batchNos.Contains(w.BatchNo));
+                    if (barCodes.Count > 0)
+                        ldQuery = ldQuery.Where(w => barCodes.Contains(w.BarCode));
+
+                    var listLD = await ldQuery.ToListAsync();
+
+                    var listDel = new List<IT_LocalDetail>();
+                    var listUpdate = new List<IT_LocalDetail>();
+                    foreach (var bad in badGroup)
+                    {
+                        var badNum = bad.BadNum;
+                        var lds = listLD.Where(w => w.StorId == audit.StorId && w.LocalId == bad.FromLocalId && w.TrayId == bad.TrayId && w.ZoneId == bad.ZoneId && w.MaterialId == bad.MaterialId && w.BatchNo == bad.BatchNo && w.BarCode == bad.BarCode).OrderBy(o => o.InTime).ToList();
+                        if (lds.Sum(s => s.Num) < badNum) throw new Exception($"库存(明细)数量不够({bad.BadNum})");
+                        foreach (var item in lds)
+                        {
+                            if (item.Num <= badNum)
+                            {
+                                listDel.Add(item);
+                                badNum -= item.Num.GetValueOrDefault(0);
+                            }
+                            else
+                            {
+                                item.Num -= badNum;
+                                listUpdate.Add(item);
+                                badNum = 0;
+                            }
+                            if (badNum == 0) break;
+                        }
+                    }
+                    if (listDel.Count > 0) await ldSvc.DeleteDataAsync(listDel);
+                    if (listUpdate.Count > 0) await ldSvc.UpdateDataAsync(listUpdate);
+                }
+            }
+
+            //默认报损库位入库
+            {
+                var badGroup = detail
+                    .GroupBy(w => new { w.MaterialId, w.BatchNo, w.BarCode })
+                    .Select(s => new { s.Key.MaterialId, s.Key.BatchNo, s.Key.BarCode, BadNum = s.Sum(o => o.BadNum) })
+                    .ToList();
+                var materialIds = badGroup.Select(s => s.MaterialId).ToList();
+                var batchNos = badGroup.Select(s => s.BatchNo).ToList();
+                var barCodes = badGroup.Select(s => s.BarCode).ToList();
+                // 修改库存
+                {
+                    var lmQuery = Service.GetIQueryable<IT_LocalMaterial>().Where(w => w.LocalId == defaultBadLocation.Id);
+                    if (materialIds.Count > 0)
+                        lmQuery = lmQuery.Where(w => materialIds.Contains(w.MaterialId));
+                    if (batchNos.Count > 0)
+                        lmQuery = lmQuery.Where(w => batchNos.Contains(w.BatchNo));
+                    if (barCodes.Count > 0)
+                        lmQuery = lmQuery.Where(w => barCodes.Contains(w.BarCode));
+                    var listLM = await lmQuery.ToListAsync();
+
+                    var listAdd = new List<IT_LocalMaterial>();
+                    var listUpdate = new List<IT_LocalMaterial>();
+                    foreach (var bad in badGroup)
+                    {
+                        var lm = listLM.Where(w => w.StorId == audit.StorId && w.LocalId == defaultBadLocation.Id && w.MaterialId == bad.MaterialId && w.BatchNo == bad.BatchNo && w.BarCode == bad.BarCode).SingleOrDefault();
+                        if (lm != null)
+                        {
+                            lm.Num += bad.BadNum;
+                            listUpdate.Add(lm);
+                        }
+                        else
+                        {
+                            lm = new IT_LocalMaterial()
+                            {
+                                Id = IdHelper.GetId(),
+                                StorId = audit.StorId,
+                                LocalId = defaultBadLocation.Id,
+                                MaterialId = bad.MaterialId,
+                                MeasureId = dicMUnit[bad.MaterialId],
+                                BatchNo = bad.BatchNo,
+                                BarCode = bad.BarCode,
+                                Num = bad.BadNum
+                            };
+                            listAdd.Add(lm);
+                        }
+                        
+                    }
+                }
+
+                // 增加库存明细
+                {
+                    var listAdd = new List<IT_LocalDetail>();
+                    foreach (var bad in detail)
+                    {
+                        var ld = new IT_LocalDetail();
+                        ld.Id = IdHelper.GetId();
+                        ld.StorId = audit.StorId;
+                        ld.InStorId = audit.Id;
+                        ld.LocalId = defaultBadLocation.Id;
+                        ld.MaterialId = bad.MaterialId;
+                        ld.MeasureId = dicMUnit[bad.MaterialId];
+                        ld.BatchNo = bad.BatchNo;
+                        ld.BarCode = bad.BarCode;
+                        ld.InTime = audit.AuditTime;
+                        ld.Amount = bad.Amount;
+                        ld.CreateTime = now;
+                        ld.CreatorId = audit.AuditUserId;
+                        ld.Price = bad.Price;
+                        ld.Num = bad.BadNum;
+                        ld.Deleted = false;
+                        listAdd.Add(ld);
+                    }
+                    if (listAdd.Count > 0)
+                    {
+                        var localdetailSvc = _ServiceProvider.GetRequiredService<IIT_LocalDetailBusiness>();
+                        await localdetailSvc.AddDataAsync(listAdd);
+                    }
+                }
+            }
+
+            // 修改主数据状态
+            {
+                data.Status = 1;
+                data.AuditeTime = audit.AuditTime;
+                data.AuditUserId = audit.AuditUserId;
+                await UpdateAsync(data);
+            }
+        }
+
+        public async Task Reject(AuditDTO audit)
+        {
+            var data = await this.GetEntityAsync(audit.Id);
+            // 修改主数据状态
+            {
+                data.Status = 2;
+                data.AuditeTime = audit.AuditTime;
+                data.AuditUserId = audit.AuditUserId;
+                await UpdateAsync(data);
+            }
         }
     }
 }

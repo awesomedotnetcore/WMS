@@ -21,12 +21,12 @@
       <a-row>
         <a-col :span="8">
           <a-form-model-item label="关联单号" prop="RefCode">
-            <a-input v-model="entity.RefCode" autocomplete="off" />
+            <a-input v-model="entity.RefCode" autocomplete="off" :disabled="disabled" />
           </a-form-model-item>
         </a-col>
         <a-col :span="16">
           <a-form-model-item label="备注" prop="Remarks">
-            <a-input v-model="entity.Remarks" autocomplete="off" />
+            <a-input v-model="entity.Remarks" autocomplete="off" :disabled="disabled" />
           </a-form-model-item>
         </a-col>
       </a-row>
@@ -120,6 +120,19 @@ export default {
             this.$message.error(resJson.Msg)
           }
         })
+      })
+    },
+    handleAudit(id, type) {
+      this.loading = true
+      this.$http.post('/TD/TD_Bad/Audit', { Id: id, AuditType: type }).then(resJson => {
+        this.loading = false
+        if (resJson.Success) {
+          this.$message.success('操作成功!')
+          this.visible = false
+          this.parentObj.getDataList()
+        } else {
+          this.$message.error(resJson.Msg)
+        }
       })
     }
   }
