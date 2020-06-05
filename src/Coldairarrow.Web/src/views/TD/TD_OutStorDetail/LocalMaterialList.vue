@@ -1,172 +1,126 @@
 ﻿<template>
-  <a-modal
-    :title="title"
-    width="90%"
-    :visible="visible"
-    :confirmLoading="loading"
-    @ok="handleSubmit"
-    @cancel="()=>{this.visible=false}"
-  >
-    <a-spin :spinning="loading">
-      <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="物料" prop="MaterialId">
-          <materila-select v-model="entity.MaterialId" @select="handleMaterialSelect"></materila-select>
-        </a-form-model-item>
-        <a-table
-          ref="table"
-          :columns="columns"
-          :rowKey="row => row.Id"
-          :dataSource="data"
-          :pagination="pagination"
-          :loading="loading"
-          :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-          :bordered="true"
-          size="small"
-        >
-          <template slot="LocalNum" slot-scope="text, record">
-            <editable-cell
-              :text="text"
-              :max="record.Num"
-              type="number"
-              @change="onCellChange(record, 'LocalNum', $event)"
-            />
-          </template>
-          <!-- <span slot="action" slot-scope="text, record">
-            <template>
-              <a
-                @click="handleSelectTarget(record.Id, record.MaterialId, record.ToLocalId, record.ToTrayId, record.ToZoneId)"
-              >目标选择</a>
-            </template>
-          </span> -->
-        </a-table>
-      </a-form-model>
-    </a-spin>
-
-    <!-- <edit-target ref="editTarget" :parentObj="this"></edit-target> -->
+  <a-modal title="出库" width="60%" :visible="visible" :confirmLoading="loading" okText="选择" @ok="handleChoose" @cancel="()=>{this.visible=false}">
+    <div class="table-page-search-wrapper">
+      <a-form layout="inline">
+        <a-row :gutter="10">
+          <a-col :md="4" :sm="24">
+            <a-form-item>
+              <a-input v-model="queryParam.LocalName" placeholder="货位" />
+            </a-form-item>
+          </a-col>
+          <a-col v-if="storage.IsTray" :md="4" :sm="24">
+            <a-form-item>
+              <a-input v-model="queryParam.TrayName" placeholder="托盘" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="4" :sm="24">
+            <a-form-item>
+              <a-input v-model="queryParam.MaterialName" placeholder="物料" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="4" :sm="24">
+            <a-form-item>
+              <a-input v-model="queryParam.Code" placeholder="批次/条码" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="6" :sm="24">
+            <a-button type="primary" @click="getDataList">查询</a-button>
+            <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
+          </a-col>
+        </a-row>
+      </a-form>
+    </div>
+    <a-table :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+    </a-table>
   </a-modal>
 </template>
 
 <script>
-import MaterilaSelect from '../../../components/Material/MaterialSelect'
-import LocationSelect from '../../../components/Location/LocationSelect'
-import TraySelect from '../../../components/Tray/TraySelect'
-import ZoneSelect from '../../../components/Tray/ZoneSelect'
-import EditableCell from '../../../components/EditableCell/EditableCell'
-// import EditTarget from './EditTarget'
-const columns = [
-  { title: '货位', dataIndex: 'Location.Name', width: '10%' },
-  { title: '托盘', dataIndex: 'Tray.Name', width: '10%' },
-  { title: '托盘分区', dataIndex: 'TrayZone.Name', width: '10%' },
-  { title: '物料', dataIndex: 'Material.Name', width: '10%' },
+const filterCode = (value, row, index) => {
+  return value.Name + '(' + value.Code + ')'
+}
+const columns1 = [
+  { title: '货位', dataIndex: 'Location.Code', width: '15%' },
+  { title: '物料', dataIndex: 'Material', customRender: filterCode, width: '15%' },
+  { title: '单位', dataIndex: 'Measure.Name', width: '10%' },
+  { title: '批次号', dataIndex: 'BatchNo', width: '15%' },
+  { title: '条码', dataIndex: 'BarCode', width: '15%' },
+  { title: '库存', dataIndex: 'Num', width: '10%' }
+]
+const columns2 = [
+  { title: '货位', dataIndex: 'Location.Code', width: '10%' },
+  { title: '托盘', dataIndex: 'Tray.Code', width: '10%' },
+  { title: '物料', dataIndex: 'Material', customRender: filterCode, width: '15%' },
+  { title: '单位', dataIndex: 'Measure.Name', width: '10%' },
+  { title: '批次号', dataIndex: 'BatchNo', width: '15%' },
+  { title: '条码', dataIndex: 'BarCode', width: '15%' },
+  { title: '库存', dataIndex: 'Num', width: '10%' }
+]
+const columns3 = [
+  { title: '货位', dataIndex: 'Location.Code', width: '10%' },
+  { title: '托盘', dataIndex: 'Tray.Code', width: '10%' },
+  { title: '托盘分区', dataIndex: 'TrayZone.Code', width: '10%' },
+  { title: '物料', dataIndex: 'Material', customRender: filterCode, width: '15%' },
+  { title: '单位', dataIndex: 'Measure.Name', width: '10%' },
   { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
-  { title: '库存数量', dataIndex: 'Num', width: '8%' },
-  { title: '出库数量', dataIndex: 'LocalNum', width: '8%', scopedSlots: { customRender: 'LocalNum' } },
-  // { title: '目标货位', dataIndex: 'ToLocalName', width: '10%' },
-  // { title: '目标托盘', dataIndex: 'ToTrayName', width: '10%' },
-  // { title: '目标分区', dataIndex: 'ToZoneName', width: '10%' },
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+  { title: '条码', dataIndex: 'BarCode', width: '10%' },
+  { title: '库存', dataIndex: 'Num', width: '10%' }
 ]
 
 export default {
   components: {
-    MaterilaSelect,
-    LocationSelect,
-    TraySelect,
-    ZoneSelect,
-    EditableCell,
-    // EditTarget
   },
   props: {
-    parentObj: Object
+  },
+  mounted() {
+    this.getDataList()
+    this.getCurStorage()
   },
   data() {
     return {
-      layout: {
-        labelCol: { span: 5 },
-        wrapperCol: { span: 18 }
-      },
-      visible: false,
-      loading: false,
-      entity: {},
-      rules: {},
-      title: '',
+      storage: {},
+      data: [],
       pagination: {
         current: 1,
         pageSize: 10,
         showTotal: (total, range) => `总数:${total} 当前:${range[0]}-${range[1]}`
       },
-      sorter: { field: 'Id', order: 'asc' },
       filters: {},
+      sorter: { field: 'Id', order: 'asc' },
+      loading: false,
+      columns: columns1,
       queryParam: {},
-      columns,
-      data: [],
       selectedRowKeys: [],
-      tarGetInfo: [],
-      updataMatch: 0,
-      getDataMatch: 0,
       selectedRows: [],
-      material: null,
-      location: null,
-      tray: null,
-      trayZone: null
-      // moveId: null,
-      // moveDetailId: null
+      visible: false
     }
   },
   methods: {
-    // init() {
-    //   this.visible = true
-    //   this.selectedRowKeys = []
-    //   this.data = []
-    //   this.$nextTick(() => {
-    //     this.$refs['form'].clearValidate()
-    //   })
-    // },
-    openForm(entity) {
-          this.entity = entity
-          this.visible = true
-        },
-    // openForm(moveId, title) {
-    //   this.init()
-    //   this.moveId = moveId
-    // },
-    handleSubmit() {
-      this.$refs['form'].validate(valid => {
-        if (!valid) return
-        this.entity.Location = { ...this.location }
-        this.entity.Material = { ...this.material }
-        this.entity.Tray = { ...this.tray }
-        this.entity.TrayZone = { ...this.trayZone }
-        this.$emit('submit', { ...this.entity })
-        this.visible = false
-      })
+    getCurStorage() {
+      this.$http.get('/PB/PB_Storage/GetCurStorage')
+        .then(resJson => {
+          this.storage = resJson.Data
+          if (this.storage.IsTray && this.storage.IsZone) {
+            this.columns = columns3
+          } else if (this.storage.IsTray) {
+            this.columns = columns2
+          } else {
+            this.columns = columns1
+          }
+        })
     },
-    // handleSubmit() {
-    //   this.$refs['form'].validate(valid => {
-    //     if (!valid) {
-    //       return
-    //     }
-    //     this.loading = true
-    //     this.$http.post('/TD/TD_MoveDetail/SaveDatas', this.selectedRows).then(resJson => {
-    //       this.loading = false
+    handleTableChange(pagination, filters, sorter) {
+      this.pagination = { ...pagination }
+      this.filters = { ...filters }
+      this.sorter = { ...sorter }
+      this.getDataList()
+    },
+    getDataList() {
+      this.selectedRowKeys = []
 
-    //       if (resJson.Success) {
-    //         this.$message.success('操作成功!')
-    //         this.visible = false
-
-    //         this.parentObj.getDataList()
-    //       } else {
-    //         this.$message.error(resJson.Msg)
-    //       }
-    //     })
-    //   })
-    // },
-    handleMaterialSelect(val) {
-      this.queryParam.keyword = val.Id
       this.loading = true
-      var thisObj = this
       this.$http
-        .post('/IT/IT_LocalMaterial/GetDataListByMaterialId', {
+        .post('/IT/IT_LocalMaterial/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
@@ -176,28 +130,7 @@ export default {
         })
         .then(resJson => {
           this.loading = false
-          var addData = {}
-          resJson.Data.forEach(element => {
-            addData = element
-            addData.MoveDetailId = thisObj.MoveDetailId
-            addData.FromLocalId = element.LocalId
-            addData.FromTrayId = element.TrayId
-            addData.FromZoneId = element.ZoneId
-            addData.MoveId = thisObj.moveId
-            if (this.getDataMatch == 0) {
-              addData.ToLocalId = ''
-              addData.ToLocalName = ''
-              addData.ToTrayId = ''
-              addData.ToTrayName = ''
-              addData.ToZoneId = ''
-              addData.ToZoneName = ''
-              addData.LocalNum = 0
-              addData.Amount = 0
-            } else {
-              this.getDataMatch = 0
-            }
-            thisObj.data.push(addData)
-          })
+          this.data = resJson.Data
           const pagination = { ...this.pagination }
           pagination.total = resJson.Total
           this.pagination = pagination
@@ -207,23 +140,16 @@ export default {
       this.selectedRowKeys = selectedRowKeys
       this.selectedRows = selectedRows
     },
-    onCellChange(data, dataIndex, value) {
-      data[dataIndex] = value
+    hasSelected() {
+      return this.selectedRowKeys.length > 0
     },
-    // handleSelectTarget(id, materialId, locationId, trayId, zoneId) {
-    //   this.$refs.editTarget.openForm(id, materialId, locationId, trayId, zoneId)
-    // },
-    handleUpdataTargetInfo(id, locationId, locationName, trayId, trayName, zoneId, zoneName) {
-      this.data.forEach(i => {
-        if (i.Id == id) {
-          i.ToLocalId = locationId
-          i.ToLocalName = locationName
-          i.ToTrayId = trayId
-          i.ToTrayName = trayName
-          i.ToZoneId = zoneId
-          i.ToZoneName = zoneName
-        }
-      })
+    openChoose() {
+      this.getDataList()
+      this.visible = true
+    },
+    handleChoose() {
+      this.visible = false
+      this.$emit('choose', [...this.selectedRows])
     }
   }
 }

@@ -124,7 +124,7 @@ const columns = [
   // { title: '总金额', dataIndex: 'TotalAmt', width: '10%' },
   // { title: '设备ID', dataIndex: 'EquId', width: '10%' },
   // { title: '备注', dataIndex: 'Remarks', width: '10%' },
-  { title: '出库单号', dataIndex: 'Code', width: '11%' },
+  { title: '出库单号', dataIndex: 'Code', width: '15%' },
   { title: '出库时间', dataIndex: 'OutTime', width: '10%' , customRender: filterDate },
   { title: '出库类型', dataIndex: 'OutType', width: '8%' , scopedSlots: { customRender: 'OutType' } },  
   { title: '出库数量', dataIndex: 'OutNum', width: '8%' },  
