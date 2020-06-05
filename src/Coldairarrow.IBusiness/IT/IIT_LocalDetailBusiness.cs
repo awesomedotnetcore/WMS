@@ -12,5 +12,6 @@ namespace Coldairarrow.Business.IT
         Task AddDataAsync(IT_LocalDetail data);
         Task UpdateDataAsync(IT_LocalDetail data);
         Task DeleteDataAsync(List<string> ids);
+        //Task UpdateDetailAsync(IT_LocalDetail data);
     }
 }

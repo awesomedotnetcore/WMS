@@ -12,6 +12,7 @@ namespace Coldairarrow.Business.TD
         Task AddDataAsync(TD_OutStorage data);
         Task UpdateDataAsync(TD_OutStorage data);
         Task DeleteDataAsync(List<string> ids);
+        
     }
 
     public class TD_OutStorageQM

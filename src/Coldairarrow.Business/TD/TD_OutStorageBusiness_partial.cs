@@ -71,6 +71,18 @@ namespace Coldairarrow.Business.TD
             await InsertAsync(data);
         }
 
+        public async Task UpdateDetailAsync(TD_OutStorage data)
+        {
+            //if (data.Code.IsNullOrEmpty())
+            //{
+            //    var codeSvc = _ServiceProvider.GetRequiredService<IPB_BarCodeTypeBusiness>();
+            //    data.Code = await codeSvc.Generate("TD_OutStorage");
+            //}
+            data.OutNum = data.OutStorDetails.Sum(s => s.OutNum);
+            data.TotalAmt = data.OutStorDetails.Sum(s => s.TotalAmt);
+            await UpdateAsync(data);
+        }
+
         public async Task UpdateDataAsync(TD_OutStorage data)
         {
             var curDetail = data.OutStorDetails;
@@ -114,38 +126,60 @@ namespace Coldairarrow.Business.TD
 
             // 减库存明细
             {
+                //await UpdateAsync(data);
                 var ldGrout = detail
                     .GroupBy(g => new { g.StorId, g.LocalId, g.TrayId, g.ZoneId, g.MaterialId, g.BatchNo, g.BarCode, g.Price })
                     .Select(s => new { s.Key.StorId, s.Key.LocalId, s.Key.TrayId, s.Key.ZoneId, s.Key.MaterialId, s.Key.BatchNo, s.Key.BarCode, s.Key.Price, TotalAmt = s.Sum(o => o.TotalAmt), Num = s.Sum(o => o.OutNum) })
                     .ToList();
-                var listLd = new List<IT_LocalDetail>();
+                //查询当前库存明细记录
+                var localIds = ldGrout.Select(s => s.LocalId).ToList();
+                var trayIds = ldGrout.Select(s => s.TrayId).ToList();
+                var zoneIds = ldGrout.Select(s => s.ZoneId).ToList();
+                var materIds = ldGrout.Select(s => s.MaterialId).ToList();
+                var batchNos = ldGrout.Select(s => s.BatchNo).ToList();
+                var barCodes = ldGrout.Select(s => s.BarCode).ToList();
+
+                var listLd = Service.GetIQueryable<IT_LocalDetail>();
+                listLd = listLd.Where(w => w.StorId == audit.StorId);
+                if (localIds.Count > 0)
+                    listLd = listLd.Where(w => localIds.Contains(w.LocalId));
+                if (trayIds.Count > 0)
+                    listLd = listLd.Where(w => trayIds.Contains(w.TrayId));
+                if (zoneIds.Count > 0)
+                    listLd = listLd.Where(w => zoneIds.Contains(w.ZoneId));
+                if (materIds.Count > 0)
+                    listLd = listLd.Where(w => materIds.Contains(w.MaterialId));
+                if (batchNos.Count > 0)
+                    listLd = listLd.Where(w => batchNos.Contains(w.BatchNo));
+                if (barCodes.Count > 0)
+                    listLd = listLd.Where(w => barCodes.Contains(w.BarCode));
+                var lmDbData = await listLd.ToListAsync();
+
+                //处理库存明细
+                var localMaterialSvc = _ServiceProvider.GetRequiredService<IIT_LocalDetailBusiness>();
+                //var listLmAdd = new List<IT_LocalDetail>();
+                var listLmUpdate = new List<IT_LocalDetail>();
                 foreach (var item in ldGrout)
                 {
-                    var ld = new IT_LocalDetail();
-                    ld.Id = IdHelper.GetId();
-                    ld.StorId = audit.StorId;
-                    ld.InStorId = audit.Id;
-                    ld.LocalId = item.LocalId;
-                    ld.TrayId = item.TrayId;
-                    ld.ZoneId = item.ZoneId;
-                    ld.MaterialId = item.MaterialId;
-                    ld.MeasureId = dicMUnit[item.MaterialId];
-                    ld.BatchNo = item.BatchNo;
-                    ld.BarCode = item.BarCode;
-                    ld.InTime = audit.AuditTime;
-                    ld.Amount = item.TotalAmt;
-                    ld.CreateTime = now;
-                    ld.CreatorId = audit.AuditUserId;
-                    ld.Price = item.Price;
-                    ld.Num = item.Num;
-                    ld.Deleted = false;
-                    listLd.Add(ld);
+                    //查看是否有同样物料后在物料基础上减除数量
+                    var lmItem = lmDbData.Where(w => w.StorId == item.StorId && w.LocalId == item.LocalId && w.TrayId == item.TrayId && w.ZoneId == item.ZoneId && w.MaterialId == item.MaterialId && w.BatchNo == item.BatchNo && w.BarCode == item.BarCode).SingleOrDefault();
+                    if (lmItem != null)
+                    {
+                        lmItem.Num -= item.Num;
+                        lmItem.Amount = lmItem.Num * item.Price;
+                        listLmUpdate.Add(lmItem);
+                    }
+                    else
+                    {
+                    }
                 }
-                if (listLd.Count > 0)
+                //if (listLmAdd.Count > 0)
+                //{
+                //    await localMaterialSvc.AddDataAsync(listLmAdd);
+                //}
+                if (listLmUpdate.Count > 0)
                 {
-                    var localdetailSvc = _ServiceProvider.GetRequiredService<IIT_LocalDetailBusiness>();
-                   // await localdetailSvc.AddDataAsync(listLd);
-                    await localdetailSvc.UpdateDataAsync(listLd);
+                    await localMaterialSvc.UpdateDataAsync(listLmUpdate);
                 }
             }
 
@@ -181,7 +215,7 @@ namespace Coldairarrow.Business.TD
 
                 //处理库存
                 var localMaterialSvc = _ServiceProvider.GetRequiredService<IIT_LocalMaterialBusiness>();
-                var listLmAdd = new List<IT_LocalMaterial>();
+                //var listLmAdd = new List<IT_LocalMaterial>();
                 var listLmUpdate = new List<IT_LocalMaterial>();
                 foreach (var item in lmGrout)
                 {
@@ -196,10 +230,10 @@ namespace Coldairarrow.Business.TD
                     {
                     }
                 }
-                if (listLmAdd.Count > 0)
-                {
-                    await localMaterialSvc.AddDataAsync(listLmAdd);
-                }
+                //if (listLmAdd.Count > 0)
+                //{
+                //    await localMaterialSvc.AddDataAsync(listLmAdd);
+                //}
                 if (listLmUpdate.Count > 0)
                 {
                     await localMaterialSvc.UpdateDataAsync(listLmUpdate);

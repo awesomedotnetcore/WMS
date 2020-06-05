@@ -2,7 +2,7 @@
   <a-card :bordered="false">
     
 
-    <!-- <div class="table-operator">
+    <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
       <a-button type="primary"
         icon="minus"
@@ -11,12 +11,12 @@
         :loading="loading"
       >删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
-    </div> -->
+    </div>
 
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
-      <a-row :gutter="10">
-        <a-col :md="8" :sm="24">
+       <a-row :gutter="10">
+        <!--<a-col :md="8" :sm="24">
             <a-form-item>
               <a-radio-group v-model="queryParam.Status" :default-value="-1" button-style="solid" @change="getDataList">
                 <a-radio-button :value="-1">
@@ -34,9 +34,9 @@
               </a-radio-group>
             </a-form-item>
           </a-col> 
-      </a-row>
-        <a-row >
-          <a-col :md="6" :sm="24">
+          </a-row> -->
+          <!-- <a-row > -->
+          <!-- <a-col :md="4" :sm="24">
             <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
             <a-button type="primary"
               icon="minus"
@@ -45,7 +45,7 @@
               :loading="loading"
             >删除</a-button>
             <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>            
-          </a-col>
+          </a-col> -->
             <a-col :md="4" :sm="24">
               <a-form-item>
                 <enum-select code="OutStorageType" v-model="queryParam.OutType"></enum-select>
@@ -61,8 +61,18 @@
                 <a-range-picker @change="onOutStorTimeChange" />
               </a-form-item>
             </a-col>
+            <a-col :md="2" :sm="24">
+            <a-form-item>
+              <a-select v-model="queryParam.Status" placeholder="状态" :allowClear="true">
+                <a-select-option :key="-1" :value="-1">全部</a-select-option>
+                <a-select-option :key="0" :value="0">待审核</a-select-option>
+                <a-select-option :key="1" :value="1">审核通过</a-select-option>
+                <a-select-option :key="2" :value="2">审核失败</a-select-option>
+              </a-select>
+            </a-form-item>
+            </a-col>
 
-            <a-col :md="5" :sm="24">
+            <a-col :md="4" :sm="24">
               <a-button type="primary" @click="getDataList">查询</a-button>
               <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
             </a-col>
