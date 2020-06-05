@@ -21,6 +21,10 @@ namespace Coldairarrow.Business.IT
         {
             await UpdateAsync(list);
         }
+        public async Task DeleteDataAsync(List<IT_LocalDetail> list)
+        {
+            await DeleteAsync(list);
+        }
 
         public async Task<PageResult<IT_LocalDetail>> GetDataListAsync(IT_LocalDetailPageInput input)
         {

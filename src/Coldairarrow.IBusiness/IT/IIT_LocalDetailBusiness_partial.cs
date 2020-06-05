@@ -10,7 +10,7 @@ namespace Coldairarrow.Business.IT
     {
         Task AddDataAsync(List<IT_LocalDetail> list);
         Task UpdateDataAsync(List<IT_LocalDetail> list);
-
+        Task DeleteDataAsync(List<IT_LocalDetail> list);
         Task<PageResult<IT_LocalDetail>> GetDataListAsync(IT_LocalDetailPageInput input);
     }
 
