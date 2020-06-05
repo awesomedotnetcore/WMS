@@ -1,5 +1,7 @@
 ﻿using Coldairarrow.Business.PB;
+using Coldairarrow.Entity.PB;
 using Coldairarrow.Entity.TD;
+using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using EFCore.Sharding;
 using LinqKit;
@@ -59,6 +61,7 @@ namespace Coldairarrow.Business.TD
                 .SingleOrDefaultAsync(w => w.Id == id);
         }
 
+        [Transactional]
         public async Task AddDataAsync(TD_Bad data)
         {
             if (data.Code.IsNullOrEmpty())
@@ -71,6 +74,7 @@ namespace Coldairarrow.Business.TD
             await InsertAsync(data);
         }
 
+        [Transactional]
         public async Task UpdateDataAsync(TD_Bad data)
         {
             var curDetail = data.BadDetails;
@@ -101,6 +105,58 @@ namespace Coldairarrow.Business.TD
             data.TotalAmt = data.BadDetails.Sum(s => s.Amount);
 
             await UpdateAsync(data);
+        }
+
+
+
+        [Transactional]
+        public async Task Approve(AuditDTO audit)
+        {
+            var now = DateTime.Now;
+            var data = await this.GetTheDataAsync(audit.Id);
+            var detail = data.BadDetails;
+            var dicMUnit = detail.Select(s => s.Material).Distinct().ToDictionary(k => k.Id, v => v.MeasureId);
+
+            PB_Location defaultBadLocation = null;
+            // 找到默认的报损货位
+            {
+                var localSvc = Service.GetIQueryable<PB_Location>();
+                defaultBadLocation = await localSvc.Where(w => w.StorId == audit.StorId && w.Type == "Bad").OrderByDescending(o => o.IsDefault).FirstOrDefaultAsync();
+                if (defaultBadLocation == null) throw new Exception("没有指定默认报损货位");
+            }
+            // 原库位出库，报损货位入库，同时修改库存与台帐
+            var detailGroup = detail
+                .GroupBy(w => new { w.FromLocalId, w.TrayId, w.ZoneId, w.MaterialId, w.BatchNo, w.BarCode })
+                .Select(s => new { s.Key.FromLocalId, s.Key.TrayId, s.Key.ZoneId, s.Key.MaterialId, s.Key.BatchNo, s.Key.BarCode, BadNum = s.Sum(o => o.BadNum) })
+                .ToList();
+            var localIds = detailGroup.Select(s => s.FromLocalId).ToList();
+            var trayIds = detailGroup.Select(s => s.TrayId).ToList();
+            var zoneIds = detailGroup.Select(s => s.ZoneId).ToList();
+            var batchNos = detailGroup.Select(s => s.BatchNo).ToList();
+            var barCodes = detailGroup.Select(s => s.BarCode).ToList();
+
+
+
+
+            // 修改主数据状态
+            {
+                data.Status = 1;
+                data.AuditeTime = audit.AuditTime;
+                data.AuditUserId = audit.AuditUserId;
+                await UpdateAsync(data);
+            }
+        }
+
+        public async Task Reject(AuditDTO audit)
+        {
+            var data = await this.GetEntityAsync(audit.Id);
+            // 修改主数据状态
+            {
+                data.Status = 2;
+                data.AuditeTime = audit.AuditTime;
+                data.AuditUserId = audit.AuditUserId;
+                await UpdateAsync(data);
+            }
         }
     }
 }
