@@ -117,7 +117,7 @@ namespace Coldairarrow.Business.TD
             var now = DateTime.Now;
             var data = await this.GetTheDataAsync(audit.Id);
             var detail = data.BadDetails;
-            var dicMUnit = detail.Select(s => s.Material).Distinct().ToDictionary(k => k.Id, v => v.MeasureId);
+            var dicMUnit = detail.GroupBy(s => new { s.Material.Id, s.Material.MeasureId }).Select(s => new { s.Key.Id, s.Key.MeasureId }).ToDictionary(k => k.Id, v => v.MeasureId);
 
             PB_Location defaultBadLocation = null;
             // 找到默认的报损货位
@@ -318,6 +318,8 @@ namespace Coldairarrow.Business.TD
                         }
                         
                     }
+                    if (listAdd.Count > 0) await lmSvc.AddDataAsync(listAdd);
+                    if (listUpdate.Count > 0) await lmSvc.UpdateDataAsync(listUpdate);
                 }
 
                 // 增加库存明细
@@ -328,7 +330,6 @@ namespace Coldairarrow.Business.TD
                         var ld = new IT_LocalDetail();
                         ld.Id = IdHelper.GetId();
                         ld.StorId = audit.StorId;
-                        ld.InStorId = audit.Id;
                         ld.LocalId = defaultBadLocation.Id;
                         ld.MaterialId = bad.MaterialId;
                         ld.MeasureId = dicMUnit[bad.MaterialId];

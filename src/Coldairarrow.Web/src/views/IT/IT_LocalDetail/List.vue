@@ -44,7 +44,11 @@
 <script>
 import moment from 'moment'
 const filterCode = (value, row, index) => {
-  return value.Name + '(' + value.Code + ')'
+  if (value === null) {
+    return ''
+  } else {
+    return value.Name + '(' + value.Code + ')'
+  }
 }
 const filterDate = (value, row, index) => {
   return moment(value).format('YYYY-MM-DD')
