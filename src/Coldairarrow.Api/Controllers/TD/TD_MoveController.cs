@@ -95,20 +95,20 @@ namespace Coldairarrow.Api.Controllers.TD
         [HttpPost]
         public async Task ApproveData(string id)
         {
-            await _tD_MoveBus.ApproveDataAsync(id);
+            await _tD_MoveBus.ApproveDataAsync(id, _Op.UserId);
         }
 
         [HttpPost]
         public async Task RejectData(string id)
         {
-            await _tD_MoveBus.RejectDataAsync(id);
+            await _tD_MoveBus.RejectDataAsync(id, _Op.UserId);
         }
 
 
         [HttpPost]
         public async Task ApproveDatas(List<string> ids)
         {
-            await _tD_MoveBus.ApproveDatasAsync(ids);
+            await _tD_MoveBus.ApproveDatasAsync(ids, _Op.UserId);
             var dataList = new List<BusinessInfo>();
             var moveList = await _tD_MoveDetailBus.GetDataListByMoveIdsAsync(ids);
             foreach(var i in moveList)
@@ -147,7 +147,7 @@ namespace Coldairarrow.Api.Controllers.TD
         [HttpPost]
         public async Task RejectDatas(List<string> ids)
         {
-            await _tD_MoveBus.RejectDatasAsync(ids);
+            await _tD_MoveBus.RejectDatasAsync(ids, _Op.UserId);
         }
         #endregion
     }

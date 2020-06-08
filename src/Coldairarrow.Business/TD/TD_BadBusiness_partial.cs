@@ -123,15 +123,13 @@ namespace Coldairarrow.Business.TD
             // 找到默认的报损货位
             {
                 var localSvc = Service.GetIQueryable<PB_Location>();
+                //TODO:这里要修改，要从货区的类型来过滤
                 defaultBadLocation = await localSvc.Where(w => w.StorId == audit.StorId && w.Type == "Bad").OrderByDescending(o => o.IsDefault).FirstOrDefaultAsync();
                 if (defaultBadLocation == null) throw new Exception("没有指定默认报损货位");
             }
 
             var lmSvc = _ServiceProvider.GetRequiredService<IIT_LocalMaterialBusiness>();
             var ldSvc = _ServiceProvider.GetRequiredService<IIT_LocalDetailBusiness>();
-            
-            
-
 
             // 原库位出库
             {

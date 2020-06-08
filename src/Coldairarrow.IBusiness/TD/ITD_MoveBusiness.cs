@@ -12,10 +12,10 @@ namespace Coldairarrow.Business.TD
         Task AddDataAsync(TD_Move data);
         Task UpdateDataAsync(TD_Move data);
         Task DeleteDataAsync(List<string> ids);
-        Task ApproveDataAsync(string id);
-        Task RejectDataAsync(string id);
-        Task ApproveDatasAsync(List<string> ids);
-        Task RejectDatasAsync(List<string> ids);
+        Task ApproveDataAsync(string id, string userId);
+        Task RejectDataAsync(string id, string userId);
+        Task ApproveDatasAsync(List<string> ids, string userId);
+        Task RejectDatasAsync(List<string> ids, string userId);
     }
 
     public class SearchCondition

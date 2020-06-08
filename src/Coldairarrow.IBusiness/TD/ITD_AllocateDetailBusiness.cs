@@ -12,5 +12,6 @@ namespace Coldairarrow.Business.TD
         Task AddDataAsync(TD_AllocateDetail data);
         Task UpdateDataAsync(TD_AllocateDetail data);
         Task DeleteDataAsync(List<string> ids);
+        Task<List<TD_AllocateDetail>> GetDataListByAllocateIdsAsync(List<string> allocateIds);
     }
 }

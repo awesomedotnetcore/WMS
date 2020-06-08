@@ -1,4 +1,5 @@
-﻿using Coldairarrow.Business.TD;
+﻿using Coldairarrow.Business.IT;
+using Coldairarrow.Business.TD;
 using Coldairarrow.Entity.TD;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
@@ -12,21 +13,28 @@ namespace Coldairarrow.Api.Controllers.TD
     {
         #region DI
 
-        public TD_AllocateController(ITD_AllocateBusiness tD_AllocateBus)
+        public TD_AllocateController(ITD_AllocateBusiness tD_AllocateBus, IOperator @op, ITD_AllocateDetailBusiness tD_AllocateDetailBusiness,
+            IIT_LocalMaterialBusiness iT_LocalMaterialBusiness)
         {
             _tD_AllocateBus = tD_AllocateBus;
+            _iT_LocalMaterialBusiness = iT_LocalMaterialBusiness;
+            _tD_AllocateDetailBusiness = tD_AllocateDetailBusiness;
+            _Op = @op;
         }
 
         ITD_AllocateBusiness _tD_AllocateBus { get; }
+        IIT_LocalMaterialBusiness _iT_LocalMaterialBusiness { get; }
+        ITD_AllocateDetailBusiness _tD_AllocateDetailBusiness { get; }
+        IOperator _Op { get; }
 
         #endregion
 
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<TD_Allocate>> GetDataList(PageInput<ConditionDTO> input)
+        public async Task<PageResult<TD_Allocate>> GetDataList(PageInput<SearchCondition> input)
         {
-            return await _tD_AllocateBus.GetDataListAsync(input);
+            return await _tD_AllocateBus.GetDataListAsync(input, _Op.Property.DefaultStorageId);
         }
 
         [HttpPost]
@@ -60,6 +68,49 @@ namespace Coldairarrow.Api.Controllers.TD
             await _tD_AllocateBus.DeleteDataAsync(ids);
         }
 
+        [HttpPost]
+        public async Task ApproveDatas(List<string> ids)
+        {
+            await _tD_AllocateBus.ApproveDatasAsync(ids, _Op.UserId);
+            var dataList = new List<BusinessInfo>();
+            var allocateList = await _tD_AllocateDetailBusiness.GetDataListByAllocateIdsAsync(ids);
+            foreach (var i in allocateList)
+            {
+                dataList.Add(new BusinessInfo()
+                {
+                    StorId = i.FromStorId,
+                    LocalId = i.FromlocalId,
+                    TrayId = i.FromTrayId,
+                    ZoneId = i.FromZoneId,
+                    MaterialId = i.MaterialId,
+                    BarCode = i.BarCode,
+                    BatchNo = i.BatchNo,
+                    Num = i.LocalNum.HasValue ? i.LocalNum.Value : 0,
+                    ActionType = (int)ActionTypeEnum.出库,
+                    MeasureId = i.PB_Material.MeasureId
+                });
+
+                dataList.Add(new BusinessInfo()
+                {
+                    StorId = i.ToStorId,
+                    LocalId = i.TolocalId,
+                    MaterialId = i.MaterialId,
+                    BarCode = i.BarCode,
+                    BatchNo = i.BatchNo,
+                    Num = i.LocalNum.HasValue ? i.LocalNum.Value : 0,
+                    ActionType = (int)ActionTypeEnum.入库,
+                    MeasureId = i.PB_Material.MeasureId
+                });
+            }
+
+            await _iT_LocalMaterialBusiness.UpdataDatasByBussiness(dataList);
+        }
+
+        [HttpPost]
+        public async Task RejectDatas(List<string> ids)
+        {
+            await _tD_AllocateBus.RejectDatasAsync(ids, _Op.UserId);
+        }
         #endregion
     }
 }

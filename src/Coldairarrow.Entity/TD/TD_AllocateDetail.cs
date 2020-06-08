@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Coldairarrow.Entity.PB;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -26,31 +27,43 @@ namespace Coldairarrow.Entity.TD
         /// 原仓库ID
         /// </summary>
         public String FromStorId { get; set; }
+        [ForeignKey(nameof(FromStorId))]
+        public PB_Storage Src_Storage { get; set; }
 
         /// <summary>
         /// 原货位ID
         /// </summary>
         public String FromlocalId { get; set; }
+        [ForeignKey(nameof(FromlocalId))]
+        public PB_Location Src_Location { get; set; }
 
         /// <summary>
         /// 原托盘ID
         /// </summary>
         public String FromTrayId { get; set; }
+        [ForeignKey(nameof(FromTrayId))]
+        public PB_Tray Src_Tray { get; set; }
 
         /// <summary>
         /// 原托盘分区ID
         /// </summary>
         public String FromZoneId { get; set; }
+        [ForeignKey(nameof(FromZoneId))]
+        public PB_TrayZone Src_TrayZone { get; set; }
 
         /// <summary>
         /// 目标仓库ID
         /// </summary>
         public String ToStorId { get; set; }
+        [ForeignKey(nameof(ToStorId))]
+        public PB_Storage Tar_Storage { get; set; }
 
         /// <summary>
         /// 目标货位ID
         /// </summary>
         public String TolocalId { get; set; }
+        [ForeignKey(nameof(TolocalId))]
+        public PB_Location Tar_Location { get; set; }
 
         /// <summary>
         /// 条码
@@ -61,6 +74,8 @@ namespace Coldairarrow.Entity.TD
         /// 物料ID
         /// </summary>
         public String MaterialId { get; set; }
+        [ForeignKey(nameof(MaterialId))]
+        public PB_Material PB_Material { get; set; }
 
         /// <summary>
         /// 批次号
