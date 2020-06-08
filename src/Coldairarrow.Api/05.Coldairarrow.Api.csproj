@@ -21,6 +21,13 @@
     <OutputPath>bin\Release</OutputPath>
     <DocumentationFile>bin\Release\Coldairarrow.Api.xml</DocumentationFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Export\**" />
+    <Content Remove="Export\**" />
+    <EmbeddedResource Remove="Export\**" />
+    <None Remove="Export\**" />
+  </ItemGroup>
   
   <ItemGroup>
     <Content Remove="wwwroot\Upload\_.txt" />
@@ -38,6 +45,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.4" />
+    <PackageReference Include="NPOI" Version="2.5.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.4.1" />
   </ItemGroup>
 

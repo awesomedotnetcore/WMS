@@ -10,16 +10,19 @@
     <a-spin :spinning="loading">
       <div style="background-color: #F5F5F5; padding: 12px;">
         <a-page-header :ghost="false" title="物料盘差" sub-title="盘点管理">
-          <template slot="extra">
-            <a-button key="1" v-if="entity.IsComplete===false" type="primary">导出Excel</a-button>
+          <template slot="extra">   
+            <a v-if="entity.IsComplete===false" :href="ExpUrl" target="_blank" class="ant-btn ant-btn-primary">导出Excel</a>
             <a-button key="2" @click="()=>{this.visible=false}">关闭</a-button>
           </template>
           <a-descriptions size="small" :column="3">
             <a-descriptions-item label="盘点时间">{{entity.CheckTime}}</a-descriptions-item>
             <a-descriptions-item label="关联单号">{{entity.RefCode}}</a-descriptions-item>
-            <a-descriptions-item label="审核时间"><span v-if="entity.Status===1 || entity.Status===2">{{entity.AuditeTime}}</span></a-descriptions-item>
-            <a-descriptions-item label="盘点类型" >
-                <enum-name code="CheckType" :value="entity.Type"></enum-name></a-descriptions-item>
+            <a-descriptions-item label="审核时间">
+              <span v-if="entity.Status===1 || entity.Status===2">{{entity.AuditeTime}}</span>
+            </a-descriptions-item>
+            <a-descriptions-item label="盘点类型">
+              <enum-name code="CheckType" :value="entity.Type"></enum-name>
+            </a-descriptions-item>
             <a-descriptions-item label="盘点状态">
               <a-tag v-if="entity.IsComplete===true">已盘</a-tag>
               <a-tag v-else color="green">待盘</a-tag>
@@ -32,15 +35,20 @@
                 <a-tag v-else color="green">待审核</a-tag>
               </span>
               <span v-else>-</span>
-            </a-descriptions-item>            
+            </a-descriptions-item>
             <a-descriptions-item v-if="entity.Type==='Area'" label="盘点区域" :span="3">
-                 <storarea-show v-model="CheckArea" :disabled="true"></storarea-show>
-            </a-descriptions-item>            
+              <storarea-show v-model="CheckArea" :disabled="true"></storarea-show>
+            </a-descriptions-item>
           </a-descriptions>
         </a-page-header>
         <a-divider>物料盘差清单</a-divider>
         <a-card :bordered="false">
-          <check-data ref="checkData" :checkId="entity.Id" :isCompleted="entity.IsComplete" :isCheckd="false"></check-data>
+          <check-data
+            ref="checkData"
+            :checkId="entity.Id"
+            :isCompleted="entity.IsComplete"
+            :isCheckd="false"
+          ></check-data>
         </a-card>
       </div>
     </a-spin>
@@ -55,9 +63,9 @@ import moment from 'moment'
 
 export default {
   components: {
-      StorareaShow,
-      EnumName,
-      CheckData
+    StorareaShow,
+    EnumName,
+    CheckData
   },
   props: {
     parentObj: Object
@@ -74,28 +82,29 @@ export default {
       rules: {},
       title: '',
       CheckArea: [],
-      CheckMaterial: []
+      CheckMaterial: [],
+      ExpUrl:''
     }
   },
   methods: {
     init() {
       this.visible = true
-      this.entity = { Type: '', IsComplete:false }
+      this.entity = { Type: '', IsComplete: false }
     },
     openForm(id, title) {
       this.init()
 
       if (id) {
+        this.ExpUrl='http://localhost:5000/TD/TD_CheckData/ExportToExcel/?checkId='+id
         this.loading = true
         this.$http.post('/TD/TD_Check/GetTheData', { id: id }).then(resJson => {
           this.loading = false
 
           this.entity = resJson.Data
           this.entity.CheckTime = moment(this.entity.CheckTime).format('YYYY-MM-DD HH:mm:ss')
-          if(this.entity.Status===1 || this.entity.Status===2)
-          {
-              this.entity.AuditeTime = moment(this.entity.AuditeTime).format('YYYY-MM-DD HH:mm:ss')
-          }         
+          if (this.entity.Status === 1 || this.entity.Status === 2) {
+            this.entity.AuditeTime = moment(this.entity.AuditeTime).format('YYYY-MM-DD HH:mm:ss')
+          }
 
           if (this.entity.Type == 'Area') {
             this.$http.post('/TD/TD_CheckArea/Query?checkId=' + id).then(resJson => {
