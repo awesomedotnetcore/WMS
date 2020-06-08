@@ -30,9 +30,9 @@ namespace Coldairarrow.Business.TD
             var where = LinqHelper.True<TD_OutStorage>();
             var search = input.Search;
 
-            if (search.Status > -1) 
-                where = where.And(p => p.Status == search.Status);
 
+            if (search.Status.HasValue)
+                where = where.And(w => w.Status == search.Status.Value);
             if (!search.Code.IsNullOrEmpty())
                 where = where.And(w => w.Code.Contains(search.Code));
             if (!search.OutType.IsNullOrEmpty())
@@ -185,22 +185,6 @@ namespace Coldairarrow.Business.TD
                 }
                 if (listDel.Count > 0) await ldSvc.DeleteDataAsync(listDel);
                 if (listLmUpdate.Count > 0) await ldSvc.UpdateDataAsync(listLmUpdate);
-                //var listLmUpdate = new List<IT_LocalDetail>();
-                //foreach (var item in ldGrout)
-                //{
-                //    //查看是否有同样物料后在物料基础上减除数量
-                //    var lmItem = lmDbData.Where(w => w.StorId == item.StorId && w.LocalId == item.LocalId && w.TrayId == item.TrayId && w.ZoneId == item.ZoneId && w.MaterialId == item.MaterialId && w.BatchNo == item.BatchNo && w.BarCode == item.BarCode).SingleOrDefault();
-                //    if (lmItem != null)
-                //    {
-                //        lmItem.Num -= item.Num;
-                //        lmItem.Amount = lmItem.Num * item.Price;
-                //        listLmUpdate.Add(lmItem);                        
-                //    }
-                //}
-                //if (listLmUpdate.Count > 0)
-                //{
-                //    await localMaterialSvc.UpdateDataAsync(listLmUpdate);
-                //}
 
             }
 
@@ -235,7 +219,6 @@ namespace Coldairarrow.Business.TD
                 var lmDbData = await lmQuery.ToListAsync();
 
                 //处理库存
-                //var localMaterialSvc = _ServiceProvider.GetRequiredService<IIT_LocalMaterialBusiness>();
                 var listLmUpdate = new List<IT_LocalMaterial>();
                 var listDel = new List<IT_LocalMaterial>();
                 foreach (var lm in lmGrout)
@@ -251,21 +234,6 @@ namespace Coldairarrow.Business.TD
                 }
                 if (listDel.Count > 0) await lmSvc.DeleteDataAsync(listDel);
                 if (listLmUpdate.Count > 0) await lmSvc.UpdateDataAsync(listLmUpdate);
-                //foreach (var item in lmGrout)
-                //{
-                //    //查看是否有同样物料后在物料基础上减除数量
-                //    var lmItem = lmDbData.Where(w => w.StorId == item.StorId && w.LocalId == item.LocalId && w.TrayId == item.TrayId && w.ZoneId == item.ZoneId && w.MaterialId == item.MaterialId && w.BatchNo == item.BatchNo && w.BarCode == item.BarCode).SingleOrDefault();
-                //    if (lmItem != null)
-                //    {
-                //        lmItem.Num -= item.Num;
-                //        listLmUpdate.Add(lmItem);                        
-                //    }
-                //}
-                //    if (listDel.Count > 0) await ldSvc.DeleteDataAsync(listDel);
-                //if (listLmUpdate.Count > 0)
-                //{
-                //    await ldSvc.UpdateDataAsync(listLmUpdate);
-                //}
             }
 
             // 添加台帐
