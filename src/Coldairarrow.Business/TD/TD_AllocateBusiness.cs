@@ -3,6 +3,7 @@ using Coldairarrow.Util;
 using EFCore.Sharding;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -19,21 +20,27 @@ namespace Coldairarrow.Business.TD
 
         #region 外部接口
 
-        public async Task<PageResult<TD_Allocate>> GetDataListAsync(PageInput<ConditionDTO> input)
+        public async Task<PageResult<TD_Allocate>> GetDataListAsync(PageInput<SearchCondition> input, string storageId)
         {
             var q = GetIQueryable();
-            var where = LinqHelper.True<TD_Allocate>();
             var search = input.Search;
+            q = q.Include(i => i.Tar_Storage).Include(i => i.PB_Equipment).Include(i => i.AuditUser);
 
             //筛选
-            if (!search.Condition.IsNullOrEmpty() && !search.Keyword.IsNullOrEmpty())
+            if (!search.Type.IsNullOrEmpty())
             {
-                var newWhere = DynamicExpressionParser.ParseLambda<TD_Allocate, bool>(
-                    ParsingConfig.Default, false, $@"{search.Condition}.Contains(@0)", search.Keyword);
-                where = where.And(newWhere);
+                q = q.Where(w => w.Type == search.Type);
+            }
+            if (!search.Keyword.IsNullOrEmpty())
+            {
+                q = q.Where(w => w.Code.Contains(search.Keyword) || w.RefCode.Contains(search.Keyword));
+            }
+            if (!storageId.IsNullOrEmpty())
+            {
+                q = q.Where(w => w.StorId == storageId);
             }
 
-            return await q.Where(where).GetPageResultAsync(input);
+            return await q.GetPageResultAsync(input);
         }
 
         public async Task<TD_Allocate> GetTheDataAsync(string id)
@@ -56,6 +63,17 @@ namespace Coldairarrow.Business.TD
             await DeleteAsync(ids);
         }
 
+        public async Task ApproveDatasAsync(List<string> ids, string userId)
+        {
+            await UpdateWhereAsync(w => ids.Contains(w.Id), 
+                e => { e.Status = (int)AllocateStatus.审核通过; e.AuditUserId = userId; e.AuditeTime = DateTime.Now; });
+        }
+
+        public async Task RejectDatasAsync(List<string> ids, string userId)
+        {
+            await UpdateWhereAsync(w => ids.Contains(w.Id), 
+                e => { e.Status = (int)AllocateStatus.审核失败; e.AuditUserId = userId; e.AuditeTime = DateTime.Now; });
+        }
         #endregion
 
         #region 私有成员

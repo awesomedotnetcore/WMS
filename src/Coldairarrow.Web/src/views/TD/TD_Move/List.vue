@@ -26,8 +26,12 @@
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
-            <a-button type="primary" @click="getDataList">查询</a-button>
-            <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
+            <div class="table-operator">
+              <a-button type="primary" @click="getDataList">查询</a-button>
+              <a-button @click="() => (queryParam = {})">重置</a-button>
+              <a-button type="primary" icon="check" @click="approveData()">审批</a-button>
+              <a-button type="primary" icon="close" @click="rejectData()">驳回</a-button>
+            </div>
           </a-col>
         </a-row>
       </a-form>
@@ -190,6 +194,26 @@ export default {
     },
     openDetailForm(moveId, state) {
       this.$refs.detailForm.openDrawer(moveId, state)
+    },
+    approveData() {
+      var thisObj = this
+      this.$http.post('/TD/TD_Allocate/ApproveDatas', [this.moveId]).then(resJson => {
+        if (resJson.Success) {
+          thisObj.$message.success('操作成功!')
+        } else {
+          thisObj.$message.error(resJson.Msg)
+        }
+      })
+    },
+    rejectData() {
+      var thisObj = this
+      this.$http.post('/TD/TD_Allocate/RejectDatas', [this.moveId]).then(resJson => {
+        if (resJson.Success) {
+          thisObj.$message.success('操作成功!')
+        } else {
+          thisObj.$message.error(resJson.Msg)
+        }
+      })
     }
   }
 }
