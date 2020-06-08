@@ -3,6 +3,7 @@ using Coldairarrow.Util;
 using EFCore.Sharding;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -62,24 +63,28 @@ namespace Coldairarrow.Business.TD
             await DeleteAsync(ids);
         }
 
-        public async Task ApproveDataAsync(string id)
+        public async Task ApproveDataAsync(string id, string userId)
         {
-            await UpdateWhereAsync( w => w.Id == id, e => { e.Status = (int)MoveStatus.审核通过; });
+            await UpdateWhereAsync( w => w.Id == id, 
+                e => { e.Status = (int)MoveStatus.审核通过; e.AuditUserId = userId; e.AuditeTime = DateTime.Now; });
         }
 
-        public async Task RejectDataAsync(string id)
+        public async Task RejectDataAsync(string id, string userId)
         {
-            await UpdateWhereAsync(w => w.Id == id, e => { e.Status = (int)MoveStatus.审核失败; });
+            await UpdateWhereAsync(w => w.Id == id, 
+                e => { e.Status = (int)MoveStatus.审核失败; e.AuditUserId = userId; e.AuditeTime = DateTime.Now; });
         }
 
-        public async Task ApproveDatasAsync(List<string> ids)
+        public async Task ApproveDatasAsync(List<string> ids, string userId)
         {
-            await UpdateWhereAsync(w => ids.Contains(w.Id), e => { e.Status = (int)MoveStatus.审核通过; });
+            await UpdateWhereAsync(w => ids.Contains(w.Id), 
+                e => { e.Status = (int)MoveStatus.审核通过; e.AuditUserId = userId; e.AuditeTime = DateTime.Now; });
         }
 
-        public async Task RejectDatasAsync(List<string> ids)
+        public async Task RejectDatasAsync(List<string> ids, string userId)
         {
-            await UpdateWhereAsync(w => ids.Contains(w.Id), e => { e.Status = (int)MoveStatus.审核失败; });
+            await UpdateWhereAsync(w => ids.Contains(w.Id), 
+                e => { e.Status = (int)MoveStatus.审核失败; e.AuditUserId = userId; e.AuditeTime = DateTime.Now; });
         }
         #endregion
 

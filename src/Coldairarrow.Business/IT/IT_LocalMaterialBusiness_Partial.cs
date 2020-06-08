@@ -96,6 +96,7 @@ namespace Coldairarrow.Business.IT
                 var datalist = await q.ToListAsync();
                 var addDatas = new List<IT_LocalMaterial>();
                 var updataDatas = new List<IT_LocalMaterial>();
+                var deletDatas = new List<string>();
 
                 foreach (var b in list)
                 {
@@ -108,12 +109,20 @@ namespace Coldairarrow.Business.IT
                             if (b.ActionType == 1)
                             {
                                 i.Num -= b.Num;
+                                if(i.Num == 0)
+                                {
+                                    deletDatas.Add(i.Id);
+                                }
+                                else
+                                {
+                                    updataDatas.Add(i);
+                                }
                             }
                             else
                             {
                                 i.Num += b.Num;
+                                updataDatas.Add(i);
                             }
-                            updataDatas.Add(i);
                             hasMatch = 1;
                             break;
                         }
@@ -140,10 +149,13 @@ namespace Coldairarrow.Business.IT
                 {
                     await UpdateAsync(updataDatas);
                 }
-
                 if (addDatas.Count > 0)
                 {
                     await InsertAsync(addDatas);
+                }
+                if(deletDatas.Count > 0)
+                {
+                    await DeleteDataAsync(deletDatas);
                 }
             }
         }
