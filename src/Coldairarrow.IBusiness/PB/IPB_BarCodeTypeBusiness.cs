@@ -12,6 +12,7 @@ namespace Coldairarrow.Business.PB
         Task AddDataAsync(PB_BarCodeType data);
         Task UpdateDataAsync(PB_BarCodeType data);
         Task DeleteDataAsync(List<string> ids);
+        
     }
 
     public class PB_BarCodeTypeQM

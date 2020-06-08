@@ -38,7 +38,11 @@
 
 <script>
 const filterCode = (value, row, index) => {
-  return value.Name + '(' + value.Code + ')'
+  if (value === null) {
+    return ''
+  } else {
+    return value.Name + '(' + value.Code + ')'
+  }
 }
 const columns1 = [
   { title: '货位', dataIndex: 'Location', customRender: filterCode, width: '15%' },

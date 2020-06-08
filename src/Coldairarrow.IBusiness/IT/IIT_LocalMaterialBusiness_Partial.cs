@@ -27,6 +27,8 @@ namespace Coldairarrow.Business.IT
         Task<PageResult<IT_LocalMaterial>> GetDataListAsync(IT_LocalMaterialPageInput input);
 
         Task<List<IT_LocalMaterial>> GetQueryData(SelectQueryDTO search, string storId);
+
+        Task DeleteDataAsync(List<IT_LocalMaterial> list);
     }
 
     public class BusinessInfo

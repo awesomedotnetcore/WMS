@@ -71,6 +71,18 @@ namespace Coldairarrow.Business.TD
             await InsertAsync(data);
         }
 
+        public async Task UpdateDetailAsync(TD_OutStorage data)
+        {
+            //if (data.Code.IsNullOrEmpty())
+            //{
+            //    var codeSvc = _ServiceProvider.GetRequiredService<IPB_BarCodeTypeBusiness>();
+            //    data.Code = await codeSvc.Generate("TD_OutStorage");
+            //}
+            data.OutNum = data.OutStorDetails.Sum(s => s.OutNum);
+            data.TotalAmt = data.OutStorDetails.Sum(s => s.TotalAmt);
+            await UpdateAsync(data);
+        }
+
         public async Task UpdateDataAsync(TD_OutStorage data)
         {
             var curDetail = data.OutStorDetails;
@@ -112,41 +124,84 @@ namespace Coldairarrow.Business.TD
             var detail = data.OutStorDetails;
             var dicMUnit = detail.Select(s => s.Material).Distinct().ToDictionary(k => k.Id, v => v.MeasureId);
 
+            var lmSvc = _ServiceProvider.GetRequiredService<IIT_LocalMaterialBusiness>();
+            var ldSvc = _ServiceProvider.GetRequiredService<IIT_LocalDetailBusiness>();
+
             // 减库存明细
             {
+                //await UpdateAsync(data);
                 var ldGrout = detail
                     .GroupBy(g => new { g.StorId, g.LocalId, g.TrayId, g.ZoneId, g.MaterialId, g.BatchNo, g.BarCode, g.Price })
                     .Select(s => new { s.Key.StorId, s.Key.LocalId, s.Key.TrayId, s.Key.ZoneId, s.Key.MaterialId, s.Key.BatchNo, s.Key.BarCode, s.Key.Price, TotalAmt = s.Sum(o => o.TotalAmt), Num = s.Sum(o => o.OutNum) })
                     .ToList();
-                var listLd = new List<IT_LocalDetail>();
-                foreach (var item in ldGrout)
+                //查询当前库存明细记录
+                var localIds = ldGrout.Select(s => s.LocalId).ToList();
+                var trayIds = ldGrout.Select(s => s.TrayId).ToList();
+                var zoneIds = ldGrout.Select(s => s.ZoneId).ToList();
+                var materIds = ldGrout.Select(s => s.MaterialId).ToList();
+                var batchNos = ldGrout.Select(s => s.BatchNo).ToList();
+                var barCodes = ldGrout.Select(s => s.BarCode).ToList();
+
+                var listLd = Service.GetIQueryable<IT_LocalDetail>();
+                listLd = listLd.Where(w => w.StorId == audit.StorId);
+                if (localIds.Count > 0)
+                    listLd = listLd.Where(w => localIds.Contains(w.LocalId));
+                if (trayIds.Count > 0)
+                    listLd = listLd.Where(w => trayIds.Contains(w.TrayId));
+                if (zoneIds.Count > 0)
+                    listLd = listLd.Where(w => zoneIds.Contains(w.ZoneId));
+                if (materIds.Count > 0)
+                    listLd = listLd.Where(w => materIds.Contains(w.MaterialId));
+                if (batchNos.Count > 0)
+                    listLd = listLd.Where(w => batchNos.Contains(w.BatchNo));
+                if (barCodes.Count > 0)
+                    listLd = listLd.Where(w => barCodes.Contains(w.BarCode));
+                var lmDbData = await listLd.ToListAsync();
+
+                //处理库存明细
+                var localMaterialSvc = _ServiceProvider.GetRequiredService<IIT_LocalDetailBusiness>();
+                var listLmUpdate = new List<IT_LocalDetail>();
+                var listDel = new List<IT_LocalDetail>();
+                foreach (var lm in ldGrout)
                 {
-                    var ld = new IT_LocalDetail();
-                    ld.Id = IdHelper.GetId();
-                    ld.StorId = audit.StorId;
-                    ld.InStorId = audit.Id;
-                    ld.LocalId = item.LocalId;
-                    ld.TrayId = item.TrayId;
-                    ld.ZoneId = item.ZoneId;
-                    ld.MaterialId = item.MaterialId;
-                    ld.MeasureId = dicMUnit[item.MaterialId];
-                    ld.BatchNo = item.BatchNo;
-                    ld.BarCode = item.BarCode;
-                    ld.InTime = audit.AuditTime;
-                    ld.Amount = item.TotalAmt;
-                    ld.CreateTime = now;
-                    ld.CreatorId = audit.AuditUserId;
-                    ld.Price = item.Price;
-                    ld.Num = item.Num;
-                    ld.Deleted = false;
-                    listLd.Add(ld);
+                    var lmNum = lm.Num;
+                    var lds = lmDbData.Where(w => w.StorId == audit.StorId && w.LocalId == lm.LocalId && w.TrayId == lm.TrayId && w.ZoneId == lm.ZoneId && w.MaterialId == lm.MaterialId && w.BatchNo == lm.BatchNo && w.BarCode == lm.BarCode).OrderBy(o => o.InTime).ToList();
+                    if (lds.Sum(s => s.Num) < lmNum) throw new Exception($"库存(明细)数量不够({lm.Num})");
+                    foreach (var item in lds)
+                    {
+                        if (item.Num <= lmNum)
+                        {
+                            listDel.Add(item);
+                            lmNum -= item.Num.GetValueOrDefault(0);
+                        }
+                        else
+                        {
+                            item.Num -= lmNum;
+                            listLmUpdate.Add(item);
+                            lmNum = 0;
+                        }
+                        if (lmNum == 0) break;
+                    }
                 }
-                if (listLd.Count > 0)
-                {
-                    var localdetailSvc = _ServiceProvider.GetRequiredService<IIT_LocalDetailBusiness>();
-                   // await localdetailSvc.AddDataAsync(listLd);
-                    await localdetailSvc.UpdateDataAsync(listLd);
-                }
+                if (listDel.Count > 0) await ldSvc.DeleteDataAsync(listDel);
+                if (listLmUpdate.Count > 0) await ldSvc.UpdateDataAsync(listLmUpdate);
+                //var listLmUpdate = new List<IT_LocalDetail>();
+                //foreach (var item in ldGrout)
+                //{
+                //    //查看是否有同样物料后在物料基础上减除数量
+                //    var lmItem = lmDbData.Where(w => w.StorId == item.StorId && w.LocalId == item.LocalId && w.TrayId == item.TrayId && w.ZoneId == item.ZoneId && w.MaterialId == item.MaterialId && w.BatchNo == item.BatchNo && w.BarCode == item.BarCode).SingleOrDefault();
+                //    if (lmItem != null)
+                //    {
+                //        lmItem.Num -= item.Num;
+                //        lmItem.Amount = lmItem.Num * item.Price;
+                //        listLmUpdate.Add(lmItem);                        
+                //    }
+                //}
+                //if (listLmUpdate.Count > 0)
+                //{
+                //    await localMaterialSvc.UpdateDataAsync(listLmUpdate);
+                //}
+
             }
 
             // 减除库存
@@ -180,30 +235,37 @@ namespace Coldairarrow.Business.TD
                 var lmDbData = await lmQuery.ToListAsync();
 
                 //处理库存
-                var localMaterialSvc = _ServiceProvider.GetRequiredService<IIT_LocalMaterialBusiness>();
-                var listLmAdd = new List<IT_LocalMaterial>();
+                //var localMaterialSvc = _ServiceProvider.GetRequiredService<IIT_LocalMaterialBusiness>();
                 var listLmUpdate = new List<IT_LocalMaterial>();
-                foreach (var item in lmGrout)
+                var listDel = new List<IT_LocalMaterial>();
+                foreach (var lm in lmGrout)
                 {
-                    //查看是否有同样物料后在物料基础上减除数量
-                    var lmItem = lmDbData.Where(w => w.StorId == item.StorId && w.LocalId == item.LocalId && w.TrayId == item.TrayId && w.ZoneId == item.ZoneId && w.MaterialId == item.MaterialId && w.BatchNo == item.BatchNo && w.BarCode == item.BarCode).SingleOrDefault();
-                    if (lmItem != null)
+                    var lds = lmDbData.Where(w => w.StorId == audit.StorId && w.LocalId == lm.LocalId && w.TrayId == lm.TrayId && w.ZoneId == lm.ZoneId && w.MaterialId == lm.MaterialId && w.BatchNo == lm.BatchNo && w.BarCode == lm.BarCode).SingleOrDefault();
+                    if (lds == null || lds.Num < lm.Num) throw new Exception($"没有找到对应物料的库存数据/库存数量不够({lm.Num})");
+                    if (lds.Num == lm.Num) listDel.Add(lds);
+                    else if (lds.Num > lm.Num)
                     {
-                        lmItem.Num -= item.Num;
-                        listLmUpdate.Add(lmItem);
-                    }
-                    else
-                    {
+                        lds.Num -= lm.Num;
+                        listLmUpdate.Add(lds);
                     }
                 }
-                if (listLmAdd.Count > 0)
-                {
-                    await localMaterialSvc.AddDataAsync(listLmAdd);
-                }
-                if (listLmUpdate.Count > 0)
-                {
-                    await localMaterialSvc.UpdateDataAsync(listLmUpdate);
-                }
+                if (listDel.Count > 0) await lmSvc.DeleteDataAsync(listDel);
+                if (listLmUpdate.Count > 0) await lmSvc.UpdateDataAsync(listLmUpdate);
+                //foreach (var item in lmGrout)
+                //{
+                //    //查看是否有同样物料后在物料基础上减除数量
+                //    var lmItem = lmDbData.Where(w => w.StorId == item.StorId && w.LocalId == item.LocalId && w.TrayId == item.TrayId && w.ZoneId == item.ZoneId && w.MaterialId == item.MaterialId && w.BatchNo == item.BatchNo && w.BarCode == item.BarCode).SingleOrDefault();
+                //    if (lmItem != null)
+                //    {
+                //        lmItem.Num -= item.Num;
+                //        listLmUpdate.Add(lmItem);                        
+                //    }
+                //}
+                //    if (listDel.Count > 0) await ldSvc.DeleteDataAsync(listDel);
+                //if (listLmUpdate.Count > 0)
+                //{
+                //    await ldSvc.UpdateDataAsync(listLmUpdate);
+                //}
             }
 
             // 添加台帐

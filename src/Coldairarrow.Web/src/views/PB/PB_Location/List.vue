@@ -40,18 +40,10 @@
       :bordered="true"
       size="small"
     >
-      <template slot="Type" slot-scope="text">
+      <!-- <template slot="Type" slot-scope="text">
         <enum-name code="	LocationType" :value="text"></enum-name>
-      </template>
+      </template> -->
 
-      <!-- <span slot="IsForbid" slot-scope="text, record">    
-        <template>          
-        <a-button :type="record.IsForbid?'primary':'danger'">
-        <a v-if="record.IsForbid" @click="handleEnable(record,'IsForbid',false)">启用</a>
-        <a v-else @click="handleEnable(record,'IsForbid',true)">停用</a>
-        </a-button>
-        </template>
-      </span> -->
       <span slot="IsForbid" slot-scope="text, record">
         <template>
           <a-tag v-if="record.IsForbid===false" color="red">
@@ -80,21 +72,17 @@
           <a @click="handleEdit(record.Id)">编辑<br></a>
           <a-divider type="vertical" />
           <a @click="handleDelete([record.Id])">删除<br></a>
-          <!-- <a-divider type="vertical" />
-          <a @click="openTrayTypeList(record.Id)">设置托盘类型</a> -->
         </template>
       </span>
     </a-table>
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
-    <!-- <traytype-list ref="traytypeList" :parentObj="this"></traytype-list> -->
   </a-card>
 </template>
 
 <script>
 import EditForm from './EditForm'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
-// import TraytypeList from '../PB_LocalTrayType/List'
 
 const filterYesOrNo = (value, row, index) => {
   if (value) return '是'
@@ -104,7 +92,7 @@ const filterYesOrNo = (value, row, index) => {
 const columns = [
   { title: '货位编号', dataIndex: 'Code', width: '10%' },
   { title: '货位名称', dataIndex: 'Name', width: '10%' },
-  { title: '货位类型', dataIndex: 'Type', width: '8%' , scopedSlots: { customRender: 'Type' } },
+  // { title: '货位类型', dataIndex: 'Type', width: '8%' , scopedSlots: { customRender: 'Type' } },
   { title: '仓库', dataIndex: 'PB_Storage.Name', width: '8%' },
   { title: '货区', dataIndex: 'PB_StorArea.Name', width: '6%' },
   { title: '巷道', dataIndex: 'PB_Laneway.Name', width: '6%' },
