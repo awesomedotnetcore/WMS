@@ -40,10 +40,10 @@ namespace Coldairarrow.Entity.PB
         /// </summary>
         public String Type { get; set; }
 
-        /// <summary>
-        /// 是否缓存区
-        /// </summary>
-        public Boolean IsCache { get; set; }
+        ///// <summary>
+        ///// 是否缓存区
+        ///// </summary>
+        //public Boolean IsCache { get; set; }
 
         /// <summary>
         /// 创建时间

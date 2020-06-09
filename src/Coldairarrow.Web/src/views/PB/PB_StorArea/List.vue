@@ -30,16 +30,6 @@
               <enum-select code="StorAreaType" v-model="queryParam.AreaType"></enum-select>
             </a-form-item>
           </a-col>
-          <!-- <a-col :md="4" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.Code" placeholder="编码" />
-            </a-form-item>
-          </a-col>
-          <a-col :md="4" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.Name" placeholder="名称" />
-            </a-form-item>
-          </a-col> -->
           <a-col :md="6" :sm="24">
             <a-button type="primary" @click="getDataList">查询</a-button>
             <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
@@ -60,12 +50,12 @@
       :bordered="true"
       size="small"
     >
-      <span slot="IsCache" slot-scope="text, record">
+      <!-- <span slot="IsCache" slot-scope="text, record">
         <template>
           <a-tag v-if="record.IsCache===false" color="red">否</a-tag>
           <a-tag v-else color="green">是</a-tag>
         </template>
-      </span>
+      </span> -->
 
       <template slot="Type" slot-scope="text">
         <enum-name code="StorAreaType" :value="text"></enum-name>
@@ -93,17 +83,13 @@ import MaterialList from '../PB_AreaMaterial/List'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import StorageSelect from '../../../components/Storage/StorageSelect'
-// const filterYesOrNo = (value, row, index) => {
-//   if (value) return '是'
-//   else return '否'
-// }
 
 const columns = [
   { title: '仓库', dataIndex: 'PB_Storage.Name', width: '10%' },
   { title: '货区编号', dataIndex: 'Code', width: '10%' },
   { title: '货区名称', dataIndex: 'Name', width: '10%' },
   { title: '货区类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
-  { title: '缓存区', dataIndex: 'IsCache', width: '10%', scopedSlots: { customRender: 'IsCache' } },
+  // { title: '缓存区', dataIndex: 'IsCache', width: '10%', scopedSlots: { customRender: 'IsCache' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
