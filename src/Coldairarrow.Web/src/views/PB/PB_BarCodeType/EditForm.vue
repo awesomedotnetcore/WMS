@@ -1,12 +1,5 @@
 ﻿<template>
-  <a-modal
-    :title="title"
-    width="40%"
-    :visible="visible"
-    :confirmLoading="loading"
-    @ok="handleSubmit"
-    @cancel="()=>{this.visible=false}"
-  >
+  <a-modal :title="title" width="40%" :visible="visible" :confirmLoading="loading" @ok="handleSubmit" @cancel="()=>{this.visible=false}">
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
         <a-form-model-item label="编号" prop="Code">
@@ -36,7 +29,7 @@ export default {
       },
       visible: false,
       loading: false,
-      entity: {},
+      entity: { JoinChar: '' },
       rules: {},
       title: ''
     }
@@ -44,7 +37,7 @@ export default {
   methods: {
     init() {
       this.visible = true
-      this.entity = {}
+      this.entity = { JoinChar: '' }
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })

@@ -4,13 +4,13 @@
       <div class="top">
         <div class="header">
           <a href="/">
-            <img src="@/assets/logo.svg" class="logo" alt="logo" />
+            <img src="@/assets/fullLogo.png" class="logo" alt="logo" />
             <span class="title">{{ getTitle() }}</span>
           </a>
         </div>
         <div class="desc">
-          致力于提高开发效率
-          <br />解放生产力
+          仓储管理系统
+          <br />中南智能
         </div>
       </div>
 

@@ -1,16 +1,9 @@
 ﻿<template>
-  <a-modal
-    :title="title"
-    width="40%"
-    :visible="visible"
-    :confirmLoading="loading"
-    @ok="handleSubmit"
-    @cancel="()=>{this.visible=false}"
-  >
+  <a-modal :title="title" width="40%" :visible="visible" :confirmLoading="loading" @ok="handleSubmit" @cancel="()=>{this.visible=false}">
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
         <a-form-model-item label="单位编码" prop="Code">
-          <a-input v-model="entity.Code" autocomplete="off" />
+          <a-input v-model="entity.Code" :disabled="$para('GenerateMeasureCode')=='1'" :placeholder="$para('GenerateMeaasureCode')=='1'?'系统自动生成':'单位编码'" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="单位名称" prop="Name">
           <a-input v-model="entity.Name" autocomplete="off" />

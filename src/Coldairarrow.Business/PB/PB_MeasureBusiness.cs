@@ -3,6 +3,8 @@ using Coldairarrow.Util;
 using EFCore.Sharding;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -12,11 +14,12 @@ namespace Coldairarrow.Business.PB
 {
     public partial class PB_MeasureBusiness : BaseBusiness<PB_Measure>, IPB_MeasureBusiness, ITransientDependency
     {
-        public PB_MeasureBusiness(IRepository repository)
+        public PB_MeasureBusiness(IRepository repository, IServiceProvider svcProvider)
             : base(repository)
         {
+            _ServiceProvider = svcProvider;
         }
-
+        readonly IServiceProvider _ServiceProvider;
         #region 外部接口
 
         public async Task<PageResult<PB_Measure>> GetDataListAsync(PageInput<PB_MeasureQM> input)
@@ -26,10 +29,8 @@ namespace Coldairarrow.Business.PB
             var search = input.Search;
 
             //筛选
-            if (!search.Name.IsNullOrEmpty())
-                where = where.And(w => w.Name.Contains(search.Name));
-            if (!search.Code.IsNullOrEmpty())
-                where = where.And(w => w.Code.Contains(search.Code));
+            if (!search.Keyword.IsNullOrEmpty())
+                where = where.And(w => w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
 
             return await q.Where(where).GetPageResultAsync(input);
         }
@@ -41,6 +42,11 @@ namespace Coldairarrow.Business.PB
 
         public async Task AddDataAsync(PB_Measure data)
         {
+            if (data.Code.IsNullOrEmpty())
+            {
+                var codeSvc = _ServiceProvider.GetRequiredService<IPB_BarCodeTypeBusiness>();
+                data.Code = await codeSvc.Generate("PB_Measure");
+            }
             await InsertAsync(data);
         }
 
