@@ -17,6 +17,21 @@
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
             <a-form-item>
+              <storage-select v-model="queryParam.StorageId"></storage-select>
+            </a-form-item>
+          </a-col>
+          <a-col :md="4" :sm="24">
+            <a-form-item>
+              <a-input v-model="queryParam.keyword" placeholder="货区编码或名称" />
+            </a-form-item>
+          </a-col>  
+          <a-col :md="4" :sm="24">
+            <a-form-item>
+              <enum-select code="StorAreaType" v-model="queryParam.AreaType"></enum-select>
+            </a-form-item>
+          </a-col>
+          <!-- <a-col :md="4" :sm="24">
+            <a-form-item>
               <a-input v-model="queryParam.Code" placeholder="编码" />
             </a-form-item>
           </a-col>
@@ -24,7 +39,7 @@
             <a-form-item>
               <a-input v-model="queryParam.Name" placeholder="名称" />
             </a-form-item>
-          </a-col>
+          </a-col> -->
           <a-col :md="6" :sm="24">
             <a-button type="primary" @click="getDataList">查询</a-button>
             <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
@@ -76,7 +91,8 @@
 import EditForm from './EditForm'
 import MaterialList from '../PB_AreaMaterial/List'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
-
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
+import StorageSelect from '../../../components/Storage/StorageSelect'
 // const filterYesOrNo = (value, row, index) => {
 //   if (value) return '是'
 //   else return '否'
@@ -95,7 +111,9 @@ export default {
   components: {
     EditForm,
     MaterialList,
-    EnumName
+    EnumName,
+    EnumSelect,
+    StorageSelect
   },
   mounted() {
     this.getDataList()
