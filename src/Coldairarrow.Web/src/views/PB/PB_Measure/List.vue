@@ -2,27 +2,15 @@
   <a-card :bordered="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button
-        type="primary"
-        icon="minus"
-        @click="handleDelete(selectedRowKeys)"
-        :disabled="!hasSelected()"
-        :loading="loading"
-      >删除</a-button>
+      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
-
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.Code" placeholder="编码" />
-            </a-form-item>
-          </a-col>
-          <a-col :md="4" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.Name" placeholder="名称" />
+              <a-input v-model="queryParam.Keyword" placeholder="编码/名称" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -33,18 +21,7 @@
       </a-form>
     </div>
 
-    <a-table
-      ref="table"
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      :bordered="true"
-      size="small"
-    >
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -62,8 +39,8 @@
 import EditForm from './EditForm'
 
 const columns = [
-  { title: '单位编码', dataIndex: 'Code', width: '10%' },
-  { title: '单位名称', dataIndex: 'Name', width: '10%' },
+  { title: '单位编码', dataIndex: 'Code', width: '20%' },
+  { title: '单位名称', dataIndex: 'Name', width: '20%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 

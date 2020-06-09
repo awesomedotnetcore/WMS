@@ -15,7 +15,6 @@ namespace Coldairarrow.Business.PB
     }
     public class PB_MeasureQM
     {
-        public string Name { get; set; }
-        public string Code { get; set; }
+        public string Keyword { get; set; }
     }
 }
