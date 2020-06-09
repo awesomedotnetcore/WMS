@@ -48,6 +48,16 @@ namespace Coldairarrow.Api.Controllers.PB
         {
             return await _pB_RackBus.QueryRackDataAsync();
         }
+
+        /// <summary>
+        /// 查询货架所属仓库
+        /// </summary>
+        [HttpPost]
+        public async Task<List<PB_Rack>> GetDataListByStor(string storId)
+        {
+            var res = await _pB_RackBus.GetDataListAsync(storId);
+            return res;
+        }
         #endregion
 
         #region 提交

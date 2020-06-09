@@ -9,6 +9,7 @@ namespace Coldairarrow.Business.PB
     {
         Task<PageResult<PB_Rack>> GetDataListAsync(PB_RackPageInput input);
         Task<PB_Rack> GetTheDataAsync(string id);
+        Task<List<PB_Rack>> GetDataListAsync(string storId);
         Task<List<PB_Rack>> QueryRackDataAsync();
         Task AddDataAsync(PB_Rack data);
         Task UpdateDataAsync(PB_Rack data);

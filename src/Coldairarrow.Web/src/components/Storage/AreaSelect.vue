@@ -1,5 +1,5 @@
 <template>
-  <a-select v-model="curValue" placeholder="货区" @select="handleSelected" v-bind="$attrs">
+  <a-select v-model="curValue" placeholder="选择货区" @select="handleSelected" v-bind="$attrs">
     <a-select-option v-for="item in listData" :key="item.Id" :value="item.Id">{{ item.Name }}({{ item.Code }})</a-select-option>
   </a-select>
 </template>
