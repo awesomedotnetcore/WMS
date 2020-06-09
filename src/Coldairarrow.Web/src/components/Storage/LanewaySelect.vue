@@ -1,5 +1,5 @@
 <template>
-  <a-select v-model="curValue" placeholder="货区" @select="handleSelected" v-bind="$attrs">
+  <a-select v-model="curValue" placeholder="巷道" @select="handleSelected" v-bind="$attrs">
     <a-select-option v-for="item in listData" :key="item.Id" :value="item.Id">{{ item.Name }}({{ item.Code }})</a-select-option>
   </a-select>
 </template>
@@ -39,7 +39,7 @@ export default {
       //   })
       // } else 
       if (this.storId != '') {
-        this.$http.post('/PB/PB_StorArea/GetDataListByStor?StorId=' + this.storId).then(resJson => {
+        this.$http.post('/PB/PB_Laneway/GetDataListByStor?StorId=' + this.storId).then(resJson => {
           this.listData = resJson.Data
         })
       }
