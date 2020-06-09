@@ -12,41 +12,20 @@
         <a-form-model-item label="调拨单号" prop="Code">
           <a-input v-model="entity.Code" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="调拨时间" prop="AllocateTime">
-          <a-input v-model="entity.AllocateTime" autocomplete="off" />
-        </a-form-model-item>
         <a-form-model-item label="调拨类型" prop="Type">
-          <a-input v-model="entity.Type" autocomplete="off" />
+          <enum-select code="AllocateStorageType" v-model="entity.Type"></enum-select>
         </a-form-model-item>
-        <a-form-model-item label="仓库ID" prop="StorId">
-          <a-input v-model="entity.StorId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="目标仓库ID" prop="ToStorId">
-          <a-input v-model="entity.ToStorId" autocomplete="off" />
-        </a-form-model-item>
+        <!-- <a-form-model-item label="目标仓库" prop="ToStorId">
+          <storage-select v-model="entity.ToStorId" @select="handleStorageSelect"></storage-select>
+        </a-form-model-item> -->
         <a-form-model-item label="关联单号" prop="RefCode">
           <a-input v-model="entity.RefCode" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="总额" prop="Amount">
-          <a-input v-model="entity.Amount" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="调拨数量" prop="AllocateNum">
-          <a-input v-model="entity.AllocateNum" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="设备ID" prop="EquId">
-          <a-input v-model="entity.EquId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="状态(0待审核;1审核通过;2审核失败)" prop="Status">
-          <a-input v-model="entity.Status" autocomplete="off" />
+        <a-form-model-item label="调拨时间" prop="AllocateTime">
+          <a-date-picker show-time v-model="entity.AllocateTime"/>
         </a-form-model-item>
         <a-form-model-item label="备注" prop="Remarks">
           <a-input v-model="entity.Remarks" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="审核人ID" prop="AuditUserId">
-          <a-input v-model="entity.AuditUserId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="审核时间" prop="AuditeTime">
-          <a-input v-model="entity.AuditeTime" autocomplete="off" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -54,7 +33,14 @@
 </template>
 
 <script>
+import StorageSelect from '../../../components/Storage/StorageSelect'
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
+
 export default {
+  components: {
+    StorageSelect,
+    EnumSelect
+  },
   props: {
     parentObj: Object
   },
@@ -110,6 +96,10 @@ export default {
           }
         })
       })
+    },
+    getEquList() {},
+    handleStorageSelect(data) {
+      this.entity.ToStorId = data.Id
     }
   }
 }

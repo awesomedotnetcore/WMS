@@ -25,5 +25,12 @@ namespace Coldairarrow.Business.PB
                 where = where.Or(w => w.Id == search.Id);
             return await q.Where(where).OrderBy(o => o.Name).Take(search.Take).ToListAsync();
         }
+
+        public async Task<PB_Location> GetDefaultLocal(string storId, string storAreaId)
+        {
+            var q = GetIQueryable();
+
+            return await q.Where(p => p.StorId == storId && p.AreaId == storAreaId && p.IsDefault == true).FirstOrDefaultAsync();
+        }
     }
 }

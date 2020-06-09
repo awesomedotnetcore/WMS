@@ -14,16 +14,18 @@ namespace Coldairarrow.Api.Controllers.TD
         #region DI
 
         public TD_AllocateController(ITD_AllocateBusiness tD_AllocateBus, IOperator @op, ITD_AllocateDetailBusiness tD_AllocateDetailBusiness,
-            IIT_LocalMaterialBusiness iT_LocalMaterialBusiness)
+            IIT_LocalMaterialBusiness iT_LocalMaterialBusiness, IIT_LocalDetailBusiness iT_LocalDetailBusiness)
         {
             _tD_AllocateBus = tD_AllocateBus;
             _iT_LocalMaterialBusiness = iT_LocalMaterialBusiness;
+            _iT_LocalDetailBusiness = iT_LocalDetailBusiness;
             _tD_AllocateDetailBusiness = tD_AllocateDetailBusiness;
             _Op = @op;
         }
 
         ITD_AllocateBusiness _tD_AllocateBus { get; }
         IIT_LocalMaterialBusiness _iT_LocalMaterialBusiness { get; }
+        IIT_LocalDetailBusiness _iT_LocalDetailBusiness { get; }
         ITD_AllocateDetailBusiness _tD_AllocateDetailBusiness { get; }
         IOperator _Op { get; }
 
@@ -53,6 +55,8 @@ namespace Coldairarrow.Api.Controllers.TD
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
+                data.StorId = _Op.Property.DefaultStorageId;
+                data.Status = (int)AllocateStatus.待审核;
 
                 await _tD_AllocateBus.AddDataAsync(data);
             }
@@ -104,6 +108,7 @@ namespace Coldairarrow.Api.Controllers.TD
             }
 
             await _iT_LocalMaterialBusiness.UpdataDatasByBussiness(dataList);
+            await _iT_LocalDetailBusiness.UpdataDatasByBussiness(dataList);
         }
 
         [HttpPost]

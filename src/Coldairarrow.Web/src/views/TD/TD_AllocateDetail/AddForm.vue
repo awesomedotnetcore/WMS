@@ -35,7 +35,7 @@
           <span slot="action" slot-scope="text, record">
             <template>
               <a
-                @click="handleSelectTarget(record.Id, record.MaterialId, record.FromLocalId, record.FromTrayId, record.FromZoneId, record.ToLocalId, record.ToTrayId, record.ToZoneId)"
+                @click="handleSelectTarget(record.Id, record.MaterialId, record.FromStorId, record.FromLocalId, record.FromTrayId, record.FromZoneId, record.ToLocalId, record.ToTrayId, record.ToZoneId)"
               >目标选择</a>
             </template>
           </span>
@@ -54,6 +54,7 @@ import TraySelect from '../../../components/Tray/TraySelect'
 import ZoneSelect from '../../../components/Tray/ZoneSelect'
 import EditableCell from '../../../components/EditableCell/EditableCell'
 import EditTarget from './EditTarget'
+
 const columns = [
   { title: '原货位', dataIndex: 'Location.Name', width: '10%' },
   { title: '原托盘', dataIndex: 'Tray.Name', width: '10%' },
@@ -61,11 +62,9 @@ const columns = [
   { title: '物料', dataIndex: 'Material.Name', width: '10%' },
   { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
   { title: '数量', dataIndex: 'Num', width: '5%' },
-  { title: '移库数量', dataIndex: 'LocalNum', width: '5%', scopedSlots: { customRender: 'LocalNum' } },
-  { title: '目标货位', dataIndex: 'ToLocalName', width: '10%' },
-  { title: '目标托盘', dataIndex: 'ToTrayName', width: '10%' },
-  { title: '目标分区', dataIndex: 'ToZoneName', width: '10%' },
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+  { title: '移库数量', dataIndex: 'LocalNum', width: '5%', scopedSlots: { customRender: 'LocalNum' } }
+  // { title: '目标仓库', dataIndex: 'ToStorageName', width: '10%' }
+  // { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
@@ -106,22 +105,27 @@ export default {
       updataMatch: 0,
       getDataMatch: 0,
       selectedRows: [],
-      moveId: null,
-      moveDetailId: null
+      AllocateId: null,
+      AllocateDetailId: null,
+      toStorId: null,
+      toStorName: null
     }
   },
   methods: {
     init() {
       this.visible = true
+      this.entity = {}
       this.selectedRowKeys = []
       this.data = []
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })
     },
-    openForm(moveId, title) {
+    openForm(allocateId, id) {
       this.init()
-      this.moveId = moveId
+      this.AllocateId = allocateId
+      // this.toStorId = toStorId
+      // this.toStorName = toStorName
     },
     handleSubmit() {
       var thisObj = this
@@ -131,7 +135,7 @@ export default {
         }
         thisObj.loading = true
         if (thisObj.selectedRows.length > 0) {
-          thisObj.$http.post('/TD/TD_MoveDetail/SaveDatas', thisObj.selectedRows).then(resJson => {
+          thisObj.$http.post('/TD/TD_AllocateDetail/SaveDatas', thisObj.selectedRows).then(resJson => {
             thisObj.loading = false
 
             if (resJson.Success) {
@@ -145,7 +149,12 @@ export default {
           })
         } else {
           thisObj.loading = false
-          thisObj.visible = false
+          thisObj.$confirm({
+            title: '未选择保存数据，是否关闭页面？',
+            onOk() {
+              thisObj.visible = false
+            }
+          })
         }
       })
     },
@@ -155,40 +164,39 @@ export default {
       var thisObj = this
       this.$http
         .post('/IT/IT_LocalMaterial/GetDataListByMaterialId', {
-          PageIndex: this.pagination.current,
-          PageRows: this.pagination.pageSize,
-          SortField: this.sorter.field || 'Id',
-          SortType: this.sorter.order,
-          Search: this.queryParam,
-          ...this.filters
+          PageIndex: thisObj.pagination.current,
+          PageRows: thisObj.pagination.pageSize,
+          SortField: thisObj.sorter.field || 'Id',
+          SortType: thisObj.sorter.order,
+          Search: thisObj.queryParam,
+          ...thisObj.filters
         })
         .then(resJson => {
-          this.loading = false
+          thisObj.loading = false
           var addData = {}
           resJson.Data.forEach(element => {
             addData = element
-            addData.MoveDetailId = thisObj.MoveDetailId
+            addData.AllocateId = thisObj.AllocateId
+            addData.AllocateDetailId = thisObj.AllocateDetailId
+            addData.FromStorId = element.StorId
             addData.FromLocalId = element.LocalId
             addData.FromTrayId = element.TrayId
             addData.FromZoneId = element.ZoneId
-            addData.MoveId = thisObj.moveId
             if (this.getDataMatch == 0) {
-              addData.ToLocalId = ''
-              addData.ToLocalName = ''
-              addData.ToTrayId = ''
-              addData.ToTrayName = ''
-              addData.ToZoneId = ''
-              addData.ToZoneName = ''
+              // addData.ToStorId = this.toStorId
+              // addData.ToStorName = this.toStorName
+              // addData.ToLocalId = ''
+              // addData.ToLocalName = ''
               addData.LocalNum = 0
               addData.Amount = 0
             } else {
-              this.getDataMatch = 0
+              thisObj.getDataMatch = 0
             }
             thisObj.data.push(addData)
           })
-          const pagination = { ...this.pagination }
+          const pagination = { ...thisObj.pagination }
           pagination.total = resJson.Total
-          this.pagination = pagination
+          thisObj.pagination = pagination
         })
     },
     onSelectChange(selectedRowKeys, selectedRows) {
@@ -198,18 +206,14 @@ export default {
     onCellChange(data, dataIndex, value) {
       data[dataIndex] = value
     },
-    handleSelectTarget(id, materialId, FromLocalId, FromTrayId, FromZoneId, ToLocalId, ToTrayId, ToZoneId) {
-      this.$refs.editTarget.openForm(id, materialId, FromLocalId, FromTrayId, FromZoneId, ToLocalId, ToTrayId, ToZoneId)
+    handleSelectTarget(id, materialId, FromStorageId, FromLocalId, FromTrayId, FromZoneId, ToStorageId) {
+      this.$refs.editTarget.openForm(id, materialId, FromStorageId, FromLocalId, FromTrayId, FromZoneId, ToStorageId)
     },
-    handleUpdataTargetInfo(id, locationId, locationName, trayId, trayName, zoneId, zoneName) {
+    handleUpdataTargetInfo(id, ToStorageId, ToStorageName) {
       this.data.forEach(i => {
         if (i.Id == id) {
-          i.ToLocalId = locationId
-          i.ToLocalName = locationName
-          i.ToTrayId = trayId
-          i.ToTrayName = trayName
-          i.ToZoneId = zoneId
-          i.ToZoneName = zoneName
+          i.ToStorId = ToStorageId
+          i.ToStorName = ToStorageName
         }
       })
     }

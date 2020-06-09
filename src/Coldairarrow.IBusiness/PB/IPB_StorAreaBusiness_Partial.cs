@@ -8,5 +8,6 @@ namespace Coldairarrow.Business.PB
     public partial interface IPB_StorAreaBusiness
     {
         Task<List<PB_StorArea>> QueryAsync(string storageId);
+        Task<PB_StorArea> GetInnerArea(string storageId);
     }
 }
