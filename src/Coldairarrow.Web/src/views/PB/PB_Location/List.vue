@@ -40,10 +40,6 @@
       :bordered="true"
       size="small"
     >
-      <!-- <template slot="Type" slot-scope="text">
-        <enum-name code="	LocationType" :value="text"></enum-name>
-      </template> -->
-
       <span slot="IsForbid" slot-scope="text, record">
         <template>
           <a-tag v-if="record.IsForbid===false" color="red">
@@ -92,16 +88,15 @@ const filterYesOrNo = (value, row, index) => {
 const columns = [
   { title: '货位编号', dataIndex: 'Code', width: '10%' },
   { title: '货位名称', dataIndex: 'Name', width: '10%' },
-  // { title: '货位类型', dataIndex: 'Type', width: '8%' , scopedSlots: { customRender: 'Type' } },
-  { title: '仓库', dataIndex: 'PB_Storage.Name', width: '8%' },
-  { title: '货区', dataIndex: 'PB_StorArea.Name', width: '6%' },
-  { title: '巷道', dataIndex: 'PB_Laneway.Name', width: '6%' },
-  { title: '货架', dataIndex: 'PB_Rack.Name', width: '6%' },
+  { title: '仓库', dataIndex: 'PB_Storage.Name', width: '10%' },
+  { title: '货区', dataIndex: 'PB_StorArea.Name', width: '10%' },
+  { title: '巷道', dataIndex: 'PB_Laneway.Name', width: '10%' },
+  { title: '货架', dataIndex: 'PB_Rack.Name', width: '10%' },
   { title: '余量', dataIndex: 'OverVol', width: '5%' },
   { title: '状态', dataIndex: 'IsForbid', width: '5%', scopedSlots: { customRender: 'IsForbid' }  },//是否禁用
   { title: '默认', dataIndex: 'IsDefault', width: '5%', scopedSlots: { customRender: 'IsDefault' }  },//是否默认库位
   // { title: '故障码', dataIndex: 'ErrorCode', width: '6' },
-  { title: '备注', dataIndex: 'Remarks', width: '10%' },
+  // { title: '备注', dataIndex: 'Remarks', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -109,7 +104,6 @@ export default {
   components: {
     EditForm,
     EnumName, 
-    // TraytypeList,
   },
   mounted() {
     this.getDataList()
@@ -212,9 +206,6 @@ export default {
         }
       })
     },
-    // openTrayTypeList(typeId) {
-    //   this.$refs.traytypeList.openDrawer(typeId)
-    // }
   }
 }
 </script>
