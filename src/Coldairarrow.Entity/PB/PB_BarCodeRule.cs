@@ -65,14 +65,11 @@ namespace Coldairarrow.Entity.PB
 
     }
 
-    //public class Base_EnumItemEntityTypeConfig : IEntityTypeConfiguration<PB_BarCodeRule>
-    //{
-    //    public void Configure(EntityTypeBuilder<PB_BarCodeRule> builder)
-    //    {
-    //        builder
-    //        .HasOne(p => p.BarCodeType)
-    //        .WithMany(b => b.BarCodeRules)
-    //        .HasForeignKey(p => p.TypeId);
-    //    }
-    //}
+    public class PB_BarCodeRuleEntityTypeConfig : IEntityTypeConfiguration<PB_BarCodeRule>
+    {
+        public void Configure(EntityTypeBuilder<PB_BarCodeRule> builder)
+        {
+            builder.HasQueryFilter(w => w.Deleted == false);
+        }
+    }
 }
