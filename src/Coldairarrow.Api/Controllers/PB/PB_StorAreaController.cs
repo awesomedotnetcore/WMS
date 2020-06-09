@@ -15,20 +15,24 @@ namespace Coldairarrow.Api.Controllers.PB
     public partial class PB_StorAreaController : BaseApiController
     {
         #region DI
-        IBase_UserStorBusiness _base_UserStorBus { get; }
-        IOperator _Op { get; }
+        IBase_UserStorBusiness _base_UserStorBus { get; }        
 
-        public PB_StorAreaController(IPB_StorAreaBusiness pB_StorAreaBus, IBase_UserStorBusiness base_UserStorBus, IOperator op, IServiceProvider provider)
+        public PB_StorAreaController(IPB_StorAreaBusiness pB_StorAreaBus, IBase_UserStorBusiness base_UserStorBus, IOperator op, IServiceProvider provider, IPB_StorageBusiness pB_StorageBusiness)
         {
             _pB_StorAreaBus = pB_StorAreaBus;
             _base_UserStorBus = base_UserStorBus;
             _Op = op;
             _provider = provider;
+            _pB_StorageBusiness = pB_StorageBusiness;
         }
 
         IPB_StorAreaBusiness _pB_StorAreaBus { get; }
 
         IServiceProvider _provider { get; }
+
+        IOperator _Op { get; }
+
+        IPB_StorageBusiness _pB_StorageBusiness { get; }
 
         #endregion
 
@@ -53,6 +57,24 @@ namespace Coldairarrow.Api.Controllers.PB
         public async Task<List<PB_StorArea>> QueryStorAreaData()
         {
             return await _pB_StorAreaBus.QueryStorAreaDataAsync();
+        }
+
+        
+        //[HttpPost]
+        //public async Task<List<PB_StorArea>> GetDataListByType(string typeId)
+        //{
+        //    var res = await _pB_StorAreaBus.GetDataListAsync(typeId);
+        //    return res;
+        //}
+
+        /// <summary>
+        /// 查询货区所属仓库
+        /// </summary>
+        [HttpPost]
+        public async Task<List<PB_StorArea>> GetDataListByStor(string storId)
+        {
+            var res = await _pB_StorAreaBus.GetDataListAsync(storId);
+            return res;
         }
 
         #endregion
