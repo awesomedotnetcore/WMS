@@ -60,6 +60,14 @@ namespace Coldairarrow.Business.PB
             return await q.ToListAsync();
         }
 
+        public async Task<List<PB_Laneway>> GetDataListAsync(string storId)
+        {
+            var q = GetIQueryable();
+            q = q.Where(w => w.StorId == storId);
+
+            return await q.ToListAsync();
+        }
+
         #endregion
 
         #region 私有成员

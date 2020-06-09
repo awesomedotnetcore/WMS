@@ -8,6 +8,7 @@ namespace Coldairarrow.Business.PB
     public partial interface IPB_StorAreaBusiness
     {
         Task<PageResult<PB_StorArea>> GetDataListAsync(PageInput<ConditionDTO> input);
+        Task<List<PB_StorArea>> GetDataListAsync(string storId);
         Task<PB_StorArea> GetTheDataAsync(string id);
         Task<List<PB_StorArea>> QueryStorAreaDataAsync();
         Task AddDataAsync(PB_StorArea data);

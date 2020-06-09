@@ -9,6 +9,7 @@ namespace Coldairarrow.Business.PB
     {
         Task<PageResult<PB_Laneway>> GetDataListAsync(PB_LanewayPageInput input);
         Task<PB_Laneway> GetTheDataAsync(string id);
+        Task<List<PB_Laneway>> GetDataListAsync(string storId);
         Task<List<PB_Laneway>> QueryLanewayDataAsync();
         Task AddDataAsync(PB_Laneway data);
         Task UpdateDataAsync(PB_Laneway data);

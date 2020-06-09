@@ -50,6 +50,16 @@ namespace Coldairarrow.Api.Controllers.PB
             return await _pB_LanewayBus.QueryLanewayDataAsync();
         }
 
+        /// <summary>
+        /// 查询巷道所属仓库
+        /// </summary>
+        [HttpPost]
+        public async Task<List<PB_Laneway>> GetDataListByStor(string storId)
+        {
+            var res = await _pB_LanewayBus.GetDataListAsync(storId);
+            return res;
+        }
+
         #endregion
 
         #region 提交

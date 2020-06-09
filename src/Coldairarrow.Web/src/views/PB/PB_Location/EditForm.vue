@@ -22,20 +22,25 @@
         <a-form-model-item label="仓库" prop="StorId">
           <storage-select v-model="entity.StorId"></storage-select>
         </a-form-model-item>
-        <a-form-model-item label="货区" prop="AreaId">
-          <a-select placeholder="请选择" v-model="entity.AreaId">
+
+        <a-form-model-item  label="货区" prop="AreaId">
+           <area-select :storId="entity.StorId" v-model="entity.AreaId" @select="handleAreaSelect"></area-select>
+          <!-- <a-select placeholder="请选择" v-model="entity.AreaId">
             <a-select-option v-for="item in this.StorAreaList" :key="item.Id">{{item.Name}}</a-select-option>
-          </a-select>
+          </a-select> -->
         </a-form-model-item>
+
         <a-form-model-item label="巷道" prop="LanewayId">
-          <a-select placeholder="请选择" v-model="entity.LanewayId">
+          <laneway-select :storId="entity.StorId" v-model="entity.LanewayId" @select="handleLanewaySelect"></laneway-select>
+          <!-- <a-select placeholder="请选择" :storId="entity.StorId" v-model="entity.LanewayId">
             <a-select-option v-for="item in this.LanewayList" :key="item.Id">{{item.Name}}</a-select-option>
-          </a-select>
+          </a-select> -->
         </a-form-model-item>
         <a-form-model-item label="货架" prop="RackId">
-          <a-select placeholder="请选择" v-model="entity.RackId">
+          <rack-select :storId="entity.StorId" v-model="entity.RackId" @select="handleRackSelect"></rack-select>
+          <!-- <a-select placeholder="请选择" v-model="entity.RackId">
             <a-select-option v-for="item in this.RackList" :key="item.Id">{{item.Name}}</a-select-option>
-          </a-select>
+          </a-select> -->
         </a-form-model-item>
         <a-form-model-item label="剩余容量" prop="OverVol">
           <a-input v-model="entity.OverVol" autocomplete="off" />
@@ -74,11 +79,17 @@
 <script>
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import StorageSelect from '../../../components/Storage/StorageSelect'
+import AreaSelect from '../../../components/Storage/AreaSelect'
+import LanewaySelect from '../../../components/Storage/LanewaySelect'
+import RackSelect from '../../../components/Storage/RackSelect'
 
 export default {
   components: {
     EnumSelect,
-    StorageSelect
+    StorageSelect,
+    AreaSelect,
+    LanewaySelect,
+    RackSelect
   },
   props: {    
     parentObj: Object
@@ -150,6 +161,7 @@ export default {
       var thisObj = this
       this.loading = true
       this.$http.post('/PB/PB_StorArea/QueryStorAreaData').then(resJson => {
+       // this.$http.post('/PB/PB_StorArea/GetDataListByStor?StorId=' + this.StorId).then(resJson => {
         this.loading = false
         thisObj.StorAreaList = resJson.Data
       })
@@ -172,6 +184,15 @@ export default {
     },
     DataTypeChange(val, option) {
       this.DataType = val
+    },
+    handleAreaSelect(Area) {
+      console.log('handleAreaSelect', Area)
+    },
+    handleLanewaySelect(Laneway) {
+      console.log('handleLanewaySelect', Laneway)
+    },
+    handleRackSelect(Rack) {
+      console.log('handleRackSelect', Rack)
     }
   }
 }
