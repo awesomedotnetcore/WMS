@@ -32,20 +32,53 @@
         <enum-name code="StorageType" :value="text"></enum-name>
       </template>
 
-      <template  slot="IsDefault" slot-scope="text, record" >
+      <span slot="IsDefault" slot-scope="text, record">
+        <template>
+          <a-tag v-if="record.IsDefault===false" color="red">
+          否
+          </a-tag>
+          <a-tag v-else color="green">
+          是
+          </a-tag>
+        </template>
+      </span>
+      <span slot="IsTray" slot-scope="text, record">
+        <template>
+          <a-tag v-if="record.IsTray===false" color="red">
+          停用
+          </a-tag>
+          <a-tag v-else color="green">
+          启用
+          </a-tag>
+        </template>
+      </span>
+      <span slot="IsZone" slot-scope="text, record">
+        <template>
+          <a-tag v-if="record.IsZone===false" color="red">
+          停用
+          </a-tag>
+          <a-tag v-else color="green">
+          启用
+          </a-tag>
+        </template>
+      </span>
+      <span slot="Disable" slot-scope="text, record">
+        <template>
+          <a-tag v-if="record.Disable===false" color="red">
+          停用
+          </a-tag>
+          <a-tag v-else color="green">
+          启用
+          </a-tag>
+        </template>
+      </span>
+
+      <!-- <template  slot="IsDefault" slot-scope="text, record" >
         <a-radio  :checked="text" @click="handleDefault(record,'IsDefault',true)">
         </a-radio>
-      </template>
-
-      <!-- <span slot="IsTray" slot-scope="text, record">    
-        <template>
-        <a-button :type="record.IsTray?'primary':'danger'">
-        <a v-if="record.IsTray" @click="handleEnable(record,'IsTray',false)">启用</a>
-        <a v-else @click="handleEnable(record,'IsTray',true)">停用</a>
-        </a-button>
-        </template>
-      </span> -->
-      <span slot="IsTray" slot-scope="text, record">
+      </template> -->
+ 
+      <!-- <span slot="IsTray" slot-scope="text, record">
         <template>
           <a-switch checked-children="启用" un-checked-children="停用" @click="handleModifyIsTray(record.Id)" v-model="record.IsTray" />
         </template>
@@ -57,44 +90,31 @@
         </template>
       </span>
 
-      <!-- <span slot="IsZone" slot-scope="text, record">    
-        <template>
-        <a-button :type="record.IsZone?'primary':'danger'">
-        <a v-if="record.IsZone" @click="handleEnable(record,'IsZone',false)">启用</a>
-        <a v-else @click="handleEnable(record,'IsZone',true)">停用</a>
-        </a-button>
-        </template>
-      </span> -->
-
-      <!-- <span slot="Disable" slot-scope="text, record">    
-        <template>
-        <a-button :type="record.Disable?'primary':'danger'">
-        <a v-if="record.Disable" @click="handleEnable(record,'Disable',false)">启用</a>
-        <a v-else @click="handleEnable(record,'Disable',true)">停用</a>
-        </a-button>
-        </template>
-      </span> -->
-
       <span slot="Disable" slot-scope="text, record">    
         <template>
           <a-switch checked-children="启用" un-checked-children="停用" @click="handleModifyDisable(record.Id)" v-model="record.Disable" />
         </template>
-      </span>
+      </span> -->
 
       <span slot="action" slot-scope="text, record">
-        <template>
-          <a  @click="handleEdit(record.Id)">编辑</a>
-          <a-divider  type="vertical" />
-          <a  @click="handleDelete([record.Id])">删除</a>
-          <a-divider  type="vertical" />
+        <template>    
+          
           <a @click="openLanewayList(record)">设置巷道</a>
-          <a-divider  type="vertical" />
+          <a-divider type="vertical" />
           <a @click="openRackList(record)">设置货架</a>
+          <a-divider v-if="record.Disable===false" type="vertical" />
+          <a v-if="record.Disable===false" @click="handleEdit(record.Id)">编辑</a>
+          <a-divider type="vertical" />
+          <a @click="handleConfig(record.Id)">配置</a>
+          <a-divider v-if="record.Disable===false" type="vertical" />
+          <a v-if="record.Disable===false" @click="handleDelete(record.Id)">删除</a>         
+          
         </template>
       </span>
     </a-table>
     
     <edit-form ref="editForm" :parentObj="this"></edit-form>
+    <config-form ref="configForm" :parentObj="this"></config-form>
     <laneway-List ref="lanewayList"></laneway-List>
     <rack-List ref="rackList"></rack-List>
   </a-card>
@@ -102,18 +122,20 @@
 
 <script>
 import EditForm from './EditForm'
+import ConfigForm from './ConfigFrom'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import LanewayList from '../PB_Laneway/List'
 import RackList from '../PB_Rack/List'
+
 
 const columns = [
   { title: '仓库编号', dataIndex: 'Code', width: '10%' },
   { title: '仓库名称', dataIndex: 'Name', width: '10%' },
   { title: '仓库类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
-  { title: '托盘管理', dataIndex: 'IsTray', width: '10%' , scopedSlots: { customRender: 'IsTray' }},
-  { title: '托盘分区管理', dataIndex: 'IsZone', width: '10%' , scopedSlots: { customRender: 'IsZone' }},
+  { title: '托盘管理', dataIndex: 'IsTray', width: '10%', scopedSlots: { customRender: 'IsTray' }},
+  { title: '托盘分区管理', dataIndex: 'IsZone', width: '10%', scopedSlots: { customRender: 'IsZone'}},
   { title: '仓库状态', dataIndex: 'Disable', width: '10%' , scopedSlots: { customRender: 'Disable' }},
-  { title: '默认仓库', dataIndex: 'IsDefault', width: '8%' , scopedSlots: { customRender: 'IsDefault' }},
+  { title: '默认仓库', dataIndex: 'IsDefault', width: '8%' , scopedSlots: { customRender: 'IsDefault' } },
   { title: '备注', dataIndex: 'Remarks', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
@@ -123,7 +145,8 @@ export default {
     LanewayList,
     RackList,
     EditForm,
-    EnumName,    
+    EnumName,  
+    ConfigForm  
   },
   mounted() {
     this.getDataList()
@@ -185,6 +208,9 @@ export default {
     handleEdit(id) {
       this.$refs.editForm.openForm(id)
     },
+    handleConfig(id) {
+      this.$refs.configForm.openForm(id)
+    },
     handleDelete(ids) {
       var thisObj = this
       this.$confirm({
@@ -205,28 +231,7 @@ export default {
           })
         }
       })
-    },
-    // handleEnable(Storage,prop, enable) {
-    //   var thisObj = this
-    //   var entity = { ...Storage}
-    //   entity[prop] = enable   
-    //   this.$confirm({
-    //     title: '确认' + (enable ? '启用' : '停用' ) + '吗?',
-    //     onOk() {
-    //       return new Promise((resolve, reject) => {
-    //         thisObj.$http.post('/PB/PB_Storage/SaveData', entity).then(resJson => {
-    //           resolve()
-    //           if (resJson.Success) {
-    //             thisObj.$message.success('操作成功!')
-    //             thisObj.getDataList()
-    //           } else {
-    //             thisObj.$message.error(resJson.Msg)
-    //           }
-    //         })
-    //       })
-    //     }
-    //   })
-    // },
+    },    
     openLanewayList(value) {
       this.$refs.lanewayList.openDrawer(value)
     },
