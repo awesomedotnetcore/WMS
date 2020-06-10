@@ -46,6 +46,7 @@ namespace Coldairarrow.Business.PB
                 if (!ruleCode.IsNullOrEmpty())
                     listCode.Add(ruleCode);
             }
+
             var serialSvc = _serviceProvider.GetRequiredService<IPB_BarCodeSerialBusiness>();
             var listUpdate = listSerial.Where(w => string.IsNullOrEmpty(w.TypeId) && !string.IsNullOrEmpty(w.Id)).ToList();
             if (listUpdate.Count > 0)
