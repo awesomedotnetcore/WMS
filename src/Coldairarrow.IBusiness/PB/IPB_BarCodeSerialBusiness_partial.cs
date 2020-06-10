@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace Coldairarrow.Business.PB
 {
-    public partial interface IPB_StorAreaBusiness
+    public partial interface IPB_BarCodeSerialBusiness
     {
-        Task<List<PB_StorArea>> QueryAsync(string storageId);
-        Task<PB_StorArea> GetInnerArea(string storageId);
+        Task AddDataAsync(List<PB_BarCodeSerial> list);
+        Task UpdateDataAsync(List<PB_BarCodeSerial> list);
     }
 }

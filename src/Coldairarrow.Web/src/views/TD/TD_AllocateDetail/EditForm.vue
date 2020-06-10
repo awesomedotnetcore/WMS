@@ -9,44 +9,19 @@
   >
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="调拨ID" prop="AllocateId">
-          <a-input v-model="entity.AllocateId" autocomplete="off" />
+        <!-- <a-form-model-item label="目标仓库" prop="ToStorId">
+          <storage-select v-model="entity.ToStorId" @select="handleStorageSelect"></storage-select>
+        </a-form-model-item>-->
+        <a-form-model-item label="现有库存" prop="Remarks">
+          <a-input v-model="localMaterial.Num" :disabled="true" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="原仓库ID" prop="FromStorId">
-          <a-input v-model="entity.FromStorId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="原货位ID" prop="FromlocalId">
-          <a-input v-model="entity.FromlocalId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="原托盘ID" prop="FromTrayId">
-          <a-input v-model="entity.FromTrayId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="原托盘分区ID" prop="FromZoneId">
-          <a-input v-model="entity.FromZoneId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="目标仓库ID" prop="ToStorId">
-          <a-input v-model="entity.ToStorId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="目标货位ID" prop="TolocalId">
-          <a-input v-model="entity.TolocalId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="条码" prop="BarCode">
-          <a-input v-model="entity.BarCode" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="物料ID" prop="MaterialId">
-          <a-input v-model="entity.MaterialId" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="批次号" prop="BatchNo">
-          <a-input v-model="entity.BatchNo" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="单价" prop="Price">
-          <a-input v-model="entity.Price" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="总额" prop="Amount">
-          <a-input v-model="entity.Amount" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="调拨数量" prop="LocalNum">
-          <a-input v-model="entity.LocalNum" autocomplete="off" />
+        <a-form-model-item label="调拨数量" prop="Remarks">
+          <a-input-number
+            v-model="entity.LocalNum"
+            :max="localMaterial.Num"
+            :min="0"
+            autocomplete="off"
+          />
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -54,7 +29,12 @@
 </template>
 
 <script>
+import StorageSelect from '../../../components/Storage/StorageSelect'
+
 export default {
+  components: {
+    StorageSelect
+  },
   props: {
     parentObj: Object
   },
@@ -67,19 +47,25 @@ export default {
       visible: false,
       loading: false,
       entity: {},
+      localMaterial: {},
       rules: {},
-      title: ''
+      title: '',
+      materialId: '',
+      LocalId: null,
+      TrayId: null,
+      ZoneId: null,
+      MaterialId: null,
+      BatchNo: null,
+      BarCode: null
     }
   },
   methods: {
     init() {
       this.visible = true
       this.entity = {}
-      this.$nextTick(() => {
-        this.$refs['form'].clearValidate()
-      })
+      this.materialId = null
     },
-    openForm(id, title) {
+    openForm(id, LocalId, TrayId, ZoneId, MaterialId, BatchNo, BarCode, title) {
       this.init()
 
       if (id) {
@@ -89,15 +75,32 @@ export default {
 
           this.entity = resJson.Data
         })
+        this.loading = true
+        this.$http
+          .post('/IT/IT_LocalMaterial/GetTheLocalMaterial', {
+            LocalId: LocalId,
+            TrayId: TrayId,
+            ZoneId: ZoneId,
+            MaterialId: MaterialId,
+            BatchNo: BatchNo,
+            BarCode: BarCode
+          })
+          .then(resJson => {
+            this.loading = false
+            this.localMaterial = resJson.Data
+          })
       }
     },
     handleSubmit() {
-      this.$refs['form'].validate(valid => {
-        if (!valid) {
-          return
-        }
-        this.loading = true
-        this.$http.post('/TD/TD_AllocateDetail/SaveData', this.entity).then(resJson => {
+      this.loading = true
+      if (this.entity.LocalNum > this.localMaterial.Num) {
+        this.$message.error('超过现有库存!')
+        this.loading = false
+      } else if (this.entity.ToStorId == this.localMaterial.StorId) {
+        this.$message.error('地址错误：目标地址与原地址一致!')
+        this.loading = false
+      } else {
+        this.$http.post('/TD/TD_MoveDetail/SaveData', this.entity).then(resJson => {
           this.loading = false
 
           if (resJson.Success) {
@@ -109,7 +112,13 @@ export default {
             this.$message.error(resJson.Msg)
           }
         })
-      })
+      }
+    },
+    handleLocalSelect(data) {
+      this.entity.ToLocalId = data.Id
+    },
+    handleStorageSelect(data) {
+      this.entity.ToStorId = data.Id
     }
   }
 }

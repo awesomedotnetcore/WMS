@@ -11,7 +11,7 @@ namespace Coldairarrow.Entity.PB
     /// 条码类型管理
     /// </summary>
     [Table("PB_BarCodeType")]
-    public class PB_BarCodeType
+    public partial class PB_BarCodeType
     {
 
         /// <summary>
@@ -29,16 +29,6 @@ namespace Coldairarrow.Entity.PB
         /// 名称
         /// </summary>
         public String Name { get; set; }
-
-        /// <summary>
-        /// 流水号
-        /// </summary>
-        public int? SeqNum { get; set; }
-
-        /// <summary>
-        /// 当前流水日期
-        /// </summary>
-        public DateTime? SeqDate { get; set; }
 
         /// <summary>
         /// 连接符
@@ -60,18 +50,6 @@ namespace Coldairarrow.Entity.PB
         /// </summary>
         public Boolean Deleted { get; set; }
 
-        public List<PB_BarCodeRule> BarCodeRules { get; set; }
 
     }
-
-    //public class Base_EnumEntityTypeConfig : IEntityTypeConfiguration<PB_BarCodeType>
-    //{
-    //    public void Configure(EntityTypeBuilder<PB_BarCodeType> builder)
-    //    {
-    //        builder
-    //        .HasMany(b => b.BarCodeRules)
-    //        .WithOne()
-    //        .HasForeignKey(k => k.TypeId);
-    //    }
-    //}
 }

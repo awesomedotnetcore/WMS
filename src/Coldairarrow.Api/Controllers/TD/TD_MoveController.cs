@@ -14,18 +14,20 @@ namespace Coldairarrow.Api.Controllers.TD
         #region DI
 
         public TD_MoveController(ITD_MoveBusiness tD_MoveBus,IOperator @op, ITD_MoveDetailBusiness tD_MoveDetailBus, 
-            IIT_LocalMaterialBusiness  iT_LocalMaterialBusiness)
+            IIT_LocalMaterialBusiness  iT_LocalMaterialBusiness, IIT_LocalDetailBusiness iT_LocalDetailBusiness)
         {
             _tD_MoveBus = tD_MoveBus;
             _Op = @op;
             _tD_MoveDetailBus = tD_MoveDetailBus;
             _iT_LocalMaterialBusiness = iT_LocalMaterialBusiness;
+            _iT_LocalDetailBusiness = iT_LocalDetailBusiness;
         }
 
         ITD_MoveBusiness _tD_MoveBus { get; }
         IOperator _Op { get; }
         ITD_MoveDetailBusiness _tD_MoveDetailBus { get; }
         IIT_LocalMaterialBusiness _iT_LocalMaterialBusiness { get; }
+        IIT_LocalDetailBusiness _iT_LocalDetailBusiness { get; }
 
         #endregion
 
@@ -142,6 +144,7 @@ namespace Coldairarrow.Api.Controllers.TD
             }
 
             await _iT_LocalMaterialBusiness.UpdataDatasByBussiness(dataList);
+            await _iT_LocalDetailBusiness.UpdataDatasByBussiness(dataList);
         }
 
         [HttpPost]

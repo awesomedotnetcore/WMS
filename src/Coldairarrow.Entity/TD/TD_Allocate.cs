@@ -61,7 +61,7 @@ namespace Coldairarrow.Entity.TD
         /// <summary>
         /// 调拨数量
         /// </summary>
-        public Double AllocateNum { get; set; }
+        public Double? AllocateNum { get; set; }
 
         /// <summary>
         /// 设备ID

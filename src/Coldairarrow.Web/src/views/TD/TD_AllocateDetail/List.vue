@@ -37,19 +37,21 @@
       >
         <span slot="action" slot-scope="text, record">
           <template>
-            <a @click="handleEdit(record.Id)">编辑</a>
+            <a @click="handleEdit(record.Id ,record.FromlocalId, record.FromTrayId, record.FromZoneId, record.MaterialId, record.BatchNo, record.BarCode)">编辑</a>
             <a-divider type="vertical" />
             <a @click="handleDelete([record.Id])">删除</a>
           </template>
         </span>
       </a-table>
 
+      <add-form ref="addForm" :parentObj="this"></add-form>
       <edit-form ref="editForm" :parentObj="this"></edit-form>
     </a-card>
   </a-drawer>
 </template>
 
 <script>
+import AddForm from './AddForm'
 import EditForm from './EditForm'
 
 const columnsApproved = [
@@ -78,7 +80,11 @@ const columns = [
 ]
 
 export default {
+  props: {
+    parentObj: Object
+  },
   components: {
+    AddForm,
     EditForm
   },
   mounted() {
@@ -121,24 +127,25 @@ export default {
       this.getDataList()
     },
     getDataList() {
+      var thisObj = this
       this.selectedRowKeys = []
 
       this.loading = true
       this.$http
         .post('/TD/TD_AllocateDetail/GetDataList', {
-          PageIndex: this.pagination.current,
-          PageRows: this.pagination.pageSize,
-          SortField: this.sorter.field || 'Id',
-          SortType: this.sorter.order,
-          Search: this.queryParam,
-          ...this.filters
+          PageIndex: thisObj.pagination.current,
+          PageRows: thisObj.pagination.pageSize,
+          SortField: thisObj.sorter.field || 'Id',
+          SortType: thisObj.sorter.order,
+          Search: thisObj.queryParam,
+          ...thisObj.filters
         })
         .then(resJson => {
-          this.loading = false
-          this.data = resJson.Data
-          const pagination = { ...this.pagination }
+          thisObj.loading = false
+          thisObj.data = resJson.Data
+          const pagination = { ...thisObj.pagination }
           pagination.total = resJson.Total
-          this.pagination = pagination
+          thisObj.pagination = pagination
         })
     },
     onSelectChange(selectedRowKeys) {
@@ -148,10 +155,10 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm()
+      this.$refs.addForm.openForm(this.allocateId)
     },
-    handleEdit(id) {
-      this.$refs.editForm.openForm(id)
+    handleEdit(id, LocalId, TrayId, ZoneId, MaterialId, BatchNo, BarCode) {
+      this.$refs.editForm.openForm(id, LocalId, TrayId, ZoneId, MaterialId, BatchNo, BarCode)
     },
     handleDelete(ids) {
       var thisObj = this

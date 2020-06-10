@@ -4,6 +4,8 @@ using Coldairarrow.Util;
 using EFCore.Sharding;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -13,6 +15,12 @@ namespace Coldairarrow.Business.PB
 {
     public partial class PB_TrayBusiness : BaseBusiness<PB_Tray>, IPB_TrayBusiness, ITransientDependency
     {
+        public PB_TrayBusiness(IRepository repository, IServiceProvider svcProvider)
+            : base(repository)
+        {
+            _ServiceProvider = svcProvider;
+        }
+        readonly IServiceProvider _ServiceProvider;
         public async Task<List<PB_Tray>> GetQueryData(TraySelectQueryDTO search)
         {
             var q = GetIQueryable();
@@ -43,6 +51,18 @@ namespace Coldairarrow.Business.PB
             return await q.Where(where).OrderBy(o => o.Name).Take(search.Take).ToListAsync();
         }
 
+        public async Task AddDataAsync(PB_Tray data)
+        {
+            if (data.Code.IsNullOrEmpty())
+            {
+                var type = await Service.GetIQueryable<PB_TrayType>().SingleAsync(w => w.Id == data.TrayTypeId);
+                var codeSvc = _ServiceProvider.GetRequiredService<IPB_BarCodeTypeBusiness>();
+                var dic = new Dictionary<string, string>();
+                dic.Add("TypeCode", type.Code);
+                data.Code = await codeSvc.Generate("PB_Tray", dic);
+            }
+            await InsertAsync(data);
+        }
         public async Task AddDataAsync(List<PB_Tray> list)
         {
             await InsertAsync(list);

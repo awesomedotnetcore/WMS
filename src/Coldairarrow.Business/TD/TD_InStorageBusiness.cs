@@ -17,7 +17,6 @@ namespace Coldairarrow.Business.TD
             : base(repository)
         {
             _ServiceProvider = svcProvider;
-            repository.HandleSqlLog = Console.WriteLine;
         }
         readonly IServiceProvider _ServiceProvider;
         #region 外部接口
