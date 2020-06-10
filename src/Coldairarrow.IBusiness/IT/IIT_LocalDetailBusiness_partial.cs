@@ -12,7 +12,7 @@ namespace Coldairarrow.Business.IT
         Task UpdateDataAsync(List<IT_LocalDetail> list);
         Task DeleteDataAsync(List<IT_LocalDetail> list);
         Task<PageResult<IT_LocalDetail>> GetDataListAsync(IT_LocalDetailPageInput input);
-        Task UpdataDatasByBussiness(List<BusinessInfo> list);
+        Task UpdataDatasByBussiness(List<BusinessInfo> list, string userId);
     }
 
     public class IT_LocalDetailQM

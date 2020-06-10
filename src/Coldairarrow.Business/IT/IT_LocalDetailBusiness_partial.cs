@@ -57,7 +57,7 @@ namespace Coldairarrow.Business.IT
         }
 
 
-        public async Task UpdataDatasByBussiness(List<BusinessInfo> list)
+        public async Task UpdataDatasByBussiness(List<BusinessInfo> list, string userId)
         {
             if (list.Count > 0)
             {
@@ -80,37 +80,37 @@ namespace Coldairarrow.Business.IT
                 var updataDatas = new List<IT_LocalDetail>();
                 var deletDatas = new List<string>();
 
-
                 foreach (var b in list)
                 {
-                    hasMatch = 0;
-                    foreach (var i in datalist)
+                    if (b.ActionType == (int)ActionTypeEnum.出库)
                     {
-                        if (b.StorId == i.StorId && b.LocalId == i.LocalId && b.TrayId == i.TrayId && b.ZoneId == i.ZoneId
-                             && b.MaterialId == i.MaterialId && b.BatchNo == i.BatchNo && b.BarCode == i.BarCode)
+                        foreach (var i in datalist)
                         {
-                            if (b.ActionType == 1)
+                            if (b.StorId == i.StorId && b.LocalId == i.LocalId && b.TrayId == i.TrayId && b.ZoneId == i.ZoneId
+                             && b.MaterialId == i.MaterialId && b.BatchNo == i.BatchNo && b.BarCode == i.BarCode && i.Num > 0)
                             {
-                                i.Num -= b.Num;
-                                if (i.Num == 0)
+                                if (i.Num > b.Num)
                                 {
+                                    i.Num -= b.Num;
+                                    updataDatas.Add(i);
+                                    break;
+                                }
+                                else if (i.Num == b.Num)
+                                {
+                                    i.Num = 0;
                                     deletDatas.Add(i.Id);
+                                    break;
                                 }
                                 else
                                 {
-                                    updataDatas.Add(i);
+                                    i.Num = 0;
+                                    deletDatas.Add(i.Id);
+                                    b.Num -= i.Num.Value;
                                 }
                             }
-                            else
-                            {
-                                i.Num += b.Num;
-                                updataDatas.Add(i);
-                            }
-                            hasMatch = 1;
-                            break;
                         }
                     }
-                    if (hasMatch == 0)
+                    else
                     {
                         addDatas.Add(new IT_LocalDetail()
                         {
@@ -124,7 +124,9 @@ namespace Coldairarrow.Business.IT
                             BatchNo = b.BatchNo,
                             Num = b.Num,
                             MeasureId = b.MeasureId,
-                            InTime = DateTime.Now
+                            InTime = DateTime.Now,
+                            CreateTime = DateTime.Now,
+                            CreatorId = userId
                         });
                     }
                 }
