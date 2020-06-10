@@ -37,7 +37,7 @@ namespace Coldairarrow.Entity.PB
         /// 仓库ID
         /// </summary>
         public String StorId { get; set; }
-        
+
         /// <summary>
         /// 货区ID
         /// </summary>

@@ -6,22 +6,6 @@
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
 
-    <div class="table-page-search-wrapper">
-      <a-form layout="inline">
-        <a-row :gutter="10">
-          <a-col :md="4" :sm="24">
-            <a-form-item>
-              <enum-select code="BarCodeRuleType" v-model="queryParam.Type"></enum-select>
-            </a-form-item>
-          </a-col>
-          <a-col :md="6" :sm="24">
-            <a-button type="primary" @click="getDataList">查询</a-button>
-            <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
-          </a-col>
-        </a-row>
-      </a-form>
-    </div>
-
     <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
       <template slot="Type" slot-scope="text">
         <enum-name code="BarCodeRuleType" :value="text"></enum-name>
@@ -41,7 +25,6 @@
 
 <script>
 import EditForm from './EditForm'
-import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 const columns = [
   { title: '类型', dataIndex: 'Type', scopedSlots: { customRender: 'Type' }, width: '10%' },
@@ -54,7 +37,6 @@ const columns = [
 export default {
   components: {
     EditForm,
-    EnumSelect,
     EnumName
   },
   mounted() {

@@ -12,10 +12,7 @@ namespace Coldairarrow.Business.PB
 {
     public partial class PB_TrayTypeBusiness : BaseBusiness<PB_TrayType>, IPB_TrayTypeBusiness, ITransientDependency
     {
-        public PB_TrayTypeBusiness(IRepository repository)
-            : base(repository)
-        {
-        }
+        
 
         #region 外部接口
 
@@ -62,10 +59,7 @@ namespace Coldairarrow.Business.PB
             return await GetEntityAsync(id);
         }
 
-        public async Task AddDataAsync(PB_TrayType data)
-        {
-            await InsertAsync(data);
-        }
+        
 
         public async Task UpdateDataAsync(PB_TrayType data)
         {
