@@ -11,5 +11,6 @@
         public string StorageId { set; get; }
 
         public string AreaType { set; get; }
+        
     }
 }
