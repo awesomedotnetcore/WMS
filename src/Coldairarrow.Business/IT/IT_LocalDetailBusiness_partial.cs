@@ -3,6 +3,7 @@ using Coldairarrow.Util;
 using EFCore.Sharding;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -53,6 +54,94 @@ namespace Coldairarrow.Business.IT
 
 
             return await q.Where(where).GetPageResultAsync(input);
+        }
+
+
+        public async Task UpdataDatasByBussiness(List<BusinessInfo> list)
+        {
+            if (list.Count > 0)
+            {
+                var q = GetIQueryable();
+                var StorIdList = list.Select(i => i.StorId).Distinct().ToList();
+                var LocalIdList = list.Select(i => i.LocalId).Distinct().ToList();
+                var TrayIdList = list.Select(i => i.TrayId).Distinct().ToList();
+                var ZoneIdList = list.Select(i => i.ZoneId).Distinct().ToList();
+                var MaterialIdList = list.Select(i => i.MaterialId).Distinct().ToList();
+                var BatchNoList = list.Select(i => i.BatchNo).Distinct().ToList();
+                var BarCodeList = list.Select(i => i.BarCode).Distinct().ToList();
+                var hasMatch = 0;
+
+                q = q.Where(w => StorIdList.Contains(w.StorId) && LocalIdList.Contains(w.LocalId) && TrayIdList.Contains(w.TrayId)
+                && ZoneIdList.Contains(w.ZoneId) && MaterialIdList.Contains(w.MaterialId) && BatchNoList.Contains(w.BatchNo)
+                && BarCodeList.Contains(w.BarCode));
+
+                var datalist = await q.OrderBy(o => o.InTime).ToListAsync();
+                var addDatas = new List<IT_LocalDetail>();
+                var updataDatas = new List<IT_LocalDetail>();
+                var deletDatas = new List<string>();
+
+
+                foreach (var b in list)
+                {
+                    hasMatch = 0;
+                    foreach (var i in datalist)
+                    {
+                        if (b.StorId == i.StorId && b.LocalId == i.LocalId && b.TrayId == i.TrayId && b.ZoneId == i.ZoneId
+                             && b.MaterialId == i.MaterialId && b.BatchNo == i.BatchNo && b.BarCode == i.BarCode)
+                        {
+                            if (b.ActionType == 1)
+                            {
+                                i.Num -= b.Num;
+                                if (i.Num == 0)
+                                {
+                                    deletDatas.Add(i.Id);
+                                }
+                                else
+                                {
+                                    updataDatas.Add(i);
+                                }
+                            }
+                            else
+                            {
+                                i.Num += b.Num;
+                                updataDatas.Add(i);
+                            }
+                            hasMatch = 1;
+                            break;
+                        }
+                    }
+                    if (hasMatch == 0)
+                    {
+                        addDatas.Add(new IT_LocalDetail()
+                        {
+                            Id = IdHelper.GetId(),
+                            StorId = b.StorId,
+                            LocalId = b.LocalId,
+                            TrayId = b.TrayId,
+                            ZoneId = b.ZoneId,
+                            MaterialId = b.MaterialId,
+                            BarCode = b.BarCode,
+                            BatchNo = b.BatchNo,
+                            Num = b.Num,
+                            MeasureId = b.MeasureId,
+                            InTime = DateTime.Now
+                        });
+                    }
+                }
+
+                if (updataDatas.Count > 0)
+                {
+                    await UpdateAsync(updataDatas);
+                }
+                if (addDatas.Count > 0)
+                {
+                    await InsertAsync(addDatas);
+                }
+                if (deletDatas.Count > 0)
+                {
+                    await DeleteDataAsync(deletDatas);
+                }
+            }
         }
     }
 }

@@ -18,5 +18,12 @@ namespace Coldairarrow.Business.PB
 
             return await q.Where(p => p.StorId == storageId).ToListAsync();
         }
+
+        public async Task<PB_StorArea> GetInnerArea(string storageId)
+        {
+            var q = GetIQueryable();
+
+            return await q.Where(p => p.StorId == storageId && p.Type == "In").FirstOrDefaultAsync();
+        }
     }
 }

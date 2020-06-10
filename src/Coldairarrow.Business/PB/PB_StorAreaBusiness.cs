@@ -3,6 +3,7 @@ using Coldairarrow.Util;
 using EFCore.Sharding;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
+using Quartz.Util;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -22,16 +23,19 @@ namespace Coldairarrow.Business.PB
         public async Task<PageResult<PB_StorArea>> GetDataListAsync(PageInput<ConditionDTO> input)
         {
             var q = GetIQueryable();
+            var where = LinqHelper.True<PB_StorArea>();
             var search = input.Search;
             q = q.Include(i => i.PB_Storage);
 
             //筛选
             if (!search.Keyword.IsNullOrEmpty())
             {
-                q = q.Where(w => w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
+                where = where.And(w=>w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
             }
+            if (!search.StorageId.IsNullOrWhiteSpace()) where = where.And(p => p.StorId == search.StorageId);
+            if (!search.AreaType.IsNullOrWhiteSpace()) where = where.And(p => p.Type == search.AreaType);
 
-            return await q.GetPageResultAsync(input);
+            return await q.Where(where).GetPageResultAsync(input);
         }
 
         public async Task<PB_StorArea> GetTheDataAsync(string id)

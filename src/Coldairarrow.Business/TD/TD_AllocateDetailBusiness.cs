@@ -72,9 +72,20 @@ namespace Coldairarrow.Business.TD
             await InsertAsync(data);
         }
 
+        public async Task AddDatasAsync(List<TD_AllocateDetail> datas)
+        {
+            await InsertAsync(datas);
+        }
+
+
         public async Task UpdateDataAsync(TD_AllocateDetail data)
         {
             await UpdateAsync(data);
+        }
+
+        public async Task UpdateDatasAsync(List<TD_AllocateDetail> datas)
+        {
+            await InsertAsync(datas);
         }
 
         public async Task DeleteDataAsync(List<string> ids)

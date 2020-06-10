@@ -28,10 +28,10 @@ namespace Coldairarrow.Entity.PB
         /// </summary>
         public String Name { get; set; }
 
-        /// <summary>
-        /// 库位类型(枚举)
-        /// </summary>
-        public String Type { get; set; }
+        ///// <summary>
+        ///// 库位类型(枚举)
+        ///// </summary>
+        //public String Type { get; set; }
 
         /// <summary>
         /// 仓库ID

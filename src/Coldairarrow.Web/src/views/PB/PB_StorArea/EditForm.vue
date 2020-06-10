@@ -25,16 +25,15 @@
           <a-input v-model="entity.Name" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="货区类型" prop="Type">
-          <!-- <a-input v-model="entity.Type" autocomplete="off" /> -->
           <enum-select code="StorAreaType" v-model="entity.Type" >             
           </enum-select>
         </a-form-model-item>
-        <a-form-model-item label="是否缓存区" prop="IsCache">
+        <!-- <a-form-model-item label="是否缓存区" prop="IsCache">
           <a-radio-group v-model="entity.IsCache">
             <a-radio-button :value="true">是</a-radio-button>
             <a-radio-button :value="false">否</a-radio-button>
           </a-radio-group>
-        </a-form-model-item>
+        </a-form-model-item> -->
       </a-form-model>
     </a-spin>
   </a-modal>

@@ -14,11 +14,7 @@
         </a-form-model-item>
         <a-form-model-item label="货位名称" prop="Name">
           <a-input v-model="entity.Name" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="货位类型" prop="Type">
-          <enum-select code="LocationType" v-model="entity.Type" >             
-          </enum-select>
-        </a-form-model-item>
+        </a-form-model-item>        
         <a-form-model-item label="仓库" prop="StorId">
           <storage-select v-model="entity.StorId"></storage-select>
         </a-form-model-item>
