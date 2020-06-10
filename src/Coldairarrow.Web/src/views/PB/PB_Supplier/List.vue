@@ -2,13 +2,7 @@
   <a-card :bordered="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button
-        type="primary"
-        icon="minus"
-        @click="handleDelete(selectedRowKeys)"
-        :disabled="!hasSelected()"
-        :loading="loading"
-      >删除</a-button>
+      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
 
@@ -33,18 +27,7 @@
       </a-form>
     </div>
 
-    <a-table
-      ref="table"
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      :bordered="true"
-      size="small"
-    >
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
       <template slot="Type" slot-scope="text">
         <enum-name code="SupplierType" :value="text"></enum-name>
       </template>
@@ -53,7 +36,7 @@
           <a @click="handleEdit(record.Id)">编辑</a>
           <a-divider type="vertical" />
           <a @click="handleDelete([record.Id])">删除</a>
-           <a-divider type="vertical" />
+          <a-divider type="vertical" />
           <a @click="openAddressList(record.Id,record.Name)">地址</a>
         </template>
       </span>
@@ -71,13 +54,11 @@ import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import AddressList from '../../PB/PB_Address/List'
 const columns = [
   { title: '供应商编号', dataIndex: 'Code', width: '10%' },
-  { title: '供应商名称', dataIndex: 'Name', width: '10%' },
-  { title: '供应商类型', dataIndex: 'Type', width: '10%' , scopedSlots: { customRender: 'Type' }},
+  { title: '供应商名称', dataIndex: 'Name', width: '30%' },
+  { title: '供应商类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
   { title: '电话', dataIndex: 'Phone', width: '10%' },
-  { title: '传真', dataIndex: 'Fax', width: '10%' },
   { title: 'Email', dataIndex: 'Email', width: '10%' },
   { title: '联系人', dataIndex: 'ContactName', width: '10%' },
-  { title: '备注', dataIndex: 'Remarks', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -168,8 +149,8 @@ export default {
         }
       })
     },
-    openAddressList(id,name) {
-      this.$refs.addressList.openDrawer(false,id,name)
+    openAddressList(id, name) {
+      this.$refs.addressList.openDrawer(false, id, name)
     },
   }
 }

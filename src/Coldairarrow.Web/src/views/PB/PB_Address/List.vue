@@ -102,7 +102,7 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm("", this.queryParam.CusId, this.queryParam.SupId)
+      this.$refs.editForm.openForm(null, this.queryParam.CusId, this.queryParam.SupId)
     },
     handleEdit(id) {
       this.$refs.editForm.openForm(id, this.queryParam.CusId, this.queryParam.SupId)
@@ -146,10 +146,10 @@ export default {
       this.title = name + '地址设置'
       if (isCus) {
         this.queryParam.CusId = id
-        this.queryParam.SupId = ""
+        this.queryParam.SupId = ''
       } else {
         this.queryParam.SupId = id
-        this.queryParam.CusId = ""
+        this.queryParam.CusId = ''
       }
 
       this.visible = true
