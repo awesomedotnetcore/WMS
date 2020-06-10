@@ -2,13 +2,7 @@
   <a-card :bordered="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button
-        type="primary"
-        icon="minus"
-        @click="handleDelete(selectedRowKeys)"
-        :disabled="!hasSelected()"
-        :loading="loading"
-      >删除</a-button>
+      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
 
@@ -17,7 +11,12 @@
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="托盘名称或编码" />
+              <a-input v-model="queryParam.Keyword" placeholder="托盘名称/编码" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="4" :sm="24">
+            <a-form-item>
+              <a-input v-model="queryParam.TypeName" placeholder="类型名称/编码" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -28,21 +27,10 @@
       </a-form>
     </div>
 
-    <a-table
-      ref="table"
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      :bordered="true"
-      size="small"
-    >
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="changeStatus(record.Id, record.Status)">{{ record.Status?'启用':'停用' }}</a>
+          <a @click="changeStatus(record.Id, record.Status)">{{ record.Status === 0?'启用':'停用' }}</a>
           <a-divider type="vertical" />
           <a @click="handleEdit(record.Id)">编辑</a>
           <a-divider type="vertical" />
@@ -57,19 +45,17 @@
 
 <script>
 import EditForm from './EditForm'
-
 const filterYesOrNo = (value, row, index) => {
   if (value) return '启用'
   else return '停用'
 }
 const columns = [
-  { title: '货位', dataIndex: 'PB_Location.Name', width: '10%' },
-  { title: '托盘号', dataIndex: 'Code', width: '10%' },
-  { title: '托盘名称', dataIndex: 'Name', width: '10%' },
+  { title: '托盘号', dataIndex: 'Code', width: '15%' },
+  { title: '托盘名称', dataIndex: 'Name', width: '15%' },
   { title: '托盘类型', dataIndex: 'PB_TrayType.Name', width: '10%' },
   { title: '启用日期', dataIndex: 'StartTime', width: '10%' },
   { title: '托盘状态', dataIndex: 'Status', width: '10%', customRender: filterYesOrNo },
-  { title: '备注', dataIndex: 'Remarks', width: '10%' },
+  { title: '货位', dataIndex: 'PB_Location.Name', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -131,10 +117,10 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm()
+      this.$refs.editForm.openForm(null, '新增')
     },
     handleEdit(id) {
-      this.$refs.editForm.openForm(id)
+      this.$refs.editForm.openForm(id, '编辑')
     },
     handleDelete(ids) {
       var thisObj = this

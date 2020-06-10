@@ -1,36 +1,35 @@
 ﻿<template>
-  <a-modal
-    :title="title"
-    width="40%"
-    :visible="visible"
-    :confirmLoading="loading"
-    @ok="handleSubmit"
-    @cancel="()=>{this.visible=false}"
-  >
+  <a-modal :title="title" width="40%" :visible="visible" :confirmLoading="loading" @ok="handleSubmit" @cancel="()=>{this.visible=false}">
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="货位" prop="LocalId">
-          <!-- <a-select v-model="entity.LocalId">
-            <a-select-option v-for="item in this.LocationList" :key="item.Id">{{item.Name}}</a-select-option>
-          </a-select> -->
-          <location-select v-model="entity.LocalId"></location-select>
-        </a-form-model-item>
-        <a-form-model-item label="托盘号" prop="Code">
-          <a-input v-model="entity.Code" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="托盘名称" prop="Name">
-          <a-input v-model="entity.Name" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="托盘类型" prop="TrayTypeId">
-          <a-select v-model="entity.TrayTypeId">
-            <a-select-option v-for="item in this.TrayTypeList" :key="item.Id">{{item.Name}}</a-select-option>
-          </a-select>
-        </a-form-model-item>
-        <a-form-model-item label="启用日期" prop="StartTime">
-          <a-date-picker show-time v-model="entity.StartTime"/>
-        </a-form-model-item>
+        <a-row>
+          <a-col :span="12">
+            <a-form-model-item label="托盘号" prop="Code">
+              <a-input v-model="entity.Code" autocomplete="off" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-model-item label="托盘名称" prop="Name">
+              <a-input v-model="entity.Name" autocomplete="off" />
+            </a-form-model-item>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="12">
+            <a-form-model-item label="托盘类型" prop="TrayTypeId">
+              <a-select v-model="entity.TrayTypeId">
+                <a-select-option v-for="item in this.TrayTypeList" :key="item.Id">{{ item.Name }}</a-select-option>
+              </a-select>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-model-item label="启用日期" prop="StartTime">
+              <a-date-picker v-model="entity.StartTime" :style="{width:'100%'}" />
+            </a-form-model-item>
+          </a-col>
+        </a-row>
         <a-form-model-item label="备注" prop="Remarks">
-          <a-input v-model="entity.Remarks" autocomplete="off" />
+          <a-textarea v-model="entity.Remarks" autocomplete="off" :auto-size="{ minRows: 3, maxRows: 5 }" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -39,11 +38,9 @@
 
 <script>
 import moment from 'moment'
-import LocationSelect from '../../../components/Location/LocationSelect'
 
 export default {
   components: {
-    LocationSelect
   },
   props: {
     parentObj: Object
@@ -74,8 +71,8 @@ export default {
       })
     },
     openForm(id, title) {
+      this.title = title
       this.init()
-
       // this.getLocationList()
       this.getTrayTypeList()
 
