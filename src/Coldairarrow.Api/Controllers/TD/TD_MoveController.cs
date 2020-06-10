@@ -4,6 +4,7 @@ using Coldairarrow.Entity.TD;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Coldairarrow.Api.Controllers.TD
@@ -108,12 +109,29 @@ namespace Coldairarrow.Api.Controllers.TD
 
 
         [HttpPost]
-        public async Task ApproveDatas(List<string> ids)
+        public async Task<AjaxResult> ApproveDatas(List<string> ids)
         {
-            await _tD_MoveBus.ApproveDatasAsync(ids, _Op.UserId);
+
+            var moveList = await _tD_MoveBus.GetDataListAsync(ids);
+            var changeList = new List<TD_Move>();
+
+            foreach (var i in moveList)
+            {
+                if (i.Status == (int)MoveStatus.待审核)
+                {
+                    changeList.Add(i);
+                }
+            }
+
+            if (changeList.Count <= 0)
+            {
+                return Error("所选数据没有待审批数据");
+            }
+            await _tD_MoveBus.ApproveDatasAsync(changeList.Select(s => s.Id).ToList(), _Op.UserId);
+
             var dataList = new List<BusinessInfo>();
-            var moveList = await _tD_MoveDetailBus.GetDataListByMoveIdsAsync(ids);
-            foreach(var i in moveList)
+            var moveDetailList = await _tD_MoveDetailBus.GetDataListByMoveIdsAsync(changeList.Select(s => s.Id).ToList());
+            foreach(var i in moveDetailList)
             {
                 dataList.Add(new BusinessInfo() {
                     StorId = i.StorId,
@@ -144,7 +162,8 @@ namespace Coldairarrow.Api.Controllers.TD
             }
 
             await _iT_LocalMaterialBusiness.UpdataDatasByBussiness(dataList);
-            await _iT_LocalDetailBusiness.UpdataDatasByBussiness(dataList);
+            await _iT_LocalDetailBusiness.UpdataDatasByBussiness(dataList, _Op.UserId);
+            return Success();
         }
 
         [HttpPost]

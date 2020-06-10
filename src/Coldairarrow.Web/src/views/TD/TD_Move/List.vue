@@ -54,11 +54,21 @@
       </template>
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="handleEdit(record.Id)">编辑</a>
-          <a-divider type="vertical" />
-          <a @click="handleDelete([record.Id])">删除</a>
-          <a-divider type="vertical" />
-          <a @click="openDetailForm(record.Id, record.Status)">查看明细</a>
+          <a v-if="record.Status==0" @click="handleEdit(record.Id)">编辑</a>
+          <a-divider v-if="record.Status==0" type="vertical" />
+          <a v-if="record.Status==0" @click="handleDelete([record.Id])">删除</a>
+          <a-divider v-if="record.Status==0" type="vertical" />
+          <a v-if="record.Status==0" @click="openDetailForm(record.Id, record.Status)">查看明细</a>
+        </template>
+      </span>
+      <span slot="ConvertStatus" slot-scope="text, record">
+        <template>
+          <a-tag v-if="record.Status===0">待审核</a-tag>
+          <a-tag v-else-if="record.Status===1" color="green">审核通过</a-tag>
+          <a-tag v-else-if="record.Status===2" color="red">审核失败</a-tag>
+          <a-tag v-else-if="record.Status===3" color="blue">待调拨</a-tag>
+          <a-tag v-else-if="record.Status===4" color="blue">已调拨</a-tag>
+          <a-tag v-else color="red">未知状态</a-tag>
         </template>
       </span>
     </a-table>
@@ -74,21 +84,21 @@ import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import DetailForm from '../TD_MoveDetail/List'
 
-const ConvertStatus = (value, row, index) => {
-  if (value == 0) {
-    return '待审核'
-  } else if (value == 1) {
-    return '审核通过'
-  } else if (value == 2) {
-    return '审核失败'
-  } else if (value == 3) {
-    return '待移库'
-  } else if (value == 4) {
-    return '已移库'
-  } else {
-    return '未知状态'
-  }
-}
+// const ConvertStatus = (value, row, index) => {
+//   if (value == 0) {
+//     return '待审核'
+//   } else if (value == 1) {
+//     return '审核通过'
+//   } else if (value == 2) {
+//     return '审核失败'
+//   } else if (value == 3) {
+//     return '待移库'
+//   } else if (value == 4) {
+//     return '已移库'
+//   } else {
+//     return '未知状态'
+//   }
+// }
 
 const columns = [
   { title: '移库单号', dataIndex: 'Code', width: '10%' },
@@ -98,7 +108,7 @@ const columns = [
   { title: '数量', dataIndex: 'MoveNum', width: '5%' },
   { title: '总额', dataIndex: 'TotalAmt', width: '5%' },
   { title: '设备', dataIndex: 'PB_Equipment.Name', width: '5%' },
-  { title: '状态', dataIndex: 'Status', width: '5%', customRender: ConvertStatus },
+  { title: '状态', dataIndex: 'Status', width: '5%', scopedSlots: { customRender: 'ConvertStatus' } },
   { title: '备注', dataIndex: 'Remarks', width: '10%' },
   { title: '审核人', dataIndex: 'AuditUser.RealName', width: '5%' },
   { title: '审核时间', dataIndex: 'AuditeTime', width: '10%' },
