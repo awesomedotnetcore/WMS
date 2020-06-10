@@ -3,6 +3,8 @@ using Coldairarrow.Util;
 using EFCore.Sharding;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -12,6 +14,21 @@ namespace Coldairarrow.Business.PB
 {
     public partial class PB_TrayTypeBusiness : BaseBusiness<PB_TrayType>, IPB_TrayTypeBusiness, ITransientDependency
     {
+        public PB_TrayTypeBusiness(IRepository repository, IServiceProvider svcProvider)
+            : base(repository)
+        {
+            _ServiceProvider = svcProvider;
+        }
+        readonly IServiceProvider _ServiceProvider;
+        public async Task AddDataAsync(PB_TrayType data)
+        {
+            if (data.Code.IsNullOrEmpty())
+            {
+                var codeSvc = _ServiceProvider.GetRequiredService<IPB_BarCodeTypeBusiness>();
+                data.Code = await codeSvc.Generate("PB_TrayType");
+            }
+            await InsertAsync(data);
+        }
         /// <summary>
         /// 根据物料，找到对应的托盘类型
         /// </summary>

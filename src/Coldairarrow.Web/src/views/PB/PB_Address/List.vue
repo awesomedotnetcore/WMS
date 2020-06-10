@@ -2,35 +2,16 @@
   <a-drawer :title="title" placement="right" :closable="true" :maskClosable="false" @close="onDrawerClose" :visible="visible" :width="1224" :getContainer="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button
-        type="primary"
-        icon="minus"
-        @click="handleDelete(selectedRowKeys)"
-        :disabled="!hasSelected()"
-        :loading="loading"
-      >删除</a-button>
+      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
-      <a-button type="danger" icon="redo" @click="onDrawerClose()">关闭</a-button>
     </div>
-
-    <a-table
-      ref="table"
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      :bordered="true"
-      size="small"
-    >
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
       <span slot="IsEnable" slot-scope="text, record">
         <template>
           <a-switch checked-children="启用" un-checked-children="停用" @click="handleModifyEnable(record.Id)" v-model="record.IsEnable" />
         </template>
       </span>
-      <span slot="IsDefault" slot-scope="text, record">    
+      <span slot="IsDefault" slot-scope="text, record">
         <template>
           <a-switch checked-children="开" un-checked-children="关" @click="handleModifyDefault(record.Id)" v-model="record.IsDefault" />
         </template>
@@ -54,10 +35,10 @@ import EditForm from './EditForm'
 const columns = [
   { title: '编号', dataIndex: 'Code', width: '10%' },
   { title: '名称', dataIndex: 'Name', width: '15%' },
-  { title: '地址', dataIndex: 'Address', width: '15%' },
+  { title: '地址', dataIndex: 'Address', width: '30%' },
   { title: '备注', dataIndex: 'Remarks' },
   { title: '状态', dataIndex: 'IsEnable', width: '7%', scopedSlots: { customRender: 'IsEnable' } },
-  { title: '默认', dataIndex: 'IsDefault', width: '7%', scopedSlots: { customRender: 'IsDefault' } },  
+  { title: '默认', dataIndex: 'IsDefault', width: '7%', scopedSlots: { customRender: 'IsDefault' } },
   { title: '操作', dataIndex: 'action', width: '10%', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -71,7 +52,7 @@ export default {
   data() {
     return {
       visible: false,
-      title:'',
+      title: '',
       data: [],
       pagination: {
         current: 1,
@@ -121,10 +102,10 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm("",this.queryParam.CusId,this.queryParam.SupId)
+      this.$refs.editForm.openForm(null, this.queryParam.CusId, this.queryParam.SupId)
     },
     handleEdit(id) {
-      this.$refs.editForm.openForm(id,this.queryParam.CusId,this.queryParam.SupId)
+      this.$refs.editForm.openForm(id, this.queryParam.CusId, this.queryParam.SupId)
     },
     handleDelete(ids) {
       var thisObj = this
@@ -147,30 +128,30 @@ export default {
         }
       })
     },
-    handleModifyDefault(id){
+    handleModifyDefault(id) {
       this.$http
-        .post('/PB/PB_Address/ModifyDefault?id='+id)
+        .post('/PB/PB_Address/ModifyDefault?id=' + id)
         .then(resJson => {
           this.getDataList()
         })
     },
-    handleModifyEnable(id){
+    handleModifyEnable(id) {
       this.$http
-        .post('/PB/PB_Address/ModifyEnable?id='+id)
+        .post('/PB/PB_Address/ModifyEnable?id=' + id)
         .then(resJson => {
           this.getDataList()
         })
     },
     openDrawer(isCus, id, name) {
-      this.title=name+'地址设置'
-      if(isCus){
+      this.title = name + '地址设置'
+      if (isCus) {
         this.queryParam.CusId = id
-        this.queryParam.SupId = ""
-      }else{
+        this.queryParam.SupId = ''
+      } else {
         this.queryParam.SupId = id
-        this.queryParam.CusId = ""
+        this.queryParam.CusId = ''
       }
-      
+
       this.visible = true
       this.getDataList()
     },

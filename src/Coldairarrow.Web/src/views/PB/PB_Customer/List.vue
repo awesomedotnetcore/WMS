@@ -2,13 +2,7 @@
   <a-card :bordered="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button
-        type="primary"
-        icon="minus"
-        @click="handleDelete(selectedRowKeys)"
-        :disabled="!hasSelected()"
-        :loading="loading"
-      >删除</a-button>
+      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
 
@@ -33,18 +27,7 @@
       </a-form>
     </div>
 
-    <a-table
-      ref="table"
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      :bordered="true"
-      size="small"
-    >
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
       <template slot="Type" slot-scope="text">
         <enum-name code="CustomerType" :value="text"></enum-name>
       </template>
@@ -71,12 +54,11 @@ import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import AddressList from '../../PB/PB_Address/List'
 const columns = [
   { title: '客户编号', dataIndex: 'Code', width: '10%' },
-  { title: '客户名称', dataIndex: 'Name', width: '10%' },
+  { title: '客户名称', dataIndex: 'Name', width: '30%' },
   { title: '客户类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
   { title: '电话', dataIndex: 'Phone', width: '10%' },
   { title: '传真', dataIndex: 'Fax', width: '10%' },
-  { title: 'Email', dataIndex: 'Email', width: '10%' },
-  { title: '备注', dataIndex: 'Remarks', width: '10%' },
+  { title: 'Email', dataIndex: 'Email', width: '15%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -167,8 +149,8 @@ export default {
         }
       })
     },
-    openAddressList(id,name) {
-      this.$refs.addressList.openDrawer(true,id,name)
+    openAddressList(id, name) {
+      this.$refs.addressList.openDrawer(true, id, name)
     }
   }
 }
