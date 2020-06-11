@@ -8,9 +8,7 @@ namespace Coldairarrow.IBusiness.DTO
     {
         public string TypeId { set; get; }
 
-        public string CustomerId { set; get; }
-
-        public string SupplierId { set; get; }
+        public string ContactName { set; get; }
 
         public string Keyword { set; get; }
     }
