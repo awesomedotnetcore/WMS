@@ -30,7 +30,10 @@ export default {
       visible: false,
       loading: false,
       entity: { JoinChar: '' },
-      rules: {},
+      rules: {
+        Code: [{ required: true, message: '请输入编号', trigger: 'blur' }],
+        Name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
+      },
       title: ''
     }
   },

@@ -5,7 +5,7 @@
         <a-row>
           <a-col :span="12">
             <a-form-model-item label="托盘号" prop="Code">
-              <a-input v-model="entity.Code" autocomplete="off" />
+              <a-input v-model="entity.Code" :disabled="$para('GenerateTrayCode')=='1'" :placeholder="$para('GenerateTrayCode')=='1'?'系统自动生成':'托盘号'" autocomplete="off" />
             </a-form-model-item>
           </a-col>
           <a-col :span="12">
@@ -54,7 +54,10 @@ export default {
       visible: false,
       loading: false,
       entity: {},
-      rules: {},
+      rules: {
+        Name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+        TrayTypeId: [{ required: true, message: '请选择类型', trigger: 'change' }]
+      },
       title: '',
       LocationList: [],
       TrayTypeList: []
