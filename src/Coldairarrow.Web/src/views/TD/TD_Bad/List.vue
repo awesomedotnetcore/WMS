@@ -4,6 +4,13 @@
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
       <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
+      <a-divider type="vertical" />
+      <a-radio-group v-model="queryParam.Status" button-style="solid" @change="getDataList">
+        <a-radio-button :value="null">全部</a-radio-button>
+        <a-radio-button :value="0">待审核</a-radio-button>
+        <a-radio-button :value="1">审核通过</a-radio-button>
+        <a-radio-button :value="2">审核失败</a-radio-button>
+      </a-radio-group>
     </div>
 
     <div class="table-page-search-wrapper">
@@ -24,18 +31,9 @@
               <a-range-picker @change="onBadTimeChange" />
             </a-form-item>
           </a-col>
-          <a-col :md="2" :sm="24">
-            <a-form-item>
-              <a-select v-model="queryParam.Status" placeholder="状态" :allowClear="true">
-                <a-select-option :key="0" :value="0">待审核</a-select-option>
-                <a-select-option :key="1" :value="1">审核通过</a-select-option>
-                <a-select-option :key="2" :value="2">审核失败</a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
           <a-col :md="6" :sm="24">
             <a-button type="primary" @click="getDataList">查询</a-button>
-            <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
+            <a-button style="margin-left: 8px" @click="() => (queryParam = { Status: null})">重置</a-button>
           </a-col>
         </a-row>
       </a-form>
@@ -116,7 +114,7 @@ export default {
       sorter: { field: 'Id', order: 'asc' },
       loading: false,
       columns,
-      queryParam: {},
+      queryParam: { Status: null },
       selectedRowKeys: [],
       disabled: false
     }

@@ -9,7 +9,7 @@
         </a-col>
         <a-col :span="8">
           <a-form-model-item label="报损时间" prop="BadTime">
-            <a-date-picker v-model="entity.BadTime" :disabled="disabled" />
+            <a-date-picker v-model="entity.BadTime" :style="{width:'100%'}" :disabled="disabled" />
           </a-form-model-item>
         </a-col>
         <a-col :span="8">
@@ -64,7 +64,10 @@ export default {
       loading: false,
       entity: { Id: '', Type: '', Status: 0 },
       listDetail: [],
-      rules: {}
+      rules: {
+        BadTime: [{ required: true, message: '请选择报损时间', trigger: 'change' }],
+        Type: [{ required: true, message: '请选择报损类型', trigger: 'change' }]
+      }
     }
   },
   methods: {
