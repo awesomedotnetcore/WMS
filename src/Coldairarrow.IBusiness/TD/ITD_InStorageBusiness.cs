@@ -19,6 +19,7 @@ namespace Coldairarrow.Business.TD
     {
         public string Code { get; set; }
         public string InType { get; set; }
+        public int? Status { get; set; }
         public DateTime? InStorTimeStart { get; set; }
         public DateTime? InStorTimeEnd { get; set; }
     }

@@ -31,7 +31,7 @@
       </a-form>
     </div>
 
-    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" :bordered="true" size="small">
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" @change="handleTableChange" :loading="loading" :bordered="true" size="small">
     </a-table>
   </a-card>
 </template>
@@ -108,6 +108,12 @@ export default {
             this.columns = columns1
           }
         })
+    },
+    handleTableChange(pagination, filters, sorter) {
+      this.pagination = { ...pagination }
+      this.filters = { ...filters }
+      this.sorter = { ...sorter }
+      this.getDataList()
     },
     getDataList() {
       this.selectedRowKeys = []
