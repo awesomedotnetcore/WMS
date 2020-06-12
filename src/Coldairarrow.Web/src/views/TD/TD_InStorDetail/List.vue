@@ -21,11 +21,11 @@
 import EditForm from './EditForm'
 
 const columns1 = [
-  { title: '物料', dataIndex: 'Material.Name', width: '10%' },
-  { title: '编码', dataIndex: 'Material.Code', width: '10%' },
-  { title: '货位', dataIndex: 'Location.Name', width: '10%' },
-  { title: '条码', dataIndex: 'BarCode', width: '10%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
+  { title: '物料', dataIndex: 'Material.Name', width: '20%' },
+  { title: '编码', dataIndex: 'Material.Code', width: '15%' },
+  { title: '货位', dataIndex: 'Location.Name', width: '15%' },
+  { title: '条码', dataIndex: 'BarCode', width: '15%' },
+  { title: '批次号', dataIndex: 'BatchNo', width: '15%' },
   { title: '数量', dataIndex: 'Num', width: '5%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
@@ -101,7 +101,7 @@ export default {
     },
     hanldleAdd() {
       this.tempId += 1
-      var curDetail = { Id: 'newid_' + this.tempId.toString(), LocalId: '', TrayId: '', ZoneId: '', MaterialId: '' }
+      var curDetail = { Id: 'newid_' + this.tempId.toString(), LocalId: '', TrayId: null, ZoneId: null, MaterialId: '' }
       this.$refs.editForm.openForm(curDetail)
     },
     handleEdit(item) {

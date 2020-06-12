@@ -28,7 +28,7 @@ namespace Coldairarrow.Business.PB
 
         public async Task<PageResult<PB_Material>> QueryDataListAsync(PageInput<PBMaterialConditionDTO> input)
         {
-            var q = GetIQueryable().Include(i => i.MaterialType);
+            var q = GetIQueryable().Include(i => i.MaterialType).Include(i=>i.Measure);
             var where = LinqHelper.True<PB_Material>();
             var search = input.Search;
 

@@ -54,6 +54,7 @@ const columns = [
   { title: '物料类别', dataIndex: 'MaterialType.Name', width: '10%' },
   { title: '条码', dataIndex: 'BarCode', width: '10%' },
   { title: '物料规格', dataIndex: 'Spec' },
+  { title: '单位', dataIndex: 'Measure.Name', width: '5%' },
   { title: '上限数量', dataIndex: 'Max', width: '5%' },
   { title: '下限数量', dataIndex: 'Min', width: '5%' },
   { title: '操作', dataIndex: 'action', width: '10%', scopedSlots: { customRender: 'action' } }
