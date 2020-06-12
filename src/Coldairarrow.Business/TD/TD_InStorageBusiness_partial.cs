@@ -37,6 +37,8 @@ namespace Coldairarrow.Business.TD
                 where = where.And(w => w.InStorTime >= search.InStorTimeStart.Value);
             if (search.InStorTimeEnd.HasValue)
                 where = where.And(w => w.InStorTime <= search.InStorTimeEnd.Value);
+            if (search.Status.HasValue)
+                where = where.And(w => w.Status == search.Status.Value);
 
             return await q.Where(where).GetPageResultAsync(input);
         }

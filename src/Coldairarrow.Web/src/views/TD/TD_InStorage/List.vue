@@ -4,6 +4,13 @@
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
       <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
+      <a-divider type="vertical" />
+      <a-radio-group v-model="queryParam.Status" button-style="solid" @change="getDataList">
+        <a-radio-button :value="null">全部</a-radio-button>
+        <a-radio-button :value="0">待审核</a-radio-button>
+        <a-radio-button :value="1">审核通过</a-radio-button>
+        <a-radio-button :value="2">审核失败</a-radio-button>
+      </a-radio-group>
     </div>
 
     <div class="table-page-search-wrapper">
@@ -26,7 +33,7 @@
           </a-col>
           <a-col :md="6" :sm="24">
             <a-button type="primary" @click="getDataList">查询</a-button>
-            <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
+            <a-button style="margin-left: 8px" @click="() => (queryParam = { Status: null})">重置</a-button>
           </a-col>
         </a-row>
       </a-form>
@@ -35,6 +42,12 @@
     <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
       <template slot="InType" slot-scope="text">
         <enum-name code="InStorageType" :value="text"></enum-name>
+      </template>
+      <template slot="Status" slot-scope="text, record">
+        <a-tag v-if="record.Status===0" color="blue">待审核</a-tag>
+        <a-tag v-else-if="record.Status===1" color="green">审核通过</a-tag>
+        <a-tag v-else-if="record.Status===2" color="red">审核失败</a-tag>
+        <a-tag v-else color="blue">待审核</a-tag>
       </template>
       <span slot="action" slot-scope="text, record">
         <template>
@@ -56,16 +69,6 @@ import moment from 'moment'
 import EditForm from './EditForm'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
-const filterStatus = (value, row, index) => {
-  var status = '待审核'
-  switch (value) {
-    case 0: status = '待审核'; break
-    case 1: status = '审核通过'; break
-    case 2: status = '审核失败'; break
-    default: break
-  }
-  return status
-}
 const filterDate = (value, row, index) => {
   if (value) {
     return moment(value).format('YYYY-MM-DD')
@@ -75,13 +78,13 @@ const filterDate = (value, row, index) => {
 }
 const columns = [
   { title: '入库单号', dataIndex: 'Code', width: '10%' },
-  { title: '入库类型', dataIndex: 'InType', width: '10%', scopedSlots: { customRender: 'InType' } },
-  { title: '入库时间', dataIndex: 'InStorTime', width: '10%', customRender: filterDate },
-  { title: '状态', dataIndex: 'Status', customRender: filterStatus, width: '10%' },
-  { title: '供应商', dataIndex: 'Supplier.Name', width: '10%' },
-  { title: '入库数量', dataIndex: 'TotalNum', width: '10%' },
-  { title: '制单人', dataIndex: 'CreateUser.RealName', width: '10%' },
-  { title: '审核人', dataIndex: 'AuditUser.RealName', width: '10%' },
+  { title: '入库类型', dataIndex: 'InType', width: '8%', scopedSlots: { customRender: 'InType' } },
+  { title: '入库时间', dataIndex: 'InStorTime', width: '8%', customRender: filterDate },
+  { title: '状态', dataIndex: 'Status', scopedSlots: { customRender: 'Status' }, width: '5%' },
+  { title: '供应商', dataIndex: 'Supplier.Name', width: '20%' },
+  { title: '入库数量', dataIndex: 'TotalNum', width: '5%' },
+  { title: '制单人', dataIndex: 'CreateUser.RealName', width: '8%' },
+  { title: '审核人', dataIndex: 'AuditUser.RealName', width: '8%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -106,7 +109,7 @@ export default {
       sorter: { field: 'Id', order: 'asc' },
       loading: false,
       columns,
-      queryParam: {},
+      queryParam: { Status: null },
       selectedRowKeys: [],
       disabled: false
     }
