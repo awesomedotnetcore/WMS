@@ -45,9 +45,9 @@
 
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="handleEdit(record.Id)">编辑</a>
-          <a-divider type="vertical" />
-          <a @click="handleDelete([record.Id])">删除</a>
+          <a v-if="record.IsSystem===false" @click="handleEdit(record.Id)">编辑</a>
+          <a-divider v-if="record.IsSystem===false" type="vertical" />
+          <a v-if="record.IsSystem===false" @click="handleDelete([record.Id])">删除</a>
         </template>
       </span>
     </a-table>
