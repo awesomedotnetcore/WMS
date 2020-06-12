@@ -10,7 +10,21 @@
         :loading="loading"
       >删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
+
+      <!-- <input type="file" class="file">  -->
+
+      <!-- <a-button>
+      <upload-file v-model="entity.File" :maxCount="1"></upload-file>
+      </a-button> -->
+
+      <!-- <form enctype="multipart/form-data" method="post" asp-action="Import">
+          <input type="file" name="excelfile" />
+          <input type="submit" value="上传" />
+      </form> -->
     </div>
+
+      
+
 
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
@@ -79,6 +93,7 @@
 <script>
 import EditForm from './EditForm'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
+import UploadFile from '../../../components/CUploadFile/CUploadFile'
 
 const filterYesOrNo = (value, row, index) => {
   if (value) return '是'
@@ -104,6 +119,7 @@ export default {
   components: {
     EditForm,
     EnumName, 
+    UploadFile
   },
   mounted() {
     this.getDataList()
@@ -121,7 +137,11 @@ export default {
       loading: false,
       columns,
       queryParam: {},
-      selectedRowKeys: []
+      selectedRowKeys: [],
+      entity: { File: ''},
+       headers: {
+        authorization: 'authorization-text',
+      },
     }
   },
   methods: {
@@ -206,6 +226,7 @@ export default {
         }
       })
     },
+    
   }
 }
 </script>

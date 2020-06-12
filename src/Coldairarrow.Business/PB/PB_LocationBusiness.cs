@@ -80,6 +80,11 @@ namespace Coldairarrow.Business.PB
             await UpdateAsync(entity);
         }
 
+        public async Task AddDataExlAsync(List<PB_Location> list)//void
+        {
+            await InsertAsync(list);   //  BulkInsert       
+
+        }
         #endregion
 
         #region 私有成员
