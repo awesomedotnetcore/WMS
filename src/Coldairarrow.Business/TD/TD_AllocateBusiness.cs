@@ -3,6 +3,7 @@ using Coldairarrow.Util;
 using EFCore.Sharding;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
+using org.apache.zookeeper.data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,12 @@ namespace Coldairarrow.Business.TD
             }
 
             return await q.GetPageResultAsync(input);
+        }
+
+        public async Task<List<TD_Allocate>> GetDataListAsync(List<string> ids)
+        {
+            var q = GetIQueryable();
+            return await q.Where(w => ids.Contains(w.Id)).ToListAsync();
         }
 
         public async Task<TD_Allocate> GetTheDataAsync(string id)

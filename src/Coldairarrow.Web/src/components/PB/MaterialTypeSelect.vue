@@ -1,13 +1,5 @@
 <template>
-  <a-tree-select
-    allowClear
-    :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
-    :treeData="TreeData"
-    placeholder="物料类型"
-    treeDefaultExpandAll
-    v-model="curValue"
-    @select="handleSelected" v-bind="$attrs"
-    ></a-tree-select>
+  <a-tree-select allowClear :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }" :treeData="TreeData" placeholder="物料类型" treeDefaultExpandAll v-model="curValue" @select="handleSelected" v-bind="$attrs"></a-tree-select>
 </template>
 <script>
 export default {
@@ -31,10 +23,10 @@ export default {
   },
   methods: {
     getEnumItem() {
-        this.$http
+      this.$http
         .post('/PB/PB_MaterialType/GetTreeDataList')
         .then(resJson => {
-          this.TreeData = resJson.Data          
+          this.TreeData = resJson.Data
         })
     },
     handleSelected(val) {

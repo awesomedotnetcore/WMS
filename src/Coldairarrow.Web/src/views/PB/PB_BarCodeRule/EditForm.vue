@@ -6,7 +6,7 @@
           <enum-select code="BarCodeRuleType" v-model="entity.Type"></enum-select>
         </a-form-model-item>
         <a-form-model-item label="排序" prop="Sort">
-          <a-input v-model="entity.Sort" autocomplete="off" />
+          <a-input-number v-model="entity.Sort" :style="{width:'100%'}" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="规则" prop="Rule">
           <a-input v-model="entity.Rule" autocomplete="off" />
@@ -37,7 +37,10 @@ export default {
       visible: false,
       loading: false,
       entity: {},
-      rules: {},
+      rules: {
+        Type: [{ required: true, message: '请选择类型', trigger: 'change' }],
+        Sort: [{ required: true, message: '请输入排序', trigger: 'blur' }]
+      },
       title: ''
     }
   },

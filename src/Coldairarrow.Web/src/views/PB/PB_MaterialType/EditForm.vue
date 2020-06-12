@@ -1,26 +1,19 @@
 ﻿<template>
-  <a-modal
-    :title="title"
-    width="40%"
-    :visible="visible"
-    :confirmLoading="loading"
-    @ok="handleSubmit"
-    @cancel="()=>{this.visible=false}"
-  >
+  <a-modal :title="title" width="40%" :visible="visible" :confirmLoading="loading" @ok="handleSubmit" @cancel="()=>{this.visible=false}">
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
         <a-form-model-item label="上级物料分类" prop="ParentId">
-          <a-tree-select style="width: 300px" allowClear 
-            :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }" 
-            :treeData="ParentIdTreeData" 
-            placeholder="请选择上级物料分类" 
-            treeDefaultExpandAll v-model="entity.ParentId"></a-tree-select>
-        </a-form-model-item>        
+          <a-tree-select :style="{width:'100%'}" allowClear :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }" :treeData="ParentIdTreeData" placeholder="请选择上级物料分类" treeDefaultExpandAll v-model="entity.ParentId"></a-tree-select>
+        </a-form-model-item>
         <a-form-model-item label="物料分类编码" prop="Code">
-          <a-input v-model="entity.Code" :disabled="$para('MaterialTypeCode')=='1'" placeholder="系统自动生成" autocomplete="off"><a-icon slot="prefix" type="scan" /></a-input>
+          <a-input v-model="entity.Code" :disabled="$para('MaterialTypeCode')=='1'" placeholder="系统自动生成" autocomplete="off">
+            <a-icon slot="prefix" type="scan" />
+          </a-input>
         </a-form-model-item>
         <a-form-model-item label="物料分类名称" prop="Name">
-          <a-input v-model="entity.Name" autocomplete="off"><a-icon slot="prefix" type="paper-clip" /></a-input>
+          <a-input v-model="entity.Name" autocomplete="off">
+            <a-icon slot="prefix" type="paper-clip" />
+          </a-input>
         </a-form-model-item>
         <a-form-model-item label="备注" prop="Remarks">
           <a-textarea v-model="entity.Remarks" autocomplete="off"></a-textarea>
@@ -44,7 +37,9 @@ export default {
       visible: false,
       loading: false,
       entity: {},
-      rules: {},
+      rules: {
+        Name: [{ required: true, message: '请输物料分类名称', trigger: 'blur' }]
+      },
       title: '',
       ParentIdTreeData: []
     }

@@ -60,7 +60,9 @@ export default {
       visible: false,
       loading: false,
       entity: { IsZone: false },
-      rules: {},
+      rules: {
+        Name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
+      },
       title: ''
     }
   },

@@ -56,12 +56,12 @@ namespace Coldairarrow.Entity.PB
         /// <summary>
         /// 上限数量
         /// </summary>
-        public Double Max { get; set; }
+        public Double? Max { get; set; }
 
         /// <summary>
         /// 下限数量
         /// </summary>
-        public Double Min { get; set; }
+        public Double? Min { get; set; }
 
         /// <summary>
         /// 客户ID

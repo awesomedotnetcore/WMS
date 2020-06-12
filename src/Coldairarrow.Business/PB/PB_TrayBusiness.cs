@@ -15,20 +15,7 @@ namespace Coldairarrow.Business.PB
         
         #region 外部接口
 
-        public async Task<PageResult<PB_Tray>> GetDataListAsync(PageInput<ConditionDTO> input)
-        {
-            var q = GetIQueryable();
-            var search = input.Search;
-            q = q.Include(i => i.PB_TrayType).Include(i => i.PB_Location);
-
-            //筛选
-            if (!search.Keyword.IsNullOrEmpty())
-            {
-                q = q.Where(w => w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
-            }
-
-            return await q.GetPageResultAsync(input);
-        }
+        
 
         public async Task<PB_Tray> GetTheDataAsync(string id)
         {

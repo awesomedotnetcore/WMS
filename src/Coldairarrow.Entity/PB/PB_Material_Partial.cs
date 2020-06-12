@@ -16,6 +16,15 @@ namespace Coldairarrow.Entity.PB
         [ForeignKey(nameof(MeasureId))]
         public PB_Measure Measure { set; get; }
 
+        [ForeignKey(nameof(MaterialTypeId))]
+        public PB_MaterialType MaterialType { get; set; }
+
+        [ForeignKey(nameof(SupId))]
+        public PB_Supplier Supplier { get; set; }
+
+        [ForeignKey(nameof(CusId))]
+        public PB_Customer Customer { get; set; }
+
         public List<PB_TrayMaterial> PB_TrayMaterials { get; set; }
 
         public List<PB_AreaMaterial> PB_AreaMaterials { get; set; }

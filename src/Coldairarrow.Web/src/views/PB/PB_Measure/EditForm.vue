@@ -27,7 +27,9 @@ export default {
       visible: false,
       loading: false,
       entity: {},
-      rules: {},
+      rules: {
+        Name: [{ required: true, message: '请输单位名称', trigger: 'blur' }]
+      },
       title: ''
     }
   },

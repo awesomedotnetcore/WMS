@@ -28,14 +28,13 @@ namespace Coldairarrow.Business.PB
 
         public async Task<PageResult<PB_Material>> QueryDataListAsync(PageInput<PBMaterialConditionDTO> input)
         {
-            var q = GetIQueryable();
+            var q = GetIQueryable().Include(i => i.MaterialType).Include(i=>i.Measure);
             var where = LinqHelper.True<PB_Material>();
             var search = input.Search;
 
             if (!search.TypeId.IsNullOrWhiteSpace()) where = where.And(p => p.MaterialTypeId == search.TypeId);
-            if (!search.CustomerId.IsNullOrWhiteSpace()) where = where.And(p => p.CusId == search.CustomerId);
-            if (!search.SupplierId.IsNullOrWhiteSpace()) where = where.And(p => p.SupId == search.SupplierId);
-            if (!search.Keyword.IsNullOrWhiteSpace()) where = where.And(p => p.Name.Contains(search.Keyword) || p.Code.Contains(search.Keyword));
+            if (!search.ContactName.IsNullOrWhiteSpace()) where = where.And(p => p.Supplier.Name.Contains(search.ContactName) || p.Supplier.Code.Contains(search.ContactName) || p.Customer.Name.Contains(search.ContactName) || p.Customer.Code.Contains(search.ContactName));
+            if (!search.Keyword.IsNullOrWhiteSpace()) where = where.And(p => p.Name.Contains(search.Keyword) || p.Code.Contains(search.Keyword) || p.BarCode.Contains(search.Keyword) || p.SimpleName.Contains(search.Keyword));
 
 
             return await q.Where(where).GetPageResultAsync(input);

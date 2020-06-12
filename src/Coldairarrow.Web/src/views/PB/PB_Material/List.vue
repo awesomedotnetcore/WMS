@@ -2,13 +2,7 @@
   <a-card :bordered="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button
-        type="primary"
-        icon="minus"
-        @click="handleDelete(selectedRowKeys)"
-        :disabled="!hasSelected()"
-        :loading="loading"
-      >删除</a-button>
+      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
 
@@ -19,14 +13,13 @@
             <materialType-select v-model="queryParam.TypeId"></materialType-select>
           </a-col>
           <a-col :md="4" :sm="24">
-            <customer-select v-model="queryParam.CustomerId"></customer-select>
+            <a-form-item>
+              <a-input v-model="queryParam.Keyword" placeholder="物料名称/编号/条码" />
+            </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
-            <supplier-select v-model="queryParam.SupplierId"></supplier-select>
-          </a-col>         
-          <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.Keyword" placeholder="物料名称或编号或条码" />
+              <a-input v-model="queryParam.ContactName" placeholder="客户/供应商名称或编码" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -37,18 +30,7 @@
       </a-form>
     </div>
 
-    <a-table
-      ref="table"
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      :bordered="true"
-      size="small"
-    >
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -64,27 +46,24 @@
 
 <script>
 import EditForm from './EditForm'
-import CustomerSelect from '../../../components/PB/CustomerSelect'
 import MaterialTypeSelect from '../../../components/PB/MaterialTypeSelect'
-import SupplierSelect from '../../../components/PB/SupplierSelect'
 const columns = [
   { title: '物料名称', dataIndex: 'Name', width: '15%' },
   { title: '物料编码', dataIndex: 'Code', width: '10%' },
-  { title: '条码', dataIndex: 'BarCode', width: '10%' },
   { title: '物料简称', dataIndex: 'SimpleName', width: '10%' },
-  { title: '物料规格', dataIndex: 'Spec', width: '10%' },
-  { title: '上限数量', dataIndex: 'Max', width: '8%' },
-  { title: '下限数量', dataIndex: 'Min', width: '8%' },
-  { title: '备注', dataIndex: 'Remarks' },
+  { title: '物料类别', dataIndex: 'MaterialType.Name', width: '10%' },
+  { title: '条码', dataIndex: 'BarCode', width: '10%' },
+  { title: '物料规格', dataIndex: 'Spec' },
+  { title: '单位', dataIndex: 'Measure.Name', width: '5%' },
+  { title: '上限数量', dataIndex: 'Max', width: '5%' },
+  { title: '下限数量', dataIndex: 'Min', width: '5%' },
   { title: '操作', dataIndex: 'action', width: '10%', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
     EditForm,
-    CustomerSelect,
-    MaterialTypeSelect,
-    SupplierSelect
+    MaterialTypeSelect
   },
   mounted() {
     this.getDataList()
@@ -140,10 +119,10 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm()
+      this.$refs.editForm.openForm(null, '新增')
     },
     handleEdit(id) {
-      this.$refs.editForm.openForm(id)
+      this.$refs.editForm.openForm(id, '编辑')
     },
     handleDelete(ids) {
       var thisObj = this

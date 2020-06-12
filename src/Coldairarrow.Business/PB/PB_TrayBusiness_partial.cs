@@ -21,6 +21,21 @@ namespace Coldairarrow.Business.PB
             _ServiceProvider = svcProvider;
         }
         readonly IServiceProvider _ServiceProvider;
+
+        public async Task<PageResult<PB_Tray>> GetDataListAsync(PageInput<PB_TrayQM> input)
+        {
+            var q = GetIQueryable();
+            var search = input.Search;
+            q = q.Include(i => i.PB_TrayType).Include(i => i.PB_Location);
+
+            //筛选
+            if (!search.Keyword.IsNullOrEmpty())
+                q = q.Where(w => w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
+            if (!search.TypeName.IsNullOrEmpty())
+                q = q.Where(w => w.PB_TrayType.Name.Contains(search.TypeName) || w.PB_TrayType.Code.Contains(search.TypeName));
+
+            return await q.GetPageResultAsync(input);
+        }
         public async Task<List<PB_Tray>> GetQueryData(TraySelectQueryDTO search)
         {
             var q = GetIQueryable();

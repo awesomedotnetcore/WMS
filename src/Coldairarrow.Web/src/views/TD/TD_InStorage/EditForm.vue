@@ -9,7 +9,7 @@
         </a-col>
         <a-col :span="8">
           <a-form-model-item label="入库时间" prop="InStorTime">
-            <a-date-picker v-model="entity.InStorTime" :disabled="disabled" />
+            <a-date-picker v-model="entity.InStorTime" :style="{width:'100%'}" :disabled="disabled" />
           </a-form-model-item>
         </a-col>
         <a-col :span="8">
@@ -73,7 +73,11 @@ export default {
       loading: false,
       entity: { Id: '', InType: '', Status: 0 },
       listDetail: [],
-      rules: {}
+      rules: {
+        InStorTime: [{ required: true, message: '请输入入库时间', trigger: 'blur' }],
+        InType: [{ required: true, message: '请选择入库类型', trigger: 'change' }],
+        SupId: [{ required: true, message: '请选择供应商', trigger: 'change' }]
+      }
     }
   },
   methods: {
