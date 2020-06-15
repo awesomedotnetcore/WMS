@@ -20,7 +20,9 @@ namespace Coldairarrow.Entity.PB
         ///<summary>
         ///仓库ID
         ///</summary>
-        public String StorId { get; set; }        
+        public String StorId { get; set; }
+        [ForeignKey(nameof(StorId))]
+        public PB_Storage PB_Storage { get; set; }
 
         /// <summary>
         /// 巷道编号

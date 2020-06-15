@@ -31,6 +31,8 @@ namespace Coldairarrow.Entity.PB
         /// 仓库ID
         /// </summary>
         public String StorId { get; set; }
+        [ForeignKey(nameof(StorId))]
+        public PB_Storage PB_Storage { get; set; }
 
         /// <summary>
         /// 创建时间

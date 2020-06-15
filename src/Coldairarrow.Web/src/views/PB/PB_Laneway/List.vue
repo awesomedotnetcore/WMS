@@ -64,7 +64,7 @@ import EditForm from './EditForm'
 // import StorageSelect from '../../../components/Storage/StorageSelect' 
 
 const columns = [
-  // { title: '所属仓库', dataIndex: 'StorId', width: '10%' },
+  { title: '所属仓库', dataIndex: 'PB_Storage.Name', width: '10%' },
   { title: '巷道编号', dataIndex: 'Code', width: '10%' },
   { title: '巷道名称', dataIndex: 'Name', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
@@ -131,10 +131,11 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm(null,'新增巷道')
+      this.$refs.editForm.openForm(null,this.storData.Id,'新增巷道')
+     // console.log('ID名称1',this.storData.Id)
     },
     handleEdit(id) {
-      this.$refs.editForm.openForm(id,'新增巷道')
+      this.$refs.editForm.openForm(id,this.storData.Id,'新增巷道')
     },    
     handleDelete(ids) {
       var thisObj = this

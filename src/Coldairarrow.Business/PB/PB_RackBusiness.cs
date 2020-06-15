@@ -24,6 +24,7 @@ namespace Coldairarrow.Business.PB
             var q = GetIQueryable().Where(w => w.StorId == input.StorId);
             var where = LinqHelper.True<PB_Rack>();
             var search = input.Search;
+            q = q.Include(i => i.PB_Storage);
 
             if (!search.Keyword.IsNullOrEmpty())
             {
