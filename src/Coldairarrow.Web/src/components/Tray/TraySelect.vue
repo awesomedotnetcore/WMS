@@ -21,7 +21,7 @@ export default {
   props: {
     materialId: { type: String, default: '', required: false },
     locartalId: { type: String, default: '', required: false },
-    value: { type: String, default: '', required: false }
+    value: { type: String, required: false }
   },
   components: {
     TrayChoose

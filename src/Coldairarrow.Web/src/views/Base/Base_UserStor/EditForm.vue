@@ -1,12 +1,5 @@
 ﻿<template>
-  <a-modal
-    :title="title"
-    width="40%"
-    :visible="visible"
-    :confirmLoading="loading"
-    @ok="handleSubmit"
-    @cancel="()=>{this.visible=false}"
-  >
+  <a-modal :title="title" width="40%" :visible="visible" :confirmLoading="loading" @ok="handleSubmit" @cancel="()=>{this.visible=false}">
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
         <a-form-model-item label="用户" prop="UserId">
@@ -16,10 +9,10 @@
           <storage-select v-model="entity.StorId"></storage-select>
         </a-form-model-item>
         <a-form-model-item label="默认仓库" prop="IsDefault">
-          <a-select v-model="entity.IsDefault" autocomplete="off">
-            <a-select-option :value="false">否</a-select-option>
-            <a-select-option :value="true">是</a-select-option>
-          </a-select>
+          <a-radio-group v-model="entity.IsDefault" :default-value="false" button-style="solid">
+            <a-radio-button :value="false">否</a-radio-button>
+            <a-radio-button :value="true">是</a-radio-button>
+          </a-radio-group>
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -45,15 +38,19 @@ export default {
       },
       visible: false,
       loading: false,
-      entity: {},
-      rules: {},
+      entity: { IsDefault: false },
+      rules: {
+        UserId: [{ required: true, message: '请选择用户', trigger: 'change' }],
+        StorId: [{ required: true, message: '请选择仓库', trigger: 'change' }],
+        IsDefault: [{ required: true, message: '是否默认', trigger: 'change' }]
+      },
       title: ''
     }
   },
   methods: {
     init() {
       this.visible = true
-      this.entity = {}
+      this.entity = { IsDefault: false }
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })

@@ -1,25 +1,21 @@
 <template>
-  <a-modal
-    title="物料选择"
-    width="60%"
-    :visible="visible"
-    :confirmLoading="loading"
-    okText="选择"
-    @ok="handleChoose"
-    @cancel="()=>{this.visible=false}"
-  >
+  <a-modal title="物料选择" width="60%" :visible="visible" :confirmLoading="loading" okText="选择" @ok="handleChoose" @cancel="()=>{this.visible=false}">
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
-        <a-row :gutter="10">
-          <a-col :md="3" :sm="24">
-            <materialType-select v-model="queryParam.TypeId"></materialType-select>
-          </a-col>
-          <a-col :md="3" :sm="24">
-            <supplier-select v-model="queryParam.SupplierId"></supplier-select>
-          </a-col>
-          <a-col :md="3" :sm="24">
+        <a-row>
+          <a-col :span="4">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="物料名称或编号或条码" />
+              <materialType-select v-model="queryParam.TypeId"></materialType-select>
+            </a-form-item>
+          </a-col>
+          <a-col :span="4">
+            <a-form-item>
+              <a-input v-model="queryParam.Keyword" placeholder="物料名称或编号或条码" />
+            </a-form-item>
+          </a-col>
+          <a-col :span="4">
+            <a-form-item>
+              <a-input v-model="queryParam.ContactName" placeholder="客户/供应商名称或编码" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -29,32 +25,19 @@
         </a-row>
       </a-form>
     </div>
-    <a-table
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{
-        selectedRowKeys: selectedRowKeys,
-        onChange: onSelectChange,
-        type:type }"
-      :bordered="true"
-      size="small"
-    ></a-table>
+    <a-table :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange, type:type }" :bordered="true" size="small"></a-table>
   </a-modal>
 </template>
 
 <script>
 import MaterialTypeSelect from '../PB/MaterialTypeSelect'
-import SupplierSelect from '../PB/SupplierSelect'
 const columns = [
   { title: '物料名称', dataIndex: 'Name', width: '20%' },
   { title: '物料编码', dataIndex: 'Code', width: '20%' },
-  { title: '条码', dataIndex: 'BarCode', width: '20%' },
-  { title: '物料简称', dataIndex: 'SimpleName', width: '20%' },
-  { title: '物料规格', dataIndex: 'Spec', width: '20%' }
+  { title: '物料类别', dataIndex: 'MaterialType.Name', width: '20%' },
+  { title: '条码', dataIndex: 'BarCode', width: '15%' },
+  { title: '物料简称', dataIndex: 'SimpleName', width: '10%' },
+  { title: '物料规格', dataIndex: 'Spec', width: '15%' }
 ]
 
 export default {
@@ -62,8 +45,7 @@ export default {
     type: { type: String, default: 'radio', required: false }
   },
   components: {
-    MaterialTypeSelect,
-    SupplierSelect
+    MaterialTypeSelect
   },
   mounted() {
     this.getDataList()
@@ -98,7 +80,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/PB/PB_Material/GetDataList', {
+        .post('/PB/PB_Material/QueryDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
