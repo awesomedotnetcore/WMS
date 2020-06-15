@@ -43,6 +43,12 @@
       <template slot="Type" slot-scope="text">
         <enum-name code="BadType" :value="text"></enum-name>
       </template>
+      <template slot="Status" slot-scope="text, record">
+        <a-tag v-if="record.Status===0" color="blue">待审核</a-tag>
+        <a-tag v-else-if="record.Status===1" color="green">审核通过</a-tag>
+        <a-tag v-else-if="record.Status===2" color="red">审核失败</a-tag>
+        <a-tag v-else color="blue">待审核</a-tag>
+      </template>
       <span slot="action" slot-scope="text, record">
         <template>
           <a v-if="record.Status===0" @click="handleEdit(record.Id)">编辑</a>
@@ -63,16 +69,7 @@ import moment from 'moment'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import EditForm from './EditForm'
-const filterStatus = (value, row, index) => {
-  var status = '待审核'
-  switch (value) {
-    case 0: status = '待审核'; break
-    case 1: status = '审核通过'; break
-    case 2: status = '审核失败'; break
-    default: break
-  }
-  return status
-}
+
 const filterDate = (value, row, index) => {
   if (value) {
     return moment(value).format('YYYY-MM-DD')
@@ -86,7 +83,7 @@ const columns = [
   { title: '报损类型', dataIndex: 'Type', scopedSlots: { customRender: 'Type' }, width: '10%' },
   { title: '报损数量', dataIndex: 'BadNum', width: '5%' },
   { title: '总金额', dataIndex: 'TotalAmt', width: '5%' },
-  { title: '状态', dataIndex: 'Status', customRender: filterStatus, width: '10%' },
+  { title: '状态', dataIndex: 'Status', scopedSlots: { customRender: 'Status' }, width: '10%' },
   { title: '制单人', dataIndex: 'CreateUser.RealName', width: '10%' },
   { title: '审核人', dataIndex: 'AuditUser.RealName', width: '10%' },
   { title: '审核时间', dataIndex: 'AuditeTime', customRender: filterDate, width: '10%' },
