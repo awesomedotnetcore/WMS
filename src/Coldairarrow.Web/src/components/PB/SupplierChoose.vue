@@ -1,13 +1,5 @@
 <template>
-  <a-modal
-    title="供应商选择"
-    width="70%"
-    :visible="visible"
-    :confirmLoading="loading"
-    okText="选择"
-    @ok="handleChoose"
-    @cancel="()=>{this.visible=false}"
-  >
+  <a-modal title="供应商选择" width="70%" :visible="visible" :confirmLoading="loading" okText="选择" @ok="handleChoose" @cancel="()=>{this.visible=false}">
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
@@ -29,20 +21,7 @@
       </a-form>
     </div>
 
-    <a-table
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{
-        selectedRowKeys: selectedRowKeys,
-        onChange: onSelectChange,
-        type:type }"
-      :bordered="true"
-      size="small"
-    >
+    <a-table :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange, type:type }" :bordered="true" size="small">
       <template slot="Type" slot-scope="text">
         <enum-name code="SupplierType" :value="text"></enum-name>
       </template>
@@ -54,14 +33,12 @@
 import EnumName from '../BaseEnum/BaseEnumName'
 import EnumSelect from '../BaseEnum/BaseEnumSelect'
 const columns = [
-  { title: '供应商编号', dataIndex: 'Code', width: '15%' },
-  { title: '供应商名称', dataIndex: 'Name', width: '15%' },
-  { title: '供应商类型', dataIndex: 'Type', width: '10%' , scopedSlots: { customRender: 'Type' }},
+  { title: '供应商编号', dataIndex: 'Code', width: '10%' },
+  { title: '供应商名称', dataIndex: 'Name' },
+  { title: '供应商类型', dataIndex: 'Type', width: '8%', scopedSlots: { customRender: 'Type' } },
   { title: '电话', dataIndex: 'Phone', width: '10%' },
-  { title: '传真', dataIndex: 'Fax', width: '10%' },
-  { title: 'Email', dataIndex: 'Email', width: '15%' },
-  { title: '联系人', dataIndex: 'ContactName', width: '10%' },
-  { title: '备注', dataIndex: 'Remarks' }
+  { title: 'Email', dataIndex: 'Email', width: '10%' },
+  { title: '联系人', dataIndex: 'ContactName', width: '10%' }
 ]
 
 export default {
@@ -102,7 +79,7 @@ export default {
     },
     getDataList() {
       this.selectedRowKeys = []
-      this.selectedRows =[]
+      this.selectedRows = []
 
       this.loading = true
       this.$http

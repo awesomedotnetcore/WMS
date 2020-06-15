@@ -40,5 +40,17 @@ namespace Coldairarrow.Business.PB
 
             return await q.Where(where).ToListAsync();
         }
+
+        public async Task<List<PB_Customer>> GetQueryData(SelectQueryDTO search)
+        {
+            var q = GetIQueryable();
+            var where = LinqHelper.False<PB_Customer>();
+            if (!search.Keyword.IsNullOrEmpty())
+                where = where.Or(w => w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
+
+            if (!search.Id.IsNullOrEmpty())
+                where = where.Or(w => w.Id == search.Id);
+            return await q.Where(where).OrderBy(o => o.Name).Take(search.Take).ToListAsync();
+        }
     }
 }
