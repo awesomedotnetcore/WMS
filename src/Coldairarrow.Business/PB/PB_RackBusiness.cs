@@ -25,11 +25,12 @@ namespace Coldairarrow.Business.PB
             var where = LinqHelper.True<PB_Rack>();
             var search = input.Search;
 
-            if (!search.Name.IsNullOrEmpty())
-                where = where.And(w => w.Name.Contains(search.Name));
-            if (!search.Code.IsNullOrEmpty())
-                where = where.And(w => w.Code.Contains(search.Code));
-
+            if (!search.Keyword.IsNullOrEmpty())
+            {
+                search.Keyword = search.Keyword.Trim();
+                //if (!search.Keyword.IsNullOrEmpty())
+                    where = where.And(w => w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
+            }
             return await q.Where(where).GetPageResultAsync(input);
         }
 

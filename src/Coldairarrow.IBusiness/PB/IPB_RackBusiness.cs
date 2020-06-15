@@ -17,8 +17,9 @@ namespace Coldairarrow.Business.PB
     }
     public class PB_RackQM
     {
-        public string Name { get; set; }
-        public string Code { get; set; }
+        //public string Name { get; set; }
+        //public string Code { get; set; }
+        public string Keyword { get; set; }
     }
     public class PB_RackPageInput : PageInput<PB_RackQM>
     {
