@@ -30,7 +30,7 @@ namespace Coldairarrow.Business.TD
             var search = input.Search;
 
             if (!search.Code.IsNullOrEmpty())
-                where = where.And(w => w.Code.Contains(search.Code));
+                where = where.And(w => w.Code.Contains(search.Code) || w.RefCode.Contains(search.Code));
             if (!search.InType.IsNullOrEmpty())
                 where = where.And(w => w.InType == search.InType);
             if (search.InStorTimeStart.HasValue)

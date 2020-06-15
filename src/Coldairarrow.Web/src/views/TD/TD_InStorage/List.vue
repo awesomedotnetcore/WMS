@@ -23,7 +23,7 @@
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.Code" placeholder="入库单号" />
+              <a-input v-model="queryParam.Code" placeholder="入库/关联单号" />
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
@@ -106,7 +106,7 @@ export default {
         showTotal: (total, range) => `总数:${total} 当前:${range[0]}-${range[1]}`
       },
       filters: {},
-      sorter: { field: 'Id', order: 'asc' },
+      sorter: { field: 'CreateTime', order: 'desc' },
       loading: false,
       columns,
       queryParam: { Status: null },
