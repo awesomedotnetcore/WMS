@@ -58,7 +58,7 @@
           <a-divider v-if="record.Status==0" type="vertical" />
           <a v-if="record.Status==0" @click="handleDelete([record.Id])">删除</a>
           <a-divider v-if="record.Status==0" type="vertical" />
-          <a v-if="record.Status==0" @click="openDetailForm(record.Id, record.Status)">查看明细</a>
+          <a @click="openDetailForm(record.Id, record.Status)">查看明细</a>
         </template>
       </span>
       <span slot="ConvertStatus" slot-scope="text, record">
@@ -101,13 +101,12 @@ import DetailForm from '../TD_AllocateDetail/List'
 // }
 
 const columns = [
-  { title: '调拨单号', dataIndex: 'Code', width: '8%' },
+  { title: '调拨单号', dataIndex: 'Code', width: '15%' },
   { title: '调拨时间', dataIndex: 'AllocateTime', width: '10%' },
   { title: '调拨类型', dataIndex: 'Type', width: '5%', scopedSlots: { customRender: 'type' } },
   { title: '目标仓库', dataIndex: 'Tar_Storage.Name', width: '8%' },
   { title: '关联单号', dataIndex: 'RefCode', width: '8%' },
   { title: '调拨数量', dataIndex: 'AllocateNum', width: '5%' },
-  { title: '设备', dataIndex: 'PB_Equipment.Name', width: '8%' },
   {
     title: '状态',
     dataIndex: 'Status',
@@ -181,10 +180,10 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm()
+      this.$refs.editForm.openForm(null, '新增')
     },
     handleEdit(id) {
-      this.$refs.editForm.openForm(id)
+      this.$refs.editForm.openForm(id, '编辑')
     },
     handleDelete(ids) {
       var thisObj = this
@@ -207,8 +206,8 @@ export default {
         }
       })
     },
-    openDetailForm(moveId, state) {
-      this.$refs.detailForm.openDrawer(moveId, state)
+    openDetailForm(allocateId, state) {
+      this.$refs.detailForm.openDrawer(allocateId, state)
     },
     approveData(ids) {
       var thisObj = this

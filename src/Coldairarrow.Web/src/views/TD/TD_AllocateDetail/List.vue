@@ -10,8 +10,9 @@
   >
     <a-card :bordered="false">
       <div class="table-operator">
-        <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
+        <a-button v-if="this.state == 0" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
         <a-button
+          v-if="this.state == 0"
           type="primary"
           icon="minus"
           @click="handleDelete(selectedRowKeys)"
@@ -25,7 +26,7 @@
 
       <a-table
         ref="table"
-        :columns="columns"
+        :columns="computedColumns"
         :rowKey="row => row.Id"
         :dataSource="data"
         :pagination="pagination"
@@ -37,7 +38,9 @@
       >
         <span slot="action" slot-scope="text, record">
           <template>
-            <a @click="handleEdit(record.Id ,record.FromlocalId, record.FromTrayId, record.FromZoneId, record.MaterialId, record.BatchNo, record.BarCode)">编辑</a>
+            <a
+              @click="handleEdit(record.Id ,record.FromlocalId, record.FromTrayId, record.FromZoneId, record.MaterialId, record.BatchNo, record.BarCode)"
+            >编辑</a>
             <a-divider type="vertical" />
             <a @click="handleDelete([record.Id])">删除</a>
           </template>
@@ -60,9 +63,9 @@ const columnsApproved = [
   { title: '原托盘分区', dataIndex: 'Src_TrayZone.Name', width: '10%' },
   { title: '目标仓库', dataIndex: 'Tar_Storage.Name', width: '10%' },
   { title: '目标货位', dataIndex: 'Tar_Location.Name', width: '10%' },
-  { title: '条码', dataIndex: 'BarCode', width: '10%' },
+  { title: '条码', dataIndex: 'BarCode', width: '15%' },
   { title: '物料', dataIndex: 'PB_Material.Name', width: '10%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
+  { title: '批次号', dataIndex: 'BatchNo', width: '15%' },
   { title: '调拨数量', dataIndex: 'LocalNum', width: '10%' }
 ]
 
@@ -126,11 +129,17 @@ export default {
       this.sorter = { ...sorter }
       this.getDataList()
     },
+    init() {
+      this.data = []
+      this.state = null
+      this.allocateId = null
+    },
     getDataList() {
       var thisObj = this
       this.selectedRowKeys = []
 
       this.loading = true
+      this.queryParam.Keyword = this.allocateId
       this.$http
         .post('/TD/TD_AllocateDetail/GetDataList', {
           PageIndex: thisObj.pagination.current,
@@ -182,6 +191,7 @@ export default {
       })
     },
     openDrawer(allocateId, state) {
+      this.init()
       this.allocateId = allocateId
       this.state = state
       this.visible = true

@@ -36,6 +36,7 @@
             :max="localMaterial.Num"
             :min="0"
             autocomplete="off"
+            :style="{width:'100%'}"
           />
         </a-form-model-item>
       </a-form-model>

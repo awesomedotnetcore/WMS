@@ -10,22 +10,27 @@
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
         <a-form-model-item label="调拨单号" prop="Code">
-          <a-input v-model="entity.Code" autocomplete="off" />
+          <a-input
+            v-model="entity.Code"
+            :disabled="$para('GenerateAllocateCode')=='1'"
+            :placeholder="$para('GenerateAllocateCode')=='1'?'系统自动生成':'移库单号'"
+            autocomplete="off"
+          />
         </a-form-model-item>
         <a-form-model-item label="调拨类型" prop="Type">
           <enum-select code="AllocateStorageType" v-model="entity.Type"></enum-select>
         </a-form-model-item>
-        <!-- <a-form-model-item label="目标仓库" prop="ToStorId">
+        <a-form-model-item label="目标仓库" prop="ToStorId">
           <storage-select v-model="entity.ToStorId" @select="handleStorageSelect"></storage-select>
-        </a-form-model-item> -->
+        </a-form-model-item>
         <a-form-model-item label="关联单号" prop="RefCode">
           <a-input v-model="entity.RefCode" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="调拨时间" prop="AllocateTime">
-          <a-date-picker show-time v-model="entity.AllocateTime"/>
+          <a-date-picker show-time v-model="entity.AllocateTime" :style="{width:'100%'}" />
         </a-form-model-item>
         <a-form-model-item label="备注" prop="Remarks">
-          <a-input v-model="entity.Remarks" autocomplete="off" />
+          <a-textarea v-model="entity.Remarks" autocomplete="off" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -53,7 +58,11 @@ export default {
       visible: false,
       loading: false,
       entity: {},
-      rules: {},
+      rules: {
+        Type: [{ required: true, message: '请选择类型', trigger: 'change' }],
+        ToStorId: [{ required: true, message: '请选择目标仓库', trigger: 'change' }],
+        AllocateTime: [{ required: true, message: '请输入时间', trigger: 'change' }]
+      },
       title: ''
     }
   },
@@ -67,6 +76,7 @@ export default {
     },
     openForm(id, title) {
       this.init()
+      this.title = title
 
       if (id) {
         this.loading = true
