@@ -74,7 +74,7 @@ export default {
       entity: { Id: '', Status: 0 },
       listDetail: [],
       rules: {
-        InStorTime: [{ required: true, message: '请输入入库时间', trigger: 'blur' }],
+        InStorTime: [{ required: true, message: '请输入入库时间', trigger: 'change' }],
         InType: [{ required: true, message: '请选择入库类型', trigger: 'change' }],
         SupId: [{ required: true, message: '请选择供应商', trigger: 'change' }]
       }

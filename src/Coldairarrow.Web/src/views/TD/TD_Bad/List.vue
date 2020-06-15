@@ -23,7 +23,7 @@
           </a-col>
           <a-col :md="2" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.Code" placeholder="单号" />
+              <a-input v-model="queryParam.Code" placeholder="报损/关联单号" />
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">

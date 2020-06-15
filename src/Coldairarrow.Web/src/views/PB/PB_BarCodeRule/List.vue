@@ -27,9 +27,9 @@
 import EditForm from './EditForm'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 const columns = [
-  { title: '类型', dataIndex: 'Type', scopedSlots: { customRender: 'Type' }, width: '10%' },
+  { title: '类型', dataIndex: 'Type', scopedSlots: { customRender: 'Type' }, width: '15%' },
   { title: '排序', dataIndex: 'Sort', width: '10%' },
-  { title: '规则', dataIndex: 'Rule', width: '10%' },
+  { title: '规则', dataIndex: 'Rule', width: '15%' },
   { title: '长度', dataIndex: 'length', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
