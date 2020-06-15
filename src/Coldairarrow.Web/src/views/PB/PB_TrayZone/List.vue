@@ -1,48 +1,22 @@
 ﻿<template>
-  <a-drawer
-    title="分区信息"
-    placement="right"
-    :closable="true"
-    @close="onDrawerClose"
-    :visible="visible"
-    :width="900"
-    :getContainer="false"
-  >
-    <a-card :bordered="false">
-      <div class="table-operator">
-        <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-        <a-button
-          type="primary"
-          icon="minus"
-          @click="handleDelete(selectedRowKeys)"
-          :disabled="!hasSelected()"
-          :loading="loading"
-        >删除</a-button>
-        <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
-      </div>
+  <a-drawer title="分区信息" placement="right" :closable="true" @close="onDrawerClose" :visible="visible" :width="900" :getContainer="false">
+    <div class="table-operator">
+      <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
+      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
+      <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
+    </div>
 
-      <a-table
-        ref="table"
-        :columns="columns"
-        :rowKey="row => row.Id"
-        :dataSource="data"
-        :loading="loading"
-        @change="handleTableChange"
-        :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-        :bordered="true"
-        size="small"
-      >
-        <span slot="action" slot-scope="text, record">
-          <template>
-            <a @click="handleEdit(record.Id)">编辑</a>
-            <a-divider type="vertical" />
-            <a @click="handleDelete([record.Id])">删除</a>
-          </template>
-        </span>
-      </a-table>
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+      <span slot="action" slot-scope="text, record">
+        <template>
+          <a @click="handleEdit(record.Id)">编辑</a>
+          <a-divider type="vertical" />
+          <a @click="handleDelete([record.Id])">删除</a>
+        </template>
+      </span>
+    </a-table>
 
-      <edit-form ref="editForm" :parentObj="this"></edit-form>
-    </a-card>
+    <edit-form ref="editForm" :parentObj="this"></edit-form>
   </a-drawer>
 </template>
 
@@ -54,11 +28,11 @@ const filterYesOrNo = (value, row, index) => {
   else return '否'
 }
 const columns = [
-  { title: '托盘分区编号', dataIndex: 'Code', width: '10%' },
-  { title: '托盘分区名称', dataIndex: 'Name', width: '10%' },
+  { title: '编号', dataIndex: 'Code', width: '10%' },
+  { title: '名称', dataIndex: 'Name', width: '10%' },
   { title: 'X', dataIndex: 'X', width: '10%' },
   { title: 'Y', dataIndex: 'Y', width: '10%' },
-  { title: '是否默认托盘分区', dataIndex: 'IsDefault', width: '10%', customRender: filterYesOrNo },
+  { title: '是否默认', dataIndex: 'IsDefault', width: '10%', customRender: filterYesOrNo },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -106,10 +80,10 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm(this.typeId)
+      this.$refs.editForm.openForm(this.typeId, null, '新增')
     },
     handleEdit(id) {
-      this.$refs.editForm.openForm(this.typeId, id)
+      this.$refs.editForm.openForm(this.typeId, id, '编辑')
     },
     handleDelete(ids) {
       var thisObj = this

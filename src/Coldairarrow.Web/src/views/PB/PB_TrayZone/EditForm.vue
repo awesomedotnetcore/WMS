@@ -1,31 +1,36 @@
 ﻿<template>
-  <a-modal
-    :title="title"
-    width="40%"
-    :visible="visible"
-    :confirmLoading="loading"
-    @ok="handleSubmit"
-    @cancel="()=>{this.visible=false}"
-  >
+  <a-modal :title="title" width="40%" :visible="visible" :confirmLoading="loading" @ok="handleSubmit" @cancel="()=>{this.visible=false}">
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="托盘分区编号" prop="Code">
-          <a-input v-model="entity.Code" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="托盘分区名称" prop="Name">
-          <a-input v-model="entity.Name" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="X" prop="X">
-          <a-input v-model="entity.X" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="Y" prop="Y">
-          <a-input v-model="entity.Y" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="是否默认托盘分区" prop="IsDefault">
-          <a-select v-model="entity.IsDefault">
-            <a-select-option :key="true">是</a-select-option>
-            <a-select-option :key="false">否</a-select-option>
-          </a-select>
+        <a-row>
+          <a-col :span="12">
+            <a-form-model-item label="编号" prop="Code">
+              <a-input v-model="entity.Code" autocomplete="off" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-model-item label="名称" prop="Name">
+              <a-input v-model="entity.Name" autocomplete="off" />
+            </a-form-model-item>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="12">
+            <a-form-model-item label="X" prop="X">
+              <a-input-number v-model="entity.X" :style="{width:'100%'}" autocomplete="off" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-model-item label="Y" prop="Y">
+              <a-input-number v-model="entity.Y" :style="{width:'100%'}" autocomplete="off" />
+            </a-form-model-item>
+          </a-col>
+        </a-row>
+        <a-form-model-item label="是否默认" prop="IsDefault">
+          <a-radio-group v-model="entity.IsDefault" :default-value="false" button-style="solid">
+            <a-radio-button :value="false">否</a-radio-button>
+            <a-radio-button :value="true">是</a-radio-button>
+          </a-radio-group>
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -45,22 +50,26 @@ export default {
       },
       visible: false,
       loading: false,
-      entity: {},
-      rules: {},
+      entity: { IsDefault: false },
+      rules: {
+        Code: [{ required: true, message: '请输入编号', trigger: 'blur' }],
+        Name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+        IsDefault: [{ required: true, message: '请选择是否默认', trigger: 'change' }]
+      },
       title: ''
     }
   },
   methods: {
     init() {
       this.visible = true
-      this.entity = {}
+      this.entity = { IsDefault: false }
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })
     },
     openForm(typeId, id, title) {
       this.init()
-
+      this.title = title
       if (id) {
         this.loading = true
         this.$http.post('/PB/PB_TrayZone/GetTheData', { id: id }).then(resJson => {
