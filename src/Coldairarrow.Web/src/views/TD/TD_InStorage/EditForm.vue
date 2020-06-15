@@ -71,7 +71,7 @@ export default {
       },
       visible: false,
       loading: false,
-      entity: { Id: '', InType: '', Status: 0 },
+      entity: { Id: '', Status: 0 },
       listDetail: [],
       rules: {
         InStorTime: [{ required: true, message: '请输入入库时间', trigger: 'blur' }],
@@ -84,7 +84,7 @@ export default {
     moment,
     init() {
       this.visible = true
-      this.entity = { Id: '', InType: '', Status: 0 }
+      this.entity = { Id: '', Status: 0 }
       this.listDetail = []
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
