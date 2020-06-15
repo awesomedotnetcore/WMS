@@ -113,7 +113,8 @@ namespace Coldairarrow.Api.Controllers.PB
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public async Task<string> Import(IFormFile file)
+        [NoCheckJWT]
+        public async Task<string> Import(IFormFile file)// file
         {
             string ReturnValue = string.Empty;
             //定义一个bool类型的变量用来做验证
@@ -184,6 +185,7 @@ namespace Coldairarrow.Api.Controllers.PB
                         if (row.GetCell(0) != null && row.GetCell(0).ToString().Trim().Length > 0)
                         {
                             commodity.Code = row.GetCell(0).ToString();
+                            
                         }
                         if (row.GetCell(1) != null && row.GetCell(1).ToString().Trim().Length > 0)
                         {

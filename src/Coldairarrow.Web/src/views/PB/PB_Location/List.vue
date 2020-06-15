@@ -1,7 +1,9 @@
 ﻿<template>
   <a-card :bordered="false">
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
+      <a-row :gutter="10">
+      <a-col :md="20" :sm="24">
+      <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>      
       <a-button
         type="primary"
         icon="minus"
@@ -10,17 +12,21 @@
         :loading="loading"
       >删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
+      </a-col>        
+      <a-button type="primary"  @click="hanldleLeading()">导入货位</a-button>        
+      </a-row>
+    <!-- <template>
+      <a-upload
+        name="file"
+        :multiple="true"
+        :action="$rootUrl+'/PB/PB_Location/Import'"
+        :headers="headers"
+        @change="handleChange"
+      >
+        <a-button> <a-icon type="upload" /> Click to Upload </a-button>
+      </a-upload>
+    </template> -->
 
-      <!-- <input type="file" class="file">  -->
-
-      <!-- <a-button>
-      <upload-file v-model="entity.File" :maxCount="1"></upload-file>
-      </a-button> -->
-
-      <!-- <form enctype="multipart/form-data" method="post" asp-action="Import">
-          <input type="file" name="excelfile" />
-          <input type="submit" value="上传" />
-      </form> -->
     </div>
 
       
@@ -87,6 +93,7 @@
     </a-table>
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
+    <leading-form ref="leadingForm" :parentObj="this"></leading-form>
   </a-card>
 </template>
 
@@ -94,6 +101,8 @@
 import EditForm from './EditForm'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import UploadFile from '../../../components/CUploadFile/CUploadFile'
+//import Token from '../../../utils/cache/TokenCache'
+import LeadingForm from './LeadingForm'
 
 const filterYesOrNo = (value, row, index) => {
   if (value) return '是'
@@ -119,7 +128,9 @@ export default {
   components: {
     EditForm,
     EnumName, 
-    UploadFile
+    UploadFile,
+   // Token,
+    LeadingForm
   },
   mounted() {
     this.getDataList()
@@ -138,10 +149,12 @@ export default {
       columns,
       queryParam: {},
       selectedRowKeys: [],
-      entity: { File: ''},
-       headers: {
-        authorization: 'authorization-text',
-      },
+      entity: { },//File: ''
+      // headers: {
+      //   authorization: 'Bearer '+Token.getToken(),
+      // },
+       fileList: [],
+      // uploading: false,
     }
   },
   methods: {
@@ -183,6 +196,9 @@ export default {
     },
     handleEdit(id) {
       this.$refs.editForm.openForm(id)
+    },
+    hanldleLeading() {
+      this.$refs.leadingForm.openForm()
     },
     handleDelete(ids) {
       var thisObj = this
@@ -226,7 +242,19 @@ export default {
         }
       })
     },
-    
+    // handleChange(info) {
+    //   if (info.file.status !== 'uploading') {
+    //     console.log(info.file, info.fileList);
+    //   }
+    //   if (info.file.status === 'done') {
+    //     this.$message.success(`${info.file.name} file uploaded successfully`);
+    //   } else if (info.file.status === 'error') {
+    //     this.$message.error(`${info.file.name} file upload failed.`);
+    //   }
+    // },
+    // getken(){
+    //   Token.getToken()
+    // }   
   }
 }
 </script>
