@@ -42,7 +42,9 @@ export default {
       visible: false,
       loading: false,
       entity: {},
-      rules: {},
+      rules: {
+        Name: [{ required: true, message: '请输入巷道名称', trigger: 'blur' }]
+      },
       title: ''
     }
   },
@@ -56,7 +58,7 @@ export default {
     },
     openForm(id, title) {
       this.init()
-
+      this.title = title
       if (id) {
         this.loading = true
         this.$http.post('/PB/PB_Laneway/GetTheData', { id: id }).then(resJson => {

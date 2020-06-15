@@ -192,13 +192,13 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm()
+      this.$refs.editForm.openForm(null, '新增货位')
     },
     handleEdit(id) {
-      this.$refs.editForm.openForm(id)
+      this.$refs.editForm.openForm(id, '编辑货位')
     },
     hanldleLeading() {
-      this.$refs.leadingForm.openForm()
+      this.$refs.leadingForm.openForm(null, '导入货位')
     },
     handleDelete(ids) {
       var thisObj = this

@@ -26,10 +26,12 @@ namespace Coldairarrow.Business.PB
             var search = input.Search;
 
             //筛选
-            if (!search.Name.IsNullOrEmpty())
-                where = where.And(w => w.Name.Contains(search.Name));
-            if (!search.Code.IsNullOrEmpty())
-                where = where.And(w => w.Code.Contains(search.Code));
+            if (!search.Keyword.IsNullOrEmpty())
+            {
+                search.Keyword = search.Keyword.Trim();
+                where = where.And(w => w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
+            }
+                
 
             return await q.Where(where).GetPageResultAsync(input);
         }

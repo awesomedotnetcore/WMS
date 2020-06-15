@@ -17,8 +17,10 @@ namespace Coldairarrow.Business.PB
     }
     public class PB_LanewayQM
     {
-        public string Name { get; set; }
-        public string Code { get; set; }
+        //public string Name { get; set; }
+        //public string Code { get; set; }
+        public string Keyword { get; set; }
+        
     }
     public class PB_LanewayPageInput : PageInput<PB_LanewayQM>
     {

@@ -60,7 +60,10 @@ export default {
       visible: false,
       loading: false,
       entity: {},
-      rules: {},
+      rules: {
+        Name: [{ required: true, message: '请输入货区名称', trigger: 'blur' }],
+        Type: [{ required: true, message: '请选择货区类型', trigger: 'change' }]
+      },
       title: ''
     }
   },
@@ -74,7 +77,7 @@ export default {
     },
     openForm(id, title) {
       this.init()
-
+      this.title = title
       if (id) {
         this.loading = true
         this.$http.post('/PB/PB_StorArea/GetTheData', { id: id }).then(resJson => {

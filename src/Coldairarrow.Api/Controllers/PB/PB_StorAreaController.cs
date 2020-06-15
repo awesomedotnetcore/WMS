@@ -39,7 +39,7 @@ namespace Coldairarrow.Api.Controllers.PB
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<PB_StorArea>> GetDataList(PageInput<ConditionDTO> input)
+        public async Task<PageResult<PB_StorArea>> GetDataList(PB_StorAreaPageInput input)
         {
             return await _pB_StorAreaBus.GetDataListAsync(input);
         }

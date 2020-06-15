@@ -24,8 +24,9 @@ namespace Coldairarrow.Business.PB
     }
     public class PB_StorageQM
     {
-        public string Name { get; set; }
-        public string Code { get; set; }
+        //public string Name { get; set; }
+        //public string Code { get; set; }
+        public string Keyword { get; set; }
     }
     public class PB_StoragePageInput : PageInput<PB_StorageQM>
     {
