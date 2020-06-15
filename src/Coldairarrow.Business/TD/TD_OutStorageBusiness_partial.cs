@@ -270,24 +270,25 @@ namespace Coldairarrow.Business.TD
             }
 
             // 处理托盘位置数据
-            {
-                var dicTray = detail
-                    .GroupBy(g => new { g.LocalId, g.TrayId })
-                    .Select(s => new { s.Key.LocalId, s.Key.TrayId })
-                    .Distinct()
-                    .ToDictionary(k => k.TrayId, v => v.LocalId);
-                var trayIds = dicTray.Keys.ToList();
-                if (trayIds.Count > 0)
-                {
-                    var listTray = await Service.GetIQueryable<PB_Tray>().Where(w => trayIds.Contains(w.Id)).ToListAsync();
-                    foreach (var tray in listTray)
-                    {
-                        tray.LocalId = dicTray[tray.Id];
-                    }
-                    var traySvc = _ServiceProvider.GetRequiredService<IPB_TrayBusiness>();
-                    await traySvc.UpdateDataAsync(listTray);
-                }
-            }
+            //{
+            //    var dicTray = new Dictionary<string, string>();
+            //    foreach (var item in detail)
+            //    {
+            //        if (item.TrayId != null && !dicTray.ContainsKey(item.TrayId))
+            //            dicTray.Add(item.TrayId, item.LocalId);
+            //    }
+            //    var trayIds = dicTray.Keys.ToList();
+            //    if (trayIds.Count > 0)
+            //    {
+            //        var listTray = await Service.GetIQueryable<PB_Tray>().Where(w => trayIds.Contains(w.Id)).ToListAsync();
+            //        foreach (var tray in listTray)
+            //        {
+            //            tray.LocalId = dicTray[tray.Id];
+            //        }
+            //        var traySvc = _ServiceProvider.GetRequiredService<IPB_TrayBusiness>();
+            //        await traySvc.UpdateDataAsync(listTray);
+            //    }
+            //}
 
             // 修改出库状态 
             {

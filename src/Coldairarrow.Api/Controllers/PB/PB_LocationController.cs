@@ -175,6 +175,7 @@ namespace Coldairarrow.Api.Controllers.PB
                         {
                             commodity.Code = row.GetCell(0).ToString();
                             
+                            //PB_Laneway.GetDataListByStor();
                         }
                         if (row.GetCell(1) != null && row.GetCell(1).ToString().Trim().Length > 0)
                         {
