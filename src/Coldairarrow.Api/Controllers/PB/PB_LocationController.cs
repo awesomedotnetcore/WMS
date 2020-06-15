@@ -41,17 +41,6 @@ namespace Coldairarrow.Api.Controllers.PB
 
         IWebHostEnvironment _hostingEnvironment { get; }
 
-        //SqlSugarClient db = new SqlSugarClient(new ConnectionConfig()
-        //{
-        //    ConnectionString = "database='" + "ZEQP_WMS" + "';Data Source = '" + "10.76.20.194" + "'; User Id = '" + "root" + "'; pwd='" + "ABCabc123" + "';charset='utf8';pooling=true",
-        //    //"Data Source=10.76.20.194;Initial Catalog=ZEQP_WMS;User id=root;Password=ABCabc123",
-        //    // Data Source=localhost;Initial Catalog=test;User id=sa;Password=123456
-        //    //server = 10.76.20.194; user id = root; password=ABCabc123;persistsecurityinfo=True;database=ZEQP_WMS;SslMode=none
-        //    DbType = SqlSugar.DbType.MySql,
-        //    IsAutoCloseConnection = true,
-        //    InitKeyType = InitKeyType.Attribute
-        //});
-
         #endregion
 
         #region 获取

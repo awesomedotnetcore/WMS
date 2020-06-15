@@ -13,7 +13,6 @@
           <storage-select v-model="entity.StorId"></storage-select>
         </a-form-model-item>
         <a-form-model-item label="货区编号" prop="Code">
-          <!-- <a-input v-model="entity.Code" autocomplete="off" /> -->
           <a-input
             v-model="entity.Code"
             :disabled="$para('GenerateStorAreaCode')=='1'"
@@ -28,12 +27,6 @@
           <enum-select code="StorAreaType" v-model="entity.Type" >             
           </enum-select>
         </a-form-model-item>
-        <!-- <a-form-model-item label="是否缓存区" prop="IsCache">
-          <a-radio-group v-model="entity.IsCache">
-            <a-radio-button :value="true">是</a-radio-button>
-            <a-radio-button :value="false">否</a-radio-button>
-          </a-radio-group>
-        </a-form-model-item> -->
       </a-form-model>
     </a-spin>
   </a-modal>

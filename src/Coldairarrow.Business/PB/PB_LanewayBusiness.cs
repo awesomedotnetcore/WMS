@@ -21,9 +21,10 @@ namespace Coldairarrow.Business.PB
 
         public async Task<PageResult<PB_Laneway>> GetDataListAsync(PB_LanewayPageInput input)
         {
-            var q = GetIQueryable().Where(w => w.StorId == input.StorId);
+            var q = GetIQueryable().Where(w => w.StorId == input.StorId);            
             var where = LinqHelper.True<PB_Laneway>();
             var search = input.Search;
+            q = q.Include(i => i.PB_Storage);
 
             if (!search.Keyword.IsNullOrEmpty())
             {

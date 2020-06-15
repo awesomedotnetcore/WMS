@@ -12,7 +12,7 @@
       >删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
       <a-divider type="vertical" />
-      <a-radio-group v-model="queryParam.Status" button-style="solid" @change="getDataList">
+      <a-radio-group v-model="queryParam.Status" :default-value="null" button-style="solid" @change="getDataList">
         <a-radio-button :value="null">全部</a-radio-button>
         <a-radio-button :value="0">待审核</a-radio-button>
         <a-radio-button :value="1">审核通过</a-radio-button>
@@ -140,7 +140,7 @@ export default {
         showTotal: (total, range) => `总数:${total} 当前:${range[0]}-${range[1]}`
       },
       filters: {},
-      sorter: { field: 'Id', order: 'asc' },
+      sorter: { field: 'OutTime', order: 'desc' },
       loading: false,
       columns,
       queryParam: {},

@@ -58,7 +58,7 @@
 import EditForm from './EditForm'
 
 const columns = [
-  // { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
+  { title: '仓库ID', dataIndex: 'PB_Storage.Name', width: '10%' },
   { title: '货架编号', dataIndex: 'Code', width: '10%' },
   { title: '货架名称', dataIndex: 'Name', width: '10%' },  
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
@@ -124,10 +124,10 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm(null,'新增货架')
+      this.$refs.editForm.openForm(null,this.storData.Id,'新增货架')
     },
     handleEdit(id) {
-      this.$refs.editForm.openForm(id,'编辑货架')
+      this.$refs.editForm.openForm(id,this.storData.Id,'编辑货架')
     },
     handleDelete(ids) {
       var thisObj = this

@@ -9,9 +9,10 @@
   >
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="仓库ID" prop="StorId">
+        <!-- <a-form-model-item label="仓库ID" prop="StorId">
           <storage-select code="Storage" v-model="entity.StorId"></storage-select>
-        </a-form-model-item>
+          <a-input v-model="entity.StorId" autocomplete="off" />     
+        </a-form-model-item> -->
         <a-form-model-item label="货架编号" prop="Code">
           <a-input v-model="entity.Code" :disabled="$para('GenerateRackCode')=='1'" placeholder="系统自动生成" autocomplete="off" />
         </a-form-model-item>
@@ -45,7 +46,8 @@ export default {
       rules: {
         Name: [{ required: true, message: '请输入货架名称', trigger: 'blur' }]
       },
-      title: ''
+      title: '',
+      storid:'',
     }
   },
   methods: {
@@ -56,9 +58,9 @@ export default {
         this.$refs['form'].clearValidate()
       })
     },
-    openForm(id, title) {
+    openForm(id, storid, title) {
       this.init()
-      
+      this.entity.StorId = storid
       if (id) {
         this.loading = true
         this.$http.post('/PB/PB_Rack/GetTheData', { id: id }).then(resJson => {
