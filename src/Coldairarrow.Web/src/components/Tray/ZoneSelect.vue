@@ -33,11 +33,11 @@ export default {
   },
   methods: {
     getListData() {
-      if (this.typeId != '') {
+      if (this.typeId != '' && this.typeId != null) {
         this.$http.post('/PB/PB_TrayZone/GetDataListByType?typeId=' + this.typeId).then(resJson => {
           this.listData = resJson.Data
         })
-      } else if (this.trayId != '') {
+      } else if (this.trayId != '' && this.trayId != null) {
         this.$http.post('/PB/PB_TrayZone/GetDataListByTray?trayId=' + this.trayId).then(resJson => {
           this.listData = resJson.Data
         })

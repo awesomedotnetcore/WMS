@@ -6,15 +6,10 @@
           <a-col :span="24">
             <a-form-item>
               <a-button style="margin-left: 8px" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-              <a-button style="margin-left: 8px" type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading" >删除</a-button>
+              <a-button style="margin-left: 8px" type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
               <a-button style="margin-left: 8px" type="primary" icon="redo" @click="getDataList()">刷新</a-button>
-            </a-form-item>            
-          </a-col>
-        </a-row>
-        <a-row>
-          <a-col :span="24">
-            <a-form-item>
-                <a-radio-group v-model="queryParam.IsComplete" :default-value="-1" button-style="solid" @change="getDataList">
+              <a-divider type="vertical" />
+              <a-radio-group v-model="queryParam.IsComplete" :default-value="-1" button-style="solid" @change="getDataList">
                 <a-radio-button :value="-1">
                   全部
                 </a-radio-button>
@@ -25,32 +20,31 @@
                   已盘
                 </a-radio-button>
               </a-radio-group>
-              
-                <a-radio-group style="margin-left:18px" v-model="queryParam.Status" :default-value="-1" button-style="solid" @change="getDataList">
-                  <a-radio-button :value="-1">
-                    全部
-                  </a-radio-button>
-                  <a-radio-button :value="0">
-                    待审核
-                  </a-radio-button>
-                  <a-radio-button :value="1">
-                    审核通过
-                  </a-radio-button>
-                  <a-radio-button :value="2">
-                    审核失败
-                  </a-radio-button>
-                  <a-radio-button :value="3">
-                    退回
-                  </a-radio-button>
-                </a-radio-group>
-              </a-form-item>
+              <a-divider type="vertical" />
+              <a-radio-group v-model="queryParam.Status" :default-value="-1" button-style="solid" @change="getDataList">
+                <a-radio-button :value="-1">
+                  全部
+                </a-radio-button>
+                <a-radio-button :value="0">
+                  待审核
+                </a-radio-button>
+                <a-radio-button :value="1">
+                  审核通过
+                </a-radio-button>
+                <a-radio-button :value="2">
+                  审核失败
+                </a-radio-button>
+                <a-radio-button :value="3">
+                  退回
+                </a-radio-button>
+              </a-radio-group>
+            </a-form-item>
           </a-col>
         </a-row>
         <a-row>
-           <a-col :md="3" :sm="24">
+          <a-col :md="3" :sm="24">
             <a-form-item>
-              <a-range-picker v-model="queryParam.RangeDate"
-                :ranges="{ 
+              <a-range-picker v-model="queryParam.RangeDate" :ranges="{ 
                   '本星期': [moment().startOf('week'), moment().endOf('week')]
                   ,'本月': [moment().startOf('month'), moment().endOf('month')]                  
                   ,'本季度': [moment().startOf('quarter'), moment().endOf('quarter')] 
@@ -58,8 +52,7 @@
                   ,'上月': [moment().startOf('month').add(-1,'month'), moment().endOf('month').add(-1,'month')]
                   ,'上季度': [moment().startOf('quarter').add(-1,'quarter'), moment().endOf('quarter').add(-1,'quarter')]
                   ,'上年度': [moment().startOf('year').add(-1,'year'), moment().endOf('year').add(-1,'year')]
-                }"
-              />
+                }" />
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
@@ -69,27 +62,16 @@
           </a-col>
           <a-col :md="13" :sm="24">
             <a-button type="primary" @click="getDataList">查询</a-button>
-            <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>            
+            <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
           </a-col>
         </a-row>
       </a-form>
     </div>
 
-    <a-table
-      ref="table"
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange, getCheckboxProps: CheckboxProps }"
-      :bordered="true"
-      size="small"
-    >
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange, getCheckboxProps: CheckboxProps }" :bordered="true" size="small">
       <template slot="IsComplete" slot-scope="text, record">
-         <a-tag v-if="record.IsComplete===true">已盘</a-tag>
-         <a-tag v-else color="green">待盘</a-tag>
+        <a-tag v-if="record.IsComplete===true">已盘</a-tag>
+        <a-tag v-else color="green">待盘</a-tag>
       </template>
       <template slot="Status" slot-scope="text, record">
         <span v-if="record.IsComplete===true">
@@ -138,10 +120,10 @@ import moment from 'moment'
 
 const columns = [
   { title: '盘点类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
-  { title: '盘点时间', dataIndex: 'CheckTime', width: '10%' },  
+  { title: '盘点时间', dataIndex: 'CheckTime', width: '10%' },
   { title: '关联单号', dataIndex: 'RefCode', width: '10%' },
-  { title: '盘差状态', dataIndex: 'IsComplete', width: '10%', scopedSlots: { customRender: 'IsComplete' }  },
-  { title: '审核状态', dataIndex: 'Status', width: '10%', scopedSlots: { customRender: 'Status' }  },
+  { title: '盘差状态', dataIndex: 'IsComplete', width: '10%', scopedSlots: { customRender: 'IsComplete' } },
+  { title: '审核状态', dataIndex: 'Status', width: '10%', scopedSlots: { customRender: 'Status' } },
   { title: '审核人', dataIndex: 'AuditUserId', width: '10%' },
   { title: '审核时间', dataIndex: 'AuditeTime', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
@@ -173,7 +155,7 @@ export default {
       loading: false,
       columns,
       queryParam: {
-        RangeDate:[moment().startOf('month'), moment().endOf('month')]
+        RangeDate: [moment().startOf('month'), moment().endOf('month')]
       },
       selectedRowKeys: []
     }
@@ -186,10 +168,10 @@ export default {
       this.sorter = { ...sorter }
       this.getDataList()
     },
-    CheckboxProps(record){
-      return{
+    CheckboxProps(record) {
+      return {
         props: {
-          disabled: record.IsComplete===true
+          disabled: record.IsComplete === true
         },
       }
     },
@@ -246,15 +228,15 @@ export default {
         }
       })
     },
-    handleCheck(id){
+    handleCheck(id) {
       this.$refs.show.openForm(id)
     },
-    handleReCheck(id){
+    handleReCheck(id) {
       this.$refs.check.openForm(id)
     },
-    handleAudit(id){
+    handleAudit(id) {
       this.$refs.audite.openForm(id)
-    },    
+    },
   }
 }
 </script>
