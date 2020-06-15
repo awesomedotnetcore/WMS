@@ -36,18 +36,7 @@
       </a-form>
     </div>
 
-    <a-table
-      ref="table"
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      :bordered="true"
-      size="small"
-    >
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
       <template slot="Type" slot-scope="text">
         <enum-name code="RecordBookType" :value="text"></enum-name>
       </template>
@@ -63,15 +52,14 @@ import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 const columns = [
   { title: '相关单号', dataIndex: 'RefCode', width: '10%' },
   { title: '台账类型', dataIndex: 'Type', width: '8%', scopedSlots: { customRender: 'Type' } },
-  { title: '原仓库', dataIndex: 'FromStorage.Name', width: '8%' },
   { title: '原货位', dataIndex: 'FromLocation.Name', width: '8%' },
-  { title: '目标仓库', dataIndex: 'ToStorage.Name', width: '8%' },
   { title: '目标货位', dataIndex: 'ToLocation.Name', width: '8%' },
-  { title: '物料', dataIndex: 'Material.Name', width: '15%' },
+  { title: '物料', dataIndex: 'Material.Name' },
   { title: '单位', dataIndex: 'Measure.Name', width: '5%' },
-  { title: '物料条码', dataIndex: 'BarCode', width: '15%' },
+  { title: '物料条码', dataIndex: 'BarCode', width: '10%' },
   { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
-  { title: '数量', dataIndex: 'Num', width: '5%' }
+  { title: '数量', dataIndex: 'Num', width: '5%' },
+  { title: '时间', dataIndex: 'CreateTime', width: '10%' }
 ]
 
 export default {
