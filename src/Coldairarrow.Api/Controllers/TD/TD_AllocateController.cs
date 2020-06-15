@@ -1,8 +1,11 @@
 ﻿using Coldairarrow.Business.IT;
+using Coldairarrow.Business.PB;
 using Coldairarrow.Business.TD;
 using Coldairarrow.Entity.TD;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,13 +18,15 @@ namespace Coldairarrow.Api.Controllers.TD
         #region DI
 
         public TD_AllocateController(ITD_AllocateBusiness tD_AllocateBus, IOperator @op, ITD_AllocateDetailBusiness tD_AllocateDetailBusiness,
-            IIT_LocalMaterialBusiness iT_LocalMaterialBusiness, IIT_LocalDetailBusiness iT_LocalDetailBusiness)
+            IIT_LocalMaterialBusiness iT_LocalMaterialBusiness, IIT_LocalDetailBusiness iT_LocalDetailBusiness,
+            IServiceProvider svcProvider)
         {
             _tD_AllocateBus = tD_AllocateBus;
             _iT_LocalMaterialBusiness = iT_LocalMaterialBusiness;
             _iT_LocalDetailBusiness = iT_LocalDetailBusiness;
             _tD_AllocateDetailBusiness = tD_AllocateDetailBusiness;
             _Op = @op;
+            _ServiceProvider = svcProvider;
         }
 
         ITD_AllocateBusiness _tD_AllocateBus { get; }
@@ -29,6 +34,7 @@ namespace Coldairarrow.Api.Controllers.TD
         IIT_LocalDetailBusiness _iT_LocalDetailBusiness { get; }
         ITD_AllocateDetailBusiness _tD_AllocateDetailBusiness { get; }
         IOperator _Op { get; }
+        IServiceProvider _ServiceProvider { get; }
 
         #endregion
 
@@ -53,6 +59,12 @@ namespace Coldairarrow.Api.Controllers.TD
         [HttpPost]
         public async Task SaveData(TD_Allocate data)
         {
+            if (data.Code.IsNullOrEmpty())
+            {
+                var codeSvc = _ServiceProvider.GetRequiredService<IPB_BarCodeTypeBusiness>();
+                data.Code = await codeSvc.Generate("TD_Allocate");
+            }
+
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
