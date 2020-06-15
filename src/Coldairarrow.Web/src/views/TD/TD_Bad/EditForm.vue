@@ -75,6 +75,7 @@ export default {
     init() {
       this.visible = true
       this.entity = { Id: '', Status: 0 }
+      this.listDetail = []
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })
