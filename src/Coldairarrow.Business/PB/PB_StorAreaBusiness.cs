@@ -20,7 +20,8 @@ namespace Coldairarrow.Business.PB
 
         #region 外部接口
 
-        public async Task<PageResult<PB_StorArea>> GetDataListAsync(PageInput<ConditionDTO> input)
+       // public async Task<PageResult<PB_StorArea>> GetDataListAsync(PageInput<ConditionDTO> input)
+        public async Task<PageResult<PB_StorArea>> GetDataListAsync(PB_StorAreaPageInput input)
         {
             var q = GetIQueryable();
             var where = LinqHelper.True<PB_StorArea>();
@@ -31,6 +32,14 @@ namespace Coldairarrow.Business.PB
             if (!search.Keyword.IsNullOrEmpty())
             {
                 where = where.And(w=>w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
+            }
+            if (!search.StorageId.IsNullOrEmpty())
+            {
+                where = where.And(p => p.StorId == search.StorageId);
+            }
+            if (!search.AreaType.IsNullOrEmpty())
+            {
+                where = where.And(p => p.Type == search.AreaType);
             }
             //if (!search.StorageId.IsNullOrWhiteSpace()) where = where.And(p => p.StorId == search.StorageId);
             //if (!search.AreaType.IsNullOrWhiteSpace()) where = where.And(p => p.Type == search.AreaType);
