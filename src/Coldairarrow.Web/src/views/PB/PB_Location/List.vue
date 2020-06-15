@@ -84,10 +84,9 @@
 
       <span slot="action" slot-scope="text, record">
         <template>
+          <a @click="handleEdit(record.Id)">编辑</a>
           <a-divider type="vertical" />
-          <a @click="handleEdit(record.Id)">编辑<br></a>
-          <a-divider type="vertical" />
-          <a @click="handleDelete([record.Id])">删除<br></a>
+          <a @click="handleDelete([record.Id])">删除</a>
         </template>
       </span>
     </a-table>
@@ -110,7 +109,7 @@ const filterYesOrNo = (value, row, index) => {
 }
 
 const columns = [
-  { title: '货位编号', dataIndex: 'Code', width: '10%' },
+  { title: '货位编号', dataIndex: 'Code', width: '15%' },
   { title: '货位名称', dataIndex: 'Name', width: '10%' },
   { title: '仓库', dataIndex: 'PB_Storage.Name', width: '10%' },
   { title: '货区', dataIndex: 'PB_StorArea.Name', width: '10%' },
