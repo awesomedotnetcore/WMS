@@ -21,5 +21,11 @@ namespace Coldairarrow.Api.Controllers.PB
         {
             return await _pB_SupplierBus.QueryAllDataAsync();
         }
+
+        [HttpPost]
+        public async Task<List<PB_Supplier>> GetQueryData(SelectQueryDTO search)
+        {
+            return await _pB_SupplierBus.GetQueryData(search);
+        }
     }
 }
