@@ -136,6 +136,11 @@ export default {
       this.sorter = { ...sorter }
       this.getDataList()
     },
+    init() {
+      this.data = []
+      this.state = null
+      this.allocateId = null
+    },
     getDataList() {
       var thisObj = this
       this.selectedRowKeys = []
@@ -193,6 +198,7 @@ export default {
       })
     },
     openDrawer(moveId, state) {
+      this.init()
       this.moveId = moveId
       this.state = state
       this.visible = true

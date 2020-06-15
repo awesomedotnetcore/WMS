@@ -1,8 +1,11 @@
 ﻿using Coldairarrow.Business.IT;
+using Coldairarrow.Business.PB;
 using Coldairarrow.Business.TD;
 using Coldairarrow.Entity.TD;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,13 +18,15 @@ namespace Coldairarrow.Api.Controllers.TD
         #region DI
 
         public TD_MoveController(ITD_MoveBusiness tD_MoveBus,IOperator @op, ITD_MoveDetailBusiness tD_MoveDetailBus, 
-            IIT_LocalMaterialBusiness  iT_LocalMaterialBusiness, IIT_LocalDetailBusiness iT_LocalDetailBusiness)
+            IIT_LocalMaterialBusiness  iT_LocalMaterialBusiness, IIT_LocalDetailBusiness iT_LocalDetailBusiness,
+            IServiceProvider svcProvider)
         {
             _tD_MoveBus = tD_MoveBus;
             _Op = @op;
             _tD_MoveDetailBus = tD_MoveDetailBus;
             _iT_LocalMaterialBusiness = iT_LocalMaterialBusiness;
             _iT_LocalDetailBusiness = iT_LocalDetailBusiness;
+            _ServiceProvider = svcProvider;
         }
 
         ITD_MoveBusiness _tD_MoveBus { get; }
@@ -29,6 +34,7 @@ namespace Coldairarrow.Api.Controllers.TD
         ITD_MoveDetailBusiness _tD_MoveDetailBus { get; }
         IIT_LocalMaterialBusiness _iT_LocalMaterialBusiness { get; }
         IIT_LocalDetailBusiness _iT_LocalDetailBusiness { get; }
+        IServiceProvider _ServiceProvider { get; }
 
         #endregion
 
@@ -53,6 +59,12 @@ namespace Coldairarrow.Api.Controllers.TD
         [HttpPost]
         public async Task SaveData(TD_Move data)
         {
+            if (data.Code.IsNullOrEmpty())
+            {
+                var codeSvc = _ServiceProvider.GetRequiredService<IPB_BarCodeTypeBusiness>();
+                data.Code = await codeSvc.Generate("TD_Move");
+            }
+
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);

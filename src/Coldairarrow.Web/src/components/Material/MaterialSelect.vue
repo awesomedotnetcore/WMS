@@ -2,20 +2,8 @@
   <div>
     <a-row>
       <a-col :span="20">
-        <a-select
-          placeholder="选择物料"
-          v-model="curValue"
-          @select="onSelect"
-          @search="handleSearch"
-          :allowClear="true"
-          :showSearch="true"
-          :filterOption="false"
-        >
-          <a-select-option
-            v-for="item in dataSource"
-            :key="item.Id"
-            :value="item.Id"
-          >{{ item.Name }} ( {{ item.Code }} )</a-select-option>
+        <a-select placeholder="选择物料" v-model="curValue" @select="onSelect" @search="handleSearch" :allowClear="true" :showSearch="true" :filterOption="false">
+          <a-select-option v-for="item in dataSource" :key="item.Id" :value="item.Id">{{ item.Name }} ( {{ item.Code }} )</a-select-option>
         </a-select>
       </a-col>
       <a-col :span="2">
@@ -38,7 +26,6 @@ export default {
   },
   data() {
     return {
-      dropdownVisible: false,
       curValue: '',
       keyword: '',
       timeout: null,
