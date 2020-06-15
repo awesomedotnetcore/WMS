@@ -58,7 +58,7 @@ export default {
     },
     openForm(id, title) {
       this.init()
-
+      
       if (id) {
         this.loading = true
         this.$http.post('/PB/PB_Rack/GetTheData', { id: id }).then(resJson => {

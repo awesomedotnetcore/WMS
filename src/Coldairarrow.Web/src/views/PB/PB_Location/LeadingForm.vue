@@ -1,6 +1,6 @@
 ﻿<template>
   <a-modal
-    title='导入货位数据'
+    :title="title"
     width="40%"
     :visible="visible"
     :confirmLoading="loading"
@@ -58,6 +58,7 @@ export default {
     },
     openForm(id, title) {
       this.init()
+      this.title = title
     },
     handleChange(info) {
       if (info.file.status !== 'uploading') {

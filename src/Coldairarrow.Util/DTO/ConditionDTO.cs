@@ -8,9 +8,9 @@
         public string Condition { get; set; }
         public string Keyword { get; set; }
 
-        public string StorageId { set; get; }
+        //public string StorageId { set; get; }
 
-        public string AreaType { set; get; }
+        //public string AreaType { set; get; }
         
     }
 }

@@ -32,8 +32,8 @@ namespace Coldairarrow.Business.PB
             {
                 where = where.And(w=>w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
             }
-            if (!search.StorageId.IsNullOrWhiteSpace()) where = where.And(p => p.StorId == search.StorageId);
-            if (!search.AreaType.IsNullOrWhiteSpace()) where = where.And(p => p.Type == search.AreaType);
+            //if (!search.StorageId.IsNullOrWhiteSpace()) where = where.And(p => p.StorId == search.StorageId);
+            //if (!search.AreaType.IsNullOrWhiteSpace()) where = where.And(p => p.Type == search.AreaType);
 
             return await q.Where(where).GetPageResultAsync(input);
         }

@@ -82,7 +82,7 @@ export default {
   },
   methods: {
     init() {
-      this.visible = true
+      this.visible = true      
       this.entity = {}   
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
@@ -90,6 +90,7 @@ export default {
     },
     openForm(id, title) {
       this.init()
+      this.title = title
       if (id) {
         this.loading = true
         this.$http.post('/PB/PB_Storage/GetTheData', { id: id }).then(resJson => {

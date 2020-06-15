@@ -58,7 +58,7 @@ export default {
     },
     openForm(id, title) {
       this.init()
-
+      this.title = title
       if (id) {
         this.loading = true
         this.$http.post('/PB/PB_Laneway/GetTheData', { id: id }).then(resJson => {

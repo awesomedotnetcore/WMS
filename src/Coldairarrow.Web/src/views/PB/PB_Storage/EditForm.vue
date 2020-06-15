@@ -89,7 +89,7 @@ export default {
     },
     openForm(id, title) {
       this.init()
-
+      this.title = title
       this.entity.IsTray= false
       this.entity.IsZone= false
       this.entity.disable= false

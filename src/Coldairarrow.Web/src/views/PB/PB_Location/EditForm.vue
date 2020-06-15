@@ -1,7 +1,7 @@
 ﻿<template>
   <a-modal
     :title="title"
-    width="40%"
+    width="55%"
     :visible="visible"
     :confirmLoading="loading"
     @ok="handleSubmit"
@@ -9,64 +9,80 @@
   >
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="货位编号" prop="Code">
-          <a-input v-model="entity.Code" :disabled="$para('GenerateLocationCode')=='1'" placeholder="系统自动生成" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="货位名称" prop="Name">
-          <a-input v-model="entity.Name" autocomplete="off" />
-        </a-form-model-item>        
-        <a-form-model-item label="仓库" prop="StorId">
-          <storage-select v-model="entity.StorId"></storage-select>
-        </a-form-model-item>
-
-        <a-form-model-item  label="货区" prop="AreaId">
-           <area-select :storId="entity.StorId" v-model="entity.AreaId" @select="handleAreaSelect"></area-select>
-          <!-- <a-select placeholder="请选择" v-model="entity.AreaId">
-            <a-select-option v-for="item in this.StorAreaList" :key="item.Id">{{item.Name}}</a-select-option>
-          </a-select> -->
-        </a-form-model-item>
-
-        <a-form-model-item label="巷道" prop="LanewayId">
-          <laneway-select :storId="entity.StorId" v-model="entity.LanewayId" @select="handleLanewaySelect"></laneway-select>
-          <!-- <a-select placeholder="请选择" :storId="entity.StorId" v-model="entity.LanewayId">
-            <a-select-option v-for="item in this.LanewayList" :key="item.Id">{{item.Name}}</a-select-option>
-          </a-select> -->
-        </a-form-model-item>
-        <a-form-model-item label="货架" prop="RackId">
-          <rack-select :storId="entity.StorId" v-model="entity.RackId" @select="handleRackSelect"></rack-select>
-          <!-- <a-select placeholder="请选择" v-model="entity.RackId">
-            <a-select-option v-for="item in this.RackList" :key="item.Id">{{item.Name}}</a-select-option>
-          </a-select> -->
-        </a-form-model-item>
-        <a-form-model-item label="剩余容量" prop="OverVol">
-          <a-input v-model="entity.OverVol" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="是否禁用" prop="IsForbid">
-          <a-radio-group v-model="entity.IsForbid">
-            <a-radio-button :value="true">
-              启用
-            </a-radio-button>
-            <a-radio-button :value="false">
-              停用
-            </a-radio-button>
-          </a-radio-group>
-        </a-form-model-item>
-        <a-form-model-item label="是否默认" prop="IsDefault">
-          <a-radio-group v-model="entity.IsDefault">
-            <a-radio-button :value="true">
-              是
-            </a-radio-button>
-            <a-radio-button :value="false">
-              否
-            </a-radio-button>
-          </a-radio-group>
-        </a-form-model-item>
-        <!-- <a-form-model-item label="故障代码" prop="ErrorCode">
-          <a-input v-model="entity.ErrorCode" autocomplete="off" />
-        </a-form-model-item> -->
-        <a-form-model-item label="备注" prop="Remarks">
-          <a-textarea v-model="entity.Remarks" autocomplete="off" />
-        </a-form-model-item>
+        <a-row>
+          <a-col :span="12">
+            <a-form-model-item label="货位编号" prop="Code">
+              <a-input v-model="entity.Code" :disabled="$para('GenerateLocationCode')=='1'" placeholder="系统自动生成" autocomplete="off" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-model-item label="货位名称" prop="Name">
+              <a-input v-model="entity.Name" autocomplete="off" />
+            </a-form-model-item>  
+          </a-col>
+        </a-row>      
+        <a-row>
+          <a-col :span="12">
+            <a-form-model-item label="仓库" prop="StorId">
+              <storage-select v-model="entity.StorId"></storage-select>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-model-item  label="货区" prop="AreaId">
+              <area-select :storId="entity.StorId" v-model="entity.AreaId" @select="handleAreaSelect"></area-select>
+            </a-form-model-item>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="12">
+            <a-form-model-item label="巷道" prop="LanewayId">
+              <laneway-select :storId="entity.StorId" v-model="entity.LanewayId" @select="handleLanewaySelect"></laneway-select>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-model-item label="货架" prop="RackId">
+              <rack-select :storId="entity.StorId" v-model="entity.RackId" @select="handleRackSelect"></rack-select>
+            </a-form-model-item>
+          </a-col>
+        </a-row>    
+        <a-row>
+          <a-col :span="12">
+            <a-form-model-item label="是否禁用" prop="IsForbid">
+            <a-radio-group v-model="entity.IsForbid">
+              <a-radio-button :value="true">
+                启用
+              </a-radio-button>
+              <a-radio-button :value="false">
+                停用
+              </a-radio-button>
+            </a-radio-group>
+          </a-form-model-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-model-item label="剩余容量" prop="OverVol">
+            <a-input v-model="entity.OverVol" autocomplete="off" />
+            </a-form-model-item>            
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="12">
+            <a-form-model-item label="是否默认" prop="IsDefault">
+              <a-radio-group v-model="entity.IsDefault">
+                <a-radio-button :value="true">
+                  是
+                </a-radio-button>
+                <a-radio-button :value="false">
+                  否
+                </a-radio-button>
+                </a-radio-group>
+              </a-form-model-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-model-item label="备注" prop="Remarks">
+              <a-textarea v-model="entity.Remarks" autocomplete="off" />
+            </a-form-model-item>
+          </a-col>
+        </a-row>    
       </a-form-model>
     </a-spin>
   </a-modal>
@@ -125,7 +141,7 @@ export default {
     },
     openForm(id, title) {
       this.init()
-
+      this.title = title
       this.GetStorAreaList()
       this.GetLanewayList()
       this.GetRackList()

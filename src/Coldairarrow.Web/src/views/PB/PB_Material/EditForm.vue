@@ -1,17 +1,17 @@
 ﻿<template>
-  <a-modal :title="title" width="40%" :visible="visible" :confirmLoading="loading" @ok="handleSubmit" @cancel="()=>{this.visible=false}">
+  <a-modal :title="title" width="45%" :visible="visible" :confirmLoading="loading" @ok="handleSubmit" @cancel="()=>{this.visible=false}">
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
         <a-row>
           <a-col :span="12">
-            <a-form-model-item label="物料名称" prop="Name">
+            <a-form-model-item label="名称" prop="Name">
               <a-input v-model="entity.Name" autocomplete="off">
                 <a-icon slot="prefix" type="paper-clip" />
               </a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="12">
-            <a-form-model-item label="物料简称" prop="SimpleName">
+            <a-form-model-item label="简称" prop="SimpleName">
               <a-input v-model="entity.SimpleName" autocomplete="off">
                 <a-icon slot="prefix" type="paper-clip" />
               </a-input>
@@ -20,7 +20,7 @@
         </a-row>
         <a-row>
           <a-col :span="12">
-            <a-form-model-item label="物料编码" prop="Code">
+            <a-form-model-item label="编码" prop="Code">
               <a-input v-model="entity.Code" autocomplete="off" :disabled="$para('MaterialCode')=='1'" placeholder="系统自动生成">
                 <a-icon slot="prefix" type="scan" />
               </a-input>
@@ -36,12 +36,12 @@
         </a-row>
         <a-row>
           <a-col :span="12">
-            <a-form-model-item label="物料类型" prop="MaterialTypeId">
+            <a-form-model-item label="类型" prop="MaterialTypeId">
               <materialType-select v-model="entity.MaterialTypeId"></materialType-select>
             </a-form-model-item>
           </a-col>
           <a-col :span="12">
-            <a-form-model-item label="物料规格" prop="Spec">
+            <a-form-model-item label="规格" prop="Spec">
               <a-input v-model="entity.Spec" autocomplete="off">
                 <a-icon slot="prefix" type="profile" />
               </a-input>
