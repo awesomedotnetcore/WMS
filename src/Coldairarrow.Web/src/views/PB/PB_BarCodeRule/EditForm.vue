@@ -5,14 +5,14 @@
         <a-form-model-item label="类型" prop="Type">
           <enum-select code="BarCodeRuleType" v-model="entity.Type"></enum-select>
         </a-form-model-item>
-        <a-form-model-item label="排序" prop="Sort">
-          <a-input-number v-model="entity.Sort" :style="{width:'100%'}" autocomplete="off" />
-        </a-form-model-item>
         <a-form-model-item label="规则" prop="Rule">
           <a-input v-model="entity.Rule" autocomplete="off" />
         </a-form-model-item>
+        <a-form-model-item label="排序" prop="Sort">
+          <a-input-number v-model="entity.Sort" :style="{width:'100%'}" autocomplete="off" />
+        </a-form-model-item>
         <a-form-model-item label="长度" prop="length">
-          <a-input v-model="entity.length" autocomplete="off" />
+          <a-input-number v-model="entity.length" :style="{width:'100%'}" autocomplete="off" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>

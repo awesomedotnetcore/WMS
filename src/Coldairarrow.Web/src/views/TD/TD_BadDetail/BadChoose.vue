@@ -41,30 +41,30 @@ const filterCode = (value, row, index) => {
 }
 const columns1 = [
   { title: '货位', dataIndex: 'Location.Code', width: '15%' },
-  { title: '物料', dataIndex: 'Material', customRender: filterCode, width: '15%' },
-  { title: '单位', dataIndex: 'Measure.Name', width: '10%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '15%' },
+  { title: '物料', dataIndex: 'Material', customRender: filterCode },
+  { title: '单位', dataIndex: 'Measure.Name', width: '5%' },
+  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
   { title: '条码', dataIndex: 'BarCode', width: '15%' },
-  { title: '库存', dataIndex: 'Num', width: '10%' }
+  { title: '库存', dataIndex: 'Num', width: '8%' }
 ]
 const columns2 = [
   { title: '货位', dataIndex: 'Location.Code', width: '10%' },
   { title: '托盘', dataIndex: 'Tray.Code', width: '10%' },
-  { title: '物料', dataIndex: 'Material', customRender: filterCode, width: '15%' },
-  { title: '单位', dataIndex: 'Measure.Name', width: '10%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '15%' },
+  { title: '物料', dataIndex: 'Material', customRender: filterCode },
+  { title: '单位', dataIndex: 'Measure.Name', width: '5%' },
+  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
   { title: '条码', dataIndex: 'BarCode', width: '15%' },
-  { title: '库存', dataIndex: 'Num', width: '10%' }
+  { title: '库存', dataIndex: 'Num', width: '8%' }
 ]
 const columns3 = [
   { title: '货位', dataIndex: 'Location.Code', width: '10%' },
   { title: '托盘', dataIndex: 'Tray.Code', width: '10%' },
   { title: '托盘分区', dataIndex: 'TrayZone.Code', width: '10%' },
-  { title: '物料', dataIndex: 'Material', customRender: filterCode, width: '15%' },
-  { title: '单位', dataIndex: 'Measure.Name', width: '10%' },
+  { title: '物料', dataIndex: 'Material', customRender: filterCode },
+  { title: '单位', dataIndex: 'Measure.Name', width: '5%' },
   { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
   { title: '条码', dataIndex: 'BarCode', width: '10%' },
-  { title: '库存', dataIndex: 'Num', width: '10%' }
+  { title: '库存', dataIndex: 'Num', width: '8%' }
 ]
 
 export default {
