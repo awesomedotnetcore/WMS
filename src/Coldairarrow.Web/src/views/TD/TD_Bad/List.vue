@@ -69,7 +69,7 @@ import moment from 'moment'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import EditForm from './EditForm'
-
+ 
 const filterDate = (value, row, index) => {
   if (value) {
     return moment(value).format('YYYY-MM-DD')
