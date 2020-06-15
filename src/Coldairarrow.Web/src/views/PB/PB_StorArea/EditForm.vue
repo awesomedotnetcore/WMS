@@ -60,7 +60,10 @@ export default {
       visible: false,
       loading: false,
       entity: {},
-      rules: {},
+      rules: {
+        Name: [{ required: true, message: '请输入货区名称', trigger: 'blur' }],
+        Type: [{ required: true, message: '请选择货区类型', trigger: 'change' }]
+      },
       title: ''
     }
   },

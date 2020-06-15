@@ -42,7 +42,9 @@ export default {
       visible: false,
       loading: false,
       entity: {},
-      rules: {},
+      rules: {
+        Name: [{ required: true, message: '请输入巷道名称', trigger: 'blur' }]
+      },
       title: ''
     }
   },

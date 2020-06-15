@@ -70,7 +70,6 @@ export default {
       visible: false,
       loading: false,
       entity: {},
-      // rules: {},
       rules: {
         Name: [{ required: true, message: '请输入仓库名称', trigger: 'blur' }],
         Type: [{ required: true, message: '请选择仓库类型', trigger: 'change' }]
