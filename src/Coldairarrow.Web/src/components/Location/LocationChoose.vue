@@ -3,9 +3,9 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
-          <a-col :md="4" :sm="24">
+          <a-col :md="8" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="货位编码或名称" />
+              <a-input v-model="queryParam.keyword" placeholder="编码\名称\仓库\货区\巷道\货架" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -30,16 +30,16 @@ const filterYesOrNo = (value, row, index) => {
   else return '否'
 }
 const columns = [
-  { title: '货位编号', dataIndex: 'Code', width: '15%' },
-  { title: '货位名称', dataIndex: 'Name', width: '15%' },
-  { title: '货位类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
-  { title: '仓库', dataIndex: 'PB_Storage.Name', width: '10%' },
-  { title: '货区', dataIndex: 'PB_StorArea.Name', width: '10%' },
-  { title: '巷道', dataIndex: 'PB_Laneway.Name', width: '10%' },
-  { title: '货架', dataIndex: 'PB_Rack.Name', width: '10%' },
-  { title: '剩余容量', dataIndex: 'OverVol', width: '10%' },
-  { title: '是否禁用', dataIndex: 'IsForbid', width: '5%', customRender: filterYesOrNo }, // 是否禁用
-  { title: '是否默认', dataIndex: 'IsDefault', width: '5%', customRender: filterYesOrNo }// 是否默认库位
+  { title: '货位编号', dataIndex: 'Code', width: '20%' },
+  { title: '货位名称', dataIndex: 'Name', width: '20%' },
+  // { title: '货位类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
+  { title: '仓库', dataIndex: 'PB_Storage.Name', width: '15%' },
+  { title: '货区', dataIndex: 'PB_StorArea.Name', width: '15%' },
+  { title: '巷道', dataIndex: 'PB_Laneway.Name', width: '15%' },
+  { title: '货架', dataIndex: 'PB_Rack.Name', width: '15%' },
+  // { title: '剩余容量', dataIndex: 'OverVol', width: '10%' },
+  // { title: '是否禁用', dataIndex: 'IsForbid', width: '5%', customRender: filterYesOrNo }, // 是否禁用
+  // { title: '是否默认', dataIndex: 'IsDefault', width: '5%', customRender: filterYesOrNo }// 是否默认库位
 ]
 
 export default {
