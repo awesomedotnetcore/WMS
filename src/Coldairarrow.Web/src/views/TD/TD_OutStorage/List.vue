@@ -33,7 +33,7 @@
                 <a-input v-model="queryParam.Code" placeholder="出库单号" />
               </a-form-item>
             </a-col>
-            <a-col :md="4" :sm="24">
+            <a-col :md="5" :sm="24">
               <a-form-item>
                 <a-range-picker @change="onOutStorTimeChange" />
               </a-form-item>
