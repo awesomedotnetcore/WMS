@@ -33,6 +33,11 @@ namespace Coldairarrow.Entity.TD
         public string Type { get; set; }
 
         /// <summary>
+        /// Code
+        /// </summary>
+        public string Code { set; get; }
+
+        /// <summary>
         /// 关联单号
         /// </summary>
         public String RefCode { get; set; }

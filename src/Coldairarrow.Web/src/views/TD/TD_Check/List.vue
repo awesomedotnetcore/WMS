@@ -119,6 +119,7 @@ import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import moment from 'moment'
 
 const columns = [
+  { title: '盘点编码', dataIndex: 'Code', width: '10%' },
   { title: '盘点类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
   { title: '盘点时间', dataIndex: 'CheckTime', width: '10%' },
   { title: '关联单号', dataIndex: 'RefCode', width: '10%' },
