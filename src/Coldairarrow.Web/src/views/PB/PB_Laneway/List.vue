@@ -61,19 +61,17 @@
 
 <script>
 import EditForm from './EditForm'
-// import StorageSelect from '../../../components/Storage/StorageSelect' 
 
 const columns = [
-  { title: '所属仓库', dataIndex: 'PB_Storage.Name', width: '10%' },
-  { title: '巷道编号', dataIndex: 'Code', width: '10%' },
-  { title: '巷道名称', dataIndex: 'Name', width: '10%' },
+  { title: '所属仓库', dataIndex: 'PB_Storage.Name', width: '20%' },
+  { title: '巷道编号', dataIndex: 'Code', width: '20%' },
+  { title: '巷道名称', dataIndex: 'Name', width: '20%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
-    EditForm,
-    // StorageSelect
+    EditForm
   },
   mounted() {
     this.getDataList()
