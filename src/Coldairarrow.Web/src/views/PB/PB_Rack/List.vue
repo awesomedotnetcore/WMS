@@ -58,9 +58,9 @@
 import EditForm from './EditForm'
 
 const columns = [
-  { title: '仓库ID', dataIndex: 'PB_Storage.Name', width: '10%' },
-  { title: '货架编号', dataIndex: 'Code', width: '10%' },
-  { title: '货架名称', dataIndex: 'Name', width: '10%' },  
+  { title: '仓库', dataIndex: 'PB_Storage.Name', width: '20%' },
+  { title: '货架编号', dataIndex: 'Code', width: '20%' },
+  { title: '货架名称', dataIndex: 'Name', width: '20%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
