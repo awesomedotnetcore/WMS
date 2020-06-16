@@ -248,29 +248,7 @@ namespace Coldairarrow.Api.Controllers.PB
                             item.RackId = dicRack[item.RackId];
                         }
 
-                        //if (dicLaneway.ContainsKey(item.LanewayId))
-                        //    item.LanewayId = dicLaneway[item.LanewayId];
-                        //else
-                        //    throw new Exception("巷道编号不存在！");
-                        //if (dicRack.ContainsKey(item.RackId))
-                        //    item.RackId = dicRack[item.RackId];
-
-                        //else
-                        //    throw new Exception("货架编号不存在！");
-
                     }
-
-                    //var listStroCodes = Data.Select(s => s.Code).ToList();
-                    //var dicStor = _pB_LocationBus.GetQueryable<PB_Storage>().Where(w => listStroCodes.Contains(w.Code)).ToDictionary(k => k.Code, v => v.Id);
-
-                    //foreach (var item in Data)
-                    //{
-                    //    if (dicStor.ContainsKey(item.Code))
-                    //        item.StorId = dicStor[item.Code];
-                    //    else
-                    //        throw new Exception("仓库编号不存在！");  
-                    //}
-
                     if (Data.Count > 0) 
                     {
                         await _pB_LocationBus.AddDataExlAsync(Data);

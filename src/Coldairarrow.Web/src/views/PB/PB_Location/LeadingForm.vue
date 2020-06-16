@@ -24,7 +24,6 @@
         <div>
           <a-button ><a-icon type="download" /> 
           <a :href="$rootUrl+'/PB/PB_Location/ExportToExcel'">下载货位信息模板表</a>
-          <!-- <a href="http://localhost:5000/PB/PB_Location/ExportToExcel">下载货位信息模板表</a> -->
           </a-button>
         </div>
     </a-row>
@@ -79,9 +78,17 @@ export default {
       }
       if (info.file.status === 'done') {
         this.$message.success(`${info.file.name}  文件上传成功！`);
+        this.visible = false
       } else if (info.file.status === 'error') {
         this.$message.error(`${info.file.name} 文件上传失败！`);
       }
+
+      if (resJson.Success) {
+            this.$message.success('操作成功!')
+            this.visible = false
+          } else {
+            this.$message.error(resJson.Msg)
+          }
     },
   }
 }
