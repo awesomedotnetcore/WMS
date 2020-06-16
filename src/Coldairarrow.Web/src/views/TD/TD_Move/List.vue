@@ -27,7 +27,7 @@
           </a-col>
           <a-col :md="6" :sm="24">
             <div class="table-operator">
-              <a-button type="primary" @click="getDataList">查询</a-button>
+              <a-button type="primary" @click="() => {this.pagination.current = 1; this.getDataList()}">查询</a-button>
               <a-button @click="() => (queryParam = {})">重置</a-button>
               <a-button type="primary" icon="check" @click="approveData()">审批</a-button>
               <a-button type="primary" icon="close" @click="rejectData()">驳回</a-button>
