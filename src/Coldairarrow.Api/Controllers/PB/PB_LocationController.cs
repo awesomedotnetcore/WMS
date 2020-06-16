@@ -18,6 +18,7 @@ using System.Text;
 using Microsoft.AspNetCore.Hosting;
 using System.Globalization;
 using System.Linq;
+using System.ComponentModel;
 //using NPOI.SS.Formula.Functions;
 
 namespace Coldairarrow.Api.Controllers.PB
@@ -100,7 +101,7 @@ namespace Coldairarrow.Api.Controllers.PB
         }
 
         /// <summary>
-        /// 数据导入
+        /// 货位信息数据导入
         /// </summary>
         /// <returns></returns>
         [HttpPost]
@@ -230,15 +231,33 @@ namespace Coldairarrow.Api.Controllers.PB
                         else
                             throw new Exception("货区编号不存在！");
 
-                        if (dicLaneway.ContainsKey(item.LanewayId))
+                        if (item.LanewayId == null)
+                        {
+                            item.LanewayId = null;
+                        }else if (dicLaneway.ContainsKey(item.LanewayId))
+                        {
                             item.LanewayId = dicLaneway[item.LanewayId];
-                        else
-                            throw new Exception("巷道编号不存在！");
+                        }            
 
-                        if (dicRack.ContainsKey(item.RackId))
+                        if (item.RackId == null)
+                        {
+                            item.RackId = null;
+                        }
+                        else if (dicRack.ContainsKey(item.RackId))
+                        {
                             item.RackId = dicRack[item.RackId];
-                        else
-                            throw new Exception("货架编号不存在！");
+                        }
+
+                        //if (dicLaneway.ContainsKey(item.LanewayId))
+                        //    item.LanewayId = dicLaneway[item.LanewayId];
+                        //else
+                        //    throw new Exception("巷道编号不存在！");
+                        //if (dicRack.ContainsKey(item.RackId))
+                        //    item.RackId = dicRack[item.RackId];
+
+                        //else
+                        //    throw new Exception("货架编号不存在！");
+
                     }
 
                     //var listStroCodes = Data.Select(s => s.Code).ToList();
@@ -273,9 +292,63 @@ namespace Coldairarrow.Api.Controllers.PB
             return ReturnValue;
         }
 
+        /// <summary>
+        /// 货位信息表模板导出
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [NoCheckJWT]
+        public async Task<IActionResult> ExportToExcel()
+        {
+            //var data = await _tD_CheckDataBus.QueryDataListAsync(checkId);
 
-        
+            //创建EXCEL工作薄
+            IWorkbook workBook = new XSSFWorkbook();
+            //创建sheet文件表
+            ISheet sheet = workBook.CreateSheet("货位信息");
 
-    #endregion
-}
+            var expDir = string.Format("{0}Export\\{1}", System.AppDomain.CurrentDomain.BaseDirectory,
+                    DateTime.Now.ToString("yyyyMM"));
+
+            if (!Directory.Exists(expDir)) Directory.CreateDirectory(expDir);
+
+            string filePath = string.Format("{0}\\CD{1}.xls", expDir, DateTime.Now.ToString("yyyyMMddHHmmss"));
+
+            #region 创建Excel表头
+            //创建表头
+            IRow header = sheet.CreateRow(0);
+            ICell cell = header.CreateCell(0);
+            cell.SetCellValue("货位编号");
+
+            cell = header.CreateCell(1);
+            cell.SetCellValue("货位名称");
+
+            cell = header.CreateCell(2);
+            cell.SetCellValue("仓库编号");
+
+            cell = header.CreateCell(3);
+            cell.SetCellValue("货区编号");
+
+            cell = header.CreateCell(4);
+            cell.SetCellValue("巷道编号");
+
+            cell = header.CreateCell(5);
+            cell.SetCellValue("剩余容量");
+
+            cell = header.CreateCell(6);
+            cell.SetCellValue("是否默认(true/false)");
+            #endregion            
+            //工作流写入，通过流的方式进行创建生成文件
+            using (MemoryStream stream = new MemoryStream())
+            {
+                workBook.Write(stream);
+                byte[] buffer = stream.ToArray();
+
+                return File(buffer, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", string.Format("货位信息表_{0}.xls", DateTime.Now.ToString("yyyyMMddHHmmss")));
+            }
+            
+        }
+        #endregion
+    }
+
 }

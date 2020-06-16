@@ -8,19 +8,26 @@
     @cancel="()=>{this.visible=false}"
   >    
   <template>
-      <a-upload
-        name="file"
-        :multiple="true"
-        :action="$rootUrl+'/PB/PB_Location/Import'"
-        :headers="headers"
-        @change="handleChange"
-      >
-        <a-button> <a-icon type="upload" /> 上传货位 </a-button>
-      </a-upload>
+    <a-row :gutter="10">
+      <a-col :md="12" :sm="24">
+        <a-upload          
+          name="file"
+          :multiple="true"
+          :action="$rootUrl+'/PB/PB_Location/Import'"
+          :headers="headers"
+          @change="handleChange"
+        >
+        <a-button type="primary"> <a-icon type="upload" /> 上传货位数据 </a-button>
+        </a-upload>
+        </a-col>  
 
-      <div>
-          <a href="">指定路径导出</a>
-      </div>
+        <div>
+          <a-button ><a-icon type="download" /> 
+          <a :href="$rootUrl+'/PB/PB_Location/ExportToExcel'">下载货位信息模板表</a>
+          <!-- <a href="http://localhost:5000/PB/PB_Location/ExportToExcel">下载货位信息模板表</a> -->
+          </a-button>
+        </div>
+    </a-row>
     </template>
 
     
