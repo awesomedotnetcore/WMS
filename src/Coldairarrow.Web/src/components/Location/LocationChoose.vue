@@ -3,12 +3,22 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
-          <a-col :md="8" :sm="24">
+          <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="编码\名称\仓库\货区\巷道\货架" />
+              <a-input v-model="queryParam.Keyword" placeholder="编码\名称\巷道\货架" />
             </a-form-item>
           </a-col>
-          <a-col :md="6" :sm="24">
+          <a-col :md="4" :sm="24">
+            <a-form-item>
+              <a-input v-model="queryParam.StorName" placeholder="仓库编码/名称" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="4" :sm="24">
+            <a-form-item>
+              <a-input v-model="queryParam.AreaName" placeholder="货区编码/名称" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="4" :sm="24">
             <a-button type="primary" @click="getDataList">查询</a-button>
             <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
           </a-col>

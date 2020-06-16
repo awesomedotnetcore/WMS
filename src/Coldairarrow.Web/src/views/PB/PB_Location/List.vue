@@ -2,20 +2,14 @@
   <a-card :bordered="false">
     <div class="table-operator">
       <a-row :gutter="10">
-      <a-col :md="20" :sm="24">
-      <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>      
-      <a-button
-        type="primary"
-        icon="minus"
-        @click="handleDelete(selectedRowKeys)"
-        :disabled="!hasSelected()"
-        :loading="loading"
-      >删除</a-button>
-      <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
-      </a-col>        
-      <a-button type="primary"  @click="hanldleLeading()">导入货位</a-button>        
+        <a-col :md="20" :sm="24">
+          <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
+          <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
+          <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
+        </a-col>
+        <a-button type="primary" @click="hanldleLeading()">导入货位</a-button>
       </a-row>
-    <!-- <template>
+      <!-- <template>
       <a-upload
         name="file"
         :multiple="true"
@@ -29,18 +23,25 @@
 
     </div>
 
-      
-
-
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
-        <a-row :gutter="10">
-          <a-col :md="6" :sm="24">
+        <a-row>
+          <a-col :size="4">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="编码/名称/仓库/货区/巷道/货架" />
+              <a-input v-model="queryParam.Keyword" placeholder="货位/巷道/货架" />
             </a-form-item>
-          </a-col>         
-          <a-col :md="7" :sm="24">
+          </a-col>
+          <a-col :size="4">
+            <a-form-item>
+              <a-input v-model="queryParam.StorName" placeholder="仓库编码/名称" />
+            </a-form-item>
+          </a-col>
+          <a-col :size="4">
+            <a-form-item>
+              <a-input v-model="queryParam.AreaName" placeholder="货区编码/名称" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="4" :sm="24">
             <a-button type="primary" @click="getDataList">查询</a-button>
             <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
           </a-col>
@@ -48,25 +49,14 @@
       </a-form>
     </div>
 
-    <a-table
-      ref="table"
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      :bordered="true"
-      size="small"
-    >
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
       <span slot="IsForbid" slot-scope="text, record">
         <template>
           <a-tag v-if="record.IsForbid===false" color="red">
-          停用
+            停用
           </a-tag>
           <a-tag v-else color="green">
-          启用
+            启用
           </a-tag>
         </template>
       </span>
@@ -74,10 +64,10 @@
       <span slot="IsDefault" slot-scope="text, record">
         <template>
           <a-tag v-if="record.IsDefault===false" color="red">
-          否
+            否
           </a-tag>
           <a-tag v-else color="green">
-          是
+            是
           </a-tag>
         </template>
       </span>
@@ -116,8 +106,8 @@ const columns = [
   { title: '巷道', dataIndex: 'PB_Laneway.Name', width: '10%' },
   { title: '货架', dataIndex: 'PB_Rack.Name', width: '10%' },
   { title: '余量', dataIndex: 'OverVol', width: '5%' },
-  { title: '状态', dataIndex: 'IsForbid', width: '5%', scopedSlots: { customRender: 'IsForbid' }  },//是否禁用
-  { title: '默认', dataIndex: 'IsDefault', width: '5%', scopedSlots: { customRender: 'IsDefault' }  },//是否默认库位
+  { title: '状态', dataIndex: 'IsForbid', width: '5%', scopedSlots: { customRender: 'IsForbid' } },//是否禁用
+  { title: '默认', dataIndex: 'IsDefault', width: '5%', scopedSlots: { customRender: 'IsDefault' } },//是否默认库位
   // { title: '故障码', dataIndex: 'ErrorCode', width: '6' },
   // { title: '备注', dataIndex: 'Remarks', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
@@ -126,9 +116,9 @@ const columns = [
 export default {
   components: {
     EditForm,
-    EnumName, 
+    EnumName,
     UploadFile,
-   // Token,
+    // Token,
     LeadingForm
   },
   mounted() {
@@ -148,11 +138,11 @@ export default {
       columns,
       queryParam: {},
       selectedRowKeys: [],
-      entity: { },//File: ''
+      entity: {},//File: ''
       // headers: {
       //   authorization: 'Bearer '+Token.getToken(),
       // },
-       fileList: [],
+      fileList: [],
       // uploading: false,
     }
   },
@@ -220,12 +210,12 @@ export default {
         }
       })
     },
-    handleEnable(Location,prop, enable) {
+    handleEnable(Location, prop, enable) {
       var thisObj = this
-      var entity = { ...Location}
-      entity[prop] = enable   
+      var entity = { ...Location }
+      entity[prop] = enable
       this.$confirm({
-        title: '确认' + (enable ? '启用' : '停用' ) + '吗?',
+        title: '确认' + (enable ? '启用' : '停用') + '吗?',
         onOk() {
           return new Promise((resolve, reject) => {
             thisObj.$http.post('/PB/PB_Location/SaveData', entity).then(resJson => {
