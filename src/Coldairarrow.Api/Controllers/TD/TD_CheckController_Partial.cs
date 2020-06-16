@@ -50,7 +50,10 @@ namespace Coldairarrow.Api.Controllers.TD
                 data.EquId = "1";
                 data.IsComplete = false;
                 data.Status = 0;
-
+                if (string.IsNullOrWhiteSpace(data.Code))
+                {
+                    data.Code = await _provider.GetRequiredService<IPB_BarCodeTypeBusiness>().Generate("TD_Check");
+                }
                 await _tD_CheckBus.AddDataAsync(data);
             }
             else
@@ -261,44 +264,51 @@ namespace Coldairarrow.Api.Controllers.TD
 
         private async Task BuildDataByAreaAsync(List<string> Ids, TD_Check data)
         {
-            var areaList = new List<TD_CheckArea>();
-            var materList = new List<PB_AreaMaterial>();
-            var localList = new List<IT_LocalMaterial>();
-            foreach (var id in Ids)
+            try
             {
-                TD_CheckArea area = new TD_CheckArea();
-                area.CherkId = data.Id;
-                area.StoarAreaId = id;
+                var areaList = new List<TD_CheckArea>();
+                var materList = new List<PB_AreaMaterial>();
+                var localList = new List<IT_LocalMaterial>();
+                foreach (var id in Ids)
+                {
+                    TD_CheckArea area = new TD_CheckArea();
+                    area.CherkId = data.Id;
+                    area.StoarAreaId = id;
 
-                areaList.Add(area);
+                    areaList.Add(area);
 
-                materList.AddRange(await _provider.GetRequiredService<IPB_AreaMaterialBusiness>().GetDataListAsync(id));
+                    materList.AddRange(await _provider.GetRequiredService<IPB_AreaMaterialBusiness>().GetDataListAsync(id));
 
-                localList.AddRange(await _provider.GetRequiredService<IIT_LocalMaterialBusiness>().LoadCheckDataByAreaIdAsync(id));
+                    localList.AddRange(await _provider.GetRequiredService<IIT_LocalMaterialBusiness>().LoadCheckDataByAreaIdAsync(id));
+                }
+                await _provider.GetRequiredService<ITD_CheckAreaBusiness>().PushAsync(areaList);
+
+                var idList = (from u in materList select u.MaterialId).Distinct().ToList();
+                var materialList = (from u in idList select new TD_CheckMaterial() { CheckId = data.Id, MaterialId = u }).ToList();
+                await _provider.GetRequiredService<ITD_CheckMaterialBusiness>().PushAsync(materialList);
+
+                var checkdata = (from u in localList
+                                 select new TD_CheckData()
+                                 {
+                                     BatchNo = u.BatchNo,
+                                     CheckId = data.Id,
+                                     CreateTime = DateTime.Now,
+                                     CreatorId = _provider.GetRequiredService<IOperator>().UserId,
+                                     Id = IdHelper.GetId(),
+                                     localId = u.LocalId,
+                                     TrayId = u.TrayId,
+                                     ZoneId = u.ZoneId,
+                                     LocalNum = u.Num,
+                                     MaterialId = u.MaterialId,
+                                     StorId = u.StorId
+                                 }).ToList();
+
+                await _provider.GetRequiredService<ITD_CheckDataBusiness>().PushDataAsync(checkdata);
             }
-            await _provider.GetRequiredService<ITD_CheckAreaBusiness>().PushAsync(areaList);
-
-            var idList = (from u in materList select u.MaterialId).Distinct().ToList();
-            var materialList = (from u in idList select new TD_CheckMaterial() { CheckId = data.Id, MaterialId = u }).ToList();
-            await _provider.GetRequiredService<ITD_CheckMaterialBusiness>().PushAsync(materialList);
-
-            var checkdata = (from u in localList
-                             select new TD_CheckData()
-                             {
-                                 BatchNo = u.BatchNo,
-                                 CheckId = data.Id,
-                                 CreateTime = DateTime.Now,
-                                 CreatorId = _provider.GetRequiredService<IOperator>().UserId,
-                                 Id = IdHelper.GetId(),
-                                 localId = u.LocalId,
-                                 TrayId = u.TrayId,
-                                 ZoneId = u.ZoneId,
-                                 LocalNum = u.Num,
-                                 MaterialId = u.MaterialId,
-                                 StorId = u.StorId
-                             }).ToList();
-
-            await _provider.GetRequiredService<ITD_CheckDataBusiness>().PushDataAsync(checkdata);
+            catch(Exception ex)
+            {
+                throw;
+            }
         }
     }
 }
