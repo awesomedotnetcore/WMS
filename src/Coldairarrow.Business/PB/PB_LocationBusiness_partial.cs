@@ -32,6 +32,20 @@ namespace Coldairarrow.Business.PB
 
             return await q.Where(p => p.StorId == storId && p.AreaId == storAreaId && p.IsDefault == true).FirstOrDefaultAsync();
         }
-        
+        public async Task<PageResult<PB_Location>> GetDataListAsync(PageInput<PB_LocationQM> input)
+        {
+            var q = GetIQueryable();
+            var where = LinqHelper.True<PB_Location>();
+            var search = input.Search;
+            q = q.Include(i => i.PB_Storage).Include(i => i.PB_Laneway).Include(i => i.PB_StorArea).Include(i => i.PB_Rack);
+
+            if (!search.Keyword.IsNullOrEmpty())
+                where = where.And(w => w.Code.Contains(search.Keyword) || w.Name.Contains(search.Keyword) || w.PB_Rack.Name.Contains(search.Keyword) || w.PB_Rack.Code.Contains(search.Keyword) || w.PB_Laneway.Name.Contains(search.Keyword) || w.PB_Laneway.Code.Contains(search.Keyword));
+            if (!search.StorName.IsNullOrEmpty())
+                where = where.And(w => w.PB_Storage.Name.Contains(search.StorName) || w.PB_Storage.Code.Contains(search.StorName));
+            if (!search.AreaName.IsNullOrEmpty())
+                where = where.And(w => w.PB_StorArea.Name.Contains(search.AreaName) || w.PB_StorArea.Code.Contains(search.AreaName));
+            return await q.Where(where).GetPageResultAsync(input);
+        }
     }
 }

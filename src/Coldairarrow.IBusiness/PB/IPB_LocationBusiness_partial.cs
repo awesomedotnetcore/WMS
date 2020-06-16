@@ -12,5 +12,14 @@ namespace Coldairarrow.Business.PB
         Task<List<PB_Location>> GetQueryData(SelectQueryDTO search, string storId);
         Task<PB_Location> GetDefaultLocal(string storId, string storAreaId);
         IQueryable<T> GetQueryable<T>() where T : class, new();
+
+        Task<PageResult<PB_Location>> GetDataListAsync(PageInput<PB_LocationQM> input);
+    }
+
+    public class PB_LocationQM
+    {
+        public string Keyword { get; set; }
+        public string StorName { get; set; }
+        public string AreaName { get; set; }
     }
 }
