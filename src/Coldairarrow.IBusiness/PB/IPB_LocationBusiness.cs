@@ -1,5 +1,6 @@
 ﻿using Coldairarrow.Entity.PB;
 using Coldairarrow.Util;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ namespace Coldairarrow.Business.PB
         Task DeleteDataAsync(List<string> ids);
         //Task ModifyEnableAsync(string Id);
         Task AddDataExlAsync(List<PB_Location> list);
-        
+       // FileResult ExportToExcelWeb<T>(List<T> data, string head, string sheetName);
+
     }
 }
