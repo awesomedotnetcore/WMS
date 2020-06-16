@@ -14,8 +14,8 @@
       :bordered="true"
       size="small"
     >
-     <template slot="OutNum" slot-scope="text, record">
-        <a-input-number :disabled="disabled" :value="text" :max="record.LocalNum" :min="1" @change="e=>handleValChange(e,'OutNum',record)"></a-input-number>
+      <template slot="OutNum" slot-scope="text, record">
+        <a-input-number :disabled="disabled"  size="small" :value="text" :max="record.LocalNum" :min="1" @change="e=>handleValChange(e,'OutNum',record)"></a-input-number>
       </template>
 
       <span slot="action" slot-scope="text, record">       
@@ -33,7 +33,7 @@
 import LocalmaterialList from './LocalMaterialList'
 
 const columns1 = [
-  { title: '物料', dataIndex: 'Material.Name', width: '10%' },
+  { title: '物料', dataIndex: 'Material.Name'},
   { title: '编码', dataIndex: 'Material.Code', width: '10%' },
   { title: '货位', dataIndex: 'Location.Name', width: '10%' },
   { title: '条码', dataIndex: 'BarCode', width: '10%' },
@@ -43,7 +43,7 @@ const columns1 = [
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 const columns2 = [
-  { title: '物料', dataIndex: 'Material.Name', width: '10%' },
+  { title: '物料', dataIndex: 'Material.Name' },
   { title: '编码', dataIndex: 'Material.Code', width: '10%' },
   { title: '货位', dataIndex: 'Location.Name', width: '10%' },
   { title: '托盘', dataIndex: 'Tray.Name', width: '10%' },
@@ -54,7 +54,7 @@ const columns2 = [
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 const columns3 = [
-  { title: '物料', dataIndex: 'Material.Name', width: '10%' },
+  { title: '物料', dataIndex: 'Material.Name' },
   { title: '编码', dataIndex: 'Material.Code', width: '10%' },
   { title: '货位', dataIndex: 'Location.Name', width: '10%' },
   { title: '托盘', dataIndex: 'Tray.Name', width: '10%' },

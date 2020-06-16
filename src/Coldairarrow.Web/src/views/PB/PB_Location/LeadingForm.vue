@@ -17,7 +17,13 @@
       >
         <a-button> <a-icon type="upload" /> 上传货位 </a-button>
       </a-upload>
+
+      <div>
+          <a href="">指定路径导出</a>
+      </div>
     </template>
+
+    
   </a-modal>
   
 </template>

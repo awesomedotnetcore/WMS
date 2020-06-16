@@ -1,6 +1,7 @@
 ﻿using Coldairarrow.Entity.PB;
 using Coldairarrow.Util;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Coldairarrow.Business.PB
@@ -15,5 +16,6 @@ namespace Coldairarrow.Business.PB
         Task DeleteDataAsync(List<string> ids);
         //Task ModifyEnableAsync(string Id);
         Task AddDataExlAsync(List<PB_Location> list);
+        
     }
 }
