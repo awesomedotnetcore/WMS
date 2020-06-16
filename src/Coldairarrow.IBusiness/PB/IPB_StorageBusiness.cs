@@ -2,6 +2,7 @@
 using Coldairarrow.Util;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Coldairarrow.Business.PB
@@ -21,6 +22,9 @@ namespace Coldairarrow.Business.PB
         Task ModifyIsTrayAsync(string id);
         Task ModifyIsZoneAsync(string id);
         Task ModifyDisableAsync(string id);
+
+       // IQueryable<T> GetQueryable<T>() where T : class, new();
+        //Task<List<PB_Storage>> QueryStorIDAsync(string code);
     }
     public class PB_StorageQM
     {

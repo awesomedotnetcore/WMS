@@ -12,6 +12,11 @@
         <a-form-model-item label="盘点时间" prop="CheckTime">
           <a-date-picker v-model="entity.CheckTime" show-time autocomplete="off"/>
         </a-form-model-item>
+        <a-form-model-item label="盘点编码" prop="Code">
+          <a-input v-model="entity.Code" autocomplete="off" :disabled="$para('CheckCode')=='1'" placeholder="系统自动生成">
+                <a-icon slot="prefix" type="scan" />
+          </a-input>
+        </a-form-model-item>
         <a-form-model-item label="关联单号" prop="RefCode">
           <a-input v-model="entity.RefCode" autocomplete="off" />
         </a-form-model-item>

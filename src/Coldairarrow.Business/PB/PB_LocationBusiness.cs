@@ -85,6 +85,11 @@ namespace Coldairarrow.Business.PB
             await InsertAsync(list);   //  BulkInsert       
 
         }
+
+        public IQueryable<T> GetQueryable<T>() where T : class, new()
+        {
+            return Service.GetIQueryable<T>();
+        }
         #endregion
 
         #region 私有成员

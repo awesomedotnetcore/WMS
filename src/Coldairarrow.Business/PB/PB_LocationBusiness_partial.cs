@@ -32,5 +32,6 @@ namespace Coldairarrow.Business.PB
 
             return await q.Where(p => p.StorId == storId && p.AreaId == storAreaId && p.IsDefault == true).FirstOrDefaultAsync();
         }
+        
     }
 }
