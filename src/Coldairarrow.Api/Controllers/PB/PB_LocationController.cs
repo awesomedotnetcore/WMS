@@ -106,7 +106,7 @@ namespace Coldairarrow.Api.Controllers.PB
         /// <returns></returns>
         [HttpPost]
         [NoCheckJWT]
-        public async Task<string> Import(IFormFile file)// file
+        public async Task<AjaxResult> Import(IFormFile file)// file
         {
             string ReturnValue = string.Empty;
             //定义一个bool类型的变量用来做验证
@@ -138,7 +138,7 @@ namespace Coldairarrow.Api.Controllers.PB
 
                 if (CountRow - 1 == 0)
                 {
-                    return "Excel列表数据项为空!";
+                    return Error("Excel列表数据项为空!") ; 
 
                 }
                 #region 循环验证
@@ -264,11 +264,12 @@ namespace Coldairarrow.Api.Controllers.PB
             }
             catch (Exception)
             {
-                 return "服务器异常";
+                 return Error("导入数据异常！");
             }
 
-            return ReturnValue;
-        }
+            return Success(ReturnValue);
+            
+           }
 
         /// <summary>
         /// 货位信息表模板导出
