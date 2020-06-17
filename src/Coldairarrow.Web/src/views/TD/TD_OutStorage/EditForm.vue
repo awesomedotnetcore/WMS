@@ -86,7 +86,10 @@ export default {
       visible: false,
       loading: false,
       entity: {Id: '', OutType: '', Status: 0 },
-      rules: {},
+      rules: {
+        OutTime: [{ required: true, message: '请选择出库时间', trigger: 'blur' }],
+        OutType: [{ required: true, message: '请选择出库类型', trigger: 'change' }],
+      },
       // title: '',
       CusAddrList:[],
       listDetail:[]

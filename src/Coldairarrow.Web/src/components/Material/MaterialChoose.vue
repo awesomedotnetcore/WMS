@@ -2,20 +2,20 @@
   <a-modal title="物料选择" width="60%" :visible="visible" :confirmLoading="loading" okText="选择" @ok="handleChoose" @cancel="()=>{this.visible=false}">
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
-        <a-row>
-          <a-col :span="4">
+        <a-row :gutter="10">
+          <a-col :md="4" :sm="24">
             <a-form-item>
               <materialType-select v-model="queryParam.TypeId"></materialType-select>
             </a-form-item>
           </a-col>
-          <a-col :span="4">
+          <a-col :md="5" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.Keyword" placeholder="物料名称或编号或条码" />
+              <a-input v-model="queryParam.Keyword" placeholder="物料名称\编号\条码" />
             </a-form-item>
           </a-col>
-          <a-col :span="4">
+          <a-col :md="6" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.ContactName" placeholder="客户/供应商名称或编码" />
+              <a-input v-model="queryParam.ContactName" placeholder="客户\供应商名称或编码" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
