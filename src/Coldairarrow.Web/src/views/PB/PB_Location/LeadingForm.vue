@@ -60,22 +60,15 @@ export default {
   methods: {
     init() {
       this.visible = true
-      //this.entity = {}
-      // this.$nextTick(() => {
-      //   this.$refs['form'].clearValidate()
-      // })
     },
     openForm(id, title) {
       this.init()
       this.title = title
     },
     handleChange(info) {
-      //console.log('文件：',info)
       if (info.file.status !== 'uploading') {
         console.log(info.file, info.fileList);
       }
-      //debugger
-      // this.$message.error(info.Msg)
       if (info.file.status === 'done') {
         if(info.file.response.Success === false ){
           this.$message.error(`${info.file.name}文件,${info.file.response.Msg},请检查文件内容！ `)
