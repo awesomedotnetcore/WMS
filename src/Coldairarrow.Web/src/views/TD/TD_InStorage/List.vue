@@ -1,14 +1,14 @@
 ﻿<template>
   <a-card :bordered="false">
     <div class="table-operator">
-      <a-dropdown-button type="primary" @click="hanldleAdd()">
+      <a-dropdown-button v-if="storage.IsTray" type="primary" @click="hanldleAdd()">
         <a-icon type="plus" />新建
         <a-menu slot="overlay" @click="handleAddMenuClick">
           <a-menu-item key="Tray">
             <a-icon type="border" />空托盘入库</a-menu-item>
         </a-menu>
       </a-dropdown-button>
-      <!-- <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button> -->
+      <a-button v-else type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
       <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
       <a-divider type="vertical" />
@@ -106,10 +106,12 @@ export default {
     InTray
   },
   mounted() {
+    this.getCurStorage()
     this.getDataList()
   },
   data() {
     return {
+      storage: {},
       data: [],
       pagination: {
         current: 1,
@@ -152,6 +154,12 @@ export default {
           const pagination = { ...this.pagination }
           pagination.total = resJson.Total
           this.pagination = pagination
+        })
+    },
+    getCurStorage() {
+      this.$http.get('/PB/PB_Storage/GetCurStorage')
+        .then(resJson => {
+          this.storage = resJson.Data
         })
     },
     onSelectChange(selectedRowKeys, selectedRows) {
