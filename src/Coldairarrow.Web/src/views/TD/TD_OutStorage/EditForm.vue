@@ -14,7 +14,7 @@
         </a-col>
         <a-col :span="8">
           <a-form-model-item label="出库时间" prop="OutTime">
-            <a-date-picker v-model="entity.OutTime" :disabled="disabled"/>
+            <a-date-picker v-model="entity.OutTime" :style="{width:'100%'}" :disabled="disabled"/>
           </a-form-model-item>
         </a-col>               
       </a-row>
@@ -85,7 +85,7 @@ export default {
       },
       visible: false,
       loading: false,
-      entity: {Id: '', OutType: '', Status: 0 },
+      entity: {Id: '', Status: 0 },
       rules: {
         OutTime: [{ required: true, message: '请选择出库时间', trigger: 'blur' }],
         OutType: [{ required: true, message: '请选择出库类型', trigger: 'change' }],
@@ -109,7 +109,7 @@ export default {
     init() {
       this.visible = true
       this.CusAddrList = []
-      this.entity = { Id: '', OutType:'',CusId:'',AddrId:'', Status: 0 }
+      this.entity = { Id: '', Status: 0 }
       this.listDetail = []
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()

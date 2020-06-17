@@ -48,7 +48,7 @@
         <a-row>
           <a-col :span="12">
             <a-form-model-item label="是否禁用" prop="IsForbid">
-            <a-radio-group v-model="entity.IsForbid">
+            <a-radio-group v-model="entity.IsForbid" :default-value="true" button-style="solid">
               <a-radio-button :value="true">
                 启用
               </a-radio-button>
@@ -67,7 +67,7 @@
         <a-row>
           <a-col :span="12">
             <a-form-model-item label="是否默认" prop="IsDefault">
-              <a-radio-group v-model="entity.IsDefault">
+              <a-radio-group v-model="entity.IsDefault" :default-value="false" button-style="solid" >
                 <a-radio-button :value="true">
                   是
                 </a-radio-button>

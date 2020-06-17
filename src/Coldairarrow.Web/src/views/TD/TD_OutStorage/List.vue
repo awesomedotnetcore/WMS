@@ -105,20 +105,14 @@ const filterDate = (value, row, index) => {
 }
 
 const columns = [
-  // { title: '仓库ID', dataIndex: 'StorageId', width: '10%' },
-  // { title: '关联单号', dataIndex: 'RefCode', width: '10%' },
-  // { title: '总金额', dataIndex: 'TotalAmt', width: '10%' },
-  // { title: '设备ID', dataIndex: 'EquId', width: '10%' },
-  // { title: '备注', dataIndex: 'Remarks', width: '10%' },
   { title: '出库单号', dataIndex: 'Code', width: '15%' },
   { title: '出库时间', dataIndex: 'OutTime', width: '10%' , customRender: filterDate },
   { title: '出库类型', dataIndex: 'OutType', width: '8%' , scopedSlots: { customRender: 'OutType' } },  
   { title: '出库数量', dataIndex: 'OutNum', width: '8%' },  
-  { title: '状态', dataIndex: 'Status', width: '7%', scopedSlots: { customRender: 'Status' }  },
-  { title: '客户', dataIndex: 'Customer.Name', width: '10%' },
-  // { title: '客户地址', dataIndex: 'Address.Address', width: '10%' },  
-  { title: '制单人', dataIndex: 'CreateUser.RealName', width: '10%' },
-  { title: '审核人', dataIndex: 'AuditUser.RealName', width: '10%' },
+  { title: '状态', dataIndex: 'Status', width: '8%', scopedSlots: { customRender: 'Status' }  },
+  { title: '客户', dataIndex: 'Customer.Name', width: '20%' },
+  { title: '制单人', dataIndex: 'CreateUser.RealName', width: '6%' },
+  { title: '审核人', dataIndex: 'AuditUser.RealName', width: '6%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 

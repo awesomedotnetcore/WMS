@@ -14,7 +14,7 @@
         </a-form-model-item> -->
         
         <a-form-model-item label="托盘管理:" prop="IsTray">
-          <a-radio-group :disabled="entity.Disable" v-model="entity.IsTray">
+          <a-radio-group :disabled="entity.Disable" v-model="entity.IsTray" button-style="solid">
             <a-radio-button :value="true">
               启用
             </a-radio-button>
@@ -24,7 +24,7 @@
           </a-radio-group>
         </a-form-model-item>
         <a-form-model-item label="分区管理:" prop="IsZone">
-          <a-radio-group :disabled="entity.Disable"  v-model="entity.IsZone">
+          <a-radio-group :disabled="entity.Disable"  v-model="entity.IsZone" button-style="solid">
             <a-radio-button :value="true">
               启用
             </a-radio-button>
@@ -33,8 +33,8 @@
             </a-radio-button>
           </a-radio-group>
         </a-form-model-item>
-        <a-form-model-item label="仓库状态:" prop="Disable">
-          <a-radio-group v-model="entity.Disable">
+        <a-form-model-item label="仓库状态:" prop="Disable" >
+          <a-radio-group v-model="entity.Disable" button-style="solid">
             <a-radio-button :value="true">
               启用
             </a-radio-button>
@@ -44,7 +44,7 @@
           </a-radio-group>
         </a-form-model-item>        
         <a-form-model-item label="默认仓库:" prop="IsDefault">
-          <a-radio-group :disabled="entity.Disable" v-model="entity.IsDefault">
+          <a-radio-group :disabled="entity.Disable" v-model="entity.IsDefault" button-style="solid">
             <a-radio-button :value="true">
               是
             </a-radio-button>

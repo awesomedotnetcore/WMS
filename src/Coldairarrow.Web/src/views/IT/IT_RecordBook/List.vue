@@ -2,28 +2,28 @@
   <a-card :bordered="false">
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
-        <a-row :gutter="10">
-          <a-col :md="2" :sm="24">
+        <a-row :gutter="5">
+          <a-col :md="3" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.RefCode" placeholder="单号" />
             </a-form-item>
           </a-col>
-          <a-col :md="2" :sm="24">
+          <a-col :md="3" :sm="24">
             <a-form-item>
               <enum-select code="RecordBookType" v-model="queryParam.Type"></enum-select>
             </a-form-item>
           </a-col>
-          <a-col :md="2" :sm="24">
+          <a-col :md="3" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.LocalName" placeholder="原/目标 货架" />
             </a-form-item>
           </a-col>
-          <a-col :md="2" :sm="24">
+          <a-col :md="3" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.MaterialName" placeholder="物料" />
             </a-form-item>
           </a-col>
-          <a-col :md="2" :sm="24">
+          <a-col :md="3" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.BarCodeBatchNo" placeholder="条码/批次" />
             </a-form-item>
@@ -50,7 +50,7 @@ import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 
 const columns = [
-  { title: '相关单号', dataIndex: 'RefCode', width: '10%' },
+  { title: '相关单号', dataIndex: 'RefCode', width: '12%' },
   { title: '台账类型', dataIndex: 'Type', width: '8%', scopedSlots: { customRender: 'Type' } },
   { title: '原货位', dataIndex: 'FromLocation.Name', width: '8%' },
   { title: '目标货位', dataIndex: 'ToLocation.Name', width: '8%' },
