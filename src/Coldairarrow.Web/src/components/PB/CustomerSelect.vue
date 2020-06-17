@@ -2,7 +2,7 @@
   <div>
     <a-row>
       <a-col :span="20">
-        <a-select v-model="curValue" placeholder="客户/投料点" :disabled="disabled" @select="onSelect" @search="handleSearch" :allowClear="true" :showSearch="true" :filterOption="false">
+        <a-select v-model="curValue" :style="{width:'100%'}" placeholder="客户/投料点" :disabled="disabled" @select="onSelect" @search="handleSearch" :allowClear="true" :showSearch="true" :filterOption="false">
           <a-select-option v-for="item in dataSource" :key="item.Id" :value="item.Id">{{ item.Name }}</a-select-option>
         </a-select>
       </a-col>

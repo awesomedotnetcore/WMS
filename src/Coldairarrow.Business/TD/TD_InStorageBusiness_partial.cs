@@ -19,6 +19,12 @@ namespace Coldairarrow.Business.TD
 {
     public partial class TD_InStorageBusiness : BaseBusiness<TD_InStorage>, ITD_InStorageBusiness, ITransientDependency
     {
+        public TD_InStorageBusiness(IRepository repository, IServiceProvider svcProvider)
+            : base(repository)
+        {
+            _ServiceProvider = svcProvider;
+        }
+        readonly IServiceProvider _ServiceProvider;
         public async Task<PageResult<TD_InStorage>> GetDataListAsync(TD_InStoragePageInput input)
         {
             var q = GetIQueryable()
@@ -290,6 +296,20 @@ namespace Coldairarrow.Business.TD
                 data.AuditUserId = audit.AuditUserId;
                 await UpdateAsync(data);
             }
+        }
+
+        public async Task InBlankTray(List<KeyValuePair<string, string>> listTray)
+        {
+            var listTrayIds = listTray.Select(s => s.Key).ToList();
+            var trays = await Service.GetIQueryable<PB_Tray>().Where(w => listTrayIds.Contains(w.Id)).ToListAsync();
+            var dicLocal = listTray.ToDictionary(k => k.Key, v => v.Value);
+            foreach (var tray in trays)
+            {
+                if (dicLocal.ContainsKey(tray.Id))
+                    tray.LocalId = dicLocal[tray.Id];
+            }
+            var traySvc = _ServiceProvider.GetRequiredService<IPB_TrayBusiness>();
+            await traySvc.UpdateDataAsync(trays);
         }
     }
 }

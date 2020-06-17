@@ -69,7 +69,7 @@ namespace Coldairarrow.Api.Controllers.PB
         [HttpPost]
         public async Task<List<PB_Location>> GetQueryData(SelectQueryDTO search)
         {
-            return await _pB_LocationBus.GetQueryData(search, _Op.Property.DefaultStorageId);
+            return await _pB_LocationBus.GetQueryData(search);
         }
         #endregion
 

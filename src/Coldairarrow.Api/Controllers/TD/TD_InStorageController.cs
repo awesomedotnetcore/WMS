@@ -92,6 +92,12 @@ namespace Coldairarrow.Api.Controllers.TD
             else
                 await _tD_InStorageBus.Reject(audit);
         }
+
+        [HttpPost]
+        public async Task InBlankTray(List<KeyValuePair<string, string>> listTray)
+        {
+            await _tD_InStorageBus.InBlankTray(listTray);
+        }
         #endregion
     }
 }

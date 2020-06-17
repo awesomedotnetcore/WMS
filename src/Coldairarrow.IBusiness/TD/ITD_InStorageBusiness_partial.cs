@@ -12,5 +12,12 @@ namespace Coldairarrow.Business.TD
 
         Task Approve(AuditDTO audit);
         Task Reject(AuditDTO audit);
+
+        /// <summary>
+        /// 空托盘入库
+        /// </summary>
+        /// <param name="listTray"></param>
+        /// <returns></returns>
+        Task InBlankTray(List<KeyValuePair<string, string>> listTray);
     }
 }

@@ -9,7 +9,7 @@ namespace Coldairarrow.Business.PB
 {
     public partial interface IPB_LocationBusiness
     {
-        Task<List<PB_Location>> GetQueryData(SelectQueryDTO search, string storId);
+        Task<List<PB_Location>> GetQueryData(SelectQueryDTO search);
         Task<PB_Location> GetDefaultLocal(string storId, string storAreaId);
         IQueryable<T> GetQueryable<T>() where T : class, new();
 

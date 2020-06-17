@@ -1,12 +1,12 @@
 <template>
   <div>
     <a-row>
-      <a-col :span="20">
-        <a-select placeholder="选择货位" v-model="curValue" @select="onSelect" @search="handleSearch" :allowClear="true" :showSearch="true" :filterOption="false">
+      <a-col :md="20" :xs="20">
+        <a-select placeholder="选择货位" :style="{width:'100%'}" v-model="curValue" @select="onSelect" @search="handleSearch" :allowClear="true" :showSearch="true" :filterOption="false">
           <a-select-option v-for="item in dataSource" :key="item.Id" :value="item.Id">{{ item.Name }}</a-select-option>
         </a-select>
       </a-col>
-      <a-col :span="2">
+      <a-col :md="2" :xs="2">
         <a-button type="primary" @click="handleOpenChoose">
           <a-icon type="search" />
         </a-button>

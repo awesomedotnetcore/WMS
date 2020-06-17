@@ -13,12 +13,7 @@ namespace Coldairarrow.Business.TD
 {
     public partial class TD_InStorageBusiness : BaseBusiness<TD_InStorage>, ITD_InStorageBusiness, ITransientDependency
     {
-        public TD_InStorageBusiness(IRepository repository, IServiceProvider svcProvider)
-            : base(repository)
-        {
-            _ServiceProvider = svcProvider;
-        }
-        readonly IServiceProvider _ServiceProvider;
+        
         #region 外部接口
 
 
