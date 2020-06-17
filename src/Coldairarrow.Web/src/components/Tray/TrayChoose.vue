@@ -3,15 +3,14 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
-          <a-col :md="3" :sm="24">
-            <materialType-select v-model="queryParam.TypeId"></materialType-select>
-          </a-col>
-          <a-col :md="3" :sm="24">
-            <supplier-select v-model="queryParam.SupplierId"></supplier-select>
-          </a-col>
-          <a-col :md="3" :sm="24">
+          <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="托盘名称或编码" />
+              <a-input v-model="queryParam.Keyword" placeholder="托盘名称或编码" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="4" :sm="24">
+            <a-form-item>
+              <a-input v-model="queryParam.TypeName" placeholder="类型名称/编码" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -33,12 +32,11 @@ const filterYesOrNo = (value, row, index) => {
 }
 const columns = [
   { title: '托盘号', dataIndex: 'Code', width: '15%' },
-  { title: '托盘名称', dataIndex: 'Name', width: '15%' },
+  { title: '托盘名称', dataIndex: 'Name' },
   { title: '托盘类型', dataIndex: 'PB_TrayType.Name', width: '10%' },
   { title: '货位', dataIndex: 'PB_Location.Name', width: '15%' },
   { title: '启用日期', dataIndex: 'StartTime', width: '20%' },
-  { title: '托盘状态', dataIndex: 'Status', width: '10%', customRender: filterYesOrNo },
-  { title: '备注', dataIndex: 'Remarks', width: '15%' }
+  { title: '托盘状态', dataIndex: 'Status', width: '10%', customRender: filterYesOrNo }
 ]
 
 export default {

@@ -53,6 +53,7 @@ export default {
             if (resJson.Success) {
               this.curStorage.IsDefault = false
               storage.IsDefault = true
+              this.$router.go(0)
             }
             //this.getListData()
           })
