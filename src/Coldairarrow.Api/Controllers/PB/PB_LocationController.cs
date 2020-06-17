@@ -264,7 +264,7 @@ namespace Coldairarrow.Api.Controllers.PB
             }
             catch (Exception)
             {
-                 return Error("导入数据异常！");
+                 return Error("数据异常！");
             }
 
             return Success(ReturnValue);
@@ -291,7 +291,7 @@ namespace Coldairarrow.Api.Controllers.PB
 
             if (!Directory.Exists(expDir)) Directory.CreateDirectory(expDir);
 
-            string filePath = string.Format("{0}\\CD{1}.xls", expDir, DateTime.Now.ToString("yyyyMMddHHmmss"));
+            string filePath = string.Format("{0}\\CD{1}.xlsx", expDir, DateTime.Now.ToString("yyyyMMddHHmmss"));
 
             #region 创建Excel表头
             //创建表头
@@ -323,7 +323,7 @@ namespace Coldairarrow.Api.Controllers.PB
                 workBook.Write(stream);
                 byte[] buffer = stream.ToArray();
 
-                return File(buffer, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", string.Format("货位信息表_{0}.xls", DateTime.Now.ToString("yyyyMMddHHmmss")));
+                return File(buffer, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", string.Format("货位信息表_{0}.xlsx", DateTime.Now.ToString("yyyyMMddHHmmss")));
             }
             
         }
