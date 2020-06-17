@@ -13,11 +13,10 @@
         <a-upload          
           name="file"
           :multiple="true"
-          :action="post"
+          :action="$rootUrl+'/PB/PB_Location/Import'"
           :headers="headers"
-          @change="handleChange"
+          @change="handleChange"          
         >
-         <!-- :action="$rootUrl+'/PB/PB_Location/Import'" -->
         <a-button type="primary"> <a-icon type="upload" /> 上传货位数据 </a-button>
         </a-upload>
         </a-col>  
@@ -28,11 +27,8 @@
           </a-button>
         </div>
     </a-row>
-    </template>
-
-    
-  </a-modal>
-  
+    </template>    
+  </a-modal>  
 </template>
 
 <script>
@@ -53,22 +49,17 @@ export default {
       },
       visible: false,
       loading: false,
-      entity: {},
+     // entity: {},
       rules: {},
       title: '',
       headers: {
         authorization: 'Bearer '+Token.getToken(),
       },
-      //ExpUrl:''
     }
   },
   methods: {
     init() {
       this.visible = true
-      this.entity = {}
-      // this.$nextTick(() => {
-      //   this.$refs['form'].clearValidate()
-      // })
     },
     openForm(id, title) {
       this.init()
@@ -78,24 +69,16 @@ export default {
       if (info.file.status !== 'uploading') {
         console.log(info.file, info.fileList);
       }
-      // if (info.file.status === 'done') {
-      //   this.$message.success(`${info.file.name}  文件上传成功！`);
-      //   this.visible = false
-      // } else if (info.file.status === 'error') {
-      //   this.$message.error(`${info.file.name} 文件上传失败！`);
-      // }
+      if (info.file.status === 'done') {
+        if(info.file.response.Success === false ){
+          this.$message.error(`${info.file.name}文件,${info.file.response.Msg},请检查文件内容！ `)
+        }else 
+          this.$message.success(`${info.file.name}  文件上传成功！`);
+        this.visible = false
 
-        this.$http.post('/PB/PB_Location/Import',info.file.name).then(resJson => {
-          this.loading = false
-
-          if (resJson.Success) {
-            this.$message.success('操作成功!')
-            this.visible = false
-          } else {
-            this.$message.error(resJson.Msg)
-          }
-        })
-
+      } else if (info.file.status === 'error') {
+        this.$message.error(`${info.file.name} 文件上传失败！`);
+      }
     },
   }
 }

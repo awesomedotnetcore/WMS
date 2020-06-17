@@ -25,7 +25,7 @@
               <a-input v-model="queryParam.keyword" placeholder="请输入调拨单号或关联单号" />
             </a-form-item>
           </a-col>
-          <a-col :md="6" :sm="24">
+          <a-col :md="8" :sm="24">
             <div class="table-operator">
               <a-button type="primary" @click="() => {this.pagination.current = 1; this.getDataList()}">查询</a-button>
               <a-button @click="() => (queryParam = {})">重置</a-button>

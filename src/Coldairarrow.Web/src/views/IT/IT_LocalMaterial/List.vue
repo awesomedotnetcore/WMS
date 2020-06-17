@@ -2,23 +2,23 @@
   <a-card :bordered="false">
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
-        <a-row :gutter="10">
-          <a-col :md="2" :sm="24">
+        <a-row :gutter="5">
+          <a-col :md="3" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.LocalName" placeholder="货位" />
             </a-form-item>
           </a-col>
-          <a-col v-if="storage.IsTray" :md="2" :sm="24">
+          <a-col v-if="storage.IsTray" :md="3" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.TrayName" placeholder="托盘" />
             </a-form-item>
           </a-col>
-          <a-col :md="2" :sm="24">
+          <a-col :md="3" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.MaterialName" placeholder="物料" />
             </a-form-item>
           </a-col>
-          <a-col :md="2" :sm="24">
+          <a-col :md="3" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.Code" placeholder="批次/条码" />
             </a-form-item>
@@ -46,8 +46,8 @@ const filterCode = (value, row, index) => {
 }
 const columns1 = [
   { title: '货位', dataIndex: 'Location', customRender: filterCode, width: '15%' },
-  { title: '物料', dataIndex: 'Material', customRender: filterCode, width: '15%' },
-  { title: '单位', dataIndex: 'Measure.Name', width: '10%' },
+  { title: '物料', dataIndex: 'Material', customRender: filterCode, width: '20%' },
+  { title: '单位', dataIndex: 'Measure.Name', width: '5%' },
   { title: '批次号', dataIndex: 'BatchNo', width: '15%' },
   { title: '条码', dataIndex: 'BarCode', width: '15%' },
   { title: '数量', dataIndex: 'Num', width: '10%' }
@@ -55,8 +55,8 @@ const columns1 = [
 const columns2 = [
   { title: '货位', dataIndex: 'Location', customRender: filterCode, width: '15%' },
   { title: '托盘', dataIndex: 'Tray', customRender: filterCode, width: '15%' },
-  { title: '物料', dataIndex: 'Material', customRender: filterCode, width: '15%' },
-  { title: '单位', dataIndex: 'Measure.Name', width: '10%' },
+  { title: '物料', dataIndex: 'Material', customRender: filterCode, width: '20%' },
+  { title: '单位', dataIndex: 'Measure.Name', width: '5%' },
   { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
   { title: '条码', dataIndex: 'BarCode', width: '15%' },
   { title: '数量', dataIndex: 'Num', width: '10%' }
@@ -65,8 +65,8 @@ const columns3 = [
   { title: '货位', dataIndex: 'Location', customRender: filterCode, width: '15%' },
   { title: '托盘', dataIndex: 'Tray', customRender: filterCode, width: '15%' },
   { title: '托盘分区', dataIndex: 'TrayZone', customRender: filterCode, width: '15%' },
-  { title: '物料', dataIndex: 'Material', customRender: filterCode, width: '15%' },
-  { title: '单位', dataIndex: 'Measure.Name', width: '10%' },
+  { title: '物料', dataIndex: 'Material', customRender: filterCode, width: '20%' },
+  { title: '单位', dataIndex: 'Measure.Name', width: '5%' },
   { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
   { title: '条码', dataIndex: 'BarCode', width: '10%' },
   { title: '数量', dataIndex: 'Num', width: '10%' }

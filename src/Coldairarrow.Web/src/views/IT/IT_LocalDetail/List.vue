@@ -2,23 +2,23 @@
   <a-card :bordered="false">
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
-        <a-row :gutter="10">
-          <a-col :md="2" :sm="24">
+        <a-row :gutter="5">
+          <a-col :md="3" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.LocalName" placeholder="货位" />
             </a-form-item>
           </a-col>
-          <a-col v-if="storage.IsTray" :md="2" :sm="24">
+          <a-col v-if="storage.IsTray" :md="3" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.TrayName" placeholder="托盘" />
             </a-form-item>
           </a-col>
-          <a-col :md="2" :sm="24">
+          <a-col :md="3" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.MaterialName" placeholder="物料" />
             </a-form-item>
           </a-col>
-          <a-col :md="2" :sm="24">
+          <a-col :md="3" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.Code" placeholder="批次/条码" />
             </a-form-item>

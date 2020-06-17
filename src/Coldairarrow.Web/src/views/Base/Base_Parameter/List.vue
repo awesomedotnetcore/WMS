@@ -66,12 +66,12 @@ const filterYesOrNo = (value, row, index) => {
 }
 
 const columns = [
-  { title: '参数类型', dataIndex: 'Type', width: '15%', scopedSlots: { customRender: 'Type' } },
-  { title: '参数编号', dataIndex: 'Code', width: '15%' },
+  { title: '参数类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
+  { title: '参数编号', dataIndex: 'Code', width: '20%' },
   { title: '参数名称', dataIndex: 'Name', width: '15%' },
-  { title: '参数值', dataIndex: 'Val', width: '10%' },
-  { title: '描述', dataIndex: 'Remarks', width: '20%' },
-  { title: '系统必须', dataIndex: 'IsSystem', width: '10%',  scopedSlots: { customRender: 'IsSystem' } },
+  { title: '参数值', dataIndex: 'Val', width: '6%' },
+  { title: '描述', dataIndex: 'Remarks', width: '25%' },
+  { title: '系统必须', dataIndex: 'IsSystem', width: '8%',  scopedSlots: { customRender: 'IsSystem' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
