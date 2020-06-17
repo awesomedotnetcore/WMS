@@ -9,7 +9,6 @@
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
           <a-form-model-item label="物料" prop="MaterialId">
           <Localmaterial-select v-model="entity.MaterialId" @select="handleMaterialSelect"></Localmaterial-select>
-          <!-- <materila-select v-model="entity.MaterialId" @select="handleMaterialSelect"></materila-select> -->
           </a-form-model-item>
         <a-form-model-item label="货位" prop="LocalId">
           <location-select v-model="entity.LocalId" @select="handleLocalIdSelect" :materialId="entity.MaterialId"></location-select>
@@ -41,7 +40,6 @@
 </template>
 
 <script>
-// import MaterilaSelect from '../../../components/Material/MaterialSelect'
 import LocalmaterialSelect from '../../../components/IT/LocalMaterialSelect'
 import LocationSelect from '../../../components/Location/LocationSelect'
 import TraySelect from '../../../components/Tray/TraySelect'
@@ -49,15 +47,11 @@ import ZoneSelect from '../../../components/Tray/ZoneSelect'
 
 export default {
   components: {
-    // MaterilaSelect,
     LocalmaterialSelect,
     LocationSelect,
     TraySelect,
     ZoneSelect
   },
-  // props: {
-  //   parentObj: Object
-  // },
   data() {
     return {
       layout: {

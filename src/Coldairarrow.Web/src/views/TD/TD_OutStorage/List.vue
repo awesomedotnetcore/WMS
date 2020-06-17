@@ -30,7 +30,7 @@
             </a-col>
             <a-col :md="4" :sm="24">
               <a-form-item>
-                <a-input v-model="queryParam.Code" placeholder="出库单号" />
+                <a-input v-model="queryParam.Code" placeholder="出库/关联单号" />
               </a-form-item>
             </a-col>
             <a-col :md="5" :sm="24">
@@ -38,16 +38,6 @@
                 <a-range-picker @change="onOutStorTimeChange" />
               </a-form-item>
             </a-col>
-            <!-- <a-col :md="2" :sm="24">
-            <a-form-item>
-              <a-select v-model="queryParam.Status" placeholder="状态" :allowClear="true">
-                <a-select-option :key="0" :value="0">待审核</a-select-option>
-                <a-select-option :key="1" :value="1">审核通过</a-select-option>
-                <a-select-option :key="2" :value="2">审核失败</a-select-option>
-              </a-select>
-            </a-form-item>
-            </a-col> -->
-
             <a-col :md="4" :sm="24">
               <a-button type="primary" @click="() => {this.pagination.current = 1; this.getDataList()}">查询</a-button>
               <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
