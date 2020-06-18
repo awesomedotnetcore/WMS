@@ -310,5 +310,29 @@ namespace Coldairarrow.Business.TD
                 await UpdateAsync(data);
             }
         }
+
+        public async Task<AjaxResult> OutBlankTray(List<KeyValuePair<string, string>> listTray, string storid)
+        {
+            var listTrayIds = listTray.Select(s => s.Key).ToList();
+            var trays = await Service.GetIQueryable<PB_Tray>().Where(w => listTrayIds.Contains(w.Id)).ToListAsync();
+            var materials = await Service.GetIQueryable<IT_LocalMaterial>().Where(w => listTrayIds.Contains(w.TrayId) && w.StorId.Contains(storid)).ToListAsync();
+            var dicLocal = listTray.ToDictionary(k => k.Key, v => v.Value);
+            if (materials.Count == 0)
+            {
+                foreach (var tray in trays)
+                {
+                    if (dicLocal.ContainsKey(tray.Id))
+                        tray.LocalId = null;
+                    //dicLocal[tray.Id];
+                }
+                var traySvc = _ServiceProvider.GetRequiredService<IPB_TrayBusiness>();
+                await traySvc.UpdateDataAsync(trays);
+                return Success("出空托盘成功!");
+            }
+            else
+            {
+                return Error("托盘上有物料,请重新选择托盘!");
+            }
+        }
     }
 }
