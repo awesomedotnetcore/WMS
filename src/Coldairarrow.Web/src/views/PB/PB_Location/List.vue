@@ -9,18 +9,6 @@
         </a-col>
         <a-button type="primary" @click="hanldleLeading()">导入货位</a-button>
       </a-row>
-      <!-- <template>
-      <a-upload
-        name="file"
-        :multiple="true"
-        :action="$rootUrl+'/PB/PB_Location/Import'"
-        :headers="headers"
-        @change="handleChange"
-      >
-        <a-button> <a-icon type="upload" /> Click to Upload </a-button>
-      </a-upload>
-    </template> -->
-
     </div>
 
     <div class="table-page-search-wrapper">
@@ -28,14 +16,19 @@
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.Keyword" placeholder="货位/巷道/货架" />
+              <all-storage-select v-model="queryParam.StorName"></all-storage-select>
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.StorName" placeholder="仓库编码/名称" />
+              <a-input v-model="queryParam.Keyword" placeholder="货位/巷道/货架" />
             </a-form-item>
           </a-col>
+          <!-- <a-col :md="4" :sm="24">
+            <a-form-item>
+              <a-input v-model="queryParam.StorName" placeholder="仓库编码/名称" />
+            </a-form-item>
+          </a-col> -->
           <a-col :md="4" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.AreaName" placeholder="货区编码/名称" />
@@ -90,8 +83,8 @@
 import EditForm from './EditForm'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import UploadFile from '../../../components/CUploadFile/CUploadFile'
-//import Token from '../../../utils/cache/TokenCache'
 import LeadingForm from './LeadingForm'
+import AllStorageSelect from '../../../components/Storage/AllStorageSelect'
 
 const filterYesOrNo = (value, row, index) => {
   if (value) return '是'
@@ -118,8 +111,8 @@ export default {
     EditForm,
     EnumName,
     UploadFile,
-    // Token,
-    LeadingForm
+    LeadingForm,
+    AllStorageSelect
   },
   mounted() {
     this.getDataList()
@@ -138,12 +131,8 @@ export default {
       columns,
       queryParam: {},
       selectedRowKeys: [],
-      entity: {},//File: ''
-      // headers: {
-      //   authorization: 'Bearer '+Token.getToken(),
-      // },
+      entity: {},
       fileList: [],
-      // uploading: false,
     }
   },
   methods: {
@@ -231,19 +220,6 @@ export default {
         }
       })
     },
-    // handleChange(info) {
-    //   if (info.file.status !== 'uploading') {
-    //     console.log(info.file, info.fileList);
-    //   }
-    //   if (info.file.status === 'done') {
-    //     this.$message.success(`${info.file.name} file uploaded successfully`);
-    //   } else if (info.file.status === 'error') {
-    //     this.$message.error(`${info.file.name} file upload failed.`);
-    //   }
-    // },
-    // getken(){
-    //   Token.getToken()
-    // }   
   }
 }
 </script>

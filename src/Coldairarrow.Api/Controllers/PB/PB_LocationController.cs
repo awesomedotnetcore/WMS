@@ -71,6 +71,15 @@ namespace Coldairarrow.Api.Controllers.PB
         {
             return await _pB_LocationBus.GetQueryData(search);
         }
+
+        /// <summary>
+        /// 查询仓库
+        /// </summary>
+        [HttpPost]
+        public async Task<List<PB_Location>> Query()
+        {
+            return await _pB_LocationBus.QueryAsync();
+        }
         #endregion
 
         #region 提交
