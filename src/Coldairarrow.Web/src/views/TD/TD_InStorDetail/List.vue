@@ -5,6 +5,9 @@
       <a-button type="primary" icon="minus" @click="handleDelete(selectedRows)" :disabled="!hasSelected() || disabled">删除</a-button>
     </div>
     <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :pagination="false" :dataSource="data" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+      <template slot="Material" slot-scope="text, record">
+        <span>{{ record.Material.Name }}({{ record.Material.Code }})</span>
+      </template>
       <span slot="action" slot-scope="text, record">
         <template>
           <a :disabled="disabled" @click="handleEdit(record)">编辑</a>
@@ -21,34 +24,31 @@
 import EditForm from './EditForm'
 
 const columns1 = [
-  { title: '物料', dataIndex: 'Material.Name', width: '20%' },
-  { title: '编码', dataIndex: 'Material.Code', width: '15%' },
+  { title: '物料', dataIndex: 'Material.Name', scopedSlots: { customRender: 'Material' } },
   { title: '货位', dataIndex: 'Location.Name', width: '15%' },
   { title: '条码', dataIndex: 'BarCode', width: '15%' },
   { title: '批次号', dataIndex: 'BatchNo', width: '15%' },
   { title: '数量', dataIndex: 'Num', width: '5%' },
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, width: '10%' }
 ]
 const columns2 = [
-  { title: '物料', dataIndex: 'Material.Name', width: '10%' },
-  { title: '编码', dataIndex: 'Material.Code', width: '10%' },
+  { title: '物料', dataIndex: 'Material.Name', scopedSlots: { customRender: 'Material' } },
   { title: '货位', dataIndex: 'Location.Name', width: '10%' },
   { title: '托盘', dataIndex: 'Tray.Name', width: '10%' },
   { title: '条码', dataIndex: 'BarCode', width: '10%' },
   { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
   { title: '数量', dataIndex: 'Num', width: '5%' },
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, width: '10%' }
 ]
 const columns3 = [
-  { title: '物料', dataIndex: 'Material.Name', width: '10%' },
-  { title: '编码', dataIndex: 'Material.Code', width: '10%' },
+  { title: '物料', dataIndex: 'Material.Name', scopedSlots: { customRender: 'Material' } },
   { title: '货位', dataIndex: 'Location.Name', width: '10%' },
   { title: '托盘', dataIndex: 'Tray.Name', width: '10%' },
   { title: '托盘分区', dataIndex: 'TrayZone.Name', width: '10%' },
   { title: '条码', dataIndex: 'BarCode', width: '10%' },
   { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
   { title: '数量', dataIndex: 'Num', width: '5%' },
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, width: '10%' }
 ]
 
 export default {

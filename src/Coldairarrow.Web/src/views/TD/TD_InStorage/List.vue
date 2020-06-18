@@ -90,11 +90,12 @@ const columns = [
   { title: '入库单号', dataIndex: 'Code', width: '10%' },
   { title: '入库类型', dataIndex: 'InType', width: '8%', scopedSlots: { customRender: 'InType' } },
   { title: '入库时间', dataIndex: 'InStorTime', width: '8%', customRender: filterDate },
+  { title: '关联单号', dataIndex: 'RefCode', width: '10%' },
   { title: '状态', dataIndex: 'Status', scopedSlots: { customRender: 'Status' }, width: '5%' },
   { title: '供应商', dataIndex: 'Supplier.Name', width: '20%' },
   { title: '入库数量', dataIndex: 'TotalNum', width: '5%' },
-  { title: '制单人', dataIndex: 'CreateUser.RealName', width: '8%' },
-  { title: '审核人', dataIndex: 'AuditUser.RealName', width: '8%' },
+  { title: '制单人', dataIndex: 'CreateUser.RealName', width: '5%' },
+  { title: '审核人', dataIndex: 'AuditUser.RealName', width: '5%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
