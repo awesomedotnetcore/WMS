@@ -5,14 +5,20 @@
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.Keyword" placeholder="编码\名称\巷道\货架" />
+              <all-storage-select v-model="queryParam.StorName"></all-storage-select>
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.StorName" placeholder="仓库编码/名称" />
+              <a-input v-model="queryParam.Keyword" placeholder="编码\名称\巷道\货架" />
             </a-form-item>
           </a-col>
+          <!-- <a-col :md="4" :sm="24">
+            <a-form-item>
+              <a-input v-model="queryParam.StorName" placeholder="仓库编码/名称" />
+              <all-storage-select v-model="queryParam.StorName"></all-storage-select>
+            </a-form-item>
+          </a-col> -->
           <a-col :md="4" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.AreaName" placeholder="货区编码/名称" />
@@ -35,6 +41,8 @@
 
 <script>
 import EnumName from '../BaseEnum/BaseEnumName'
+import AllStorageSelect from '../Storage/AllStorageSelect'
+
 const filterYesOrNo = (value, row, index) => {
   if (value) return '是'
   else return '否'
@@ -57,7 +65,8 @@ export default {
     type: { type: String, default: 'radio', required: false }
   },
   components: {
-    EnumName
+    EnumName,
+    AllStorageSelect
   },
   mounted() {
     this.getDataList()
