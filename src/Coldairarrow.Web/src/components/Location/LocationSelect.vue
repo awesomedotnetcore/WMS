@@ -2,12 +2,12 @@
   <div>
     <a-row>
       <a-col :md="20" :xs="20">
-        <a-select placeholder="选择货位" :style="{width:'100%'}" v-model="curValue" @select="onSelect" @search="handleSearch" :allowClear="true" :showSearch="true" :filterOption="false">
+        <a-select placeholder="选择货位" :style="{width:'100%'}" :size="size" v-model="curValue" @select="onSelect" @search="handleSearch" :allowClear="true" :showSearch="true" :filterOption="false">
           <a-select-option v-for="item in dataSource" :key="item.Id" :value="item.Id">{{ item.Name }}</a-select-option>
         </a-select>
       </a-col>
       <a-col :md="2" :xs="2">
-        <a-button type="primary" @click="handleOpenChoose">
+        <a-button type="primary" :size="size" @click="handleOpenChoose">
           <a-icon type="search" />
         </a-button>
       </a-col>
@@ -19,6 +19,7 @@
 import LocationChoose from './LocationChoose'
 export default {
   props: {
+    size: { type: String, default: 'default', required: false },
     value: { type: String, default: '', required: false }
   },
   components: {

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Coldairarrow.Business.TD
 {
-    public class TD_MoveDetailBusiness : BaseBusiness<TD_MoveDetail>, ITD_MoveDetailBusiness, ITransientDependency
+    public partial class TD_MoveDetailBusiness : BaseBusiness<TD_MoveDetail>, ITD_MoveDetailBusiness, ITransientDependency
     {
         public TD_MoveDetailBusiness(IRepository repository)
             : base(repository)
@@ -22,45 +22,18 @@ namespace Coldairarrow.Business.TD
         public async Task<PageResult<TD_MoveDetail>> GetDataListAsync(PageInput<ConditionDTO> input)
         {
             var q = GetIQueryable();
+            var where = LinqHelper.True<TD_MoveDetail>();
             var search = input.Search;
-            q = q.Include(i => i.Src_Location).Include(i => i.Src_Tray).Include(i => i.Src_TrayZone)
-                .Include(i => i.Tar_Location).Include(i => i.Tar_Tray).Include(i => i.Tar_TrayZone)
-                .Include(i => i.PB_Material);
 
             //筛选
-            if (!search.Keyword.IsNullOrEmpty())
+            if (!search.Condition.IsNullOrEmpty() && !search.Keyword.IsNullOrEmpty())
             {
-                q = q.Where(w => w.MoveId == search.Keyword);
+                var newWhere = DynamicExpressionParser.ParseLambda<TD_MoveDetail, bool>(
+                    ParsingConfig.Default, false, $@"{search.Condition}.Contains(@0)", search.Keyword);
+                where = where.And(newWhere);
             }
 
-            return await q.GetPageResultAsync(input);
-        }
-
-        public async Task<List<TD_MoveDetail>> GetDataListAsync(List<string> ids)
-        {
-            var q = GetIQueryable();
-
-            //筛选
-            if (ids.Count > 0)
-            {
-                q = q.Where(w => ids.Contains(w.Id));
-            }
-
-            return await q.ToListAsync();
-        }
-
-        public async Task<List<TD_MoveDetail>> GetDataListByMoveIdsAsync(List<string> moveIds)
-        {
-            var q = GetIQueryable();
-            q = q.Include(i => i.PB_Material);
-
-            //筛选
-            if (moveIds.Count > 0)
-            {
-                q = q.Where(w => moveIds.Contains(w.MoveId));
-            }
-
-            return await q.ToListAsync();
+            return await q.Where(where).GetPageResultAsync(input);
         }
 
         public async Task<TD_MoveDetail> GetTheDataAsync(string id)
@@ -73,19 +46,9 @@ namespace Coldairarrow.Business.TD
             await InsertAsync(data);
         }
 
-        public async Task AddDatasAsync(List<TD_MoveDetail> datas)
-        {
-            await InsertAsync(datas);
-        }
-
         public async Task UpdateDataAsync(TD_MoveDetail data)
         {
             await UpdateAsync(data);
-        }
-
-        public async Task UpdateDatasAsync(List<TD_MoveDetail> datas)
-        {
-            await UpdateAsync(datas);
         }
 
         public async Task DeleteDataAsync(List<string> ids)

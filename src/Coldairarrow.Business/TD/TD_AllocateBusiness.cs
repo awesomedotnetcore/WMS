@@ -21,17 +21,17 @@ namespace Coldairarrow.Business.TD
 
         #region 外部接口
 
-        public async Task<PageResult<TD_Allocate>> GetDataListAsync(PageInput<SearchCondition> input, string storageId)
+        public async Task<PageResult<TD_Allocate>> GetDataListAsync(PageInput<ConditionDTO> input, string storageId)
         {
             var q = GetIQueryable();
             var search = input.Search;
             q = q.Include(i => i.Tar_Storage).Include(i => i.PB_Equipment).Include(i => i.AuditUser);
 
             //筛选
-            if (!search.Type.IsNullOrEmpty())
-            {
-                q = q.Where(w => w.Type == search.Type);
-            }
+            //if (!search.Type.IsNullOrEmpty())
+            //{
+            //    q = q.Where(w => w.Type == search.Type);
+            //}
             if (!search.Keyword.IsNullOrEmpty())
             {
                 q = q.Where(w => w.Code.Contains(search.Keyword) || w.RefCode.Contains(search.Keyword));

@@ -7,7 +7,7 @@ namespace Coldairarrow.Business.TD
 {
     public partial interface ITD_AllocateBusiness
     {
-        Task<PageResult<TD_Allocate>> GetDataListAsync(PageInput<SearchCondition> input, string storageId);
+        Task<PageResult<TD_Allocate>> GetDataListAsync(PageInput<ConditionDTO> input, string storageId);
         Task<List<TD_Allocate>> GetDataListAsync(List<string> ids);
         Task<TD_Allocate> GetTheDataAsync(string id);
         Task AddDataAsync(TD_Allocate data);

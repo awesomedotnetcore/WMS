@@ -41,7 +41,7 @@ namespace Coldairarrow.Api.Controllers.TD
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<TD_Allocate>> GetDataList(PageInput<SearchCondition> input)
+        public async Task<PageResult<TD_Allocate>> GetDataList(PageInput<ConditionDTO> input)
         {
             return await _tD_AllocateBus.GetDataListAsync(input, _Op.Property.DefaultStorageId);
         }

@@ -1,234 +1,190 @@
 ﻿<template>
-  <a-drawer
-    title="移库明细"
-    placement="right"
-    :closable="true"
-    @close="onDrawerClose"
-    :visible="visible"
-    width="90%"
-    :getContainer="false"
-  >
-    <a-card :bordered="false">
-      <div class="table-operator">
-        <a-button v-if="this.state == 0" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-        <a-button
-          type="primary"
-          icon="minus"
-          v-if="this.state == 0"
-          @click="handleDelete(selectedRowKeys)"
-          :disabled="!hasSelected()"
-          :loading="loading"
-        >删除</a-button>
-        <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
-        <a-button v-if="this.state == 0" type="primary" icon="check" @click="approveData()">审批</a-button>
-        <a-button v-if="this.state == 0" type="primary" icon="close" @click="rejectData()">驳回</a-button>
-      </div>
-
-      <a-table
-        ref="table"
-        :columns="computedColumns"
-        :rowKey="row => row.Id"
-        :dataSource="data"
-        :pagination="pagination"
-        :loading="loading"
-        @change="handleTableChange"
-        :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-        :bordered="true"
-        size="small"
-      >
-        <span slot="action" slot-scope="text, record">
-          <template>
-            <a
-              @click="handleEdit(record.Id, record.FromLocalId, record.FromTrayId, record.FromZoneId, record.MaterialId, record.BatchNo, record.BarCode)"
-            >编辑</a>
-            <a-divider type="vertical" />
-            <a @click="handleDelete([record.Id])">删除</a>
-          </template>
-        </span>
-      </a-table>
-
-      <edit-form ref="editForm" :parentObj="this"></edit-form>
-      <add-form ref="addForm" :parentObj="this"></add-form>
-    </a-card>
-  </a-drawer>
+  <div>
+    <div class="table-operator">
+      <a-button type="primary" icon="plus" @click="hanldleAdd()" :disabled="disabled">增加</a-button>
+      <a-button type="primary" icon="minus" @click="handleDelete(selectedRows)" :disabled="!hasSelected() || disabled">删除</a-button>
+    </div>
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :pagination="false" :dataSource="data" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+      <template slot="From" slot-scope="text, record">
+        <a-breadcrumb>
+          <a-breadcrumb-item>{{ record.FromLocal.Name }}</a-breadcrumb-item>
+          <a-breadcrumb-item v-if="record.FromTrayId != null">{{ record.FromTray.Name }}</a-breadcrumb-item>
+          <a-breadcrumb-item v-if="record.FromZoneId != null">{{ record.FromZone.Name }}</a-breadcrumb-item>
+        </a-breadcrumb>
+      </template>
+      <template slot="Material" slot-scope="text, record">
+        <a-breadcrumb>
+          <a-breadcrumb-item>{{ record.Material.Name }}</a-breadcrumb-item>
+          <a-breadcrumb-item v-if="record.BatchNo != null">{{ record.BatchNo }}</a-breadcrumb-item>
+          <a-breadcrumb-item v-if="record.BarCode != null">{{ record.BarCode }}</a-breadcrumb-item>
+        </a-breadcrumb>
+      </template>
+      <template slot="MoveNum" slot-scope="text, record">
+        <a-input-number size="small" :style="{width:'70px'}" :disabled="disabled" :value="text" :max="record.LocalNum" :min="1" @change="e=>handleValChange(e,'MoveNum',record)"></a-input-number>
+      </template>
+      <template slot="ToLocalId" slot-scope="text, record">
+        <local-select size="small" v-model="record.ToLocalId"></local-select>
+      </template>
+      <template slot="ToTrayId" slot-scope="text, record">
+        <tray-select size="small" v-model="record.ToTrayId" :locartalId="record.ToLocalId" :materialId="record.MaterialId"></tray-select>
+      </template>
+      <template slot="ToZoneId" slot-scope="text, record">
+        <zone-select size="small" v-model="record.ToZoneId" :trayId="record.ToTrayId"></zone-select>
+      </template>
+      <span slot="action" slot-scope="text, record">
+        <template>
+          <a :disabled="disabled" @click="handleDelete([record])">删除</a>
+        </template>
+      </span>
+    </a-table>
+    <move-choose ref="moveChoose" @choose="handleMoveChoose"></move-choose>
+  </div>
 </template>
 
 <script>
-import EditForm from './EditForm'
-import AddForm from './AddForm'
-
-const columnsApproved = [
-  { title: '原货位', dataIndex: 'Src_Location.Name', width: '10%' },
-  { title: '原托盘', dataIndex: 'Src_Tray.Name', width: '10%' },
-  { title: '原托盘分区', dataIndex: 'Src_TrayZone.Name', width: '10%' },
-  { title: '目标货位', dataIndex: 'Tar_Location.Name', width: '10%' },
-  { title: '目标托盘', dataIndex: 'Tar_Tray.Name', width: '10%' },
-  { title: '目标托盘分区', dataIndex: 'Tar_TrayZone.Name', width: '10%' },
-  { title: '条码', dataIndex: 'BarCode', width: '10%' },
-  { title: '物料', dataIndex: 'PB_Material.Name', width: '10%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
-  { title: '移库数量', dataIndex: 'LocalNum', width: '6%' }
+import MoveChoose from './MoveChoose'
+import LocalSelect from '../../../components/Location/LocationSelect'
+import TraySelect from '../../../components/Tray/TraySelect'
+import ZoneSelect from '../../../components/Tray/ZoneSelect'
+const columns1 = [
+  { title: '原货位', dataIndex: 'FromLocal', scopedSlots: { customRender: 'From' } },
+  { title: '物料', dataIndex: 'Material', scopedSlots: { customRender: 'Material' } },
+  { title: '库存', dataIndex: 'LocalNum', width: '5%' },
+  { title: '移库', dataIndex: 'MoveNum', width: '5%', scopedSlots: { customRender: 'MoveNum' } },
+  { title: '目标货位', dataIndex: 'ToLocalId', width: '15%', scopedSlots: { customRender: 'ToLocalId' } },
+  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, width: '5%' }
 ]
-
-const columns = [
-  { title: '原货位', dataIndex: 'Src_Location.Name', width: '8%' },
-  { title: '原托盘', dataIndex: 'Src_Tray.Name', width: '8%' },
-  { title: '原托盘分区', dataIndex: 'Src_TrayZone.Name', width: '8%' },
-  { title: '目标货位', dataIndex: 'Tar_Location.Name', width: '8%' },
-  { title: '目标托盘', dataIndex: 'Tar_Tray.Name', width: '8%' },
-  { title: '目标托盘分区', dataIndex: 'Tar_TrayZone.Name', width: '8%' },
-  { title: '条码', dataIndex: 'BarCode', width: '8%' },
-  { title: '物料', dataIndex: 'PB_Material.Name', width: '8%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '8%' },
-  { title: '移库数量', dataIndex: 'LocalNum', width: '5%' },
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+const columns2 = [
+  { title: '原货位', dataIndex: 'FromLocal', scopedSlots: { customRender: 'From' } },
+  { title: '物料', dataIndex: 'Material', scopedSlots: { customRender: 'Material' } },
+  { title: '库存', dataIndex: 'LocalNum', width: '5%' },
+  { title: '移库', dataIndex: 'MoveNum', width: '5%', scopedSlots: { customRender: 'MoveNum' } },
+  { title: '目标货位', dataIndex: 'ToLocalId', width: '15%', scopedSlots: { customRender: 'ToLocalId' } },
+  { title: '目标托盘', dataIndex: 'ToTrayId', width: '15%', scopedSlots: { customRender: 'ToTrayId' } },
+  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, width: '5%' }
+]
+const columns3 = [
+  { title: '原货位', dataIndex: 'FromLocal', scopedSlots: { customRender: 'From' } },
+  { title: '物料', dataIndex: 'Material', scopedSlots: { customRender: 'Material' } },
+  { title: '库存', dataIndex: 'LocalNum', width: '5%' },
+  { title: '移库', dataIndex: 'MoveNum', width: '5%', scopedSlots: { customRender: 'MoveNum' } },
+  { title: '目标货位', dataIndex: 'ToLocalId', width: '15%', scopedSlots: { customRender: 'ToLocalId' } },
+  { title: '目标托盘', dataIndex: 'ToTrayId', width: '15%', scopedSlots: { customRender: 'ToTrayId' } },
+  { title: '目标分区', dataIndex: 'ToZoneId', width: '10%', scopedSlots: { customRender: 'ToZoneId' } },
+  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, width: '5%' }
 ]
 
 export default {
-  props: {
-    parentObj: Object
-  },
   components: {
-    EditForm,
-    AddForm
+    MoveChoose,
+    LocalSelect,
+    TraySelect,
+    ZoneSelect
   },
-  mounted() {},
+  props: {
+    value: { type: Array, required: true },
+    disabled: { type: Boolean, required: false, default: false }
+  },
   data() {
     return {
+      storage: {},
       data: [],
-      pagination: {
-        current: 1,
-        pageSize: 10,
-        showTotal: (total, range) => `总数:${total} 当前:${range[0]}-${range[1]}`
-      },
-      filters: {},
-      sorter: { field: 'Id', order: 'asc' },
-      loading: false,
-      columns,
-      columnsApproved,
-      queryParam: {},
+      columns: columns1,
+      tempId: 0,
       selectedRowKeys: [],
-      visible: false,
-      moveId: null,
-      state: null
+      selectedRows: []
     }
   },
-  computed: {
-    computedColumns() {
-      if (this.state == 0) {
-        return columns
-      } else {
-        return columnsApproved
-      }
-    },
-    computedrowSelection() {
-      if (this.state == 0) {
-        return columns
-      } else {
-        return false
-      }
+  watch: {
+    value(val) {
+      this.data = [...this.value]
     }
+  },
+  mounted() {
+    this.data = [...this.value]
+    this.getCurStorage()
   },
   methods: {
-    handleTableChange(pagination, filters, sorter) {
-      this.pagination = { ...pagination }
-      this.filters = { ...filters }
-      this.sorter = { ...sorter }
-      this.getDataList()
-    },
-    init() {
-      this.data = []
-      this.state = null
-      this.allocateId = null
-    },
-    getDataList() {
-      var thisObj = this
-      this.selectedRowKeys = []
-
-      this.loading = true
-      this.queryParam.Keyword = this.moveId
-      this.$http
-        .post('/TD/TD_MoveDetail/GetDataList', {
-          PageIndex: thisObj.pagination.current,
-          PageRows: thisObj.pagination.pageSize,
-          SortField: thisObj.sorter.field || 'Id',
-          SortType: thisObj.sorter.order,
-          Search: thisObj.queryParam,
-          ...thisObj.filters
-        })
+    getCurStorage() {
+      this.$http.get('/PB/PB_Storage/GetCurStorage')
         .then(resJson => {
-          thisObj.loading = false
-          thisObj.data = resJson.Data
-          const pagination = { ...thisObj.pagination }
-          pagination.total = resJson.Total
-          thisObj.pagination = pagination
+          this.storage = resJson.Data
+          if (this.storage.IsTray && this.storage.IsZone) {
+            this.columns = columns3
+          } else if (this.storage.IsTray) {
+            this.columns = columns2
+          } else {
+            this.columns = columns1
+          }
         })
     },
-    onSelectChange(selectedRowKeys) {
+    onSelectChange(selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
+      this.selectedRows = selectedRows
     },
     hasSelected() {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.addForm.openForm(this.moveId)
+      this.$refs.moveChoose.openChoose()
     },
-    handleEdit(id, LocalId, TrayId, ZoneId, MaterialId, BatchNo, BarCode) {
-      this.$refs.editForm.openForm(this.moveId, id, LocalId, TrayId, ZoneId, MaterialId, BatchNo, BarCode)
-    },
-    handleDelete(ids) {
+    handleDelete(items) {
       var thisObj = this
       this.$confirm({
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/TD/TD_MoveDetail/DeleteData', ids).then(resJson => {
-              resolve()
-
-              if (resJson.Success) {
-                thisObj.$message.success('操作成功!')
-
-                thisObj.getDataList()
-              } else {
-                thisObj.$message.error(resJson.Msg)
-              }
+            items.forEach(element => {
+              var index = thisObj.data.indexOf(element)
+              thisObj.data.splice(index, 1)
+              var keyIndex = thisObj.selectedRowKeys.indexOf(element.Id)
+              thisObj.selectedRowKeys.splice(keyIndex, 1)
             })
+            thisObj.$emit('input', [...thisObj.data])
+            resolve()
           })
         }
       })
     },
-    openDrawer(moveId, state) {
-      this.init()
-      this.moveId = moveId
-      this.state = state
-      this.visible = true
-      if (moveId != null) {
-        this.getDataList()
-      }
-    },
-    onDrawerClose() {
-      this.visible = false
-      this.parentObj.getDataList()
-    },
-    approveData() {
-      var thisObj = this
-      this.$http.post('/TD/TD_Move/ApproveDatas', [this.moveId]).then(resJson => {
-        if (resJson.Success) {
-          thisObj.$message.success('操作成功!')
-        } else {
-          thisObj.$message.error(resJson.Msg)
-        }
+    handleMoveChoose(rows) {
+      console.log('handleMoveChoose', rows)
+      rows.forEach(element => {
+        this.tempId += 1
+        var item = { ...element }
+        delete item.Id
+        delete item.Location
+        delete item.LocalId
+        delete item.Tray
+        delete item.TrayId
+        delete item.TrayZone
+        delete item.ZoneId
+        item.Id = 'newid_' + this.tempId
+
+        item.FromLocal = { ...element.Location }
+        item.FromLocalId = element.LocalId
+        item.ToLocal = { ...element.Location }
+        item.ToLocalId = element.LocalId
+
+        item.FromTray = { ...element.Tray }
+        item.FromTrayId = element.TrayId
+        item.ToTray = { ...element.Tray }
+        item.ToTrayId = element.TrayId
+
+        item.FromZone = { ...element.TrayZone }
+        item.FromZoneId = element.ZoneId
+        item.ToZone = { ...element.TrayZone }
+        item.ToZoneId = element.ZoneId
+
+        item.LocalNum = element.Num
+        item.MoveNum = element.Num
+        item.Price = element.Material.Price
+        this.data.push(item)
       })
+      this.$emit('input', [...this.data])
     },
-    rejectData() {
-      var thisObj = this
-      this.$http.post('/TD/TD_Move/RejectDatas', [this.moveId]).then(resJson => {
-        if (resJson.Success) {
-          thisObj.$message.success('操作成功!')
-        } else {
-          thisObj.$message.error(resJson.Msg)
-        }
-      })
+    handleValChange(val, name, item) {
+      item[name] = val
+      this.$emit('input', [...this.data])
     }
   }
 }
