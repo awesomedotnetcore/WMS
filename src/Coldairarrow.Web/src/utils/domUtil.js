@@ -16,4 +16,4 @@ export const setDocumentTitle = function (title) {
   }
 }
 
-export const domTitle = process.env.VUE_APP_ProjectName
+export const domTitle = process.env.VUE_APP_ProjectName + ' - 中南智能'
