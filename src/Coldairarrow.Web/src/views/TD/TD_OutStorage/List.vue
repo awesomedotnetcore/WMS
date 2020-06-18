@@ -1,8 +1,13 @@
 ﻿<template>
   <a-card :bordered="false">
-    
-
     <div class="table-operator">
+      <a-dropdown-button v-if="storage.IsTray" type="primary" @click="hanldleAdd()">
+        <a-icon type="plus" />新建
+        <a-menu slot="overlay" @click="handleAddMenuClick">
+          <a-menu-item key="Tray">
+            <a-icon type="border" />空托盘出库</a-menu-item>
+        </a-menu>
+      </a-dropdown-button>
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
       <a-button type="primary"
         icon="minus"
@@ -81,6 +86,7 @@
     </a-table>
 
     <edit-form ref="editForm" :disabled="disabled" :parentObj="this"></edit-form>
+    <out-tray ref="outTray"></out-tray>
   </a-card>
 </template>
 
@@ -89,6 +95,7 @@ import moment from 'moment'
 import EditForm from './EditForm'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
+import OutTray from './OutBlankTray'
 
 const filterDate = (value, row, index) => {
   return moment(value).format('YYYY-MM-DD')
@@ -111,8 +118,10 @@ export default {
     EditForm,
     EnumName, 
     EnumSelect,
+    OutTray
   },
   mounted() {
+    this.getCurStorage()
     this.getDataList()
   },
   data() {
@@ -130,6 +139,7 @@ export default {
       queryParam: {},
       selectedRowKeys: [],
       disabled: false,
+      storage: {},
     }
   },
   methods: {
@@ -158,6 +168,12 @@ export default {
           const pagination = { ...this.pagination }
           pagination.total = resJson.Total
           this.pagination = pagination
+        })
+    },
+    getCurStorage() {
+      this.$http.get('/PB/PB_Storage/GetCurStorage')
+        .then(resJson => {
+          this.storage = resJson.Data
         })
     },
     onSelectChange(selectedRowKeys) {
@@ -203,6 +219,18 @@ export default {
       this.queryParam.OutStorTimeStart = dateStrings[0]
       this.queryParam.OutStorTimeEnd = dateStrings[1]
     },
+    handleAddMenuClick(e) {
+      console.log('handleAddMenuClick', e)
+      if (e.key === 'Tray') {
+        this.$refs.outTray.openForm()
+      }
+    },
+
   }
 }
 </script>
+<style>
+.ant-btn-group > .ant-btn:first-child:not(:last-child) {
+  margin-right: 0px;
+}
+</style>

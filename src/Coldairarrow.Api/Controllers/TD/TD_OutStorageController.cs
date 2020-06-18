@@ -99,6 +99,16 @@ namespace Coldairarrow.Api.Controllers.TD
                 await _tD_OutStorageBus.Reject(audit);
         }
 
+        /// <summary>
+        /// 空托盘出库
+        /// </summary>
+        /// <param name="listTray"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<AjaxResult> OutBlankTray(List<KeyValuePair<string, string>> listTray)
+        {
+            return await _tD_OutStorageBus.OutBlankTray(listTray, _Op.Property.DefaultStorageId);
+        }
         #endregion
     }
 }

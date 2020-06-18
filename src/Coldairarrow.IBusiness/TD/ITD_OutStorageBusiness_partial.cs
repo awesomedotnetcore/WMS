@@ -13,5 +13,7 @@ namespace Coldairarrow.Business.TD
 
         Task Approve(AuditDTO audit);
         Task Reject(AuditDTO audit);
+
+        Task<AjaxResult> OutBlankTray(List<KeyValuePair<string, string>> listTray, string storid);
     }
 }
