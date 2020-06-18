@@ -107,6 +107,9 @@ export default {
           result.FromZone = null
           result.Material = null
           result.Measure = null
+          result.ToLocal = null
+          result.ToTray = null
+          result.ToZone = null
           return result
         })
         var entityData = { ...this.entity }

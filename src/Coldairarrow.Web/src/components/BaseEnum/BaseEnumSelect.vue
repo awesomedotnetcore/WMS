@@ -1,10 +1,9 @@
 <template>
-  <a-select v-model="curValue"  placeholder="选择类型" @select="handleSelected" v-bind="$attrs">
+  <a-select v-model="curValue" :placeholder="enumData.Name" @select="handleSelected" v-bind="$attrs">
     <a-select-option v-for="item in enumItems" :key="item.Value" :value="item.Value">{{ item.Name }}</a-select-option>
   </a-select>
 </template>
 <script>
-// :placeholder="enumData.Name" 
 export default {
   props: {
     code: { type: String, required: true },

@@ -12,6 +12,9 @@ namespace Coldairarrow.Entity.TD
     /// </summary>
     public partial class TD_MoveDetail
     {
+        [ForeignKey(nameof(MoveId))]
+        public TD_Move Move { get; set; }
+
         [ForeignKey(nameof(FromLocalId))]
         public PB_Location FromLocal { get; set; }
 
