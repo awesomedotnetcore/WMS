@@ -10,7 +10,7 @@ namespace Coldairarrow.Entity.TD
     /// 移库表
     /// </summary>
     [Table("TD_Move")]
-    public class TD_Move
+    public partial class TD_Move
     {
 
         /// <summary>
@@ -47,20 +47,17 @@ namespace Coldairarrow.Entity.TD
         /// <summary>
         /// 数量
         /// </summary>
-        public String MoveNum { get; set; }
+        public double MoveNum { get; set; }
 
         /// <summary>
         /// 总额
         /// </summary>
-        public String TotalAmt { get; set; }
+        public double TotalAmt { get; set; }
 
         /// <summary>
         /// 设备ID
         /// </summary>
         public String EquId { get; set; }
-
-        [ForeignKey(nameof(EquId))]
-        public PB_Equipment PB_Equipment { get; set; }
 
         /// <summary>
         /// 状态(0待审核;1审核通过;2审核失败)待移库；已移库
@@ -77,8 +74,7 @@ namespace Coldairarrow.Entity.TD
         /// </summary>
         public String AuditUserId { get; set; }
 
-        [ForeignKey(nameof(AuditUserId))]
-        public Base_User AuditUser { get; set; }
+        
 
         /// <summary>
         /// 审核时间
@@ -100,14 +96,5 @@ namespace Coldairarrow.Entity.TD
         /// </summary>
         public Boolean Deleted { get; set; }
 
-    }
-
-    public enum MoveStatus
-    {
-        待审核 = 0,
-        审核通过,
-        审核失败,
-        待移库,
-        已移库
     }
 }

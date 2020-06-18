@@ -2,12 +2,12 @@
   <div>
     <a-row>
       <a-col :span="20">
-        <a-select placeholder="选择托盘" :style="{width:'100%'}" v-model="curValue" @select="onSelect" @search="handleSearch" :allowClear="true" :showSearch="true" :filterOption="false">
+        <a-select placeholder="选择托盘" :style="{width:'100%'}" :size="size" v-model="curValue" @select="onSelect" @search="handleSearch" :allowClear="true" :showSearch="true" :filterOption="false">
           <a-select-option v-for="item in dataSource" :key="item.Id" :value="item.Id">{{ item.Name }}</a-select-option>
         </a-select>
       </a-col>
       <a-col :span="2">
-        <a-button type="primary" @click="handleOpenChoose">
+        <a-button type="primary" :size="size" @click="handleOpenChoose">
           <a-icon type="search" />
         </a-button>
       </a-col>
@@ -21,6 +21,7 @@ export default {
   props: {
     materialId: { type: String, default: '', required: false },
     locartalId: { type: String, default: '', required: false },
+    size: { type: String, default: 'default', required: false },
     value: { type: String, required: false }
   },
   components: {

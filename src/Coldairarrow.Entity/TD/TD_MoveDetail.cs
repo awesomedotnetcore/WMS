@@ -9,7 +9,7 @@ namespace Coldairarrow.Entity.TD
     /// 移库明细
     /// </summary>
     [Table("TD_MoveDetail")]
-    public class TD_MoveDetail
+    public partial class TD_MoveDetail
     {
 
         /// <summary>
@@ -33,49 +33,30 @@ namespace Coldairarrow.Entity.TD
         /// </summary>
         public String FromLocalId { get; set; }
 
-        [ForeignKey(nameof(FromLocalId))]
-        public PB_Location Src_Location { get; set; }
-
         /// <summary>
         /// 原托盘分区
         /// </summary>
         public String FromZoneId { get; set; }
-
-
-        [ForeignKey(nameof(FromZoneId))]
-        public PB_TrayZone Src_TrayZone { get; set; }
 
         /// <summary>
         /// 原托盘ID
         /// </summary>
         public String FromTrayId { get; set; }
 
-        [ForeignKey(nameof(FromTrayId))]
-        public PB_Tray Src_Tray { get; set; }
-
         /// <summary>
         /// 目标货位ID
         /// </summary>
         public String ToLocalId { get; set; }
-
-        [ForeignKey(nameof(ToLocalId))]
-        public PB_Location Tar_Location { get; set; }
 
         /// <summary>
         /// 目标托盘ID
         /// </summary>
         public String ToTrayId { get; set; }
 
-        [ForeignKey(nameof(ToTrayId))]
-        public PB_Tray Tar_Tray { get; set; }
-
         /// <summary>
         /// 目标托盘分区
         /// </summary>
         public String ToZoneId { get; set; }
-
-        [ForeignKey(nameof(ToZoneId))]
-        public PB_TrayZone Tar_TrayZone { get; set; }
 
         /// <summary>
         /// 条码
@@ -87,10 +68,6 @@ namespace Coldairarrow.Entity.TD
         /// </summary>
         public String MaterialId { get; set; }
 
-        [ForeignKey(nameof(MaterialId))]
-        public PB_Material PB_Material { get; set; }
-
-
         /// <summary>
         /// 批次号
         /// </summary>
@@ -99,17 +76,22 @@ namespace Coldairarrow.Entity.TD
         /// <summary>
         /// 单价
         /// </summary>
-        public Double? Price { get; set; }
+        public Double Price { get; set; }
+
+        /// <summary>
+        /// 库存数量
+        /// </summary>
+        public Double LocalNum { get; set; }
 
         /// <summary>
         /// 移库数量
         /// </summary>
-        public Double? LocalNum { get; set; }
+        public double MoveNum { get; set; }
 
         /// <summary>
         /// 总额
         /// </summary>
-        public Double? Amount { get; set; }
+        public Double Amount { get; set; }
 
         /// <summary>
         /// 创建时间
