@@ -34,7 +34,7 @@ namespace Coldairarrow.Business.TD
             if (search.Status.HasValue)
                 where = where.And(w => w.Status == search.Status.Value);
             if (!search.Code.IsNullOrEmpty())
-                where = where.And(w => w.Code.Contains(search.Code));
+                where = where.And(w => w.Code.Contains(search.Code) || w.RefCode.Contains(search.Code));
             if (!search.OutType.IsNullOrEmpty())
                 where = where.And(w => w.OutType == search.OutType);
             if (search.OutStorTimeStart.HasValue)

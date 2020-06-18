@@ -61,7 +61,7 @@ namespace Coldairarrow.Api.Controllers.PB
             //{
             //    await _pB_AreaMaterialBus.UpdateDataAsync(data);
             //}
-            await _pB_AreaMaterialBus.AddDataAsync(data);
+             await _pB_AreaMaterialBus.AddDataAsync(data);
         }
 
         [HttpPost]
@@ -75,13 +75,13 @@ namespace Coldairarrow.Api.Controllers.PB
 
             foreach (var i in targetKeys)
             {
-                foreach (var s in list)
-                {
-                    if (i == s.MaterialId)
-                    {
-                        list.Remove(s);
-                    }
-                }
+                //foreach (var s in list)
+                //{
+                //    if (i == s.MaterialId)
+                //    {
+                //        list.Remove(s);
+                //    }
+                //}
                 addList.Add(new PB_AreaMaterial()
                 {
                     AreaId = areaId,
@@ -90,8 +90,9 @@ namespace Coldairarrow.Api.Controllers.PB
             }
             var deleteList = list.Select(s => s.MaterialId).ToList();
 
-            await _pB_AreaMaterialBus.AddDataAsync(addList);
             await _pB_AreaMaterialBus.DeleteDataAsync(areaId, deleteList);
+            await _pB_AreaMaterialBus.AddDataAsync(addList);
+           
         }
 
         [HttpPost]
