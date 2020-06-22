@@ -14,23 +14,31 @@
           </enum-select>
         </a-form-model-item>
         <a-form-model-item label="参数编号" prop="Code">
-          <a-input v-model="entity.Code" autocomplete="off" />
+          <a-input v-model="entity.Code" autocomplete="off" />      
         </a-form-model-item>
         <a-form-model-item label="参数名称" prop="Name">
           <a-input v-model="entity.Name" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="参数值" prop="Val">
-          <a-input v-model="entity.Val" autocomplete="off" />
-        </a-form-model-item>   
+          <a-radio-group v-model="entity.Val" button-style="solid">
+              <a-radio-button value="1">
+                启用
+              </a-radio-button>
+              <a-radio-button value="0">
+                停用
+              </a-radio-button>
+            </a-radio-group>
+          <!-- <a-input v-model="entity.Val" autocomplete="off" /> -->
+        </a-form-model-item> 
         <a-form-model-item label="描述" prop="Remarks">
           <a-textarea v-model="entity.Remarks" autocomplete="off" />
         </a-form-model-item>     
-        <a-form-model-item label="是否系统必须" prop="IsSystem">
+        <!-- <a-form-model-item label="是否系统必须" prop="IsSystem">
           <a-select v-model="entity.IsSystem" autocomplete="off" @select="DataTypeChange" disabled>
             <a-select-option :value="false" >否</a-select-option>
             <a-select-option :value="true" >是</a-select-option>
           </a-select>
-        </a-form-model-item>        
+        </a-form-model-item>         -->
       </a-form-model>
     </a-spin>
   </a-modal>
@@ -55,14 +63,19 @@ export default {
       visible: false,
       loading: false,
       entity: {},
-      rules: {},
+      rules: {
+        Type: [{ required: true, message: '请选择参数类型', trigger: 'change' }],
+        Code: [{ required: true, message: '请输入参数编号', trigger: 'blur' }],    
+        Name: [{ required: true, message: '请输入参数名称', trigger: 'blur' }],    
+        Val: [{ required: true, message: '请输入参数值', trigger: 'change' }], 
+      },
       title: ''
     }
   },
   methods: {
     init() {
       this.visible = true
-       this.entity = {}
+       this.entity = {Val:"1"}
       this.entity.IsSystem= false
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()

@@ -43,6 +43,17 @@
         </template>
       </span>
 
+      <span slot="Val" slot-scope="text, record">
+        <template>
+          <a-tag v-if="record.Val==='0'" color="red">
+          停用
+          </a-tag>
+          <a-tag v-else color="green">
+          启用
+          </a-tag>
+        </template>
+      </span>
+      
       <span slot="action" slot-scope="text, record">
         <template>
           <a v-if="record.IsSystem===false" @click="handleEdit(record.Id)">编辑</a>
@@ -61,15 +72,15 @@ import EditForm from './EditForm'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 
 const filterYesOrNo = (value, row, index) => {
-  if (value) return '是'
-  else return '否'
+  if (value) return '启用'
+  else return '停用'
 }
 
 const columns = [
   { title: '参数类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
   { title: '参数编号', dataIndex: 'Code', width: '20%' },
   { title: '参数名称', dataIndex: 'Name', width: '15%' },
-  { title: '参数值', dataIndex: 'Val', width: '6%' },
+  { title: '参数值', dataIndex: 'Val', width: '6%',  scopedSlots: { customRender: 'Val' } },
   { title: '描述', dataIndex: 'Remarks', width: '25%' },
   { title: '系统必须', dataIndex: 'IsSystem', width: '8%',  scopedSlots: { customRender: 'IsSystem' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }

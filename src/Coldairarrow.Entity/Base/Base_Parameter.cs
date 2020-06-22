@@ -35,7 +35,7 @@ namespace Coldairarrow.Entity.Base
         /// <summary>
         /// 参数值
         /// </summary>
-        public String Val { get; set; }
+        public string Val { get; set; }
 
         /// <summary>
         /// 描述
