@@ -119,7 +119,7 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm(this.areaId)
+      this.$refs.editForm.openForm(this.areaId,"添加关联物料")
     },
     // handleEdit(id) {
     //   this.$refs.editForm.openForm(id)

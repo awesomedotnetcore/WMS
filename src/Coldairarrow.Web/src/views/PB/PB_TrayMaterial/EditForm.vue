@@ -50,6 +50,7 @@ export default {
     },
     openForm(typeId, title) {
       var thisObj = this
+      this.title = title
       this.typeId = typeId
       this.init()
       this.getMaterialList()

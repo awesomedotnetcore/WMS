@@ -48,6 +48,7 @@ export default {
     openForm(id, title) {
       this.areaId = id
       this.init()
+      this.title = title
       this.getMaterialList()
       if (id) {
         this.loading = true

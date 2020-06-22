@@ -48,6 +48,7 @@ export default {
     openForm(id, title) {
      this.typeId = id
       this.init()
+      this.title = title
       this.getLocationList()
       if (id) {
         this.loading = true

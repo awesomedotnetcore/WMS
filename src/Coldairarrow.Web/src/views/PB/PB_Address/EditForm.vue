@@ -53,7 +53,7 @@ export default {
     },
     openForm(id, CusId, SupId) {
       this.init()
-
+      this.title = "新增地址"
       this.entity.CusId = CusId
       this.entity.SupId = SupId
       this.entity.IsEnable = true

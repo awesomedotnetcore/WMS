@@ -9,7 +9,7 @@
   >
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="BarCode" prop="BarCode">
+        <a-form-model-item label="条码编号" prop="BarCode">
           <a-input v-model="entity.BarCode" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="条码类型" prop="BarCodeTypeId">
@@ -52,6 +52,7 @@ export default {
     },
     openForm(id, title) {
       this.init()
+      this.title = title
       this.getBarCodeTypeList()
 
       if (id) {

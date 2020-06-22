@@ -94,10 +94,10 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm(this.filters.TypeId)
+      this.$refs.editForm.openForm(this.filters.TypeId,null,"新增条码规则")
     },
     handleEdit(id) {
-      this.$refs.editForm.openForm(this.filters.TypeId, id)
+      this.$refs.editForm.openForm(this.filters.TypeId, id,"编辑条码规则")
     },
     handleDelete(ids) {
       var thisObj = this

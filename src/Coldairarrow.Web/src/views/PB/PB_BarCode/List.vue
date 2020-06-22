@@ -65,8 +65,8 @@ const columns = [
   { title: '条码编号', dataIndex: 'BarCode', width: '10%' },
   { title: '条码类型编号', dataIndex: 'BarCodeType.Code', width: '10%' },
   { title: '条码类型名称', dataIndex: 'BarCodeType.Name', width: '10%' },
-  { title: '创建人ID', dataIndex: 'CreatorId', width: '10%' },
-  { title: '创建时间', dataIndex: 'CreateTime', width: '10%' },
+  // { title: '创建人ID', dataIndex: 'CreatorId', width: '10%' },
+  // { title: '创建时间', dataIndex: 'CreateTime', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -128,10 +128,10 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm()
+      this.$refs.editForm.openForm(null,"新增条码")
     },
     handleEdit(id) {
-      this.$refs.editForm.openForm(id)
+      this.$refs.editForm.openForm(id,"编辑条码")
     },
     handleDelete(ids) {
       var thisObj = this
