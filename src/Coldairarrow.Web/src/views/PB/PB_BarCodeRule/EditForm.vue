@@ -54,6 +54,7 @@ export default {
     },
     openForm(typeId, id, title) {
       this.init()
+      this.title = title
       this.entity.TypeId = typeId
       if (id) {
         this.loading = true

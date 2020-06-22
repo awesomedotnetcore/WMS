@@ -41,8 +41,8 @@
             </a-form-item>
           </a-col>
         </a-row>
-        <a-row>
-          <a-col :md="3" :sm="24">
+        <a-row :gutter="1">
+          <a-col :md="5" :sm="24">
             <a-form-item>
               <a-range-picker v-model="queryParam.RangeDate" :ranges="{ 
                   '本星期': [moment().startOf('week'), moment().endOf('week')]
@@ -60,7 +60,7 @@
               <a-input style="margin-left:18px" v-model="queryParam.RefCode" placeholder="关联单号" />
             </a-form-item>
           </a-col>
-          <a-col :md="13" :sm="24">
+          <a-col :md="4" :sm="24">
             <a-button type="primary" @click="() => {this.pagination.current = 1; this.getDataList()}">查询</a-button>
             <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
           </a-col>
@@ -93,7 +93,7 @@
           <a v-if="record.IsComplete===false" @click="handleEdit(record.Id)">编辑</a>
           <a-divider v-if="record.IsComplete===false" type="vertical" />
           <a v-if="record.Status!==1" @click="handleDelete([record.Id])">删除</a>
-          <a-divider v-if="record.Status!==1" type="vertical" />
+          <a-divider v-if="record.Status!==1" type="vertical" /><br>
           <a @click="handleCheck(record.Id)">盘差</a>
           <a-divider v-if="record.Status===0" type="vertical" />
           <a v-if="record.IsComplete===false" @click="handleReCheck(record.Id)">复核</a>
@@ -119,11 +119,11 @@ import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import moment from 'moment'
 
 const columns = [
-  { title: '盘点编码', dataIndex: 'Code', width: '10%' },
+  { title: '盘点编码', dataIndex: 'Code', width: '15%' },
   { title: '盘点类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
   { title: '盘点时间', dataIndex: 'CheckTime', width: '10%' },
   { title: '关联单号', dataIndex: 'RefCode', width: '10%' },
-  { title: '盘差状态', dataIndex: 'IsComplete', width: '10%', scopedSlots: { customRender: 'IsComplete' } },
+  { title: '盘差状态', dataIndex: 'IsComplete', width: '8%', scopedSlots: { customRender: 'IsComplete' } },
   { title: '审核状态', dataIndex: 'Status', width: '10%', scopedSlots: { customRender: 'Status' } },
   { title: '审核人', dataIndex: 'AuditUserId', width: '10%' },
   { title: '审核时间', dataIndex: 'AuditeTime', width: '10%' },
@@ -203,10 +203,10 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm()
+      this.$refs.editForm.openForm(null,"新增盘点")
     },
     handleEdit(id) {
-      this.$refs.editForm.openForm(id)
+      this.$refs.editForm.openForm(id,"编辑盘点")
     },
     handleDelete(ids) {
       var thisObj = this

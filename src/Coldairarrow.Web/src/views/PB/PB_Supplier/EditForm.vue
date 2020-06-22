@@ -83,7 +83,7 @@ export default {
     },
     openForm(id, title) {
       this.init()
-
+      this.title = title
       if (id) {
         this.loading = true
         this.$http.post('/PB/PB_Supplier/GetTheData', { id: id }).then(resJson => {

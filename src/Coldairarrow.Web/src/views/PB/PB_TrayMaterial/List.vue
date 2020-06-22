@@ -115,7 +115,7 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm(this.typeId)
+      this.$refs.editForm.openForm(this.typeId,"新增关联物料")
     },
     handleDelete(ids) {
       this.ids = ids

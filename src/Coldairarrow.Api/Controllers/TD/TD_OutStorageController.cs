@@ -87,6 +87,11 @@ namespace Coldairarrow.Api.Controllers.TD
             await _tD_OutStorageBus.DeleteDataAsync(ids);
         }
 
+        /// <summary>
+        /// 出库审核
+        /// </summary>
+        /// <param name="audit"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task Audit(AuditDTO audit)
         {

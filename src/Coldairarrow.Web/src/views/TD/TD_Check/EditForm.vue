@@ -8,10 +8,7 @@
     @cancel="()=>{this.visible=false}"
   >
     <a-spin :spinning="loading">
-      <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">      
-        <a-form-model-item label="盘点时间" prop="CheckTime">
-          <a-date-picker v-model="entity.CheckTime" show-time autocomplete="off"/>
-        </a-form-model-item>
+      <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
         <a-form-model-item label="盘点编码" prop="Code">
           <a-input v-model="entity.Code" autocomplete="off" :disabled="$para('CheckCode')=='1'" placeholder="系统自动生成">
                 <a-icon slot="prefix" type="scan" />
@@ -20,9 +17,12 @@
         <a-form-model-item label="关联单号" prop="RefCode">
           <a-input v-model="entity.RefCode" autocomplete="off" />
         </a-form-model-item>
+        <a-form-model-item label="盘点时间" prop="CheckTime">
+          <a-date-picker v-model="entity.CheckTime" show-time :style="{width:'100%'}" autocomplete="off"/>
+        </a-form-model-item>     
         <a-form-model-item label="盘点类型" prop="Type">
           <enum-select code="CheckType" v-model="entity.Type" :allowClear="true"></enum-select>
-        </a-form-model-item>
+        </a-form-model-item>              
         <a-form-model-item v-if="entity.Type==='Area'" label="货区" prop="CheckArea">
           <storarea-select v-model="CheckArea"></storarea-select>
         </a-form-model-item>
@@ -62,7 +62,10 @@ export default {
       visible: false,
       loading: false,
       entity: {},
-      rules: {},
+      rules: {
+        CheckTime: [{ required: true, message: '请输入盘点时间', trigger: 'change' }],
+        Type: [{ required: true, message: '请选择盘点类型', trigger: 'change' }],
+      },
       title: '',
       CheckArea:[],
       CheckMaterial:[]
@@ -78,7 +81,7 @@ export default {
     },
     openForm(id, title) {
       this.init()
-
+      this.title = title
       if (id) {
         this.loading = true
         this.$http.post('/TD/TD_Check/GetTheData', { id: id }).then(resJson => {

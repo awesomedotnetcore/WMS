@@ -125,7 +125,7 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm(this.typeId)
+      this.$refs.editForm.openForm(this.typeId,"添加关联货位")
     },
     // handleEdit(id) {
     //   this.$refs.editForm.openForm(id)
