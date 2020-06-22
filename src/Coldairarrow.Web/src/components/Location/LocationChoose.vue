@@ -69,7 +69,7 @@ export default {
     AllStorageSelect
   },
   mounted() {
-    this.getDataList()
+    
   },
   data() {
     return {
@@ -126,6 +126,7 @@ export default {
     },
     openChoose() {
       this.visible = true
+      this.getDataList()
     },
     handleChoose() {
       this.visible = false

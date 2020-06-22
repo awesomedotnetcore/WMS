@@ -2,12 +2,12 @@
   <div>
     <a-row>
       <a-col :span="20">
-        <a-select placeholder="选择托盘" :style="{width:'100%'}" :size="size" v-model="curValue" @select="onSelect" @search="handleSearch" :allowClear="true" :showSearch="true" :filterOption="false">
+        <a-select placeholder="选择托盘" :disabled="disabled" :style="{width:'100%'}" :size="size" v-model="curValue" @select="onSelect" @search="handleSearch" :allowClear="true" :showSearch="true" :filterOption="false">
           <a-select-option v-for="item in dataSource" :key="item.Id" :value="item.Id">{{ item.Name }}</a-select-option>
         </a-select>
       </a-col>
       <a-col :span="2">
-        <a-button type="primary" :size="size" @click="handleOpenChoose">
+        <a-button type="primary" :disabled="disabled" :size="size" @click="handleOpenChoose">
           <a-icon type="search" />
         </a-button>
       </a-col>
@@ -22,6 +22,7 @@ export default {
     materialId: { type: String, default: '', required: false },
     locartalId: { type: String, default: '', required: false },
     size: { type: String, default: 'default', required: false },
+    disabled: { type: Boolean, default: false, required: false },
     value: { type: String, required: false }
   },
   components: {
@@ -29,7 +30,6 @@ export default {
   },
   data() {
     return {
-      dropdownVisible: false,
       curValue: '',
       keyword: '',
       timeout: null,
@@ -53,6 +53,7 @@ export default {
   methods: {
     reload(q) {
       this.keyword = q
+      if (q === '' && (this.curValue === '' || this.curValue === undefined || this.curValue === null)) return false
       clearTimeout(this.timeout)
       this.timeout = setTimeout(() => {
         this.$http.post('/PB/PB_Tray/GetQueryData', { Id: this.curValue, Keyword: q, Take: 10, MaterialId: this.materialId, LocationId: this.locartalId })

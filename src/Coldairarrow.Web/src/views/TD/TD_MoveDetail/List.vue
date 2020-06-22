@@ -23,13 +23,13 @@
         <a-input-number size="small" :style="{width:'70px'}" :disabled="disabled" :value="text" :max="record.LocalNum" :min="1" @change="e=>handleValChange(e,'MoveNum',record)"></a-input-number>
       </template>
       <template slot="ToLocalId" slot-scope="text, record">
-        <local-select size="small" v-model="record.ToLocalId"></local-select>
+        <local-select size="small" v-model="record.ToLocalId" :disabled="disabled"></local-select>
       </template>
       <template slot="ToTrayId" slot-scope="text, record">
-        <tray-select size="small" v-model="record.ToTrayId" :locartalId="record.ToLocalId" :materialId="record.MaterialId"></tray-select>
+        <tray-select size="small" v-model="record.ToTrayId" :locartalId="record.ToLocalId" :materialId="record.MaterialId" :disabled="disabled"></tray-select>
       </template>
       <template slot="ToZoneId" slot-scope="text, record">
-        <zone-select size="small" v-model="record.ToZoneId" :trayId="record.ToTrayId"></zone-select>
+        <zone-select size="small" v-model="record.ToZoneId" :trayId="record.ToTrayId" :disabled="disabled"></zone-select>
       </template>
       <span slot="action" slot-scope="text, record">
         <template>

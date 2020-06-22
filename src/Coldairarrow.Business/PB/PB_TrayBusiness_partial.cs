@@ -19,6 +19,7 @@ namespace Coldairarrow.Business.PB
             : base(repository)
         {
             _ServiceProvider = svcProvider;
+            repository.HandleSqlLog = Console.WriteLine;
         }
         readonly IServiceProvider _ServiceProvider;
 
@@ -60,10 +61,12 @@ namespace Coldairarrow.Business.PB
             if (!search.Keyword.IsNullOrEmpty())
                 where = where.And(w => w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
 
-            if (!search.Id.IsNullOrEmpty())
-                where = where.Or(w => w.Id == search.Id);
 
-            return await q.Where(where).OrderBy(o => o.Name).Take(search.Take).ToListAsync();
+            var idWhere = LinqHelper.False<PB_Tray>();
+            if (!search.Id.IsNullOrEmpty())
+                idWhere = idWhere.Or(w => w.Id == search.Id);
+
+            return await q.Where(where).Where(idWhere).OrderBy(o => o.Name).Take(search.Take).ToListAsync();
         }
 
         public async Task AddDataAsync(PB_Tray data)
