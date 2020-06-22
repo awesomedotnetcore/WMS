@@ -2,12 +2,12 @@
   <div>
     <a-row>
       <a-col :md="20" :xs="20">
-        <a-select placeholder="选择货位" :style="{width:'100%'}" :size="size" v-model="curValue" @select="onSelect" @search="handleSearch" :allowClear="true" :showSearch="true" :filterOption="false">
+        <a-select placeholder="选择货位" :disabled="disabled" :style="{width:'100%'}" :size="size" v-model="curValue" @select="onSelect" @search="handleSearch" :allowClear="true" :showSearch="true" :filterOption="false">
           <a-select-option v-for="item in dataSource" :key="item.Id" :value="item.Id">{{ item.Name }}</a-select-option>
         </a-select>
       </a-col>
       <a-col :md="2" :xs="2">
-        <a-button type="primary" :size="size" @click="handleOpenChoose">
+        <a-button type="primary" :disabled="disabled" :size="size" @click="handleOpenChoose">
           <a-icon type="search" />
         </a-button>
       </a-col>
@@ -20,6 +20,7 @@ import LocationChoose from './LocationChoose'
 export default {
   props: {
     size: { type: String, default: 'default', required: false },
+    disabled: { type: Boolean, default: false, required: false },
     value: { type: String, default: '', required: false }
   },
   components: {
@@ -51,6 +52,7 @@ export default {
   methods: {
     reload(q) {
       this.keyword = q
+      if (q === '' && (this.curValue === '' || this.curValue === undefined || this.curValue === null)) return false
       clearTimeout(this.timeout)
       this.timeout = setTimeout(() => {
         this.$http.post('/PB/PB_Location/GetQueryData', { Id: this.curValue, Keyword: q, Take: 10 })

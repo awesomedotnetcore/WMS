@@ -1,5 +1,5 @@
 <template>
-  <a-select v-model="curValue" placeholder="托盘分区" :size="size" :style="{width:'100%'}" @select="handleSelected" v-bind="$attrs">
+  <a-select v-model="curValue" :disabled="disabled" placeholder="托盘分区" :size="size" :style="{width:'100%'}" @select="handleSelected" v-bind="$attrs">
     <a-select-option v-for="item in listData" :key="item.Id" :value="item.Id">{{ item.Name }}({{ item.Code }})</a-select-option>
   </a-select>
 </template>
@@ -9,6 +9,7 @@ export default {
     typeId: { type: String, default: '', required: false },
     trayId: { type: String, default: '', required: false },
     size: { type: String, default: 'default', required: false },
+    disabled: { type: Boolean, default: false, required: false },
     value: { type: String, required: true }
   },
   data() {
