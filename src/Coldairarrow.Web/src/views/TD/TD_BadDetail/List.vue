@@ -4,7 +4,7 @@
       <a-button type="primary" icon="plus" @click="hanldleAdd()" :disabled="disabled">增加</a-button>
       <a-button type="primary" icon="minus" @click="handleDelete(selectedRows)" :disabled="!hasSelected() || disabled">删除</a-button>
     </div>
-    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :pagination="false" :dataSource="data" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
       <template slot="BadNum" slot-scope="text, record">
         <a-input-number size="small" :disabled="disabled" :value="text" :max="record.LocalNum" :min="1" @change="e=>handleValChange(e,'BadNum',record)"></a-input-number>
       </template>
