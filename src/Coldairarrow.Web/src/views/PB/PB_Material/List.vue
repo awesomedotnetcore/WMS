@@ -48,16 +48,16 @@
 import EditForm from './EditForm'
 import MaterialTypeSelect from '../../../components/PB/MaterialTypeSelect'
 const columns = [
-  { title: '物料名称', dataIndex: 'Name', width: '15%' },
-  { title: '物料编码', dataIndex: 'Code', width: '10%' },
-  { title: '物料简称', dataIndex: 'SimpleName', width: '10%' },
-  { title: '物料类别', dataIndex: 'MaterialType.Name', width: '10%' },
-  { title: '条码', dataIndex: 'BarCode', width: '10%' },
+  { title: '物料名称', dataIndex: 'Name'},
+  { title: '物料编码', dataIndex: 'Code'},
+  { title: '物料简称', dataIndex: 'SimpleName' },
+  { title: '物料类别', dataIndex: 'MaterialType.Name' },
+  { title: '条码', dataIndex: 'BarCode' },
   { title: '物料规格', dataIndex: 'Spec' },
-  { title: '单位', dataIndex: 'Measure.Name', width: '5%' },
-  { title: '上限数量', dataIndex: 'Max', width: '5%' },
-  { title: '下限数量', dataIndex: 'Min', width: '5%' },
-  { title: '操作', dataIndex: 'action', width: '10%', scopedSlots: { customRender: 'action' } }
+  { title: '单位', dataIndex: 'Measure.Name' },
+  { title: '上限数量', dataIndex: 'Max'},
+  { title: '下限数量', dataIndex: 'Min' },
+  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {

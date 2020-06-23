@@ -78,15 +78,15 @@ const filterDate = (value, row, index) => {
   }
 }
 const columns = [
-  { title: '移库单号', dataIndex: 'Code', width: '10%' },
-  { title: '移库时间', dataIndex: 'MoveTime', customRender: filterDate, width: '10%' },
-  { title: '移库类型', dataIndex: 'Type', scopedSlots: { customRender: 'Type' }, width: '10%' },
-  { title: '移库数量', dataIndex: 'MoveNum', width: '5%' },
-  { title: '关联单号', dataIndex: 'RefCode', width: '10%' },
-  { title: '状态', dataIndex: 'Status', scopedSlots: { customRender: 'Status' }, width: '10%' },
-  { title: '制单人', dataIndex: 'CreateUser.RealName', width: '10%' },
-  { title: '审核人', dataIndex: 'AuditUser.RealName', width: '10%' },
-  { title: '审核时间', dataIndex: 'AuditeTime', customRender: filterDate, width: '10%' },
+  { title: '移库单号', dataIndex: 'Code'},
+  { title: '移库时间', dataIndex: 'MoveTime', customRender: filterDate },
+  { title: '移库类型', dataIndex: 'Type', scopedSlots: { customRender: 'Type' }},
+  { title: '移库数量', dataIndex: 'MoveNum' },
+  { title: '关联单号', dataIndex: 'RefCode'},
+  { title: '状态', dataIndex: 'Status', scopedSlots: { customRender: 'Status' }},
+  { title: '制单人', dataIndex: 'CreateUser.RealName'},
+  { title: '审核人', dataIndex: 'AuditUser.RealName' },
+  { title: '审核时间', dataIndex: 'AuditeTime', customRender: filterDate },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 

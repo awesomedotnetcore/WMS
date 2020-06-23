@@ -53,12 +53,12 @@ import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import AddressList from '../../PB/PB_Address/List'
 const columns = [
-  { title: '客户编号', dataIndex: 'Code', width: '10%' },
-  { title: '客户名称', dataIndex: 'Name', width: '30%' },
-  { title: '客户类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
-  { title: '电话', dataIndex: 'Phone', width: '10%' },
-  { title: '传真', dataIndex: 'Fax', width: '10%' },
-  { title: 'Email', dataIndex: 'Email', width: '15%' },
+  { title: '客户编号', dataIndex: 'Code'},
+  { title: '客户名称', dataIndex: 'Name'},
+  { title: '客户类型', dataIndex: 'Type', scopedSlots: { customRender: 'Type' } },
+  { title: '电话', dataIndex: 'Phone' },
+  { title: '传真', dataIndex: 'Fax' },
+  { title: 'Email', dataIndex: 'Email' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 

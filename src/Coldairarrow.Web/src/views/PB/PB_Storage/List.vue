@@ -124,14 +124,14 @@ import RackList from '../PB_Rack/List'
 
 
 const columns = [
-  { title: '仓库编号', dataIndex: 'Code', width: '10%' },
-  { title: '仓库名称', dataIndex: 'Name', width: '10%' },
-  { title: '仓库类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
-  { title: '托盘管理', dataIndex: 'IsTray', width: '10%', scopedSlots: { customRender: 'IsTray' }},
-  { title: '托盘分区管理', dataIndex: 'IsZone', width: '10%', scopedSlots: { customRender: 'IsZone'}},
-  { title: '仓库状态', dataIndex: 'Disable', width: '10%' , scopedSlots: { customRender: 'Disable' }},
-  { title: '默认仓库', dataIndex: 'IsDefault', width: '8%' , scopedSlots: { customRender: 'IsDefault' } },
-  { title: '备注', dataIndex: 'Remarks', width: '10%' },
+  { title: '仓库编号', dataIndex: 'Code'},
+  { title: '仓库名称', dataIndex: 'Name' },
+  { title: '仓库类型', dataIndex: 'Type', scopedSlots: { customRender: 'Type' } },
+  { title: '托盘管理', dataIndex: 'IsTray',  scopedSlots: { customRender: 'IsTray' }},
+  { title: '托盘分区管理', dataIndex: 'IsZone', scopedSlots: { customRender: 'IsZone'}},
+  { title: '仓库状态', dataIndex: 'Disable' , scopedSlots: { customRender: 'Disable' }},
+  { title: '默认仓库', dataIndex: 'IsDefault', scopedSlots: { customRender: 'IsDefault' } },
+  { title: '备注', dataIndex: 'Remarks'},
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 

@@ -33,13 +33,13 @@
 import EditForm from './EditForm'
 
 const columns = [
-  { title: '编号', dataIndex: 'Code', width: '10%' },
-  { title: '名称', dataIndex: 'Name', width: '15%' },
-  { title: '地址', dataIndex: 'Address', width: '30%' },
+  { title: '编号', dataIndex: 'Code'},
+  { title: '名称', dataIndex: 'Name'},
+  { title: '地址', dataIndex: 'Address'},
   { title: '备注', dataIndex: 'Remarks' },
-  { title: '状态', dataIndex: 'IsEnable', width: '7%', scopedSlots: { customRender: 'IsEnable' } },
-  { title: '默认', dataIndex: 'IsDefault', width: '7%', scopedSlots: { customRender: 'IsDefault' } },
-  { title: '操作', dataIndex: 'action', width: '10%', scopedSlots: { customRender: 'action' } }
+  { title: '状态', dataIndex: 'IsEnable', scopedSlots: { customRender: 'IsEnable' } },
+  { title: '默认', dataIndex: 'IsDefault',  scopedSlots: { customRender: 'IsDefault' } },
+  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
