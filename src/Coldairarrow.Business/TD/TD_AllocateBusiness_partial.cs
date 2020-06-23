@@ -17,75 +17,78 @@ using System.Threading.Tasks;
 
 namespace Coldairarrow.Business.TD
 {
-    public partial class TD_BadBusiness : BaseBusiness<TD_Bad>, ITD_BadBusiness, ITransientDependency
+    public partial class TD_AllocateBusiness : BaseBusiness<TD_Allocate>, ITD_AllocateBusiness, ITransientDependency
     {
         IServiceProvider _ServiceProvider { get; }
-        public TD_BadBusiness(IRepository repository, IServiceProvider svcProvider)
+        public TD_AllocateBusiness(IRepository repository, IServiceProvider svcProvider)
             : base(repository)
         {
             _ServiceProvider = svcProvider;
         }
 
-        public async Task<PageResult<TD_Bad>> GetDataListAsync(TD_BadPageInput input)
+        public async Task<PageResult<TD_Allocate>> GetDataListAsync(TD_AllocatePageInput input)
         {
             var q = GetIQueryable()
+                .Include(i => i.ToStorage)
                 .Include(i => i.CreateUser)
                 .Include(i => i.AuditUser)
                 .Where(w => w.StorId == input.StorId);
-            var where = LinqHelper.True<TD_Bad>();
+            var where = LinqHelper.True<TD_Allocate>();
             var search = input.Search;
 
             if (!search.Code.IsNullOrEmpty())
                 where = where.And(w => w.Code.Contains(search.Code) || w.RefCode.Contains(search.Code));
             if (!search.Type.IsNullOrEmpty())
                 where = where.And(w => w.Type == search.Type);
-            if (search.BadTimeStart.HasValue)
-                where = where.And(w => w.BadTime >= search.BadTimeStart.Value);
-            if (search.BadTimeEnd.HasValue)
-                where = where.And(w => w.BadTime <= search.BadTimeEnd.Value);
+            if (!search.ToStorId.IsNullOrEmpty())
+                where = where.And(w => w.ToStorId == search.ToStorId);
+            if (search.AllocateTimeStart.HasValue)
+                where = where.And(w => w.AllocateTime >= search.AllocateTimeStart.Value);
+            if (search.AllocateTimeEnd.HasValue)
+                where = where.And(w => w.AllocateTime <= search.AllocateTimeEnd.Value);
             if (search.Status.HasValue)
                 where = where.And(w => w.Status == search.Status.Value);
 
             return await q.Where(where).GetPageResultAsync(input);
         }
 
-        public async Task<TD_Bad> GetTheDataAsync(string id)
+        public async Task<TD_Allocate> GetTheDataAsync(string id)
         {
             return await this.GetIQueryable()
-                .Include(i => i.BadDetails)
+                .Include(i => i.AllocateDetails)
                     .ThenInclude(t => t.FromLocal)
-                .Include(i => i.BadDetails)
+                .Include(i => i.AllocateDetails)
                     .ThenInclude(t => t.Material)
-                .Include(i => i.BadDetails)
-                    .ThenInclude(t => t.Tray)
-                .Include(i => i.BadDetails)
-                    .ThenInclude(t => t.TrayZone)
+                .Include(i => i.AllocateDetails)
+                    .ThenInclude(t => t.FromTray)
+                .Include(i => i.AllocateDetails)
+                    .ThenInclude(t => t.FromZone)
                 .SingleOrDefaultAsync(w => w.Id == id);
         }
 
         [Transactional]
-        public async Task AddDataAsync(TD_Bad data)
+        public async Task AddDataAsync(TD_Allocate data)
         {
             if (data.Code.IsNullOrEmpty())
             {
                 var codeSvc = _ServiceProvider.GetRequiredService<IPB_BarCodeTypeBusiness>();
-                data.Code = await codeSvc.Generate("TD_Bad");
+                data.Code = await codeSvc.Generate("TD_Allocate");
             }
-            data.BadNum = data.BadDetails.Sum(s => s.BadNum);
-            data.TotalAmt = data.BadDetails.Sum(s => s.Amount);
+            data.AllocateNum = data.AllocateDetails.Sum(s => s.AllocateNum);
+            data.Amount = data.AllocateDetails.Sum(s => s.Amount);
             await InsertAsync(data);
         }
 
         [Transactional]
-        public async Task UpdateDataAsync(TD_Bad data)
+        public async Task UpdateDataAsync(TD_Allocate data)
         {
-            var curDetail = data.BadDetails;
-            var listDetail = await Service.GetIQueryable<TD_BadDetail>().Where(w => w.BadId == data.Id).ToListAsync();
+            var curDetail = data.AllocateDetails;
+            var listDetail = await Service.GetIQueryable<TD_AllocateDetail>().Where(w => w.AllocateId == data.Id).ToListAsync();
 
             var curIds = curDetail.Select(s => s.Id).ToList();
             var dbIds = listDetail.Select(s => s.Id).ToList();
             var deleteIds = dbIds.Except(curIds).ToList();
-            var detailSvc = _ServiceProvider.GetRequiredService<ITD_BadDetailBusiness>();
+            var detailSvc = _ServiceProvider.GetRequiredService<ITD_AllocateDetailBusiness>();
             if (deleteIds.Count > 0)
                 await detailSvc.DeleteDataAsync(deleteIds);
 
@@ -103,8 +106,8 @@ namespace Coldairarrow.Business.TD
                 await detailSvc.UpdateDataAsync(listUpdates);
             }
 
-            data.BadNum = data.BadDetails.Sum(s => s.BadNum);
-            data.TotalAmt = data.BadDetails.Sum(s => s.Amount);
+            data.AllocateNum = data.AllocateDetails.Sum(s => s.AllocateNum);
+            data.Amount = data.AllocateDetails.Sum(s => s.Amount);
 
             await UpdateAsync(data);
         }
@@ -116,16 +119,16 @@ namespace Coldairarrow.Business.TD
         {
             var now = DateTime.Now;
             var data = await this.GetTheDataAsync(audit.Id);
-            var detail = data.BadDetails;
+            var detail = data.AllocateDetails;
             var dicMUnit = detail.GroupBy(s => new { s.Material.Id, s.Material.MeasureId }).Select(s => new { s.Key.Id, s.Key.MeasureId }).ToDictionary(k => k.Id, v => v.MeasureId);
 
-            PB_Location defaultBadLocation = null;
-            // 找到默认的报损货位
+            PB_Location defaultAllocateLocation = null;
+            // 找到目标仓库的默认待入库位
             {
                 var localSvc = Service.GetIQueryable<PB_Location>();
                 //这里要修改，要从货区的类型来过滤
-                defaultBadLocation = await localSvc.Where(w => w.StorId == audit.StorId && w.PB_StorArea.Type == "Bad").OrderByDescending(o => o.IsDefault).FirstOrDefaultAsync();
-                if (defaultBadLocation == null) throw new Exception("没有指定默认报损货位");
+                defaultAllocateLocation = await localSvc.Where(w => w.StorId == data.ToStorId && w.PB_StorArea.Type == "In").OrderByDescending(o => o.IsDefault).FirstOrDefaultAsync();
+                if (defaultAllocateLocation == null) throw new Exception("没有找到目标仓库默认待入库位");
             }
 
             var lmSvc = _ServiceProvider.GetRequiredService<IIT_LocalMaterialBusiness>();
@@ -133,16 +136,16 @@ namespace Coldairarrow.Business.TD
 
             // 原库位出库
             {
-                var badGroup = detail
-                    .GroupBy(w => new { w.FromLocalId, w.TrayId, w.ZoneId, w.MaterialId, w.BatchNo, w.BarCode })
-                    .Select(s => new { s.Key.FromLocalId, s.Key.TrayId, s.Key.ZoneId, s.Key.MaterialId, s.Key.BatchNo, s.Key.BarCode, BadNum = s.Sum(o => o.BadNum) })
+                var AllocateGroup = detail
+                    .GroupBy(w => new { w.FromLocalId, w.FromTrayId, w.FromZoneId, w.MaterialId, w.BatchNo, w.BarCode })
+                    .Select(s => new { s.Key.FromLocalId, s.Key.FromTrayId, s.Key.FromZoneId, s.Key.MaterialId, s.Key.BatchNo, s.Key.BarCode, AllocateNum = s.Sum(o => o.AllocateNum) })
                     .ToList();
-                var localIds = badGroup.Select(s => s.FromLocalId).ToList();
-                var trayIds = badGroup.Select(s => s.TrayId).ToList();
-                var zoneIds = badGroup.Select(s => s.ZoneId).ToList();
-                var materialIds = badGroup.Select(s => s.MaterialId).ToList();
-                var batchNos = badGroup.Select(s => s.BatchNo).ToList();
-                var barCodes = badGroup.Select(s => s.BarCode).ToList();
+                var localIds = AllocateGroup.Select(s => s.FromLocalId).ToList();
+                var trayIds = AllocateGroup.Select(s => s.FromTrayId).ToList();
+                var zoneIds = AllocateGroup.Select(s => s.FromZoneId).ToList();
+                var materialIds = AllocateGroup.Select(s => s.MaterialId).ToList();
+                var batchNos = AllocateGroup.Select(s => s.BatchNo).ToList();
+                var barCodes = AllocateGroup.Select(s => s.BarCode).ToList();
 
                 //修改库存
                 {
@@ -164,51 +167,51 @@ namespace Coldairarrow.Business.TD
                     var listDel = new List<IT_LocalMaterial>();
                     var listUpdate = new List<IT_LocalMaterial>();
                     var listRB = new List<IT_RecordBook>();
-                    foreach (var bad in badGroup)
+                    foreach (var Allocate in AllocateGroup)
                     {
-                        var lm = listLM.Where(w => w.StorId == audit.StorId && w.LocalId == bad.FromLocalId && w.TrayId == bad.TrayId && w.ZoneId == bad.ZoneId && w.MaterialId == bad.MaterialId && w.BatchNo == bad.BatchNo && w.BarCode == bad.BarCode).SingleOrDefault();
-                        if (lm == null || lm.Num < bad.BadNum) throw new Exception($"没有找到对应物料的库存数据/库存数量不够({bad.BadNum})");
-                        if (lm.Num == bad.BadNum) listDel.Add(lm);
-                        else if (lm.Num > bad.BadNum)
+                        var lm = listLM.Where(w => w.StorId == audit.StorId && w.LocalId == Allocate.FromLocalId && w.TrayId == Allocate.FromTrayId && w.ZoneId == Allocate.FromZoneId && w.MaterialId == Allocate.MaterialId && w.BatchNo == Allocate.BatchNo && w.BarCode == Allocate.BarCode).SingleOrDefault();
+                        if (lm == null || lm.Num < Allocate.AllocateNum) throw new Exception($"没有找到对应物料的库存数据/库存数量不够({Allocate.AllocateNum})");
+                        if (lm.Num == Allocate.AllocateNum) listDel.Add(lm);
+                        else if (lm.Num > Allocate.AllocateNum)
                         {
-                            lm.Num -= bad.BadNum;
+                            lm.Num -= Allocate.AllocateNum;
                             listUpdate.Add(lm);
                         }
-                        // 增加（报损-出）BadOut台帐
+                        // 增加（调拨-出）AllocateOut台帐
                         var rbOut = new IT_RecordBook()
                         {
                             Id = IdHelper.GetId(),
                             RefCode = data.Code,
-                            Type = "BadOut",
+                            Type = "AllocateOut",
                             FromStorId = audit.StorId,
-                            FromLocalId = bad.FromLocalId,
-                            ToStorId = audit.StorId,
-                            ToLocalId = defaultBadLocation.Id,
-                            MaterialId = bad.MaterialId,
-                            MeasureId = dicMUnit[bad.MaterialId],
-                            BarCode = bad.BarCode,
-                            BatchNo = bad.BatchNo,
-                            Num = bad.BadNum,
+                            FromLocalId = Allocate.FromLocalId,
+                            ToStorId = data.ToStorId,
+                            ToLocalId = defaultAllocateLocation.Id,
+                            MaterialId = Allocate.MaterialId,
+                            MeasureId = dicMUnit[Allocate.MaterialId],
+                            BarCode = Allocate.BarCode,
+                            BatchNo = Allocate.BatchNo,
+                            Num = Allocate.AllocateNum,
                             CreateTime = audit.AuditTime,
                             CreatorId = audit.AuditUserId,
                             Deleted = false
                         };
                         listRB.Add(rbOut);
-                        // 增加（报损-入）BadOut台帐
+                        // 增加（调拨-入）AllocateIn台帐
                         var rbIn = new IT_RecordBook()
                         {
                             Id = IdHelper.GetId(),
                             RefCode = data.Code,
-                            Type = "BadIn",
+                            Type = "AllocateIn",
                             FromStorId = audit.StorId,
-                            FromLocalId = bad.FromLocalId,
-                            ToStorId = audit.StorId,
-                            ToLocalId = defaultBadLocation.Id,
-                            MaterialId = bad.MaterialId,
-                            MeasureId = dicMUnit[bad.MaterialId],
-                            BarCode = bad.BarCode,
-                            BatchNo = bad.BatchNo,
-                            Num = bad.BadNum,
+                            FromLocalId = Allocate.FromLocalId,
+                            ToStorId = data.ToStorId,
+                            ToLocalId = defaultAllocateLocation.Id,
+                            MaterialId = Allocate.MaterialId,
+                            MeasureId = dicMUnit[Allocate.MaterialId],
+                            BarCode = Allocate.BarCode,
+                            BatchNo = Allocate.BatchNo,
+                            Num = Allocate.AllocateNum,
                             CreateTime = audit.AuditTime,
                             CreatorId = audit.AuditUserId,
                             Deleted = false
@@ -243,25 +246,25 @@ namespace Coldairarrow.Business.TD
 
                     var listDel = new List<IT_LocalDetail>();
                     var listUpdate = new List<IT_LocalDetail>();
-                    foreach (var bad in badGroup)
+                    foreach (var Allocate in AllocateGroup)
                     {
-                        var badNum = bad.BadNum;
-                        var lds = listLD.Where(w => w.StorId == audit.StorId && w.LocalId == bad.FromLocalId && w.TrayId == bad.TrayId && w.ZoneId == bad.ZoneId && w.MaterialId == bad.MaterialId && w.BatchNo == bad.BatchNo && w.BarCode == bad.BarCode).OrderBy(o => o.InTime).ToList();
-                        if (lds.Sum(s => s.Num) < badNum) throw new Exception($"库存(明细)数量不够({bad.BadNum})");
+                        var AllocateNum = Allocate.AllocateNum;
+                        var lds = listLD.Where(w => w.StorId == audit.StorId && w.LocalId == Allocate.FromLocalId && w.TrayId == Allocate.FromTrayId && w.ZoneId == Allocate.FromZoneId && w.MaterialId == Allocate.MaterialId && w.BatchNo == Allocate.BatchNo && w.BarCode == Allocate.BarCode).OrderBy(o => o.InTime).ToList();
+                        if (lds.Sum(s => s.Num) < AllocateNum) throw new Exception($"库存(明细)数量不够({Allocate.AllocateNum})");
                         foreach (var item in lds)
                         {
-                            if (item.Num <= badNum)
+                            if (item.Num <= AllocateNum)
                             {
                                 listDel.Add(item);
-                                badNum -= item.Num.GetValueOrDefault(0);
+                                AllocateNum -= item.Num.GetValueOrDefault(0);
                             }
                             else
                             {
-                                item.Num -= badNum;
+                                item.Num -= AllocateNum;
                                 listUpdate.Add(item);
-                                badNum = 0;
+                                AllocateNum = 0;
                             }
-                            if (badNum == 0) break;
+                            if (AllocateNum == 0) break;
                         }
                     }
                     if (listDel.Count > 0) await ldSvc.DeleteDataAsync(listDel);
@@ -269,18 +272,18 @@ namespace Coldairarrow.Business.TD
                 }
             }
 
-            //默认报损库位入库
+            //默认调拨库位入库
             {
-                var badGroup = detail
+                var AllocateGroup = detail
                     .GroupBy(w => new { w.MaterialId, w.BatchNo, w.BarCode })
-                    .Select(s => new { s.Key.MaterialId, s.Key.BatchNo, s.Key.BarCode, BadNum = s.Sum(o => o.BadNum) })
+                    .Select(s => new { s.Key.MaterialId, s.Key.BatchNo, s.Key.BarCode, AllocateNum = s.Sum(o => o.AllocateNum) })
                     .ToList();
-                var materialIds = badGroup.Select(s => s.MaterialId).ToList();
-                var batchNos = badGroup.Select(s => s.BatchNo).ToList();
-                var barCodes = badGroup.Select(s => s.BarCode).ToList();
+                var materialIds = AllocateGroup.Select(s => s.MaterialId).ToList();
+                var batchNos = AllocateGroup.Select(s => s.BatchNo).ToList();
+                var barCodes = AllocateGroup.Select(s => s.BarCode).ToList();
                 // 修改库存
                 {
-                    var lmQuery = Service.GetIQueryable<IT_LocalMaterial>().Where(w => w.StorId == audit.StorId && w.LocalId == defaultBadLocation.Id);
+                    var lmQuery = Service.GetIQueryable<IT_LocalMaterial>().Where(w => w.StorId == data.ToStorId && w.LocalId == defaultAllocateLocation.Id);
                     if (materialIds.Count > 0)
                         lmQuery = lmQuery.Where(w => materialIds.Contains(w.MaterialId));
                     if (batchNos.Count > 0)
@@ -291,12 +294,12 @@ namespace Coldairarrow.Business.TD
 
                     var listAdd = new List<IT_LocalMaterial>();
                     var listUpdate = new List<IT_LocalMaterial>();
-                    foreach (var bad in badGroup)
+                    foreach (var Allocate in AllocateGroup)
                     {
-                        var lm = listLM.Where(w => w.StorId == audit.StorId && w.LocalId == defaultBadLocation.Id && w.MaterialId == bad.MaterialId && w.BatchNo == bad.BatchNo && w.BarCode == bad.BarCode).SingleOrDefault();
+                        var lm = listLM.Where(w => w.StorId == data.ToStorId && w.LocalId == defaultAllocateLocation.Id && w.MaterialId == Allocate.MaterialId && w.BatchNo == Allocate.BatchNo && w.BarCode == Allocate.BarCode).SingleOrDefault();
                         if (lm != null)
                         {
-                            lm.Num += bad.BadNum;
+                            lm.Num += Allocate.AllocateNum;
                             listUpdate.Add(lm);
                         }
                         else
@@ -304,17 +307,17 @@ namespace Coldairarrow.Business.TD
                             lm = new IT_LocalMaterial()
                             {
                                 Id = IdHelper.GetId(),
-                                StorId = audit.StorId,
-                                LocalId = defaultBadLocation.Id,
-                                MaterialId = bad.MaterialId,
-                                MeasureId = dicMUnit[bad.MaterialId],
-                                BatchNo = bad.BatchNo,
-                                BarCode = bad.BarCode,
-                                Num = bad.BadNum
+                                StorId = data.ToStorId,
+                                LocalId = defaultAllocateLocation.Id,
+                                MaterialId = Allocate.MaterialId,
+                                MeasureId = dicMUnit[Allocate.MaterialId],
+                                BatchNo = Allocate.BatchNo,
+                                BarCode = Allocate.BarCode,
+                                Num = Allocate.AllocateNum
                             };
                             listAdd.Add(lm);
                         }
-                        
+
                     }
                     if (listAdd.Count > 0) await lmSvc.AddDataAsync(listAdd);
                     if (listUpdate.Count > 0) await lmSvc.UpdateDataAsync(listUpdate);
@@ -323,22 +326,22 @@ namespace Coldairarrow.Business.TD
                 // 增加库存明细
                 {
                     var listAdd = new List<IT_LocalDetail>();
-                    foreach (var bad in detail)
+                    foreach (var Allocate in detail)
                     {
                         var ld = new IT_LocalDetail();
                         ld.Id = IdHelper.GetId();
-                        ld.StorId = audit.StorId;
-                        ld.LocalId = defaultBadLocation.Id;
-                        ld.MaterialId = bad.MaterialId;
-                        ld.MeasureId = dicMUnit[bad.MaterialId];
-                        ld.BatchNo = bad.BatchNo;
-                        ld.BarCode = bad.BarCode;
+                        ld.StorId = data.ToStorId;
+                        ld.LocalId = defaultAllocateLocation.Id;
+                        ld.MaterialId = Allocate.MaterialId;
+                        ld.MeasureId = dicMUnit[Allocate.MaterialId];
+                        ld.BatchNo = Allocate.BatchNo;
+                        ld.BarCode = Allocate.BarCode;
                         ld.InTime = audit.AuditTime;
-                        ld.Amount = bad.Amount;
+                        ld.Amount = Allocate.Amount;
                         ld.CreateTime = now;
                         ld.CreatorId = audit.AuditUserId;
-                        ld.Price = bad.Price;
-                        ld.Num = bad.BadNum;
+                        ld.Price = Allocate.Price;
+                        ld.Num = Allocate.AllocateNum;
                         ld.Deleted = false;
                         listAdd.Add(ld);
                     }
@@ -353,6 +356,7 @@ namespace Coldairarrow.Business.TD
             // 修改主数据状态
             {
                 data.Status = 1;
+                data.ToLocalId = defaultAllocateLocation.Id;
                 data.AuditeTime = audit.AuditTime;
                 data.AuditUserId = audit.AuditUserId;
                 await UpdateAsync(data);

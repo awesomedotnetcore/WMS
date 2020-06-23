@@ -1,6 +1,4 @@
-﻿using Coldairarrow.Entity.Base_Manage;
-using Coldairarrow.Entity.PB;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -38,15 +36,16 @@ namespace Coldairarrow.Entity.TD
         /// 仓库ID
         /// </summary>
         public String StorId { get; set; }
-        [ForeignKey(nameof(StorId))]
-        public PB_Storage Src_Storage { get; set; }
 
         /// <summary>
         /// 目标仓库ID
         /// </summary>
         public String ToStorId { get; set; }
-        [ForeignKey(nameof(ToStorId))]
-        public PB_Storage Tar_Storage { get; set; }
+
+        /// <summary>
+        /// 目标货位ID
+        /// </summary>
+        public String ToLocalId { get; set; }
 
         /// <summary>
         /// 关联单号
@@ -67,8 +66,6 @@ namespace Coldairarrow.Entity.TD
         /// 设备ID
         /// </summary>
         public String EquId { get; set; }
-        [ForeignKey(nameof(EquId))]
-        public PB_Equipment PB_Equipment { get; set; }
 
         /// <summary>
         /// 状态(0待审核;1审核通过;2审核失败)
@@ -84,8 +81,6 @@ namespace Coldairarrow.Entity.TD
         /// 审核人ID
         /// </summary>
         public String AuditUserId { get; set; }
-        [ForeignKey(nameof(AuditUserId))]
-        public Base_User AuditUser { get; set; }
 
         /// <summary>
         /// 审核时间
@@ -107,14 +102,5 @@ namespace Coldairarrow.Entity.TD
         /// </summary>
         public Boolean Deleted { get; set; }
 
-    }
-
-    public enum AllocateStatus
-    {
-        待审核 = 0,
-        审核通过,
-        审核失败,
-        待调拨,
-        已调拨
     }
 }

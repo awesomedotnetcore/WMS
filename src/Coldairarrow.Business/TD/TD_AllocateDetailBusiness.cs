@@ -22,44 +22,18 @@ namespace Coldairarrow.Business.TD
         public async Task<PageResult<TD_AllocateDetail>> GetDataListAsync(PageInput<ConditionDTO> input)
         {
             var q = GetIQueryable();
+            var where = LinqHelper.True<TD_AllocateDetail>();
             var search = input.Search;
-            q = q.Include(i => i.Src_Location).Include(i => i.Src_Tray).Include(i => i.Src_TrayZone)
-                .Include(i => i.Tar_Storage).Include(i => i.Tar_Location).Include(i => i.PB_Material);
 
             //筛选
-            if (!search.Keyword.IsNullOrEmpty())
+            if (!search.Condition.IsNullOrEmpty() && !search.Keyword.IsNullOrEmpty())
             {
-                q = q.Where(w => w.AllocateId == search.Keyword);
+                var newWhere = DynamicExpressionParser.ParseLambda<TD_AllocateDetail, bool>(
+                    ParsingConfig.Default, false, $@"{search.Condition}.Contains(@0)", search.Keyword);
+                where = where.And(newWhere);
             }
 
-            return await q.GetPageResultAsync(input);
-        }
-
-        public async Task<List<TD_AllocateDetail>> GetDataListAsync(List<string> ids)
-        {
-            var q = GetIQueryable();
-
-            //筛选
-            if (ids.Count > 0)
-            {
-                q = q.Where(w => ids.Contains(w.Id));
-            }
-
-            return await q.ToListAsync();
-        }
-
-        public async Task<List<TD_AllocateDetail>> GetDataListByAllocateIdsAsync(List<string> allocateIds)
-        {
-            var q = GetIQueryable();
-            q = q.Include(i => i.PB_Material);
-
-            //筛选
-            if (allocateIds.Count > 0)
-            {
-                q = q.Where(w => allocateIds.Contains(w.AllocateId));
-            }
-
-            return await q.ToListAsync();
+            return await q.Where(where).GetPageResultAsync(input);
         }
 
         public async Task<TD_AllocateDetail> GetTheDataAsync(string id)
@@ -72,20 +46,9 @@ namespace Coldairarrow.Business.TD
             await InsertAsync(data);
         }
 
-        public async Task AddDatasAsync(List<TD_AllocateDetail> datas)
-        {
-            await InsertAsync(datas);
-        }
-
-
         public async Task UpdateDataAsync(TD_AllocateDetail data)
         {
             await UpdateAsync(data);
-        }
-
-        public async Task UpdateDatasAsync(List<TD_AllocateDetail> datas)
-        {
-            await InsertAsync(datas);
         }
 
         public async Task DeleteDataAsync(List<string> ids)

@@ -2,120 +2,98 @@
   <a-card :bordered="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button
-        type="primary"
-        icon="minus"
-        @click="handleDelete(selectedRowKeys)"
-        :disabled="!hasSelected()"
-        :loading="loading"
-      >删除</a-button>
+      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
+      <a-divider type="vertical" />
+      <a-radio-group v-model="queryParam.Status" button-style="solid" @change="getDataList">
+        <a-radio-button :value="null">全部</a-radio-button>
+        <a-radio-button :value="0">待审核</a-radio-button>
+        <a-radio-button :value="1">审核通过</a-radio-button>
+        <a-radio-button :value="2">审核失败</a-radio-button>
+      </a-radio-group>
     </div>
 
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
-          <a-col :md="4" :sm="24">
+          <a-col :md="2" :sm="24">
             <a-form-item>
-              <enum-select code="AllocateStorageType" v-model="queryParam.Type"></enum-select>
+              <enum-select code="AllocateType" v-model="queryParam.Type"></enum-select>
+            </a-form-item>
+          </a-col>
+          <a-col :md="2" :sm="24">
+            <a-form-item>
+              <a-input v-model="queryParam.Code" placeholder="调拨/关联单号" />
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="请输入调拨单号或关联单号" />
+              <storage-select v-model="queryParam.ToStorId" placeholder="调拨仓库"></storage-select>
             </a-form-item>
           </a-col>
-          <a-col :md="8" :sm="24">
-            <div class="table-operator">
-              <a-button type="primary" @click="() => {this.pagination.current = 1; this.getDataList()}">查询</a-button>
-              <a-button @click="() => (queryParam = {})">重置</a-button>
-              <a-button type="primary" icon="check" @click="approveData(selectedRowKeys)">审批</a-button>
-              <a-button type="primary" icon="close" @click="rejectData(selectedRowKeys)">驳回</a-button>
-            </div>
+          <a-col :md="4" :sm="24">
+            <a-form-item>
+              <a-range-picker @change="onAllocateTimeChange" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="6" :sm="24">
+            <a-button type="primary" @click="() => {this.pagination.current = 1; this.getDataList()}">查询</a-button>
+            <a-button style="margin-left: 8px" @click="() => (queryParam = { Status: null})">重置</a-button>
           </a-col>
         </a-row>
       </a-form>
     </div>
 
-    <a-table
-      ref="table"
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      :bordered="true"
-      size="small"
-    >
-      <template slot="type" slot-scope="text">
-        <enum-name code="AllocateStorageType" :value="text"></enum-name>
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+      <template slot="Type" slot-scope="text">
+        <enum-name code="AllocateType" :value="text"></enum-name>
+      </template>
+      <template slot="Status" slot-scope="text, record">
+        <a-tag v-if="record.Status===0" color="blue">待审核</a-tag>
+        <a-tag v-else-if="record.Status===1" color="green">审核通过</a-tag>
+        <a-tag v-else-if="record.Status===2" color="red">审核失败</a-tag>
+        <a-tag v-else color="blue">待审核</a-tag>
       </template>
       <span slot="action" slot-scope="text, record">
         <template>
-          <a v-if="record.Status==0" @click="handleEdit(record.Id)">编辑</a>
-          <a-divider v-if="record.Status==0" type="vertical" />
-          <a v-if="record.Status==0" @click="handleDelete([record.Id])">删除</a>
-          <a-divider v-if="record.Status==0" type="vertical" />
-          <a @click="openDetailForm(record.Id, record.Status)">查看明细</a>
-        </template>
-      </span>
-      <span slot="ConvertStatus" slot-scope="text, record">
-        <template>
-          <a-tag v-if="record.Status===0">待审核</a-tag>
-          <a-tag v-else-if="record.Status===1" color="green">审核通过</a-tag>
-          <a-tag v-else-if="record.Status===2" color="red">审核失败</a-tag>
-          <a-tag v-else-if="record.Status===3" color="blue">待调拨</a-tag>
-          <a-tag v-else-if="record.Status===4" color="blue">已调拨</a-tag>
-          <a-tag v-else color="red">未知状态</a-tag>
+          <a v-if="record.Status===0" @click="handleEdit(record.Id)">编辑</a>
+          <a-divider v-if="record.Status===0" type="vertical" />
+          <a v-if="record.Status===0" @click="handleDelete([record.Id])">删除</a>
+          <a-divider v-if="record.Status===0" type="vertical" />
+          <a @click="handleShow(record.Id)">{{ record.Status === 0?'审核':'查看' }}</a>
         </template>
       </span>
     </a-table>
 
-    <edit-form ref="editForm" :parentObj="this"></edit-form>
-    <detail-form ref="detailForm" :parentObj="this"></detail-form>
+    <edit-form ref="editForm" :disabled="disabled" :parentObj="this"></edit-form>
   </a-card>
 </template>
 
 <script>
-import EditForm from './EditForm'
+import moment from 'moment'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
-import DetailForm from '../TD_AllocateDetail/List'
+import EditForm from './EditForm'
+import StorageSelect from '../../../components/Storage/AllStorageSelect'
 
-// const ConvertStatus = (value, row, index) => {
-//   if (value == 0) {
-//     return '待审核'
-//   } else if (value == 1) {
-//     return '审核通过'
-//   } else if (value == 2) {
-//     return '审核失败'
-//   } else if (value == 3) {
-//     return '待调拨'
-//   } else if (value == 4) {
-//     return '已调拨'
-//   } else {
-//     return '未知状态'
-//   }
-// }
-
+const filterDate = (value, row, index) => {
+  if (value) {
+    return moment(value).format('YYYY-MM-DD')
+  } else {
+    return ' '
+  }
+}
 const columns = [
-  { title: '调拨单号', dataIndex: 'Code', width: '15%' },
-  { title: '调拨时间', dataIndex: 'AllocateTime', width: '10%' },
-  { title: '调拨类型', dataIndex: 'Type', width: '5%', scopedSlots: { customRender: 'type' } },
-  { title: '目标仓库', dataIndex: 'Tar_Storage.Name', width: '8%' },
-  { title: '关联单号', dataIndex: 'RefCode', width: '8%' },
-  { title: '调拨数量', dataIndex: 'AllocateNum', width: '5%' },
-  {
-    title: '状态',
-    dataIndex: 'Status',
-    width: '5%',
-    scopedSlots: { customRender: 'ConvertStatus' }
-  },
-  { title: '备注', dataIndex: 'Remarks', width: '10%' },
-  { title: '审核人', dataIndex: 'AuditUser.RealName', width: '5%' },
-  { title: '审核时间', dataIndex: 'AuditeTime', width: '10%' },
+  { title: '调拨单号', dataIndex: 'Code' },
+  { title: '调拨时间', dataIndex: 'AllocateTime', customRender: filterDate },
+  { title: '调拨类型', dataIndex: 'Type', scopedSlots: { customRender: 'Type' } },
+  { title: '调拨仓库', dataIndex: 'ToStorage.Name' },
+  { title: '调拨数量', dataIndex: 'AllocateNum' },
+  { title: '总金额', dataIndex: 'Amount' },
+  { title: '状态', dataIndex: 'Status', scopedSlots: { customRender: 'Status' } },
+  { title: '制单人', dataIndex: 'CreateUser.RealName' },
+  { title: '审核人', dataIndex: 'AuditUser.RealName' },
+  { title: '审核时间', dataIndex: 'AuditeTime', customRender: filterDate },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -124,7 +102,7 @@ export default {
     EditForm,
     EnumName,
     EnumSelect,
-    DetailForm
+    StorageSelect
   },
   mounted() {
     this.getDataList()
@@ -138,11 +116,12 @@ export default {
         showTotal: (total, range) => `总数:${total} 当前:${range[0]}-${range[1]}`
       },
       filters: {},
-      sorter: { field: 'Id', order: 'asc' },
+      sorter: { field: 'CreateTime', order: 'desc' },
       loading: false,
       columns,
-      queryParam: {},
-      selectedRowKeys: []
+      queryParam: { Status: null },
+      selectedRowKeys: [],
+      disabled: false
     }
   },
   methods: {
@@ -173,17 +152,31 @@ export default {
           this.pagination = pagination
         })
     },
-    onSelectChange(selectedRowKeys) {
-      this.selectedRowKeys = selectedRowKeys
+    onSelectChange(selectedRowKeys, selectedRows) {
+      var ids = []
+      selectedRows.forEach((val, index, arr) => {
+        if (val.Status === 0) ids.push(val.Id)
+      })
+      this.selectedRowKeys = ids
     },
     hasSelected() {
       return this.selectedRowKeys.length > 0
     },
+    onAllocateTimeChange(dates, dateStrings) {
+      this.queryParam.AllocateTimeStart = dateStrings[0]
+      this.queryParam.AllocateTimeEnd = dateStrings[1]
+    },
     hanldleAdd() {
-      this.$refs.editForm.openForm(null, '新增')
+      this.disabled = false
+      this.$refs.editForm.openForm()
     },
     handleEdit(id) {
-      this.$refs.editForm.openForm(id, '编辑')
+      this.disabled = false
+      this.$refs.editForm.openForm(id)
+    },
+    handleShow(id) {
+      this.disabled = true
+      this.$refs.editForm.openForm(id)
     },
     handleDelete(ids) {
       var thisObj = this
@@ -203,29 +196,6 @@ export default {
               }
             })
           })
-        }
-      })
-    },
-    openDetailForm(allocateId, state) {
-      this.$refs.detailForm.openDrawer(allocateId, state)
-    },
-    approveData(ids) {
-      var thisObj = this
-      this.$http.post('/TD/TD_Allocate/ApproveDatas', ids).then(resJson => {
-        if (resJson.Success) {
-          thisObj.$message.success('操作成功!')
-        } else {
-          thisObj.$message.error(resJson.Msg)
-        }
-      })
-    },
-    rejectData(ids) {
-      var thisObj = this
-      this.$http.post('/TD/TD_Allocate/RejectDatas', ids).then(resJson => {
-        if (resJson.Success) {
-          thisObj.$message.success('操作成功!')
-        } else {
-          thisObj.$message.error(resJson.Msg)
         }
       })
     }
