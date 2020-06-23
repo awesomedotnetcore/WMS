@@ -41,10 +41,10 @@
 import EditForm from './EditForm'
 
 const columns = [
-  { title: '物料分类名称', dataIndex: 'title', width: '15%' },
-  { title: '物料分类编码', dataIndex: 'Code', width: '15%' },
+  { title: '物料分类名称', dataIndex: 'title'},
+  { title: '物料分类编码', dataIndex: 'Code' },
   { title: '备注', dataIndex: 'Remark' },
-  { title: '操作', dataIndex: 'action', width: '15%', scopedSlots: { customRender: 'action' } }
+  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {

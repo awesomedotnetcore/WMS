@@ -50,12 +50,12 @@ const filterYesOrNo = (value, row, index) => {
   else return '停用'
 }
 const columns = [
-  { title: '托盘号', dataIndex: 'Code', width: '15%' },
-  { title: '托盘名称', dataIndex: 'Name', width: '15%' },
-  { title: '托盘类型', dataIndex: 'PB_TrayType.Name', width: '10%' },
-  { title: '启用日期', dataIndex: 'StartTime', width: '10%' },
-  { title: '托盘状态', dataIndex: 'Status', width: '10%', customRender: filterYesOrNo },
-  { title: '货位', dataIndex: 'PB_Location.Name', width: '10%' },
+  { title: '托盘号', dataIndex: 'Code'},
+  { title: '托盘名称', dataIndex: 'Name' },
+  { title: '托盘类型', dataIndex: 'PB_TrayType.Name' },
+  { title: '启用日期', dataIndex: 'StartTime' },
+  { title: '托盘状态', dataIndex: 'Status', customRender: filterYesOrNo },
+  { title: '货位', dataIndex: 'PB_Location.Name' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
