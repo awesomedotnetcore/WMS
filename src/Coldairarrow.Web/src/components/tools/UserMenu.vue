@@ -64,8 +64,10 @@ export default {
           OperatorCache.clear()
           ParameterCache.clear()
           localStorage.clear()
-          location.reload()
+          // location.reload()
           // that.$router.push({ path: '/user/login' })
+          // that.$router.go(0)
+          that.$router.replace({ path: '/Home/Login' })
         }
       })
     },

@@ -1,7 +1,7 @@
 <template>
   <a-card :bordered="false">
     <div>
-      <p>中南智能智能仓库管理系统</p>
+      <p>中南智能仓库管理系统</p>
       <p>
         使用技术栈：<br />
         后端：采用.NET Core平台，ASP.NET Core3.0，C#语言（使用反射等高级技术），Entity

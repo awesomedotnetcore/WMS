@@ -2,31 +2,16 @@
   <div class="main">
     <a-spin :spinning="loading">
       <a-form id="formLogin" class="user-layout-login" ref="formLogin" :form="form" @submit="handleSubmit">
-        <a-tabs
-          :activeKey="customActiveKey"
-          :tabBarStyle="{ textAlign: 'center', borderBottom: 'unset' }"
-          @change="handleTabClick"
-        >
+        <a-tabs :activeKey="customActiveKey" :tabBarStyle="{ textAlign: 'center', borderBottom: 'unset' }" @change="handleTabClick">
           <a-tab-pane key="tab1" tab="账号密码登录">
             <a-form-item>
-              <a-input
-                size="large"
-                type="text"
-                placeholder="请输入用户名"
-                v-decorator="['userName', { rules: [{ required: true, message: '请输入用户名' }] }]"
-              >
+              <a-input size="large" type="text" placeholder="请输入用户名" v-decorator="['userName', { rules: [{ required: true, message: '请输入用户名' }] }]">
                 <a-icon slot="prefix" type="user" :style="{ color: 'rgba(0,0,0,.25)' }" />
               </a-input>
             </a-form-item>
 
             <a-form-item>
-              <a-input
-                size="large"
-                type="password"
-                autocomplete="false"
-                placeholder="请输入密码"
-                v-decorator="['password', { rules: [{ required: true, message: '请输入密码' }] }]"
-              >
+              <a-input size="large" type="password" autocomplete="false" placeholder="请输入密码" v-decorator="['password', { rules: [{ required: true, message: '请输入密码' }] }]">
                 <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }" />
               </a-input>
             </a-form-item>
