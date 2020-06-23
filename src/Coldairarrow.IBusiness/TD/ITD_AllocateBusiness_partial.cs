@@ -18,6 +18,7 @@ namespace Coldairarrow.Business.TD
     {
         public string Type { get; set; }
         public string Code { get; set; }
+        public string ToStorId { get; set; }
         public DateTime? AllocateTimeStart { get; set; }
         public DateTime? AllocateTimeEnd { get; set; }
         public int? Status { get; set; }

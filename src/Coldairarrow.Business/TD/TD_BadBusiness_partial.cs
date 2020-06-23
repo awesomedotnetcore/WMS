@@ -280,7 +280,7 @@ namespace Coldairarrow.Business.TD
                 var barCodes = badGroup.Select(s => s.BarCode).ToList();
                 // 修改库存
                 {
-                    var lmQuery = Service.GetIQueryable<IT_LocalMaterial>().Where(w => w.LocalId == defaultBadLocation.Id);
+                    var lmQuery = Service.GetIQueryable<IT_LocalMaterial>().Where(w => w.StorId == audit.StorId && w.LocalId == defaultBadLocation.Id);
                     if (materialIds.Count > 0)
                         lmQuery = lmQuery.Where(w => materialIds.Contains(w.MaterialId));
                     if (batchNos.Count > 0)

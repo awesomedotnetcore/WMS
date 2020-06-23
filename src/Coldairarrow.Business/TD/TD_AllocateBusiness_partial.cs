@@ -29,6 +29,7 @@ namespace Coldairarrow.Business.TD
         public async Task<PageResult<TD_Allocate>> GetDataListAsync(TD_AllocatePageInput input)
         {
             var q = GetIQueryable()
+                .Include(i => i.ToStorage)
                 .Include(i => i.CreateUser)
                 .Include(i => i.AuditUser)
                 .Where(w => w.StorId == input.StorId);
@@ -39,6 +40,8 @@ namespace Coldairarrow.Business.TD
                 where = where.And(w => w.Code.Contains(search.Code) || w.RefCode.Contains(search.Code));
             if (!search.Type.IsNullOrEmpty())
                 where = where.And(w => w.Type == search.Type);
+            if (!search.ToStorId.IsNullOrEmpty())
+                where = where.And(w => w.ToStorId == search.ToStorId);
             if (search.AllocateTimeStart.HasValue)
                 where = where.And(w => w.AllocateTime >= search.AllocateTimeStart.Value);
             if (search.AllocateTimeEnd.HasValue)
@@ -269,7 +272,7 @@ namespace Coldairarrow.Business.TD
                 }
             }
 
-            //默认报损库位入库
+            //默认调拨库位入库
             {
                 var AllocateGroup = detail
                     .GroupBy(w => new { w.MaterialId, w.BatchNo, w.BarCode })
@@ -280,7 +283,7 @@ namespace Coldairarrow.Business.TD
                 var barCodes = AllocateGroup.Select(s => s.BarCode).ToList();
                 // 修改库存
                 {
-                    var lmQuery = Service.GetIQueryable<IT_LocalMaterial>().Where(w => w.LocalId == defaultAllocateLocation.Id);
+                    var lmQuery = Service.GetIQueryable<IT_LocalMaterial>().Where(w => w.StorId == data.ToStorId && w.LocalId == defaultAllocateLocation.Id);
                     if (materialIds.Count > 0)
                         lmQuery = lmQuery.Where(w => materialIds.Contains(w.MaterialId));
                     if (batchNos.Count > 0)
@@ -293,7 +296,7 @@ namespace Coldairarrow.Business.TD
                     var listUpdate = new List<IT_LocalMaterial>();
                     foreach (var Allocate in AllocateGroup)
                     {
-                        var lm = listLM.Where(w => w.StorId == audit.StorId && w.LocalId == defaultAllocateLocation.Id && w.MaterialId == Allocate.MaterialId && w.BatchNo == Allocate.BatchNo && w.BarCode == Allocate.BarCode).SingleOrDefault();
+                        var lm = listLM.Where(w => w.StorId == data.ToStorId && w.LocalId == defaultAllocateLocation.Id && w.MaterialId == Allocate.MaterialId && w.BatchNo == Allocate.BatchNo && w.BarCode == Allocate.BarCode).SingleOrDefault();
                         if (lm != null)
                         {
                             lm.Num += Allocate.AllocateNum;
@@ -304,7 +307,7 @@ namespace Coldairarrow.Business.TD
                             lm = new IT_LocalMaterial()
                             {
                                 Id = IdHelper.GetId(),
-                                StorId = audit.StorId,
+                                StorId = data.ToStorId,
                                 LocalId = defaultAllocateLocation.Id,
                                 MaterialId = Allocate.MaterialId,
                                 MeasureId = dicMUnit[Allocate.MaterialId],

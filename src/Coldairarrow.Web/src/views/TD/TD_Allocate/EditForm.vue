@@ -20,11 +20,16 @@
       </a-row>
       <a-row>
         <a-col :span="8">
+          <a-form-model-item label="调拨仓库" prop="ToStorId">
+            <storage-select v-model="entity.ToStorId" placeholder="调拨仓库" :disabled="disabled"></storage-select>
+          </a-form-model-item>
+        </a-col>
+        <a-col :span="8">
           <a-form-model-item label="关联单号" prop="RefCode">
             <a-input v-model="entity.RefCode" autocomplete="off" :disabled="disabled" />
           </a-form-model-item>
         </a-col>
-        <a-col :span="16">
+        <a-col :span="8">
           <a-form-model-item label="备注" prop="Remarks">
             <a-input v-model="entity.Remarks" autocomplete="off" :disabled="disabled" />
           </a-form-model-item>
@@ -45,10 +50,12 @@
 import moment from 'moment'
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import AllocateDetail from '../TD_AllocateDetail/List'
+import StorageSelect from '../../../components/Storage/AllStorageSelect'
 export default {
   components: {
     EnumSelect,
-    AllocateDetail
+    AllocateDetail,
+    StorageSelect
   },
   props: {
     parentObj: { type: Object, required: true },
@@ -66,6 +73,7 @@ export default {
       listDetail: [],
       rules: {
         AllocateTime: [{ required: true, message: '请选择调拨时间', trigger: 'change' }],
+        ToStorId: [{ required: true, message: '请选择调拨仓库', trigger: 'change' }],
         Type: [{ required: true, message: '请选择调拨类型', trigger: 'change' }]
       }
     }

@@ -16,14 +16,19 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
-          <a-col :md="4" :sm="24">
+          <a-col :md="2" :sm="24">
             <a-form-item>
               <enum-select code="AllocateType" v-model="queryParam.Type"></enum-select>
             </a-form-item>
           </a-col>
-          <a-col :md="4" :sm="24">
+          <a-col :md="2" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.Code" placeholder="调拨/关联单号" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="4" :sm="24">
+            <a-form-item>
+              <storage-select v-model="queryParam.ToStorId" placeholder="调拨仓库"></storage-select>
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
@@ -69,6 +74,7 @@ import moment from 'moment'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import EditForm from './EditForm'
+import StorageSelect from '../../../components/Storage/AllStorageSelect'
 
 const filterDate = (value, row, index) => {
   if (value) {
@@ -78,15 +84,16 @@ const filterDate = (value, row, index) => {
   }
 }
 const columns = [
-  { title: '调拨单号', dataIndex: 'Code', width: '10%' },
-  { title: '调拨时间', dataIndex: 'AllocateTime', customRender: filterDate, width: '10%' },
-  { title: '调拨类型', dataIndex: 'Type', scopedSlots: { customRender: 'Type' }, width: '10%' },
-  { title: '调拨数量', dataIndex: 'AllocateNum', width: '5%' },
-  { title: '总金额', dataIndex: 'Amount', width: '5%' },
-  { title: '状态', dataIndex: 'Status', scopedSlots: { customRender: 'Status' }, width: '10%' },
-  { title: '制单人', dataIndex: 'CreateUser.RealName', width: '10%' },
-  { title: '审核人', dataIndex: 'AuditUser.RealName', width: '10%' },
-  { title: '审核时间', dataIndex: 'AuditeTime', customRender: filterDate, width: '10%' },
+  { title: '调拨单号', dataIndex: 'Code' },
+  { title: '调拨时间', dataIndex: 'AllocateTime', customRender: filterDate },
+  { title: '调拨类型', dataIndex: 'Type', scopedSlots: { customRender: 'Type' } },
+  { title: '调拨仓库', dataIndex: 'ToStorage.Name' },
+  { title: '调拨数量', dataIndex: 'AllocateNum' },
+  { title: '总金额', dataIndex: 'Amount' },
+  { title: '状态', dataIndex: 'Status', scopedSlots: { customRender: 'Status' } },
+  { title: '制单人', dataIndex: 'CreateUser.RealName' },
+  { title: '审核人', dataIndex: 'AuditUser.RealName' },
+  { title: '审核时间', dataIndex: 'AuditeTime', customRender: filterDate },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -94,7 +101,8 @@ export default {
   components: {
     EditForm,
     EnumName,
-    EnumSelect
+    EnumSelect,
+    StorageSelect
   },
   mounted() {
     this.getDataList()
