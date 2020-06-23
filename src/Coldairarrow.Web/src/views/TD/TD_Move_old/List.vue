@@ -84,17 +84,17 @@ import DetailForm from '../TD_MoveDetail/List'
 // }
 
 const columns = [
-  { title: '移库单号', dataIndex: 'Code', width: '10%' },
-  { title: '移库时间', dataIndex: 'MoveTime', width: '10%' },
-  { title: '移库类型', dataIndex: 'Type', width: '5%', scopedSlots: { customRender: 'type' } },
-  { title: '关联单号', dataIndex: 'RefCode', width: '10%' },
-  { title: '数量', dataIndex: 'MoveNum', width: '5%' },
-  { title: '总额', dataIndex: 'TotalAmt', width: '5%' },
-  { title: '设备', dataIndex: 'PB_Equipment.Name', width: '5%' },
-  { title: '状态', dataIndex: 'Status', width: '5%', scopedSlots: { customRender: 'ConvertStatus' } },
-  { title: '备注', dataIndex: 'Remarks', width: '10%' },
-  { title: '审核人', dataIndex: 'AuditUser.RealName', width: '5%' },
-  { title: '审核时间', dataIndex: 'AuditeTime', width: '10%' },
+  { title: '移库单号', dataIndex: 'Code'},
+  { title: '移库时间', dataIndex: 'MoveTime'},
+  { title: '移库类型', dataIndex: 'Type', scopedSlots: { customRender: 'type' } },
+  { title: '关联单号', dataIndex: 'RefCode'},
+  { title: '数量', dataIndex: 'MoveNum'},
+  { title: '总额', dataIndex: 'TotalAmt'},
+  { title: '设备', dataIndex: 'PB_Equipment.Name' },
+  { title: '状态', dataIndex: 'Status', scopedSlots: { customRender: 'ConvertStatus' } },
+  { title: '备注', dataIndex: 'Remarks' },
+  { title: '审核人', dataIndex: 'AuditUser.RealName'},
+  { title: '审核时间', dataIndex: 'AuditeTime' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 

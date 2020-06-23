@@ -25,30 +25,30 @@ import EditForm from './EditForm'
 
 const columns1 = [
   { title: '物料', dataIndex: 'Material.Name', scopedSlots: { customRender: 'Material' } },
-  { title: '货位', dataIndex: 'Location.Name', width: '15%' },
-  { title: '条码', dataIndex: 'BarCode', width: '15%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '15%' },
-  { title: '数量', dataIndex: 'Num', width: '5%' },
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, width: '10%' }
+  { title: '货位', dataIndex: 'Location.Name' },
+  { title: '条码', dataIndex: 'BarCode'},
+  { title: '批次号', dataIndex: 'BatchNo' },
+  { title: '数量', dataIndex: 'Num'},
+  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 const columns2 = [
   { title: '物料', dataIndex: 'Material.Name', scopedSlots: { customRender: 'Material' } },
-  { title: '货位', dataIndex: 'Location.Name', width: '10%' },
-  { title: '托盘', dataIndex: 'Tray.Name', width: '10%' },
-  { title: '条码', dataIndex: 'BarCode', width: '10%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
-  { title: '数量', dataIndex: 'Num', width: '5%' },
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, width: '10%' }
+  { title: '货位', dataIndex: 'Location.Name'},
+  { title: '托盘', dataIndex: 'Tray.Name' },
+  { title: '条码', dataIndex: 'BarCode'},
+  { title: '批次号', dataIndex: 'BatchNo'},
+  { title: '数量', dataIndex: 'Num' },
+  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }}
 ]
 const columns3 = [
   { title: '物料', dataIndex: 'Material.Name', scopedSlots: { customRender: 'Material' } },
-  { title: '货位', dataIndex: 'Location.Name', width: '10%' },
-  { title: '托盘', dataIndex: 'Tray.Name', width: '10%' },
-  { title: '托盘分区', dataIndex: 'TrayZone.Name', width: '10%' },
-  { title: '条码', dataIndex: 'BarCode', width: '10%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
-  { title: '数量', dataIndex: 'Num', width: '5%' },
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, width: '10%' }
+  { title: '货位', dataIndex: 'Location.Name' },
+  { title: '托盘', dataIndex: 'Tray.Name'},
+  { title: '托盘分区', dataIndex: 'TrayZone.Name'},
+  { title: '条码', dataIndex: 'BarCode'},
+  { title: '批次号', dataIndex: 'BatchNo'},
+  { title: '数量', dataIndex: 'Num' },
+  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }}
 ]
 
 export default {

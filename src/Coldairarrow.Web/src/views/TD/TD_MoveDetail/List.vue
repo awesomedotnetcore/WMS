@@ -49,29 +49,29 @@ import ZoneSelect from '../../../components/Tray/ZoneSelect'
 const columns1 = [
   { title: '原货位', dataIndex: 'FromLocal', scopedSlots: { customRender: 'From' } },
   { title: '物料', dataIndex: 'Material', scopedSlots: { customRender: 'Material' } },
-  { title: '库存', dataIndex: 'LocalNum', width: '5%' },
-  { title: '移库', dataIndex: 'MoveNum', width: '5%', scopedSlots: { customRender: 'MoveNum' } },
-  { title: '目标货位', dataIndex: 'ToLocalId', width: '15%', scopedSlots: { customRender: 'ToLocalId' } },
+  { title: '库存', dataIndex: 'LocalNum'},
+  { title: '移库', dataIndex: 'MoveNum', scopedSlots: { customRender: 'MoveNum' } },
+  { title: '目标货位', dataIndex: 'ToLocalId', scopedSlots: { customRender: 'ToLocalId' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, width: '5%' }
 ]
 const columns2 = [
-  { title: '原货位', dataIndex: 'FromLocal', scopedSlots: { customRender: 'From' } },
-  { title: '物料', dataIndex: 'Material', scopedSlots: { customRender: 'Material' } },
-  { title: '库存', dataIndex: 'LocalNum', width: '5%' },
-  { title: '移库', dataIndex: 'MoveNum', width: '5%', scopedSlots: { customRender: 'MoveNum' } },
-  { title: '目标货位', dataIndex: 'ToLocalId', width: '15%', scopedSlots: { customRender: 'ToLocalId' } },
-  { title: '目标托盘', dataIndex: 'ToTrayId', width: '15%', scopedSlots: { customRender: 'ToTrayId' } },
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, width: '5%' }
+  { title: '原货位', dataIndex: 'FromLocal', scopedSlots: { customRender: 'From'} },
+  { title: '物料', dataIndex: 'Material', scopedSlots: { customRender: 'Material'} },
+  { title: '库存', dataIndex: 'LocalNum' },
+  { title: '移库', dataIndex: 'MoveNum', scopedSlots: { customRender: 'MoveNum'} },
+  { title: '目标货位', dataIndex: 'ToLocalId', scopedSlots: { customRender: 'ToLocalId'} },
+  { title: '目标托盘', dataIndex: 'ToTrayId', scopedSlots: { customRender: 'ToTrayId'} },
+  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 const columns3 = [
-  { title: '原货位', dataIndex: 'FromLocal', scopedSlots: { customRender: 'From' } },
-  { title: '物料', dataIndex: 'Material', scopedSlots: { customRender: 'Material' } },
-  { title: '库存', dataIndex: 'LocalNum', width: '5%' },
-  { title: '移库', dataIndex: 'MoveNum', width: '5%', scopedSlots: { customRender: 'MoveNum' } },
-  { title: '目标货位', dataIndex: 'ToLocalId', width: '15%', scopedSlots: { customRender: 'ToLocalId' } },
-  { title: '目标托盘', dataIndex: 'ToTrayId', width: '15%', scopedSlots: { customRender: 'ToTrayId' } },
-  { title: '目标分区', dataIndex: 'ToZoneId', width: '10%', scopedSlots: { customRender: 'ToZoneId' } },
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, width: '5%' }
+  { title: '原货位', dataIndex: 'FromLocal', scopedSlots: { customRender: 'From'} },
+  { title: '物料', dataIndex: 'Material', scopedSlots: { customRender: 'Material'} },
+  { title: '库存', dataIndex: 'LocalNum' },
+  { title: '移库', dataIndex: 'MoveNum', scopedSlots: { customRender: 'MoveNum' } },
+  { title: '目标货位', dataIndex: 'ToLocalId', scopedSlots: { customRender: 'ToLocalId'} },
+  { title: '目标托盘', dataIndex: 'ToTrayId', scopedSlots: { customRender: 'ToTrayId' } },
+  { title: '目标分区', dataIndex: 'ToZoneId', scopedSlots: { customRender: 'ToZoneId' } },
+  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }}
 ]
 
 export default {

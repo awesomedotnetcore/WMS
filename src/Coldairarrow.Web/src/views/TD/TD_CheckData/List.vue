@@ -69,15 +69,15 @@
 import EditForm from './EditForm'
 
 const columns = [
-  { title: '盘点ID', dataIndex: 'CheckId', width: '10%' },
-  { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
-  { title: '货位ID', dataIndex: 'localId', width: '10%' },
-  { title: '物料ID', dataIndex: 'MaterialId', width: '10%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
-  { title: '库存数量', dataIndex: 'LocalNum', width: '10%' },
-  { title: '盘点数量', dataIndex: 'CheckNum', width: '10%' },
-  { title: '盘差数量', dataIndex: 'DisNum', width: '10%' },
-  { title: '盘点人ID', dataIndex: 'CheckUserId', width: '10%' },
+  { title: '盘点ID', dataIndex: 'CheckId' },
+  { title: '仓库ID', dataIndex: 'StorId'},
+  { title: '货位ID', dataIndex: 'localId' },
+  { title: '物料ID', dataIndex: 'MaterialId'},
+  { title: '批次号', dataIndex: 'BatchNo'},
+  { title: '库存数量', dataIndex: 'LocalNum' },
+  { title: '盘点数量', dataIndex: 'CheckNum' },
+  { title: '盘差数量', dataIndex: 'DisNum' },
+  { title: '盘点人ID', dataIndex: 'CheckUserId' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 

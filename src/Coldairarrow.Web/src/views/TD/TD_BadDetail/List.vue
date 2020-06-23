@@ -24,36 +24,36 @@
 <script>
 import BadChoose from './BadChoose'
 const columns1 = [
-  { title: '货位', dataIndex: 'FromLocal.Name', width: '15%' },
-  { title: '物料', dataIndex: 'Material.Name', width: '15%' },
-  { title: '批次', dataIndex: 'BatchNo', width: '15%' },
-  { title: '条码', dataIndex: 'BarCode', width: '15%' },
-  { title: '库存', dataIndex: 'LocalNum', width: '5%' },
-  { title: '报损', dataIndex: 'BadNum', width: '5%', scopedSlots: { customRender: 'BadNum' } },
-  { title: '残余', dataIndex: 'Surplus', width: '5%', scopedSlots: { customRender: 'Surplus' } },
+  { title: '货位', dataIndex: 'FromLocal.Name'},
+  { title: '物料', dataIndex: 'Material.Name' },
+  { title: '批次', dataIndex: 'BatchNo',  },
+  { title: '条码', dataIndex: 'BarCode', },
+  { title: '库存', dataIndex: 'LocalNum',  },
+  { title: '报损', dataIndex: 'BadNum', scopedSlots: { customRender: 'BadNum' } },
+  { title: '残余', dataIndex: 'Surplus',  scopedSlots: { customRender: 'Surplus' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 const columns2 = [
-  { title: '货位', dataIndex: 'FromLocal.Name', width: '15%' },
-  { title: '托盘', dataIndex: 'Tray.Name', width: '15%' },
-  { title: '物料', dataIndex: 'Material.Name', width: '15%' },
-  { title: '批次', dataIndex: 'BatchNo', width: '10%' },
-  { title: '条码', dataIndex: 'BarCode', width: '15%' },
-  { title: '库存', dataIndex: 'LocalNum', width: '5%' },
-  { title: '报损', dataIndex: 'BadNum', width: '5%', scopedSlots: { customRender: 'BadNum' } },
-  { title: '残余', dataIndex: 'Surplus', width: '5%', scopedSlots: { customRender: 'Surplus' } },
+  { title: '货位', dataIndex: 'FromLocal.Name' },
+  { title: '托盘', dataIndex: 'Tray.Name' },
+  { title: '物料', dataIndex: 'Material.Name' },
+  { title: '批次', dataIndex: 'BatchNo'},
+  { title: '条码', dataIndex: 'BarCode'},
+  { title: '库存', dataIndex: 'LocalNum'},
+  { title: '报损', dataIndex: 'BadNum', scopedSlots: { customRender: 'BadNum' } },
+  { title: '残余', dataIndex: 'Surplus', scopedSlots: { customRender: 'Surplus' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 const columns3 = [
-  { title: '货位', dataIndex: 'FromLocal.Name', width: '15%' },
-  { title: '托盘', dataIndex: 'Tray.Name', width: '10%' },
-  { title: '分区', dataIndex: 'TrayZone.Name', width: '5%' },
-  { title: '物料', dataIndex: 'Material.Name', width: '10%' },
-  { title: '批次', dataIndex: 'BatchNo', width: '10%' },
-  { title: '条码', dataIndex: 'BarCode', width: '10%' },
-  { title: '库存', dataIndex: 'LocalNum', width: '5%' },
-  { title: '报损', dataIndex: 'BadNum', width: '5%', scopedSlots: { customRender: 'BadNum' } },
-  { title: '残余', dataIndex: 'Surplus', width: '5%', scopedSlots: { customRender: 'Surplus' } },
+  { title: '货位', dataIndex: 'FromLocal.Name'},
+  { title: '托盘', dataIndex: 'Tray.Name' },
+  { title: '分区', dataIndex: 'TrayZone.Name' },
+  { title: '物料', dataIndex: 'Material.Name' },
+  { title: '批次', dataIndex: 'BatchNo' },
+  { title: '条码', dataIndex: 'BarCode'},
+  { title: '库存', dataIndex: 'LocalNum'},
+  { title: '报损', dataIndex: 'BadNum',  scopedSlots: { customRender: 'BadNum' } },
+  { title: '残余', dataIndex: 'Surplus', scopedSlots: { customRender: 'Surplus' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 

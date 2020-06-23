@@ -41,19 +41,19 @@
 
 <script>
 const columns = [
-  { title: '库区', dataIndex: 'AreaName', width: '5%' },
-  { title: '巷道', dataIndex: 'LanewayName', width: '5%' },
-  { title: '货架', dataIndex: 'RackName', width: '5%' },
-  { title: '托盘', dataIndex: 'TrayName', width: '5%' },
-  { title: '托盘分区', dataIndex: 'ZoneName', width: '6%' },
-  { title: '货位编码', dataIndex: 'LocationCode', width: '6%' },
-  { title: '货位名称', dataIndex: 'LocationName', width: '6%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '7%' },
-  { title: '物料编码', dataIndex: 'MaterialCode', width: '10%' },
+  { title: '库区', dataIndex: 'AreaName' },
+  { title: '巷道', dataIndex: 'LanewayName'},
+  { title: '货架', dataIndex: 'RackName' },
+  { title: '托盘', dataIndex: 'TrayName'},
+  { title: '托盘分区', dataIndex: 'ZoneName'},
+  { title: '货位编码', dataIndex: 'LocationCode'},
+  { title: '货位名称', dataIndex: 'LocationName'},
+  { title: '批次号', dataIndex: 'BatchNo'},
+  { title: '物料编码', dataIndex: 'MaterialCode'},
   { title: '物料名称', dataIndex: 'MaterialName' },  
-  { title: '库存数量', dataIndex: 'LocalNum', width: '8%', scopedSlots: { customRender: 'LocalNum' } },
-  { title: '盘点数量', dataIndex: 'CheckNum', width: '12%', scopedSlots: { customRender: 'CheckNum' } },
-  { title: '盘差数量', dataIndex: 'DisNum', width: '8%', scopedSlots: { customRender: 'DisNum' } }
+  { title: '库存数量', dataIndex: 'LocalNum', scopedSlots: { customRender: 'LocalNum' } },
+  { title: '盘点数量', dataIndex: 'CheckNum', scopedSlots: { customRender: 'CheckNum' } },
+  { title: '盘差数量', dataIndex: 'DisNum', scopedSlots: { customRender: 'DisNum' } }
 ]
 
 export default {

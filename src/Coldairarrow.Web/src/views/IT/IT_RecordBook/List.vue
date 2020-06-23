@@ -50,16 +50,16 @@ import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 
 const columns = [
-  { title: '相关单号', dataIndex: 'RefCode', width: '12%' },
-  { title: '台账类型', dataIndex: 'Type', width: '8%', scopedSlots: { customRender: 'Type' } },
-  { title: '原货位', dataIndex: 'FromLocation.Name', width: '8%' },
-  { title: '目标货位', dataIndex: 'ToLocation.Name', width: '8%' },
+  { title: '相关单号', dataIndex: 'RefCode'},
+  { title: '台账类型', dataIndex: 'Type',scopedSlots: { customRender: 'Type' } },
+  { title: '原货位', dataIndex: 'FromLocation.Name' },
+  { title: '目标货位', dataIndex: 'ToLocation.Name' },
   { title: '物料', dataIndex: 'Material.Name' },
-  { title: '单位', dataIndex: 'Measure.Name', width: '5%' },
-  { title: '物料条码', dataIndex: 'BarCode', width: '10%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
-  { title: '数量', dataIndex: 'Num', width: '5%' },
-  { title: '时间', dataIndex: 'CreateTime', width: '10%' }
+  { title: '单位', dataIndex: 'Measure.Name' },
+  { title: '物料条码', dataIndex: 'BarCode'},
+  { title: '批次号', dataIndex: 'BatchNo'},
+  { title: '数量', dataIndex: 'Num' },
+  { title: '时间', dataIndex: 'CreateTime' }
 ]
 
 export default {

@@ -78,15 +78,15 @@ const filterDate = (value, row, index) => {
   }
 }
 const columns = [
-  { title: '报损单号', dataIndex: 'Code', width: '10%' },
-  { title: '报损时间', dataIndex: 'BadTime', customRender: filterDate, width: '10%' },
-  { title: '报损类型', dataIndex: 'Type', scopedSlots: { customRender: 'Type' }, width: '10%' },
-  { title: '报损数量', dataIndex: 'BadNum', width: '5%' },
-  { title: '总金额', dataIndex: 'TotalAmt', width: '5%' },
-  { title: '状态', dataIndex: 'Status', scopedSlots: { customRender: 'Status' }, width: '10%' },
-  { title: '制单人', dataIndex: 'CreateUser.RealName', width: '10%' },
-  { title: '审核人', dataIndex: 'AuditUser.RealName', width: '10%' },
-  { title: '审核时间', dataIndex: 'AuditeTime', customRender: filterDate, width: '10%' },
+  { title: '报损单号', dataIndex: 'Code'},
+  { title: '报损时间', dataIndex: 'BadTime', customRender: filterDate},
+  { title: '报损类型', dataIndex: 'Type', scopedSlots: { customRender: 'Type' } },
+  { title: '报损数量', dataIndex: 'BadNum' },
+  { title: '总金额', dataIndex: 'TotalAmt' },
+  { title: '状态', dataIndex: 'Status', scopedSlots: { customRender: 'Status' }},
+  { title: '制单人', dataIndex: 'CreateUser.RealName'},
+  { title: '审核人', dataIndex: 'AuditUser.RealName' },
+  { title: '审核时间', dataIndex: 'AuditeTime', customRender: filterDate },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
