@@ -95,7 +95,7 @@ export default {
       this.init()
 
       if (id) {
-        this.ExpUrl='http://localhost:5000/TD/TD_CheckData/ExportToExcel/?checkId='+id
+        this.ExpUrl=$rootUrl+'/TD/TD_CheckData/ExportToExcel/?checkId='+id
         this.loading = true
         this.$http.post('/TD/TD_Check/GetTheData', { id: id }).then(resJson => {
           this.loading = false
