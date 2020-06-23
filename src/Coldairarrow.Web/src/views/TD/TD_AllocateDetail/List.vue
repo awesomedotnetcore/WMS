@@ -21,33 +21,33 @@
 <script>
 import AllocateChoose from './AllocateChoose'
 const columns1 = [
-  { title: '货位', dataIndex: 'FromLocal.Name', width: '15%' },
-  { title: '物料', dataIndex: 'Material.Name', width: '15%' },
-  { title: '批次', dataIndex: 'BatchNo', width: '15%' },
-  { title: '条码', dataIndex: 'BarCode', width: '15%' },
-  { title: '库存', dataIndex: 'LocalNum', width: '5%' },
-  { title: '调拨', dataIndex: 'AllocateNum', width: '5%', scopedSlots: { customRender: 'AllocateNum' } },
+  { title: '货位', dataIndex: 'FromLocal.Name'},
+  { title: '物料', dataIndex: 'Material.Name'},
+  { title: '批次', dataIndex: 'BatchNo' },
+  { title: '条码', dataIndex: 'BarCode' },
+  { title: '库存', dataIndex: 'LocalNum' },
+  { title: '调拨', dataIndex: 'AllocateNum', scopedSlots: { customRender: 'AllocateNum' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 const columns2 = [
-  { title: '货位', dataIndex: 'FromLocal.Name', width: '15%' },
-  { title: '托盘', dataIndex: 'FromTray.Name', width: '15%' },
-  { title: '物料', dataIndex: 'Material.Name', width: '15%' },
-  { title: '批次', dataIndex: 'BatchNo', width: '10%' },
-  { title: '条码', dataIndex: 'BarCode', width: '15%' },
-  { title: '库存', dataIndex: 'LocalNum', width: '5%' },
-  { title: '调拨', dataIndex: 'AllocateNum', width: '5%', scopedSlots: { customRender: 'AllocateNum' } },
+  { title: '货位', dataIndex: 'FromLocal.Name' },
+  { title: '托盘', dataIndex: 'FromTray.Name' },
+  { title: '物料', dataIndex: 'Material.Name' },
+  { title: '批次', dataIndex: 'BatchNo' },
+  { title: '条码', dataIndex: 'BarCode' },
+  { title: '库存', dataIndex: 'LocalNum' },
+  { title: '调拨', dataIndex: 'AllocateNum', scopedSlots: { customRender: 'AllocateNum' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 const columns3 = [
-  { title: '货位', dataIndex: 'FromLocal.Name', width: '15%' },
-  { title: '托盘', dataIndex: 'FromTray.Name', width: '10%' },
-  { title: '分区', dataIndex: 'FromZone.Name', width: '5%' },
-  { title: '物料', dataIndex: 'Material.Name', width: '10%' },
-  { title: '批次', dataIndex: 'BatchNo', width: '10%' },
-  { title: '条码', dataIndex: 'BarCode', width: '10%' },
-  { title: '库存', dataIndex: 'LocalNum', width: '5%' },
-  { title: '调拨', dataIndex: 'AllocateNum', width: '5%', scopedSlots: { customRender: 'AllocateNum' } },
+  { title: '货位', dataIndex: 'FromLocal.Name'},
+  { title: '托盘', dataIndex: 'FromTray.Name'},
+  { title: '分区', dataIndex: 'FromZone.Name'},
+  { title: '物料', dataIndex: 'Material.Name'},
+  { title: '批次', dataIndex: 'BatchNo' },
+  { title: '条码', dataIndex: 'BarCode' },
+  { title: '库存', dataIndex: 'LocalNum' },
+  { title: '调拨', dataIndex: 'AllocateNum', scopedSlots: { customRender: 'AllocateNum' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
