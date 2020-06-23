@@ -119,14 +119,14 @@ import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import moment from 'moment'
 
 const columns = [
-  { title: '盘点编码', dataIndex: 'Code', width: '15%' },
-  { title: '盘点类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
-  { title: '盘点时间', dataIndex: 'CheckTime', width: '10%' },
-  { title: '关联单号', dataIndex: 'RefCode', width: '10%' },
-  { title: '盘差状态', dataIndex: 'IsComplete', width: '8%', scopedSlots: { customRender: 'IsComplete' } },
-  { title: '审核状态', dataIndex: 'Status', width: '10%', scopedSlots: { customRender: 'Status' } },
-  { title: '审核人', dataIndex: 'AuditUserId', width: '10%' },
-  { title: '审核时间', dataIndex: 'AuditeTime', width: '10%' },
+  { title: '盘点编码', dataIndex: 'Code', },
+  { title: '盘点类型', dataIndex: 'Type',  scopedSlots: { customRender: 'Type' } },
+  { title: '盘点时间', dataIndex: 'CheckTime'},
+  { title: '关联单号', dataIndex: 'RefCode' },
+  { title: '盘差状态', dataIndex: 'IsComplete', scopedSlots: { customRender: 'IsComplete' } },
+  { title: '审核状态', dataIndex: 'Status',  scopedSlots: { customRender: 'Status' } },
+  { title: '审核人', dataIndex: 'AuditUserId'},
+  { title: '审核时间', dataIndex: 'AuditeTime'},
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 

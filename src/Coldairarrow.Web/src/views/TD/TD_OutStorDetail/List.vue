@@ -34,35 +34,35 @@ import LocalmaterialList from './LocalMaterialList'
 
 const columns1 = [
   { title: '物料', dataIndex: 'Material.Name'},
-  { title: '编码', dataIndex: 'Material.Code', width: '10%' },
-  { title: '货位', dataIndex: 'Location.Name', width: '10%' },
-  { title: '条码', dataIndex: 'BarCode', width: '10%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
-  { title: '库存', dataIndex: 'LocalNum', width: '5%' },
-  { title: '出库数量', dataIndex: 'OutNum', width: '5%', scopedSlots: { customRender: 'OutNum' } },
+  { title: '编码', dataIndex: 'Material.Code' },
+  { title: '货位', dataIndex: 'Location.Name'},
+  { title: '条码', dataIndex: 'BarCode'},
+  { title: '批次号', dataIndex: 'BatchNo'},
+  { title: '库存', dataIndex: 'LocalNum'},
+  { title: '出库数量', dataIndex: 'OutNum', scopedSlots: { customRender: 'OutNum' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 const columns2 = [
   { title: '物料', dataIndex: 'Material.Name' },
-  { title: '编码', dataIndex: 'Material.Code', width: '10%' },
-  { title: '货位', dataIndex: 'Location.Name', width: '10%' },
-  { title: '托盘', dataIndex: 'Tray.Name', width: '10%' },
-  { title: '条码', dataIndex: 'BarCode', width: '10%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
-  { title: '库存', dataIndex: 'LocalNum', width: '5%' },
-  { title: '出库数量', dataIndex: 'OutNum', width: '5%' , scopedSlots: { customRender: 'OutNum' }},
+  { title: '编码', dataIndex: 'Material.Code' },
+  { title: '货位', dataIndex: 'Location.Name'},
+  { title: '托盘', dataIndex: 'Tray.Name'},
+  { title: '条码', dataIndex: 'BarCode' },
+  { title: '批次号', dataIndex: 'BatchNo' },
+  { title: '库存', dataIndex: 'LocalNum' },
+  { title: '出库数量', dataIndex: 'OutNum',scopedSlots: { customRender: 'OutNum' }},
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 const columns3 = [
   { title: '物料', dataIndex: 'Material.Name' },
-  { title: '编码', dataIndex: 'Material.Code', width: '10%' },
-  { title: '货位', dataIndex: 'Location.Name', width: '10%' },
-  { title: '托盘', dataIndex: 'Tray.Name', width: '10%' },
-  { title: '托盘分区', dataIndex: 'TrayZone.Name', width: '10%' },
-  { title: '条码', dataIndex: 'BarCode', width: '10%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
-  { title: '库存', dataIndex: 'LocalNum', width: '5%' },
-  { title: '出库数量', dataIndex: 'OutNum', width: '5%', scopedSlots: { customRender: 'OutNum' } },
+  { title: '编码', dataIndex: 'Material.Code'},
+  { title: '货位', dataIndex: 'Location.Name'},
+  { title: '托盘', dataIndex: 'Tray.Name'},
+  { title: '托盘分区', dataIndex: 'TrayZone.Name'},
+  { title: '条码', dataIndex: 'BarCode'},
+  { title: '批次号', dataIndex: 'BatchNo' },
+  { title: '库存', dataIndex: 'LocalNum'},
+  { title: '出库数量', dataIndex: 'OutNum', scopedSlots: { customRender: 'OutNum' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 

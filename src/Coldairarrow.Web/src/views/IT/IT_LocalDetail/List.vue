@@ -54,40 +54,40 @@ const filterDate = (value, row, index) => {
   return moment(value).format('YYYY-MM-DD')
 }
 const columns1 = [
-  { title: '货位', dataIndex: 'Location', customRender: filterCode, width: '15%' },
-  { title: '物料', dataIndex: 'Material', customRender: filterCode, width: '15%' },
-  { title: '单位', dataIndex: 'Measure.Name', width: '5%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '5%' },
-  { title: '条码', dataIndex: 'BarCode', width: '10%' },
-  { title: '入库时间', dataIndex: 'InTime', customRender: filterDate, width: '10%' },
-  { title: '单价', dataIndex: 'Price', width: '5%' },
-  { title: '数量', dataIndex: 'Num', width: '5%' },
-  { title: '总额', dataIndex: 'Amount', width: '5%' }
+  { title: '货位', dataIndex: 'Location', customRender: filterCode },
+  { title: '物料', dataIndex: 'Material', customRender: filterCode },
+  { title: '单位', dataIndex: 'Measure.Name'},
+  { title: '批次号', dataIndex: 'BatchNo' },
+  { title: '条码', dataIndex: 'BarCode'},
+  { title: '入库时间', dataIndex: 'InTime', customRender: filterDate},
+  { title: '单价', dataIndex: 'Price' },
+  { title: '数量', dataIndex: 'Num'},
+  { title: '总额', dataIndex: 'Amount'}
 ]
 const columns2 = [
-  { title: '货位', dataIndex: 'Location', customRender: filterCode, width: '15%' },
-  { title: '托盘', dataIndex: 'Tray', customRender: filterCode, width: '15%' },
-  { title: '物料', dataIndex: 'Material', customRender: filterCode, width: '15%' },
-  { title: '单位', dataIndex: 'Measure.Name', width: '5%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '5%' },
-  { title: '条码', dataIndex: 'BarCode', width: '10%' },
-  { title: '入库时间', dataIndex: 'InTime', customRender: filterDate, width: '10%' },
-  { title: '单价', dataIndex: 'Price', width: '5%' },
-  { title: '数量', dataIndex: 'Num', width: '5%' },
-  { title: '总额', dataIndex: 'Amount', width: '5%' }
+  { title: '货位', dataIndex: 'Location', customRender: filterCode},
+  { title: '托盘', dataIndex: 'Tray', customRender: filterCode },
+  { title: '物料', dataIndex: 'Material', customRender: filterCode },
+  { title: '单位', dataIndex: 'Measure.Name' },
+  { title: '批次号', dataIndex: 'BatchNo'},
+  { title: '条码', dataIndex: 'BarCode' },
+  { title: '入库时间', dataIndex: 'InTime', customRender: filterDate},
+  { title: '单价', dataIndex: 'Price' },
+  { title: '数量', dataIndex: 'Num' },
+  { title: '总额', dataIndex: 'Amount' }
 ]
 const columns3 = [
-  { title: '货位', dataIndex: 'Location', customRender: filterCode, width: '15%' },
-  { title: '托盘', dataIndex: 'Tray', customRender: filterCode, width: '15%' },
-  { title: '托盘分区', dataIndex: 'TrayZone', customRender: filterCode, width: '10%' },
-  { title: '物料', dataIndex: 'Material', customRender: filterCode, width: '15%' },
-  { title: '单位', dataIndex: 'Measure.Name', width: '5%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '5%' },
-  { title: '条码', dataIndex: 'BarCode', width: '10%' },
-  { title: '入库时间', dataIndex: 'InTime', customRender: filterDate, width: '10%' },
-  { title: '单价', dataIndex: 'Price', width: '5%' },
-  { title: '数量', dataIndex: 'Num', width: '5%' },
-  { title: '总额', dataIndex: 'Amount', width: '5%' }
+  { title: '货位', dataIndex: 'Location', customRender: filterCode},
+  { title: '托盘', dataIndex: 'Tray', customRender: filterCode },
+  { title: '托盘分区', dataIndex: 'TrayZone', customRender: filterCode},
+  { title: '物料', dataIndex: 'Material', customRender: filterCode },
+  { title: '单位', dataIndex: 'Measure.Name'},
+  { title: '批次号', dataIndex: 'BatchNo' },
+  { title: '条码', dataIndex: 'BarCode'},
+  { title: '入库时间', dataIndex: 'InTime', customRender: filterDate },
+  { title: '单价', dataIndex: 'Price'},
+  { title: '数量', dataIndex: 'Num' },
+  { title: '总额', dataIndex: 'Amount' }
 ]
 
 export default {
