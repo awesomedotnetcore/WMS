@@ -30,7 +30,7 @@ namespace Coldairarrow.Entity.TD
         /// <summary>
         /// 原货位ID
         /// </summary>
-        public String FromlocalId { get; set; }
+        public String FromLocalId { get; set; }
 
         /// <summary>
         /// 原托盘ID
@@ -85,7 +85,7 @@ namespace Coldairarrow.Entity.TD
         /// <summary>
         /// 调拨数量
         /// </summary>
-        public Double AllcateNum { get; set; }
+        public Double AllocateNum { get; set; }
 
         /// <summary>
         /// 创建时间

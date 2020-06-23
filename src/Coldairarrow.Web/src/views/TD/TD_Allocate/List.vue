@@ -2,96 +2,99 @@
   <a-card :bordered="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button
-        type="primary"
-        icon="minus"
-        @click="handleDelete(selectedRowKeys)"
-        :disabled="!hasSelected()"
-        :loading="loading"
-      >删除</a-button>
+      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
+      <a-divider type="vertical" />
+      <a-radio-group v-model="queryParam.Status" button-style="solid" @change="getDataList">
+        <a-radio-button :value="null">全部</a-radio-button>
+        <a-radio-button :value="0">待审核</a-radio-button>
+        <a-radio-button :value="1">审核通过</a-radio-button>
+        <a-radio-button :value="2">审核失败</a-radio-button>
+      </a-radio-group>
     </div>
 
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
-            <a-form-item label="查询类别">
-              <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="Code">调拨单号</a-select-option>
-                <a-select-option key="Type">调拨类型</a-select-option>
-                <a-select-option key="StorId">仓库ID</a-select-option>
-                <a-select-option key="ToStorId">目标仓库ID</a-select-option>
-                <a-select-option key="ToLocalId">目标货位ID</a-select-option>
-                <a-select-option key="RefCode">关联单号</a-select-option>
-                <a-select-option key="EquId">设备ID</a-select-option>
-                <a-select-option key="Remarks">备注</a-select-option>
-                <a-select-option key="AuditUserId">审核人ID</a-select-option>
-              </a-select>
+            <a-form-item>
+              <enum-select code="AllocateType" v-model="queryParam.Type"></enum-select>
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="关键字" />
+              <a-input v-model="queryParam.Code" placeholder="调拨/关联单号" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="4" :sm="24">
+            <a-form-item>
+              <a-range-picker @change="onAllocateTimeChange" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
             <a-button type="primary" @click="() => {this.pagination.current = 1; this.getDataList()}">查询</a-button>
-            <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
+            <a-button style="margin-left: 8px" @click="() => (queryParam = { Status: null})">重置</a-button>
           </a-col>
         </a-row>
       </a-form>
     </div>
 
-    <a-table
-      ref="table"
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      :bordered="true"
-      size="small"
-    >
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+      <template slot="Type" slot-scope="text">
+        <enum-name code="AllocateType" :value="text"></enum-name>
+      </template>
+      <template slot="Status" slot-scope="text, record">
+        <a-tag v-if="record.Status===0" color="blue">待审核</a-tag>
+        <a-tag v-else-if="record.Status===1" color="green">审核通过</a-tag>
+        <a-tag v-else-if="record.Status===2" color="red">审核失败</a-tag>
+        <a-tag v-else color="blue">待审核</a-tag>
+      </template>
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="handleEdit(record.Id)">编辑</a>
-          <a-divider type="vertical" />
-          <a @click="handleDelete([record.Id])">删除</a>
+          <a v-if="record.Status===0" @click="handleEdit(record.Id)">编辑</a>
+          <a-divider v-if="record.Status===0" type="vertical" />
+          <a v-if="record.Status===0" @click="handleDelete([record.Id])">删除</a>
+          <a-divider v-if="record.Status===0" type="vertical" />
+          <a @click="handleShow(record.Id)">{{ record.Status === 0?'审核':'查看' }}</a>
         </template>
       </span>
     </a-table>
 
-    <edit-form ref="editForm" :parentObj="this"></edit-form>
+    <edit-form ref="editForm" :disabled="disabled" :parentObj="this"></edit-form>
   </a-card>
 </template>
 
 <script>
+import moment from 'moment'
+import EnumName from '../../../components/BaseEnum/BaseEnumName'
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import EditForm from './EditForm'
 
+const filterDate = (value, row, index) => {
+  if (value) {
+    return moment(value).format('YYYY-MM-DD')
+  } else {
+    return ' '
+  }
+}
 const columns = [
   { title: '调拨单号', dataIndex: 'Code', width: '10%' },
-  { title: '调拨时间', dataIndex: 'AllocateTime', width: '10%' },
-  { title: '调拨类型', dataIndex: 'Type', width: '10%' },
-  { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
-  { title: '目标仓库ID', dataIndex: 'ToStorId', width: '10%' },
-  { title: '目标货位ID', dataIndex: 'ToLocalId', width: '10%' },
-  { title: '关联单号', dataIndex: 'RefCode', width: '10%' },
-  { title: '总额', dataIndex: 'Amount', width: '10%' },
-  { title: '调拨数量', dataIndex: 'AllocateNum', width: '10%' },
-  { title: '设备ID', dataIndex: 'EquId', width: '10%' },
-  { title: '状态(0待审核;1审核通过;2审核失败)', dataIndex: 'Status', width: '10%' },
-  { title: '备注', dataIndex: 'Remarks', width: '10%' },
-  { title: '审核人ID', dataIndex: 'AuditUserId', width: '10%' },
-  { title: '审核时间', dataIndex: 'AuditeTime', width: '10%' },
+  { title: '调拨时间', dataIndex: 'AllocateTime', customRender: filterDate, width: '10%' },
+  { title: '调拨类型', dataIndex: 'Type', scopedSlots: { customRender: 'Type' }, width: '10%' },
+  { title: '调拨数量', dataIndex: 'AllocateNum', width: '5%' },
+  { title: '总金额', dataIndex: 'Amount', width: '5%' },
+  { title: '状态', dataIndex: 'Status', scopedSlots: { customRender: 'Status' }, width: '10%' },
+  { title: '制单人', dataIndex: 'CreateUser.RealName', width: '10%' },
+  { title: '审核人', dataIndex: 'AuditUser.RealName', width: '10%' },
+  { title: '审核时间', dataIndex: 'AuditeTime', customRender: filterDate, width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
-    EditForm
+    EditForm,
+    EnumName,
+    EnumSelect
   },
   mounted() {
     this.getDataList()
@@ -105,11 +108,12 @@ export default {
         showTotal: (total, range) => `总数:${total} 当前:${range[0]}-${range[1]}`
       },
       filters: {},
-      sorter: { field: 'Id', order: 'asc' },
+      sorter: { field: 'CreateTime', order: 'desc' },
       loading: false,
       columns,
-      queryParam: {},
-      selectedRowKeys: []
+      queryParam: { Status: null },
+      selectedRowKeys: [],
+      disabled: false
     }
   },
   methods: {
@@ -140,16 +144,30 @@ export default {
           this.pagination = pagination
         })
     },
-    onSelectChange(selectedRowKeys) {
-      this.selectedRowKeys = selectedRowKeys
+    onSelectChange(selectedRowKeys, selectedRows) {
+      var ids = []
+      selectedRows.forEach((val, index, arr) => {
+        if (val.Status === 0) ids.push(val.Id)
+      })
+      this.selectedRowKeys = ids
     },
     hasSelected() {
       return this.selectedRowKeys.length > 0
     },
+    onAllocateTimeChange(dates, dateStrings) {
+      this.queryParam.AllocateTimeStart = dateStrings[0]
+      this.queryParam.AllocateTimeEnd = dateStrings[1]
+    },
     hanldleAdd() {
+      this.disabled = false
       this.$refs.editForm.openForm()
     },
     handleEdit(id) {
+      this.disabled = false
+      this.$refs.editForm.openForm(id)
+    },
+    handleShow(id) {
+      this.disabled = true
       this.$refs.editForm.openForm(id)
     },
     handleDelete(ids) {

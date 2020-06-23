@@ -1,7 +1,9 @@
 ﻿using Coldairarrow.Business.TD;
 using Coldairarrow.Entity.TD;
+using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,11 +14,13 @@ namespace Coldairarrow.Api.Controllers.TD
     {
         #region DI
 
-        public TD_AllocateController(ITD_AllocateBusiness tD_AllocateBus)
+        public TD_AllocateController(ITD_AllocateBusiness tD_AllocateBus, IOperator op)
         {
             _tD_AllocateBus = tD_AllocateBus;
+            _Op = op;
         }
 
+        IOperator _Op { get; }
         ITD_AllocateBusiness _tD_AllocateBus { get; }
 
         #endregion
@@ -24,8 +28,9 @@ namespace Coldairarrow.Api.Controllers.TD
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<TD_Allocate>> GetDataList(PageInput<ConditionDTO> input)
+        public async Task<PageResult<TD_Allocate>> GetDataList(TD_AllocatePageInput input)
         {
+            input.StorId = _Op.Property.DefaultStorageId;
             return await _tD_AllocateBus.GetDataListAsync(input);
         }
 
@@ -45,11 +50,26 @@ namespace Coldairarrow.Api.Controllers.TD
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
-
+                data.StorId = _Op.Property.DefaultStorageId;
+                foreach (var item in data.AllocateDetails)
+                {
+                    InitEntity(item);
+                    item.AllocateId = data.Id;
+                    item.FromStorId = data.StorId;
+                    item.Amount = item.Price * item.AllocateNum;
+                }
                 await _tD_AllocateBus.AddDataAsync(data);
             }
             else
             {
+                foreach (var item in data.AllocateDetails)
+                {
+                    if (item.Id.StartsWith("newid_"))
+                        InitEntity(item);
+                    item.AllocateId = data.Id;
+                    item.FromStorId = data.StorId;
+                    item.Amount = item.Price * item.AllocateNum;
+                }
                 await _tD_AllocateBus.UpdateDataAsync(data);
             }
         }
@@ -60,6 +80,17 @@ namespace Coldairarrow.Api.Controllers.TD
             await _tD_AllocateBus.DeleteDataAsync(ids);
         }
 
+        [HttpPost]
+        public async Task Audit(AuditDTO audit)
+        {
+            audit.StorId = _Op.Property.DefaultStorageId;
+            audit.AuditUserId = _Op.UserId;
+            audit.AuditTime = DateTime.Now;
+            if (audit.AuditType == AuditType.Approve)
+                await _tD_AllocateBus.Approve(audit);
+            else
+                await _tD_AllocateBus.Reject(audit);
+        }
         #endregion
     }
 }
