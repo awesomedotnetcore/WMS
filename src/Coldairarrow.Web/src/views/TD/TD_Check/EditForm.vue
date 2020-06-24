@@ -74,7 +74,7 @@ export default {
   methods: {
     init() {
       this.visible = true
-      this.entity = {Type : ""}
+      this.entity = {Type : '', CheckTime: moment()}
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })

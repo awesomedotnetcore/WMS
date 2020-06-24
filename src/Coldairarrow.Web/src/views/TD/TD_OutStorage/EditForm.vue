@@ -110,7 +110,7 @@ export default {
     init() {
       this.visible = true
       this.CusAddrList = []
-      this.entity = { Id: '', Status: 0 }
+      this.entity = { Id: '', Status: 0, OutTime: moment() }
       this.listDetail = []
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
