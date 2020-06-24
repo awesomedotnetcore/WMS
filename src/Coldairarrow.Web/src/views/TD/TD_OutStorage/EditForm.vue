@@ -14,7 +14,7 @@
         </a-col>
         <a-col :span="8">
           <a-form-model-item label="出库时间" prop="OutTime">
-            <a-date-picker v-model="entity.OutTime" :style="{width:'100%'}" :disabled="disabled"/>
+            <a-date-picker v-model="entity.OutTime"  :style="{width:'100%'}" :disabled="disabled"/>
           </a-form-model-item>
         </a-col>               
       </a-row>
@@ -110,11 +110,14 @@ export default {
     init() {
       this.visible = true
       this.CusAddrList = []
-      this.entity = { Id: '', Status: 0 }
+      this.entity = { Id: '', Status: 0 ,OutTime:moment()}
       this.listDetail = []
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })
+    },
+    getCurrentData() {
+      return new Date().toLocaleDateString()
     },
     openForm(id, title) {
       this.init()

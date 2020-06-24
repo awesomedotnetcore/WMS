@@ -22,7 +22,7 @@
         </a-col>  
 
         <div>
-          <a-button ><a-icon type="download" /> 
+          <a-button @click="()=>{this.visible=false}"><a-icon type="download" /> 
           <a :href="$rootUrl+'/PB/PB_Location/ExportToExcel'">下载货位信息模板表</a>
           </a-button>
         </div>

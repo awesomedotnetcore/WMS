@@ -85,10 +85,10 @@ import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import StorageSelect from '../../../components/Storage/StorageSelect'
 
 const columns = [
-  { title: '仓库', dataIndex: 'PB_Storage.Name', width: '10%' },
-  { title: '货区编号', dataIndex: 'Code', width: '10%' },
-  { title: '货区名称', dataIndex: 'Name', width: '10%' },
-  { title: '货区类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
+  { title: '仓库', dataIndex: 'PB_Storage.Name' },
+  { title: '货区编号', dataIndex: 'Code'},
+  { title: '货区名称', dataIndex: 'Name'},
+  { title: '货区类型', dataIndex: 'Type', scopedSlots: { customRender: 'Type' } },
   // { title: '缓存区', dataIndex: 'IsCache', width: '10%', scopedSlots: { customRender: 'IsCache' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
