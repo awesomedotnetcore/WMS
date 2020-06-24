@@ -321,9 +321,12 @@ namespace Coldairarrow.Api.Controllers.PB
             cell.SetCellValue("巷道编号");
 
             cell = header.CreateCell(5);
-            cell.SetCellValue("剩余容量");
+            cell.SetCellValue("货架编号");
 
             cell = header.CreateCell(6);
+            cell.SetCellValue("剩余容量");
+
+            cell = header.CreateCell(7);
             cell.SetCellValue("是否默认(true/false)");
             #endregion            
             //工作流写入，通过流的方式进行创建生成文件

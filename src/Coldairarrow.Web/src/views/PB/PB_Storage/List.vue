@@ -131,7 +131,7 @@ const columns = [
   { title: '托盘分区管理', dataIndex: 'IsZone', scopedSlots: { customRender: 'IsZone'}},
   { title: '仓库状态', dataIndex: 'Disable' , scopedSlots: { customRender: 'Disable' }},
   { title: '默认仓库', dataIndex: 'IsDefault', scopedSlots: { customRender: 'IsDefault' } },
-  { title: '备注', dataIndex: 'Remarks'},
+  // { title: '备注', dataIndex: 'Remarks'},
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
