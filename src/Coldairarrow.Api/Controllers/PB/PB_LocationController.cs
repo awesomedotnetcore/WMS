@@ -219,21 +219,22 @@ namespace Coldairarrow.Api.Controllers.PB
                     var listAreaCodes = Data.Select(s => s.AreaId).Select(s => s.Trim()).Distinct().ToList();
                     var dicArea = _pB_LocationBus.GetQueryable<PB_StorArea>().Where(w => listAreaCodes.Contains(w.Code)).ToDictionary(k => k.Code, v => v.Id);
 
-                    var listLanCodes = Data.Select(s => s.LanewayId).Select(s => s.Trim()).Distinct().ToList();
-                    var dicLan = _pB_LocationBus.GetQueryable<PB_Laneway>().Where(w => listLanCodes.Contains(w.Code)).ToDictionary(k => k.Code, v => v.Id);
 
-                    var listRackCodes = Data.Select(s => s.RackId).Select(s => s.Trim()).Distinct().ToList();
+                    var listLanewayCodes = Data.Select(s => s.LanewayId).Distinct().ToList();
+                    var dicLaneway = _pB_LocationBus.GetQueryable<PB_Laneway>().Where(w => listLanewayCodes.Contains(w.Code)).ToDictionary(k => k.Code, v => v.Id);
+
+                    var listRackCodes = Data.Select(s => s.RackId).Distinct().ToList();
                     var dicRack = _pB_LocationBus.GetQueryable<PB_Rack>().Where(w => listRackCodes.Contains(w.Code)).ToDictionary(k => k.Code, v => v.Id);
 
                     foreach (var item in Data)
                     {
                         if (dicStor.ContainsKey(item.StorId.Trim()))
-                            item.StorId = dicStor[item.StorId];
+                            item.StorId = dicStor[item.StorId.Trim()];
                         else
                             throw new Exception("仓库编号不存在！");
 
                         if (dicArea.ContainsKey(item.AreaId.Trim()))
-                            item.AreaId = dicArea[item.AreaId];
+                            item.AreaId = dicArea[item.AreaId.Trim()];
                         else
                             throw new Exception("货区编号不存在！");
 
@@ -241,9 +242,9 @@ namespace Coldairarrow.Api.Controllers.PB
                         {
                             item.LanewayId = null;
                         }
-                        else if (dicLan.ContainsKey(item.LanewayId.Trim()))
+                        else if (dicLaneway.ContainsKey(item.LanewayId.Trim()))
                         {
-                            item.LanewayId = dicLan[item.LanewayId];
+                            item.LanewayId = dicLaneway[item.LanewayId.Trim()];
                         }
 
                         if (item.RackId == null)
@@ -252,7 +253,7 @@ namespace Coldairarrow.Api.Controllers.PB
                         }
                         else if (dicRack.ContainsKey(item.RackId.Trim()))
                         {
-                            item.RackId = dicRack[item.RackId];
+                            item.RackId = dicRack[item.RackId.Trim()];
                         }
 
                     }
@@ -306,7 +307,7 @@ namespace Coldairarrow.Api.Controllers.PB
         /// <returns></returns>
         [HttpGet]
         [NoCheckJWT]
-        public async Task<IActionResult> ExportToExcel()
+        public IActionResult ExportToExcel()//async Task<IActionResult>
         {
             //var data = await _tD_CheckDataBus.QueryDataListAsync(checkId);
 
@@ -346,8 +347,8 @@ namespace Coldairarrow.Api.Controllers.PB
             cell = header.CreateCell(6);
             cell.SetCellValue("剩余容量");
 
-            cell = header.CreateCell(7);
-            cell.SetCellValue("是否默认(true/false)");
+            //cell = header.CreateCell(7);
+            //cell.SetCellValue("是否默认(true/false)");
             #endregion            
             //工作流写入，通过流的方式进行创建生成文件
             using (MemoryStream stream = new MemoryStream())

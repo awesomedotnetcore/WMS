@@ -69,7 +69,7 @@ namespace Coldairarrow.Business.IT
                 var MaterialIdList = list.Select(i => i.MaterialId).Distinct().ToList();
                 var BatchNoList = list.Select(i => i.BatchNo).Distinct().ToList();
                 var BarCodeList = list.Select(i => i.BarCode).Distinct().ToList();
-                var hasMatch = 0;
+                //var hasMatch = 0;
 
                 q = q.Where(w => StorIdList.Contains(w.StorId) && LocalIdList.Contains(w.LocalId) && TrayIdList.Contains(w.TrayId)
                 && ZoneIdList.Contains(w.ZoneId) && MaterialIdList.Contains(w.MaterialId) && BatchNoList.Contains(w.BatchNo)
