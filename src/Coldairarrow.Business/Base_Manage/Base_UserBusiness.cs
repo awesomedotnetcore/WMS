@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Coldairarrow.Business.Cache;
+using Coldairarrow.Entity;
 using Coldairarrow.Entity.Base_Manage;
 using Coldairarrow.IBusiness;
 using Coldairarrow.Util;

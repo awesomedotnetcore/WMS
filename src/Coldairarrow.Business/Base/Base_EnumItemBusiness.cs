@@ -12,8 +12,8 @@ namespace Coldairarrow.Business.Base
 {
     public class Base_EnumItemBusiness : BaseBusiness<Base_EnumItem>, IBase_EnumItemBusiness, ITransientDependency
     {
-        public Base_EnumItemBusiness(IRepository repository)
-            : base(repository)
+        public Base_EnumItemBusiness(IDbAccessor db)
+            : base(db)
         {
         }
 

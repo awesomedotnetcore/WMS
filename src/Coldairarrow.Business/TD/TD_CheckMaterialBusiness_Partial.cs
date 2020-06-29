@@ -17,7 +17,7 @@ namespace Coldairarrow.Business.TD
         {
             string sql = string.Format("DELETE FROM TD_CheckMaterial WHERE CheckId='{0}'", checkId);
 
-            await base.ExecuteSqlAsync(sql);
+            await Db.ExecuteSqlAsync(sql);
         }
 
         public async Task PushAsync(List<TD_CheckMaterial> data)

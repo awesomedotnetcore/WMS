@@ -14,8 +14,8 @@ namespace Coldairarrow.Business.PB
 {
     public partial class PB_TrayTypeBusiness : BaseBusiness<PB_TrayType>, IPB_TrayTypeBusiness, ITransientDependency
     {
-        public PB_TrayTypeBusiness(IRepository repository, IServiceProvider svcProvider)
-            : base(repository)
+        public PB_TrayTypeBusiness(IDbAccessor db, IServiceProvider svcProvider)
+            : base(db)
         {
             _ServiceProvider = svcProvider;
         }
@@ -36,7 +36,7 @@ namespace Coldairarrow.Business.PB
         /// <returns></returns>
         public async Task<List<string>> GetByMaterial(string materialId)
         {
-            var query = Service.GetIQueryable<PB_TrayMaterial>();
+            var query = Db.GetIQueryable<PB_TrayMaterial>();
             var listType = await query.Where(w => w.MaterialId == materialId).Select(s => s.TrayTypeId).Distinct().ToListAsync();
             return listType;
         }
@@ -48,7 +48,7 @@ namespace Coldairarrow.Business.PB
         /// <returns></returns>
         public async Task<List<string>> GetByLocation(string locationId)
         {
-            var query = Service.GetIQueryable<PB_LocalTray>();
+            var query = Db.GetIQueryable<PB_LocalTray>();
             var listType = await query.Where(w => w.LocalId == locationId).Select(s => s.TrayTypeId).Distinct().ToListAsync();
             return listType;
         }

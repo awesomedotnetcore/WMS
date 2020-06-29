@@ -10,8 +10,8 @@ namespace Coldairarrow.Business.PB
 {
     public partial class PB_LocationBusiness : BaseBusiness<PB_Location>, IPB_LocationBusiness, ITransientDependency
     {
-        public PB_LocationBusiness(IRepository repository)
-            : base(repository)
+        public PB_LocationBusiness(IDbAccessor db)
+            : base(db)
         {
         }
 
@@ -70,7 +70,7 @@ namespace Coldairarrow.Business.PB
 
         public IQueryable<T> GetQueryable<T>() where T : class, new()
         {
-            return Service.GetIQueryable<T>();
+            return Db.GetIQueryable<T>();
         }
 
         

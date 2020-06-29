@@ -12,8 +12,8 @@ namespace Coldairarrow.Business.PB
 {
     public class PB_LanewayBusiness : BaseBusiness<PB_Laneway>, IPB_LanewayBusiness, ITransientDependency
     {
-        public PB_LanewayBusiness(IRepository repository)
-            : base(repository)
+        public PB_LanewayBusiness(IDbAccessor db)
+            : base(db)
         {
         }
 

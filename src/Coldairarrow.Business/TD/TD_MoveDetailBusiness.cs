@@ -12,8 +12,8 @@ namespace Coldairarrow.Business.TD
 {
     public partial class TD_MoveDetailBusiness : BaseBusiness<TD_MoveDetail>, ITD_MoveDetailBusiness, ITransientDependency
     {
-        public TD_MoveDetailBusiness(IRepository repository)
-            : base(repository)
+        public TD_MoveDetailBusiness(IDbAccessor db)
+            : base(db)
         {
         }
 

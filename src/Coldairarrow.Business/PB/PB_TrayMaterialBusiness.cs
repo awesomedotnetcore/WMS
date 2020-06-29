@@ -12,8 +12,8 @@ namespace Coldairarrow.Business.PB
 {
     public class PB_TrayMaterialBusiness : BaseBusiness<PB_TrayMaterial>, IPB_TrayMaterialBusiness, ITransientDependency
     {
-        public PB_TrayMaterialBusiness(IRepository repository)
-            : base(repository)
+        public PB_TrayMaterialBusiness(IDbAccessor db)
+            : base(db)
         {
         }
 
@@ -80,7 +80,7 @@ namespace Coldairarrow.Business.PB
             
             foreach(var key in materialIds)
             {
-                await ExecuteSqlAsync(string.Format("delete from PB_TrayMaterial where TrayTypeId='{0}' and MaterialId='{1}'", trayTypeId, key));
+                await Db.ExecuteSqlAsync(string.Format("delete from PB_TrayMaterial where TrayTypeId='{0}' and MaterialId='{1}'", trayTypeId, key));
             }
         }
 

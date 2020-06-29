@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
+using Coldairarrow.IBusiness;
 
 namespace Coldairarrow.Api.Controllers.PB
 {

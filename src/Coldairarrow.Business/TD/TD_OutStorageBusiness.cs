@@ -13,8 +13,8 @@ namespace Coldairarrow.Business.TD
 {
     public partial class TD_OutStorageBusiness : BaseBusiness<TD_OutStorage>, ITD_OutStorageBusiness, ITransientDependency
     {
-        public TD_OutStorageBusiness(IRepository repository, IServiceProvider svcProvider)
-            : base(repository)
+        public TD_OutStorageBusiness(IDbAccessor db, IServiceProvider svcProvider)
+            : base(db)
         {
             _ServiceProvider = svcProvider;
         }

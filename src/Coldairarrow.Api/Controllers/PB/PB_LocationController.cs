@@ -15,6 +15,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using System.Linq;
+using Coldairarrow.IBusiness;
 
 namespace Coldairarrow.Api.Controllers.PB
 {

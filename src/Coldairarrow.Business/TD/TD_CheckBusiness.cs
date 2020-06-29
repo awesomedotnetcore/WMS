@@ -13,8 +13,8 @@ namespace Coldairarrow.Business.TD
 {
     public partial class TD_CheckBusiness : BaseBusiness<TD_Check>, ITD_CheckBusiness, ITransientDependency
     {
-        public TD_CheckBusiness(IRepository repository, IServiceProvider svcProvider)
-            : base(repository)
+        public TD_CheckBusiness(IDbAccessor db, IServiceProvider svcProvider)
+            : base(db)
         {
             _ServiceProvider = svcProvider;
         }

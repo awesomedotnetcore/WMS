@@ -14,8 +14,8 @@ namespace Coldairarrow.Business.PB
     public partial class PB_BarCodeTypeBusiness : BaseBusiness<PB_BarCodeType>, IPB_BarCodeTypeBusiness, ITransientDependency
     {
         readonly IServiceProvider _serviceProvider;
-        public PB_BarCodeTypeBusiness(IRepository repository,IServiceProvider serviceProvider)
-            : base(repository)
+        public PB_BarCodeTypeBusiness(IDbAccessor db,IServiceProvider serviceProvider)
+            : base(db)
         {
             _serviceProvider = serviceProvider;
         }

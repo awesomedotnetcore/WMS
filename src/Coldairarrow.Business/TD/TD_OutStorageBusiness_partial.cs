@@ -86,7 +86,7 @@ namespace Coldairarrow.Business.TD
         public async Task UpdateDataAsync(TD_OutStorage data)
         {
             var curDetail = data.OutStorDetails;
-            var listDetail = await Service.GetIQueryable<TD_OutStorDetail>().Where(w => w.OutStorId == data.Id).ToListAsync();
+            var listDetail = await Db.GetIQueryable<TD_OutStorDetail>().Where(w => w.OutStorId == data.Id).ToListAsync();
 
             var curIds = curDetail.Select(s => s.Id).ToList();
             var dbIds = listDetail.Select(s => s.Id).ToList();
@@ -142,7 +142,7 @@ namespace Coldairarrow.Business.TD
                 var batchNos = ldGrout.Select(s => s.BatchNo).ToList();
                 var barCodes = ldGrout.Select(s => s.BarCode).ToList();
 
-                var listLd = Service.GetIQueryable<IT_LocalDetail>();
+                var listLd = Db.GetIQueryable<IT_LocalDetail>();
                 listLd = listLd.Where(w => w.StorId == audit.StorId);
                 if (localIds.Count > 0)
                     listLd = listLd.Where(w => localIds.Contains(w.LocalId));
@@ -202,7 +202,7 @@ namespace Coldairarrow.Business.TD
                 var batchNos = lmGrout.Select(s => s.BatchNo).ToList();
                 var barCodes = lmGrout.Select(s => s.BarCode).ToList();
 
-                var lmQuery = Service.GetIQueryable<IT_LocalMaterial>();
+                var lmQuery = Db.GetIQueryable<IT_LocalMaterial>();
                 lmQuery = lmQuery.Where(w => w.StorId == audit.StorId);
                 if (localIds.Count > 0)
                     lmQuery = lmQuery.Where(w => localIds.Contains(w.LocalId));
@@ -314,8 +314,8 @@ namespace Coldairarrow.Business.TD
         public async Task<AjaxResult> OutBlankTray(List<KeyValuePair<string, string>> listTray, string storid)
         {
             var listTrayIds = listTray.Select(s => s.Key).ToList();
-            var trays = await Service.GetIQueryable<PB_Tray>().Where(w => listTrayIds.Contains(w.Id)).ToListAsync();
-            var materials = await Service.GetIQueryable<IT_LocalMaterial>().Where(w => listTrayIds.Contains(w.TrayId) && w.StorId.Contains(storid)).ToListAsync();
+            var trays = await Db.GetIQueryable<PB_Tray>().Where(w => listTrayIds.Contains(w.Id)).ToListAsync();
+            var materials = await Db.GetIQueryable<IT_LocalMaterial>().Where(w => listTrayIds.Contains(w.TrayId) && w.StorId.Contains(storid)).ToListAsync();
             var dicLocal = listTray.ToDictionary(k => k.Key, v => v.Value);
             if (materials.Count == 0)
             {

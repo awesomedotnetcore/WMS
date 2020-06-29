@@ -13,8 +13,8 @@ namespace Coldairarrow.Business.PB
 {
     public partial class PB_StorAreaBusiness : BaseBusiness<PB_StorArea>, IPB_StorAreaBusiness, ITransientDependency
     {
-        public PB_StorAreaBusiness(IRepository repository)
-            : base(repository)
+        public PB_StorAreaBusiness(IDbAccessor db)
+            : base(db)
         {
         }
 

@@ -12,8 +12,8 @@ namespace Coldairarrow.Business.PB
 {
     public class PB_AreaMaterialBusiness : BaseBusiness<PB_AreaMaterial>, IPB_AreaMaterialBusiness, ITransientDependency
     {
-        public PB_AreaMaterialBusiness(IRepository repository)
-            : base(repository)
+        public PB_AreaMaterialBusiness(IDbAccessor db)
+            : base(db)
         {
         }
 
@@ -85,7 +85,7 @@ namespace Coldairarrow.Business.PB
 
             foreach (var key in materialIds)
             {
-                await ExecuteSqlAsync(string.Format("delete from PB_AreaMaterial where AreaId='{0}' and MaterialId='{1}'", AreaId, key));
+                await Db.ExecuteSqlAsync(string.Format("delete from PB_AreaMaterial where AreaId='{0}' and MaterialId='{1}'", AreaId, key));
             }
         }
 

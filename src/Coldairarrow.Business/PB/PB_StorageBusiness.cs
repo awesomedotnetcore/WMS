@@ -12,8 +12,8 @@ namespace Coldairarrow.Business.PB
 {
     public class PB_StorageBusiness : BaseBusiness<PB_Storage>, IPB_StorageBusiness, ITransientDependency
     {
-        public PB_StorageBusiness(IRepository repository)
-            : base(repository)
+        public PB_StorageBusiness(IDbAccessor db)
+            : base(db)
         {
         }
 

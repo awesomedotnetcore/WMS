@@ -14,8 +14,8 @@ namespace Coldairarrow.Business.PB
 {
     public partial class PB_MeasureBusiness : BaseBusiness<PB_Measure>, IPB_MeasureBusiness, ITransientDependency
     {
-        public PB_MeasureBusiness(IRepository repository, IServiceProvider svcProvider)
-            : base(repository)
+        public PB_MeasureBusiness(IDbAccessor db, IServiceProvider svcProvider)
+            : base(db)
         {
             _ServiceProvider = svcProvider;
         }

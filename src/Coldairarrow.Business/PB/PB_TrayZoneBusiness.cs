@@ -12,8 +12,8 @@ namespace Coldairarrow.Business.PB
 {
     public class PB_TrayZoneBusiness : BaseBusiness<PB_TrayZone>, IPB_TrayZoneBusiness, ITransientDependency
     {
-        public PB_TrayZoneBusiness(IRepository repository)
-            : base(repository)
+        public PB_TrayZoneBusiness(IDbAccessor db)
+            : base(db)
         {
         }
 

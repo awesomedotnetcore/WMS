@@ -16,8 +16,8 @@ namespace Coldairarrow.Business.IT
     public partial class Report_IntroduceBusiness : BaseBusiness<IT_LocalMaterial>, IReport_IntroduceBussiness, ITransientDependency
     {
         readonly IServiceProvider _ServiceProvider;
-        public Report_IntroduceBusiness(IRepository repository, IServiceProvider svc)
-            : base(repository)
+        public Report_IntroduceBusiness(IDbAccessor db, IServiceProvider svc)
+            : base(db)
         {
             _ServiceProvider = svc;
         }
@@ -36,9 +36,9 @@ namespace Coldairarrow.Business.IT
             var startTime = date.Date;
             var endTime = startTime.AddDays(1);
             var result = new IntroduceDTO();
-            result.Total = await Service.GetIQueryable<TD_InStorage>().Where(w => w.Status == 1 && w.InStorTime >= startTime && w.InStorTime < endTime).SumAsync(w => w.TotalNum);
+            result.Total = await Db.GetIQueryable<TD_InStorage>().Where(w => w.Status == 1 && w.InStorTime >= startTime && w.InStorTime < endTime).SumAsync(w => w.TotalNum);
             if (!storId.IsNullOrEmpty())
-                result.Storage = await Service.GetIQueryable<TD_InStorage>().Where(w => w.Status == 1 && w.StorId == storId).Where(w => w.InStorTime >= startTime && w.InStorTime < endTime).SumAsync(w => w.TotalNum);
+                result.Storage = await Db.GetIQueryable<TD_InStorage>().Where(w => w.Status == 1 && w.StorId == storId).Where(w => w.InStorTime >= startTime && w.InStorTime < endTime).SumAsync(w => w.TotalNum);
             return result;
         }
 
@@ -47,9 +47,9 @@ namespace Coldairarrow.Business.IT
             var startTime = date.Date;
             var endTime = startTime.AddDays(1);
             var result = new IntroduceDTO();
-            result.Total = await Service.GetIQueryable<TD_OutStorage>().Where(w => w.Status == 1 && w.OutTime >= startTime && w.OutTime < endTime).SumAsync(w => w.OutNum);
+            result.Total = await Db.GetIQueryable<TD_OutStorage>().Where(w => w.Status == 1 && w.OutTime >= startTime && w.OutTime < endTime).SumAsync(w => w.OutNum);
             if (!storId.IsNullOrEmpty())
-                result.Storage = await Service.GetIQueryable<TD_OutStorage>().Where(w => w.Status == 1 && w.StorageId == storId).Where(w => w.OutTime >= startTime && w.OutTime < endTime).SumAsync(w => w.OutNum);
+                result.Storage = await Db.GetIQueryable<TD_OutStorage>().Where(w => w.Status == 1 && w.StorageId == storId).Where(w => w.OutTime >= startTime && w.OutTime < endTime).SumAsync(w => w.OutNum);
             return result;
         }
 
@@ -81,7 +81,7 @@ SELECT
 from TD_InStorage
 WHERE `Status`=1 AND StorId=@StorId AND InStorTime BETWEEN DATE_ADD(@CurDate,INTERVAL '-8' day) and DATE_ADD(@CurDate,INTERVAL '1' day)
 ";
-            var list = await Service.GetListBySqlAsync<IntroduceHistoryDTO>(sql, ("@CurDate", startTime), ("@StorId", storId));
+            var list = await Db.GetListBySqlAsync<IntroduceHistoryDTO>(sql, ("@CurDate", startTime), ("@StorId", storId));
             return list;
         }
 
@@ -113,7 +113,7 @@ SELECT
 from TD_OutStorage
 WHERE `Status`=1 AND StorageId=@StorId AND OutTime BETWEEN DATE_ADD(@CurDate,INTERVAL '-8' day) and DATE_ADD(@CurDate,INTERVAL '1' day)
 ";
-            var list = await Service.GetListBySqlAsync<IntroduceHistoryDTO>(sql, ("@CurDate", startTime), ("@StorId", storId));
+            var list = await Db.GetListBySqlAsync<IntroduceHistoryDTO>(sql, ("@CurDate", startTime), ("@StorId", storId));
             return list;
         }
     }

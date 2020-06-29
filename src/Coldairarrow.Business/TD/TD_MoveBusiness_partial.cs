@@ -20,8 +20,8 @@ namespace Coldairarrow.Business.TD
     public partial class TD_MoveBusiness : BaseBusiness<TD_Move>, ITD_MoveBusiness, ITransientDependency
     {
         IServiceProvider _ServiceProvider { get; }
-        public TD_MoveBusiness(IRepository repository, IServiceProvider svcProvider)
-            : base(repository)
+        public TD_MoveBusiness(IDbAccessor db, IServiceProvider svcProvider)
+            : base(db)
         {
             _ServiceProvider = svcProvider;
         }
@@ -86,7 +86,7 @@ namespace Coldairarrow.Business.TD
         public async Task UpdateDataAsync(TD_Move data)
         {
             var curDetail = data.MoveDetails;
-            var listDetail = await Service.GetIQueryable<TD_MoveDetail>().Where(w => w.MoveId == data.Id).ToListAsync();
+            var listDetail = await Db.GetIQueryable<TD_MoveDetail>().Where(w => w.MoveId == data.Id).ToListAsync();
 
             var curIds = curDetail.Select(s => s.Id).ToList();
             var dbIds = listDetail.Select(s => s.Id).ToList();
@@ -143,7 +143,7 @@ namespace Coldairarrow.Business.TD
 
                 //修改库存
                 {
-                    var lmQuery = Service.GetIQueryable<IT_LocalMaterial>();
+                    var lmQuery = Db.GetIQueryable<IT_LocalMaterial>();
                     if (localIds.Count > 0)
                         lmQuery = lmQuery.Where(w => localIds.Contains(w.LocalId));
                     if (trayIds.Count > 0)
@@ -177,7 +177,7 @@ namespace Coldairarrow.Business.TD
 
                 // 修改库存明细
                 {
-                    var ldQuery = Service.GetIQueryable<IT_LocalDetail>();
+                    var ldQuery = Db.GetIQueryable<IT_LocalDetail>();
                     if (localIds.Count > 0)
                         ldQuery = ldQuery.Where(w => localIds.Contains(w.LocalId));
                     if (trayIds.Count > 0)
@@ -237,7 +237,7 @@ namespace Coldairarrow.Business.TD
                     var batchNos = lmGrout.Select(s => s.BatchNo).ToList();
                     var barCodes = lmGrout.Select(s => s.BarCode).ToList();
 
-                    var lmQuery = Service.GetIQueryable<IT_LocalMaterial>();
+                    var lmQuery = Db.GetIQueryable<IT_LocalMaterial>();
                     lmQuery = lmQuery.Where(w => w.StorId == audit.StorId);
                     if (localIds.Count > 0)
                         lmQuery = lmQuery.Where(w => localIds.Contains(w.LocalId));
@@ -392,7 +392,7 @@ namespace Coldairarrow.Business.TD
                 var trayIds = dicTray.Keys.ToList();
                 if (trayIds.Count > 0)
                 {
-                    var listTray = await Service.GetIQueryable<PB_Tray>().Where(w => trayIds.Contains(w.Id)).ToListAsync();
+                    var listTray = await Db.GetIQueryable<PB_Tray>().Where(w => trayIds.Contains(w.Id)).ToListAsync();
                     foreach (var tray in listTray)
                     {
                         tray.LocalId = dicTray[tray.Id];

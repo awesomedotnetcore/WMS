@@ -27,7 +27,7 @@ namespace Coldairarrow.Business.TD
         {
             string sql = string.Format("DELETE FROM TD_CheckArea WHERE CherkId='{0}'", checkId);
 
-            await base.ExecuteSqlAsync(sql);
+            await Db.ExecuteSqlAsync(sql);
         }
 
         public async Task PushAsync(List<TD_CheckArea> data)

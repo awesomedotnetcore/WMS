@@ -12,8 +12,8 @@ namespace Coldairarrow.Business.PB
 {
     public class PB_BarCodeRuleBusiness : BaseBusiness<PB_BarCodeRule>, IPB_BarCodeRuleBusiness, ITransientDependency
     {
-        public PB_BarCodeRuleBusiness(IRepository repository)
-            : base(repository)
+        public PB_BarCodeRuleBusiness(IDbAccessor db)
+            : base(db)
         {
         }
 

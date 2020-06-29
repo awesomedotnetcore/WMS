@@ -38,7 +38,7 @@ namespace Coldairarrow.Business.PB
                     serialWhere = serialWhere.Or(w => w.TypeId == codeType.Id && w.ParaName == rule.Rule && w.ParaValue == paraVal);
                 }
             }
-            var listSerial = await Service.GetIQueryable<PB_BarCodeSerial>().Where(serialWhere).ToListAsync();
+            var listSerial = await Db.GetIQueryable<PB_BarCodeSerial>().Where(serialWhere).ToListAsync();
 
             foreach (var rule in rules)
             {

@@ -12,8 +12,8 @@ namespace Coldairarrow.Business.IT
 {
     public partial class IT_LocalMaterialBusiness : BaseBusiness<IT_LocalMaterial>, IIT_LocalMaterialBusiness, ITransientDependency
     {
-        public IT_LocalMaterialBusiness(IRepository repository)
-            : base(repository)
+        public IT_LocalMaterialBusiness(IDbAccessor db)
+            : base(db)
         {
         }
 

@@ -15,11 +15,10 @@ namespace Coldairarrow.Business.PB
 {
     public partial class PB_TrayBusiness : BaseBusiness<PB_Tray>, IPB_TrayBusiness, ITransientDependency
     {
-        public PB_TrayBusiness(IRepository repository, IServiceProvider svcProvider)
-            : base(repository)
+        public PB_TrayBusiness(IDbAccessor db, IServiceProvider svcProvider)
+            : base(db)
         {
             _ServiceProvider = svcProvider;
-            repository.HandleSqlLog = Console.WriteLine;
         }
         readonly IServiceProvider _ServiceProvider;
 
@@ -45,13 +44,13 @@ namespace Coldairarrow.Business.PB
             var listTypeId = new List<string>();
             if (!search.MaterialId.IsNullOrEmpty())
             {
-                var query = Service.GetIQueryable<PB_TrayMaterial>();
+                var query = Db.GetIQueryable<PB_TrayMaterial>();
                 var listType = await query.Where(w => w.MaterialId == search.MaterialId).Select(s => s.TrayTypeId).Distinct().ToListAsync();
                 listTypeId.AddRange(listType);
             }
             if (!search.LocationId.IsNullOrEmpty())
             {
-                var query = Service.GetIQueryable<PB_LocalTray>();
+                var query = Db.GetIQueryable<PB_LocalTray>();
                 var listType = await query.Where(w => w.LocalId == search.LocationId).Select(s => s.TrayTypeId).Distinct().ToListAsync();
                 listTypeId.AddRange(listType);
             }
@@ -73,7 +72,7 @@ namespace Coldairarrow.Business.PB
         {
             if (data.Code.IsNullOrEmpty())
             {
-                var type = await Service.GetIQueryable<PB_TrayType>().SingleAsync(w => w.Id == data.TrayTypeId);
+                var type = await Db.GetIQueryable<PB_TrayType>().SingleAsync(w => w.Id == data.TrayTypeId);
                 var codeSvc = _ServiceProvider.GetRequiredService<IPB_BarCodeTypeBusiness>();
                 var dic = new Dictionary<string, string>();
                 dic.Add("TypeCode", type.Code);

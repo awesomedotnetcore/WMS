@@ -13,8 +13,8 @@ namespace Coldairarrow.Business.PB
 {
     public partial class PB_MaterialTypeBusiness : BaseBusiness<PB_MaterialType>, IPB_MaterialTypeBusiness, ITransientDependency
     {
-        public PB_MaterialTypeBusiness(IRepository repository)
-            : base(repository)
+        public PB_MaterialTypeBusiness(IDbAccessor db)
+            : base(db)
         {
         }
 

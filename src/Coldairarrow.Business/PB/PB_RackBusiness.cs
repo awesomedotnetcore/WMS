@@ -12,8 +12,8 @@ namespace Coldairarrow.Business.PB
 {
     public class PB_RackBusiness : BaseBusiness<PB_Rack>, IPB_RackBusiness, ITransientDependency
     {
-        public PB_RackBusiness(IRepository repository)
-            : base(repository)
+        public PB_RackBusiness(IDbAccessor db)
+            : base(db)
         {
         }
 

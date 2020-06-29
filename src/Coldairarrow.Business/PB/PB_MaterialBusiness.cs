@@ -13,10 +13,9 @@ namespace Coldairarrow.Business.PB
 {
     public partial class PB_MaterialBusiness : BaseBusiness<PB_Material>, IPB_MaterialBusiness, ITransientDependency
     {
-        public PB_MaterialBusiness(IRepository repository)
-            : base(repository)
+        public PB_MaterialBusiness(IDbAccessor db)
+            : base(db)
         {
-            repository.HandleSqlLog = Console.WriteLine;
         }
 
         #region 外部接口

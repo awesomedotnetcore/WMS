@@ -12,8 +12,8 @@ namespace Coldairarrow.Business.TD
 {
     public partial class TD_CheckAreaBusiness : BaseBusiness<TD_CheckArea>, ITD_CheckAreaBusiness, ITransientDependency
     {
-        public TD_CheckAreaBusiness(IRepository repository)
-            : base(repository)
+        public TD_CheckAreaBusiness(IDbAccessor db)
+            : base(db)
         {
         }
 

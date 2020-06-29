@@ -19,8 +19,8 @@ namespace Coldairarrow.Business.TD
 {
     public partial class TD_InStorageBusiness : BaseBusiness<TD_InStorage>, ITD_InStorageBusiness, ITransientDependency
     {
-        public TD_InStorageBusiness(IRepository repository, IServiceProvider svcProvider)
-            : base(repository)
+        public TD_InStorageBusiness(IDbAccessor db, IServiceProvider svcProvider)
+            : base(db)
         {
             _ServiceProvider = svcProvider;
         }
@@ -80,7 +80,7 @@ namespace Coldairarrow.Business.TD
         public async Task UpdateDataAsync(TD_InStorage data)
         {
             var curDetail = data.InStorDetails;
-            var listDetail = await Service.GetIQueryable<TD_InStorDetail>().Where(w => w.InStorId == data.Id).ToListAsync();
+            var listDetail = await Db.GetIQueryable<TD_InStorDetail>().Where(w => w.InStorId == data.Id).ToListAsync();
 
             var curIds = curDetail.Select(s => s.Id).ToList();
             var dbIds = listDetail.Select(s => s.Id).ToList();
@@ -167,7 +167,7 @@ namespace Coldairarrow.Business.TD
                 var batchNos = lmGrout.Select(s => s.BatchNo).ToList();
                 var barCodes = lmGrout.Select(s => s.BarCode).ToList();
 
-                var lmQuery = Service.GetIQueryable<IT_LocalMaterial>();
+                var lmQuery = Db.GetIQueryable<IT_LocalMaterial>();
                 lmQuery = lmQuery.Where(w => w.StorId == audit.StorId);
                 if (localIds.Count > 0)
                     lmQuery = lmQuery.Where(w => localIds.Contains(w.LocalId));
@@ -267,7 +267,7 @@ namespace Coldairarrow.Business.TD
                 var trayIds = dicTray.Keys.ToList();
                 if (trayIds.Count > 0)
                 {
-                    var listTray = await Service.GetIQueryable<PB_Tray>().Where(w => trayIds.Contains(w.Id)).ToListAsync();
+                    var listTray = await Db.GetIQueryable<PB_Tray>().Where(w => trayIds.Contains(w.Id)).ToListAsync();
                     foreach (var tray in listTray)
                     {
                         tray.LocalId = dicTray[tray.Id];
@@ -301,7 +301,7 @@ namespace Coldairarrow.Business.TD
         public async Task InBlankTray(List<KeyValuePair<string, string>> listTray)
         {
             var listTrayIds = listTray.Select(s => s.Key).ToList();
-            var trays = await Service.GetIQueryable<PB_Tray>().Where(w => listTrayIds.Contains(w.Id)).ToListAsync();
+            var trays = await Db.GetIQueryable<PB_Tray>().Where(w => listTrayIds.Contains(w.Id)).ToListAsync();
             var dicLocal = listTray.ToDictionary(k => k.Key, v => v.Value);
             foreach (var tray in trays)
             {

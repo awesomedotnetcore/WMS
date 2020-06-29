@@ -1,4 +1,5 @@
-﻿using Coldairarrow.Util;
+﻿using Coldairarrow.Entity;
+using Coldairarrow.Util;
 using System.Threading.Tasks;
 
 namespace Coldairarrow.Business.Cache

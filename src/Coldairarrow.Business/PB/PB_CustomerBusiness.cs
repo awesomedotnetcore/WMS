@@ -12,8 +12,8 @@ namespace Coldairarrow.Business.PB
 {
     public partial class PB_CustomerBusiness : BaseBusiness<PB_Customer>, IPB_CustomerBusiness, ITransientDependency
     {
-        public PB_CustomerBusiness(IRepository repository)
-            : base(repository)
+        public PB_CustomerBusiness(IDbAccessor db)
+            : base(db)
         {
         }
 

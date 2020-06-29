@@ -12,8 +12,8 @@ namespace Coldairarrow.Business.TD
 {
     public partial class TD_CheckMaterialBusiness : BaseBusiness<TD_CheckMaterial>, ITD_CheckMaterialBusiness, ITransientDependency
     {
-        public TD_CheckMaterialBusiness(IRepository repository)
-            : base(repository)
+        public TD_CheckMaterialBusiness(IDbAccessor db)
+            : base(db)
         {
         }
 

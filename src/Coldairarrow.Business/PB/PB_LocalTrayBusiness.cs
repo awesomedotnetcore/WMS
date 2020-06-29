@@ -12,8 +12,8 @@ namespace Coldairarrow.Business.PB
 {
     public partial class PB_LocalTrayBusiness : BaseBusiness<PB_LocalTray>, IPB_LocalTrayBusiness, ITransientDependency
     {
-        public  PB_LocalTrayBusiness(IRepository repository)
-            : base(repository)
+        public  PB_LocalTrayBusiness(IDbAccessor db)
+            : base(db)
         {
         }
 
@@ -85,7 +85,7 @@ namespace Coldairarrow.Business.PB
 
             foreach (var key in localIds)
             {
-                await ExecuteSqlAsync(string.Format("delete from PB_LocalTray where TrayTypeId='{0}' and localId='{1}'", trayId, key));
+                await Db.ExecuteSqlAsync(string.Format("delete from PB_LocalTray where TrayTypeId='{0}' and localId='{1}'", trayId, key));
             }
         }
 

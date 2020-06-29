@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Coldairarrow.Business.PB;
+using Coldairarrow.Entity;
 using Coldairarrow.Entity.Base;
 using Coldairarrow.Util;
 using EFCore.Sharding;
@@ -19,8 +20,8 @@ namespace Coldairarrow.Business.Base
         readonly Cache.IBase_UserCache _userCache;
         readonly IServiceProvider _serviceProvider;
         readonly IMapper _mapper;
-        public Base_UserStorBusiness(IRepository repository, Cache.IBase_UserCache userCache, IServiceProvider serviceProvider, IMapper mapper)
-            : base(repository)
+        public Base_UserStorBusiness(IDbAccessor db, Cache.IBase_UserCache userCache, IServiceProvider serviceProvider, IMapper mapper)
+            : base(db)
         {
             _serviceProvider = serviceProvider;
             _userCache = userCache;

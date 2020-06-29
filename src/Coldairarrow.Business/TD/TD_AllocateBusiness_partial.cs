@@ -20,8 +20,8 @@ namespace Coldairarrow.Business.TD
     public partial class TD_AllocateBusiness : BaseBusiness<TD_Allocate>, ITD_AllocateBusiness, ITransientDependency
     {
         IServiceProvider _ServiceProvider { get; }
-        public TD_AllocateBusiness(IRepository repository, IServiceProvider svcProvider)
-            : base(repository)
+        public TD_AllocateBusiness(IDbAccessor db, IServiceProvider svcProvider)
+            : base(db)
         {
             _ServiceProvider = svcProvider;
         }
@@ -83,7 +83,7 @@ namespace Coldairarrow.Business.TD
         public async Task UpdateDataAsync(TD_Allocate data)
         {
             var curDetail = data.AllocateDetails;
-            var listDetail = await Service.GetIQueryable<TD_AllocateDetail>().Where(w => w.AllocateId == data.Id).ToListAsync();
+            var listDetail = await Db.GetIQueryable<TD_AllocateDetail>().Where(w => w.AllocateId == data.Id).ToListAsync();
 
             var curIds = curDetail.Select(s => s.Id).ToList();
             var dbIds = listDetail.Select(s => s.Id).ToList();
@@ -125,7 +125,7 @@ namespace Coldairarrow.Business.TD
             PB_Location defaultAllocateLocation = null;
             // 找到目标仓库的默认待入库位
             {
-                var localSvc = Service.GetIQueryable<PB_Location>();
+                var localSvc = Db.GetIQueryable<PB_Location>();
                 //这里要修改，要从货区的类型来过滤
                 defaultAllocateLocation = await localSvc.Where(w => w.StorId == data.ToStorId && w.PB_StorArea.Type == "In").OrderByDescending(o => o.IsDefault).FirstOrDefaultAsync();
                 if (defaultAllocateLocation == null) throw new Exception("没有找到目标仓库默认待入库位");
@@ -149,7 +149,7 @@ namespace Coldairarrow.Business.TD
 
                 //修改库存
                 {
-                    var lmQuery = Service.GetIQueryable<IT_LocalMaterial>();
+                    var lmQuery = Db.GetIQueryable<IT_LocalMaterial>();
                     if (localIds.Count > 0)
                         lmQuery = lmQuery.Where(w => localIds.Contains(w.LocalId));
                     if (trayIds.Count > 0)
@@ -228,7 +228,7 @@ namespace Coldairarrow.Business.TD
 
                 // 修改库存明细
                 {
-                    var ldQuery = Service.GetIQueryable<IT_LocalDetail>();
+                    var ldQuery = Db.GetIQueryable<IT_LocalDetail>();
                     if (localIds.Count > 0)
                         ldQuery = ldQuery.Where(w => localIds.Contains(w.LocalId));
                     if (trayIds.Count > 0)
@@ -283,7 +283,7 @@ namespace Coldairarrow.Business.TD
                 var barCodes = AllocateGroup.Select(s => s.BarCode).ToList();
                 // 修改库存
                 {
-                    var lmQuery = Service.GetIQueryable<IT_LocalMaterial>().Where(w => w.StorId == data.ToStorId && w.LocalId == defaultAllocateLocation.Id);
+                    var lmQuery = Db.GetIQueryable<IT_LocalMaterial>().Where(w => w.StorId == data.ToStorId && w.LocalId == defaultAllocateLocation.Id);
                     if (materialIds.Count > 0)
                         lmQuery = lmQuery.Where(w => materialIds.Contains(w.MaterialId));
                     if (batchNos.Count > 0)

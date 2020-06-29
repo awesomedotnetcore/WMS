@@ -20,8 +20,8 @@ namespace Coldairarrow.Business.TD
     public partial class TD_BadBusiness : BaseBusiness<TD_Bad>, ITD_BadBusiness, ITransientDependency
     {
         IServiceProvider _ServiceProvider { get; }
-        public TD_BadBusiness(IRepository repository, IServiceProvider svcProvider)
-            : base(repository)
+        public TD_BadBusiness(IDbAccessor db, IServiceProvider svcProvider)
+            : base(db)
         {
             _ServiceProvider = svcProvider;
         }
@@ -80,7 +80,7 @@ namespace Coldairarrow.Business.TD
         public async Task UpdateDataAsync(TD_Bad data)
         {
             var curDetail = data.BadDetails;
-            var listDetail = await Service.GetIQueryable<TD_BadDetail>().Where(w => w.BadId == data.Id).ToListAsync();
+            var listDetail = await Db.GetIQueryable<TD_BadDetail>().Where(w => w.BadId == data.Id).ToListAsync();
 
             var curIds = curDetail.Select(s => s.Id).ToList();
             var dbIds = listDetail.Select(s => s.Id).ToList();
@@ -122,7 +122,7 @@ namespace Coldairarrow.Business.TD
             PB_Location defaultBadLocation = null;
             // 找到默认的报损货位
             {
-                var localSvc = Service.GetIQueryable<PB_Location>();
+                var localSvc = Db.GetIQueryable<PB_Location>();
                 //这里要修改，要从货区的类型来过滤
                 defaultBadLocation = await localSvc.Where(w => w.StorId == audit.StorId && w.PB_StorArea.Type == "Bad").OrderByDescending(o => o.IsDefault).FirstOrDefaultAsync();
                 if (defaultBadLocation == null) throw new Exception("没有指定默认报损货位");
@@ -146,7 +146,7 @@ namespace Coldairarrow.Business.TD
 
                 //修改库存
                 {
-                    var lmQuery = Service.GetIQueryable<IT_LocalMaterial>();
+                    var lmQuery = Db.GetIQueryable<IT_LocalMaterial>();
                     if (localIds.Count > 0)
                         lmQuery = lmQuery.Where(w => localIds.Contains(w.LocalId));
                     if (trayIds.Count > 0)
@@ -225,7 +225,7 @@ namespace Coldairarrow.Business.TD
 
                 // 修改库存明细
                 {
-                    var ldQuery = Service.GetIQueryable<IT_LocalDetail>();
+                    var ldQuery = Db.GetIQueryable<IT_LocalDetail>();
                     if (localIds.Count > 0)
                         ldQuery = ldQuery.Where(w => localIds.Contains(w.LocalId));
                     if (trayIds.Count > 0)
@@ -280,7 +280,7 @@ namespace Coldairarrow.Business.TD
                 var barCodes = badGroup.Select(s => s.BarCode).ToList();
                 // 修改库存
                 {
-                    var lmQuery = Service.GetIQueryable<IT_LocalMaterial>().Where(w => w.StorId == audit.StorId && w.LocalId == defaultBadLocation.Id);
+                    var lmQuery = Db.GetIQueryable<IT_LocalMaterial>().Where(w => w.StorId == audit.StorId && w.LocalId == defaultBadLocation.Id);
                     if (materialIds.Count > 0)
                         lmQuery = lmQuery.Where(w => materialIds.Contains(w.MaterialId));
                     if (batchNos.Count > 0)
