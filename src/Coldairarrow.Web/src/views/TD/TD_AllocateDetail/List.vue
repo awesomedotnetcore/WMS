@@ -5,6 +5,46 @@
       <a-button type="primary" icon="minus" @click="handleDelete(selectedRows)" :disabled="!hasSelected() || disabled">删除</a-button>
     </div>
     <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="false" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+      <a-breadcrumb slot="Location" slot-scope="text, record">
+        <a-breadcrumb-item>
+          <a-tooltip>
+            <template slot="title">货位:{{ record.FromLocal.Code }}</template>
+            {{ record.FromLocal.Name }}
+          </a-tooltip>
+        </a-breadcrumb-item>
+        <a-breadcrumb-item v-if="record.FromTrayId">
+          <a-tooltip>
+            <template slot="title">托盘:{{ record.FromTray.Code }}</template>
+            {{ record.FromTray.Name }}
+          </a-tooltip>
+        </a-breadcrumb-item>
+        <a-breadcrumb-item v-if="record.FromZoneId">
+          <a-tooltip>
+            <template slot="title">分区:{{ record.FromZone.Code }}</template>
+            {{ record.FromZone.Name }}
+          </a-tooltip>
+        </a-breadcrumb-item>
+      </a-breadcrumb>
+      <a-breadcrumb slot="Material" slot-scope="text, record">
+        <a-breadcrumb-item>
+          <a-tooltip>
+            <template slot="title">物料:{{ record.Material.Code }}</template>
+            {{ record.Material.Name }}
+          </a-tooltip>
+        </a-breadcrumb-item>
+        <a-breadcrumb-item v-if="record.BatchNo">
+          <a-tooltip>
+            <template slot="title">批次</template>
+            {{ record.BatchNo }}
+          </a-tooltip>
+        </a-breadcrumb-item>
+        <a-breadcrumb-item v-if="record.BarCode">
+          <a-tooltip>
+            <template slot="title">条码</template>
+            {{ record.BarCode }}
+          </a-tooltip>
+        </a-breadcrumb-item>
+      </a-breadcrumb>
       <template slot="AllocateNum" slot-scope="text, record">
         <a-input-number size="small" :disabled="disabled" :value="text" :max="record.LocalNum" :min="1" @change="e=>handleValChange(e,'AllocateNum',record)"></a-input-number>
       </template>
@@ -20,32 +60,9 @@
 
 <script>
 import AllocateChoose from './AllocateChoose'
-const columns1 = [
-  { title: '货位', dataIndex: 'FromLocal.Name'},
-  { title: '物料', dataIndex: 'Material.Name'},
-  { title: '批次', dataIndex: 'BatchNo' },
-  { title: '条码', dataIndex: 'BarCode' },
-  { title: '库存', dataIndex: 'LocalNum' },
-  { title: '调拨', dataIndex: 'AllocateNum', scopedSlots: { customRender: 'AllocateNum' } },
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
-]
-const columns2 = [
-  { title: '货位', dataIndex: 'FromLocal.Name' },
-  { title: '托盘', dataIndex: 'FromTray.Name' },
-  { title: '物料', dataIndex: 'Material.Name' },
-  { title: '批次', dataIndex: 'BatchNo' },
-  { title: '条码', dataIndex: 'BarCode' },
-  { title: '库存', dataIndex: 'LocalNum' },
-  { title: '调拨', dataIndex: 'AllocateNum', scopedSlots: { customRender: 'AllocateNum' } },
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
-]
-const columns3 = [
-  { title: '货位', dataIndex: 'FromLocal.Name'},
-  { title: '托盘', dataIndex: 'FromTray.Name'},
-  { title: '分区', dataIndex: 'FromZone.Name'},
-  { title: '物料', dataIndex: 'Material.Name'},
-  { title: '批次', dataIndex: 'BatchNo' },
-  { title: '条码', dataIndex: 'BarCode' },
+const columns = [
+  { title: '货位', dataIndex: 'FromLocal', scopedSlots: { customRender: 'Location' } },
+  { title: '物料', dataIndex: 'Material', scopedSlots: { customRender: 'Material' } },
   { title: '库存', dataIndex: 'LocalNum' },
   { title: '调拨', dataIndex: 'AllocateNum', scopedSlots: { customRender: 'AllocateNum' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
@@ -63,7 +80,7 @@ export default {
     return {
       storage: {},
       data: [],
-      columns: columns1,
+      columns,
       tempId: 0,
       selectedRowKeys: [],
       selectedRows: []
@@ -83,13 +100,6 @@ export default {
       this.$http.get('/PB/PB_Storage/GetCurStorage')
         .then(resJson => {
           this.storage = resJson.Data
-          if (this.storage.IsTray && this.storage.IsZone) {
-            this.columns = columns3
-          } else if (this.storage.IsTray) {
-            this.columns = columns2
-          } else {
-            this.columns = columns1
-          }
         })
     },
     onSelectChange(selectedRowKeys, selectedRows) {

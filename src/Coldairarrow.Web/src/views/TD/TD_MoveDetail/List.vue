@@ -7,20 +7,48 @@
     <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :pagination="false" :dataSource="data" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
       <template slot="From" slot-scope="text, record">
         <a-breadcrumb>
-          <a-breadcrumb-item>{{ record.FromLocal.Name }}</a-breadcrumb-item>
-          <a-breadcrumb-item v-if="record.FromTrayId != null">{{ record.FromTray.Name }}</a-breadcrumb-item>
-          <a-breadcrumb-item v-if="record.FromZoneId != null">{{ record.FromZone.Name }}</a-breadcrumb-item>
+          <a-breadcrumb-item>
+            <a-tooltip>
+              <template slot="title">货位:{{ record.FromLocal.Code }}</template>
+              {{ record.FromLocal.Name }}
+            </a-tooltip>
+          </a-breadcrumb-item>
+          <a-breadcrumb-item v-if="record.FromTrayId">
+            <a-tooltip>
+              <template slot="title">托盘:{{ record.FromTray.Code }}</template>
+              {{ record.FromTray.Name }}
+            </a-tooltip>
+          </a-breadcrumb-item>
+          <a-breadcrumb-item v-if="record.FromZoneId">
+            <a-tooltip>
+              <template slot="title">分区:{{ record.FromZone.Code }}</template>
+              {{ record.FromZone.Name }}
+            </a-tooltip>
+          </a-breadcrumb-item>
         </a-breadcrumb>
       </template>
-      <template slot="Material" slot-scope="text, record">
-        <a-breadcrumb>
-          <a-breadcrumb-item>{{ record.Material.Name }}</a-breadcrumb-item>
-          <a-breadcrumb-item v-if="record.BatchNo != null">{{ record.BatchNo }}</a-breadcrumb-item>
-          <a-breadcrumb-item v-if="record.BarCode != null">{{ record.BarCode }}</a-breadcrumb-item>
-        </a-breadcrumb>
-      </template>
+      <a-breadcrumb slot="Material" slot-scope="text, record">
+        <a-breadcrumb-item>
+          <a-tooltip>
+            <template slot="title">物料:{{ record.Material.Code }}</template>
+            {{ record.Material.Name }}
+          </a-tooltip>
+        </a-breadcrumb-item>
+        <a-breadcrumb-item v-if="record.BatchNo">
+          <a-tooltip>
+            <template slot="title">批次</template>
+            {{ record.BatchNo }}
+          </a-tooltip>
+        </a-breadcrumb-item>
+        <a-breadcrumb-item v-if="record.BarCode">
+          <a-tooltip>
+            <template slot="title">条码</template>
+            {{ record.BarCode }}
+          </a-tooltip>
+        </a-breadcrumb-item>
+      </a-breadcrumb>
       <template slot="MoveNum" slot-scope="text, record">
-        <a-input-number size="small" :style="{width:'70px'}" :disabled="disabled" :value="text" :max="record.LocalNum" :min="1" @change="e=>handleValChange(e,'MoveNum',record)"></a-input-number>
+        <a-input-number size="small" :disabled="disabled" :value="text" :max="record.LocalNum" :min="1" @change="e=>handleValChange(e,'MoveNum',record)"></a-input-number>
       </template>
       <template slot="ToLocalId" slot-scope="text, record">
         <local-select size="small" v-model="record.ToLocalId" :disabled="disabled"></local-select>
@@ -49,29 +77,29 @@ import ZoneSelect from '../../../components/Tray/ZoneSelect'
 const columns1 = [
   { title: '原货位', dataIndex: 'FromLocal', scopedSlots: { customRender: 'From' } },
   { title: '物料', dataIndex: 'Material', scopedSlots: { customRender: 'Material' } },
-  { title: '库存', dataIndex: 'LocalNum'},
+  { title: '库存', dataIndex: 'LocalNum' },
   { title: '移库', dataIndex: 'MoveNum', scopedSlots: { customRender: 'MoveNum' } },
   { title: '目标货位', dataIndex: 'ToLocalId', scopedSlots: { customRender: 'ToLocalId' } },
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, width: '5%' }
+  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 const columns2 = [
-  { title: '原货位', dataIndex: 'FromLocal', scopedSlots: { customRender: 'From'} },
-  { title: '物料', dataIndex: 'Material', scopedSlots: { customRender: 'Material'} },
+  { title: '原货位', dataIndex: 'FromLocal', scopedSlots: { customRender: 'From' } },
+  { title: '物料', dataIndex: 'Material', scopedSlots: { customRender: 'Material' } },
   { title: '库存', dataIndex: 'LocalNum' },
-  { title: '移库', dataIndex: 'MoveNum', scopedSlots: { customRender: 'MoveNum'} },
-  { title: '目标货位', dataIndex: 'ToLocalId', scopedSlots: { customRender: 'ToLocalId'} },
-  { title: '目标托盘', dataIndex: 'ToTrayId', scopedSlots: { customRender: 'ToTrayId'} },
+  { title: '移库', dataIndex: 'MoveNum', scopedSlots: { customRender: 'MoveNum' } },
+  { title: '目标货位', dataIndex: 'ToLocalId', scopedSlots: { customRender: 'ToLocalId' } },
+  { title: '目标托盘', dataIndex: 'ToTrayId', scopedSlots: { customRender: 'ToTrayId' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 const columns3 = [
-  { title: '原货位', dataIndex: 'FromLocal', scopedSlots: { customRender: 'From'} },
-  { title: '物料', dataIndex: 'Material', scopedSlots: { customRender: 'Material'} },
+  { title: '原货位', dataIndex: 'FromLocal', scopedSlots: { customRender: 'From' } },
+  { title: '物料', dataIndex: 'Material', scopedSlots: { customRender: 'Material' } },
   { title: '库存', dataIndex: 'LocalNum' },
   { title: '移库', dataIndex: 'MoveNum', scopedSlots: { customRender: 'MoveNum' } },
-  { title: '目标货位', dataIndex: 'ToLocalId', scopedSlots: { customRender: 'ToLocalId'} },
+  { title: '目标货位', dataIndex: 'ToLocalId', scopedSlots: { customRender: 'ToLocalId' } },
   { title: '目标托盘', dataIndex: 'ToTrayId', scopedSlots: { customRender: 'ToTrayId' } },
   { title: '目标分区', dataIndex: 'ToZoneId', scopedSlots: { customRender: 'ToZoneId' } },
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }}
+  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
