@@ -1,5 +1,7 @@
 ﻿using Coldairarrow.Business.Cache;
+using Coldairarrow.Entity;
 using Coldairarrow.Entity.Base_Manage;
+using Coldairarrow.IBusiness;
 using Coldairarrow.Util;
 using EFCore.Sharding;
 using Microsoft.AspNetCore.Http;
@@ -85,7 +87,7 @@ namespace Coldairarrow.Business
             {
                 using (var scop = _serviceProvider.CreateScope())
                 {
-                    var db = scop.ServiceProvider.GetService<IRepository>();
+                    var db = scop.ServiceProvider.GetService<IDbAccessor>();
                     await db.InsertAsync(log);
                 }
             }, TaskCreationOptions.LongRunning);
