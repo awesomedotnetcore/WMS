@@ -1,7 +1,7 @@
 ﻿<template>
   <div>
     <div class="table-operator">
-      <a-button :disabled="disabled" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
+      <a-button :disabled="disabled" type="primary" icon="plus" @click="hanldleAdd()">添加</a-button>
       <a-button type="primary" icon="minus" @click="handleDelete(selectedRows)" :disabled="!hasSelected() || disabled">删除</a-button>
     </div>
     <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :pagination="false" :dataSource="data" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">

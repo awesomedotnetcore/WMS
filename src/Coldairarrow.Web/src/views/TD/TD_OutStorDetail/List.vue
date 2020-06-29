@@ -64,29 +64,6 @@ const columns1 = [
   { title: '出库数量', dataIndex: 'OutNum', scopedSlots: { customRender: 'OutNum' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
-// const columns2 = [
-//   { title: '物料', dataIndex: 'Material.Name' },
-//   { title: '编码', dataIndex: 'Material.Code' },
-//   { title: '货位', dataIndex: 'Location.Name'},
-//   { title: '托盘', dataIndex: 'Tray.Name'},
-//   { title: '条码', dataIndex: 'BarCode' },
-//   { title: '批次号', dataIndex: 'BatchNo' },
-//   { title: '库存', dataIndex: 'LocalNum' },
-//   { title: '出库数量', dataIndex: 'OutNum',scopedSlots: { customRender: 'OutNum' }},
-//   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
-// ]
-// const columns3 = [
-//   { title: '物料', dataIndex: 'Material.Name' },
-//   { title: '编码', dataIndex: 'Material.Code'},
-//   { title: '货位', dataIndex: 'Location.Name'},
-//   { title: '托盘', dataIndex: 'Tray.Name'},
-//   { title: '托盘分区', dataIndex: 'TrayZone.Name'},
-//   { title: '条码', dataIndex: 'BarCode'},
-//   { title: '批次号', dataIndex: 'BatchNo' },
-//   { title: '库存', dataIndex: 'LocalNum'},
-//   { title: '出库数量', dataIndex: 'OutNum', scopedSlots: { customRender: 'OutNum' } },
-//   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
-// ]
 
 export default {
   components: {
