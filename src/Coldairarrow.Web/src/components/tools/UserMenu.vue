@@ -66,8 +66,7 @@ export default {
           localStorage.clear()
           // location.reload()
           // that.$router.push({ path: '/user/login' })
-          // that.$router.go(0)
-          that.$router.replace({ path: '/Home/Login' })
+          that.$router.go(0)
         }
       })
     },

@@ -45,7 +45,6 @@
 </template>
 
 <script>
-import EditForm from './EditForm'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 
@@ -64,7 +63,6 @@ const columns = [
 
 export default {
   components: {
-    EditForm,
     EnumName,
     EnumSelect
   },

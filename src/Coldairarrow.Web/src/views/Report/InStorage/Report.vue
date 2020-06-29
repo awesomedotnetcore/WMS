@@ -2,25 +2,30 @@
   <a-card :bordered="false">
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
-        <a-row :gutter="5">
-          <a-col :md="3" :sm="24">
+        <a-row :gutter="10">
+          <a-col :md="2" :sm="24">
+            <a-form-item>
+              <a-input v-model="queryParam.Code" placeholder="入库/关联单号" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="2" :sm="24">
+            <a-form-item>
+              <enum-select code="InStorageType" v-model="queryParam.InType"></enum-select>
+            </a-form-item>
+          </a-col>
+          <a-col :md="4" :sm="24">
+            <a-form-item>
+              <a-range-picker @change="onInStorTimeChange" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="2" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.LocalName" placeholder="货位" />
             </a-form-item>
           </a-col>
-          <a-col v-if="storage.IsTray" :md="3" :sm="24">
+          <a-col :md="2" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.TrayName" placeholder="托盘" />
-            </a-form-item>
-          </a-col>
-          <a-col :md="3" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.MaterialName" placeholder="物料" />
-            </a-form-item>
-          </a-col>
-          <a-col :md="3" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.Code" placeholder="批次/条码" />
+              <a-input v-model="queryParam.MaterialName" placeholder="物料/批次/条码" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -31,7 +36,10 @@
       </a-form>
     </div>
 
-    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" @change="handleTableChange" :loading="loading" :bordered="true" size="small">
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :bordered="true" size="small">
+      <template slot="InType" slot-scope="text">
+        <enum-name code="InStorageType" :value="text"></enum-name>
+      </template>
       <a-breadcrumb slot="Location" slot-scope="text, record">
         <a-breadcrumb-item>
           <a-tooltip>
@@ -61,25 +69,39 @@
 </template>
 
 <script>
+import moment from 'moment'
+import EnumName from '../../../components/BaseEnum/BaseEnumName'
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
+const filterDate = (value, row, index) => {
+  if (value) {
+    return moment(value).format('YYYY-MM-DD')
+  } else {
+    return ' '
+  }
+}
 const columns = [
-  { title: '货位', dataIndex: 'Location', scopedSlots: { customRender: 'Location' } },
+  { title: '入库单号', dataIndex: 'InStorage.Code' },
+  { title: '入库类型', dataIndex: 'InStorage.InType', scopedSlots: { customRender: 'InType' } },
+  { title: '入库时间', dataIndex: 'InStorage.InStorTime', customRender: filterDate },
+  { title: '入库货位', dataIndex: 'Location', scopedSlots: { customRender: 'Location' } },
   { title: '物料', dataIndex: 'Material', scopedSlots: { customRender: 'NameCode' } },
-  { title: '单位', dataIndex: 'Measure.Name' },
-  { title: '批次号', dataIndex: 'BatchNo' },
+  { title: '批次', dataIndex: 'BatchNo' },
   { title: '条码', dataIndex: 'BarCode' },
-  { title: '数量', dataIndex: 'Num' }
+  { title: '入库数量', dataIndex: 'Num' },
+  { title: '单价', dataIndex: 'Price' },
+  { title: '总额', dataIndex: 'TotalAmt' }
 ]
 
 export default {
   components: {
+    EnumName,
+    EnumSelect
   },
   mounted() {
     this.getDataList()
-    this.getCurStorage()
   },
   data() {
     return {
-      storage: {},
       data: [],
       pagination: {
         current: 1,
@@ -87,18 +109,17 @@ export default {
         showTotal: (total, range) => `总数:${total} 当前:${range[0]}-${range[1]}`
       },
       filters: {},
-      sorter: { field: 'Id', order: 'desc' },
+      sorter: { field: 'Id', order: 'asc' },
       loading: false,
       columns,
       queryParam: {}
     }
   },
   methods: {
-    getCurStorage() {
-      this.$http.get('/PB/PB_Storage/GetCurStorage')
-        .then(resJson => {
-          this.storage = resJson.Data
-        })
+    moment,
+    onInStorTimeChange(dates, dateStrings) {
+      this.queryParam.InTimeStart = dateStrings[0]
+      this.queryParam.InTimeEnd = dateStrings[1]
     },
     handleTableChange(pagination, filters, sorter) {
       this.pagination = { ...pagination }
@@ -111,7 +132,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/IT/IT_LocalMaterial/GetDataList', {
+        .post('/TD/TD_InStorDetail/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
