@@ -32,43 +32,41 @@
     </div>
 
     <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" @change="handleTableChange" :loading="loading" :bordered="true" size="small">
+      <a-breadcrumb slot="Location" slot-scope="text, record">
+        <a-breadcrumb-item>
+          <a-tooltip>
+            <template slot="title">{{ record.Location.Code }}</template>
+            {{ record.Location.Name }}
+          </a-tooltip>
+        </a-breadcrumb-item>
+        <a-breadcrumb-item v-if="record.TrayId">
+          <a-tooltip>
+            <template slot="title">{{ record.Tray.Code }}</template>
+            {{ record.Tray.Name }}
+          </a-tooltip>
+        </a-breadcrumb-item>
+        <a-breadcrumb-item v-if="record.ZoneId">
+          <a-tooltip>
+            <template slot="title">{{ record.TrayZone.Code }}</template>
+            {{ record.TrayZone.Name }}
+          </a-tooltip>
+        </a-breadcrumb-item>
+      </a-breadcrumb>
+      <a-tooltip slot="NameCode" slot-scope="text" placement="right">
+        <template slot="title">{{ text.Code }}</template>
+        {{ text.Name }}
+      </a-tooltip>
     </a-table>
   </a-card>
 </template>
 
 <script>
-const filterCode = (value, row, index) => {
-  if (value === null) {
-    return ''
-  } else {
-    return value.Name + '(' + value.Code + ')'
-  }
-}
-const columns1 = [
-  { title: '货位', dataIndex: 'Location', customRender: filterCode},
-  { title: '物料', dataIndex: 'Material', customRender: filterCode},
-  { title: '单位', dataIndex: 'Measure.Name'},
-  { title: '批次号', dataIndex: 'BatchNo'},
+const columns = [
+  { title: '货位', dataIndex: 'Location', scopedSlots: { customRender: 'Location' } },
+  { title: '物料', dataIndex: 'Material', scopedSlots: { customRender: 'NameCode' } },
+  { title: '单位', dataIndex: 'Measure.Name' },
+  { title: '批次号', dataIndex: 'BatchNo' },
   { title: '条码', dataIndex: 'BarCode' },
-  { title: '数量', dataIndex: 'Num'}
-]
-const columns2 = [
-  { title: '货位', dataIndex: 'Location', customRender: filterCode },
-  { title: '托盘', dataIndex: 'Tray', customRender: filterCode },
-  { title: '物料', dataIndex: 'Material', customRender: filterCode},
-  { title: '单位', dataIndex: 'Measure.Name'},
-  { title: '批次号', dataIndex: 'BatchNo'},
-  { title: '条码', dataIndex: 'BarCode'},
-  { title: '数量', dataIndex: 'Num'}
-]
-const columns3 = [
-  { title: '货位', dataIndex: 'Location', customRender: filterCode},
-  { title: '托盘', dataIndex: 'Tray', customRender: filterCode},
-  { title: '托盘分区', dataIndex: 'TrayZone', customRender: filterCode},
-  { title: '物料', dataIndex: 'Material', customRender: filterCode},
-  { title: '单位', dataIndex: 'Measure.Name'},
-  { title: '批次号', dataIndex: 'BatchNo'},
-  { title: '条码', dataIndex: 'BarCode'},
   { title: '数量', dataIndex: 'Num' }
 ]
 
@@ -91,7 +89,7 @@ export default {
       filters: {},
       sorter: { field: 'Id', order: 'desc' },
       loading: false,
-      columns: columns1,
+      columns,
       queryParam: {}
     }
   },
@@ -100,13 +98,6 @@ export default {
       this.$http.get('/PB/PB_Storage/GetCurStorage')
         .then(resJson => {
           this.storage = resJson.Data
-          if (this.storage.IsTray && this.storage.IsZone) {
-            this.columns = columns3
-          } else if (this.storage.IsTray) {
-            this.columns = columns2
-          } else {
-            this.columns = columns1
-          }
         })
     },
     handleTableChange(pagination, filters, sorter) {
