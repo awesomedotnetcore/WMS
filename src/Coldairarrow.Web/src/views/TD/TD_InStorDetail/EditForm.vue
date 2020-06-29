@@ -78,8 +78,8 @@ export default {
       rules: {
         MaterialId: [{ required: true, message: '请选择物料', trigger: 'change' }],
         LocalId: [{ required: true, message: '请选择货位', trigger: 'change' }],
-        TrayId: [{ required: true, message: '请选择托盘', trigger: 'change' }],
-        ZoneId: [{ required: true, message: '请选择托盘分区', trigger: 'change' }],
+        // TrayId: [{ required: true, message: '请选择托盘', trigger: 'change' }],
+        // ZoneId: [{ required: true, message: '请选择托盘分区', trigger: 'change' }],
         Num: [{ required: true, message: '请输入入库数量', trigger: 'blur' }]
       },
       material: null,

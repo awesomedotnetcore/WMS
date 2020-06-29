@@ -119,7 +119,8 @@ export default {
       rules: {
         Name: [{ required: true, message: '请输入物料名称', trigger: 'blur' }],
         MaterialTypeId: [{ required: true, message: '请选择物料类型', trigger: 'change' }],
-        MeasureId: [{ required: true, message: '请选择物料单位', trigger: 'change' }]
+        MeasureId: [{ required: true, message: '请选择物料单位', trigger: 'change' }],
+        Price: [{ required: true, message: '请输入物料单价', trigger: 'change' }]
       },
       title: ''
     }
@@ -127,7 +128,7 @@ export default {
   methods: {
     init() {
       this.visible = true
-      this.entity = {}
+      this.entity = {Price: 0 }
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })

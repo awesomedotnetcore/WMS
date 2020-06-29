@@ -14,6 +14,27 @@
       :bordered="true"
       size="small"
     >
+      <a-breadcrumb slot="Location" slot-scope="text, record">
+        <a-breadcrumb-item>
+          <a-tooltip>
+            <template slot="title">货位:{{ record.Location.Code }}</template>
+            {{ record.Location.Name }}
+          </a-tooltip>
+        </a-breadcrumb-item>
+        <a-breadcrumb-item v-if="record.TrayId">
+          <a-tooltip>
+            <template slot="title">托盘:{{ record.Tray.Code }}</template>
+            {{ record.Tray.Name }}
+          </a-tooltip>
+        </a-breadcrumb-item>
+        <a-breadcrumb-item v-if="record.ZoneId">
+          <a-tooltip>
+            <template slot="title">分区:{{ record.TrayZone.Code }}</template>
+            {{ record.TrayZone.Name }}
+          </a-tooltip>
+        </a-breadcrumb-item>
+      </a-breadcrumb>
+
       <template slot="OutNum" slot-scope="text, record">
         <a-input-number :disabled="disabled"  size="small" :value="text" :max="record.LocalNum" :min="1" @change="e=>handleValChange(e,'OutNum',record)"></a-input-number>
       </template>
@@ -35,36 +56,37 @@ import LocalmaterialList from './LocalMaterialList'
 const columns1 = [
   { title: '物料', dataIndex: 'Material.Name'},
   { title: '编码', dataIndex: 'Material.Code' },
-  { title: '货位', dataIndex: 'Location.Name'},
+  { title: '货位', dataIndex: 'Location', scopedSlots: { customRender: 'Location' } },
+  // { title: '货位', dataIndex: 'Location.Name'},
   { title: '条码', dataIndex: 'BarCode'},
   { title: '批次号', dataIndex: 'BatchNo'},
   { title: '库存', dataIndex: 'LocalNum'},
   { title: '出库数量', dataIndex: 'OutNum', scopedSlots: { customRender: 'OutNum' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
-const columns2 = [
-  { title: '物料', dataIndex: 'Material.Name' },
-  { title: '编码', dataIndex: 'Material.Code' },
-  { title: '货位', dataIndex: 'Location.Name'},
-  { title: '托盘', dataIndex: 'Tray.Name'},
-  { title: '条码', dataIndex: 'BarCode' },
-  { title: '批次号', dataIndex: 'BatchNo' },
-  { title: '库存', dataIndex: 'LocalNum' },
-  { title: '出库数量', dataIndex: 'OutNum',scopedSlots: { customRender: 'OutNum' }},
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
-]
-const columns3 = [
-  { title: '物料', dataIndex: 'Material.Name' },
-  { title: '编码', dataIndex: 'Material.Code'},
-  { title: '货位', dataIndex: 'Location.Name'},
-  { title: '托盘', dataIndex: 'Tray.Name'},
-  { title: '托盘分区', dataIndex: 'TrayZone.Name'},
-  { title: '条码', dataIndex: 'BarCode'},
-  { title: '批次号', dataIndex: 'BatchNo' },
-  { title: '库存', dataIndex: 'LocalNum'},
-  { title: '出库数量', dataIndex: 'OutNum', scopedSlots: { customRender: 'OutNum' } },
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
-]
+// const columns2 = [
+//   { title: '物料', dataIndex: 'Material.Name' },
+//   { title: '编码', dataIndex: 'Material.Code' },
+//   { title: '货位', dataIndex: 'Location.Name'},
+//   { title: '托盘', dataIndex: 'Tray.Name'},
+//   { title: '条码', dataIndex: 'BarCode' },
+//   { title: '批次号', dataIndex: 'BatchNo' },
+//   { title: '库存', dataIndex: 'LocalNum' },
+//   { title: '出库数量', dataIndex: 'OutNum',scopedSlots: { customRender: 'OutNum' }},
+//   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+// ]
+// const columns3 = [
+//   { title: '物料', dataIndex: 'Material.Name' },
+//   { title: '编码', dataIndex: 'Material.Code'},
+//   { title: '货位', dataIndex: 'Location.Name'},
+//   { title: '托盘', dataIndex: 'Tray.Name'},
+//   { title: '托盘分区', dataIndex: 'TrayZone.Name'},
+//   { title: '条码', dataIndex: 'BarCode'},
+//   { title: '批次号', dataIndex: 'BatchNo' },
+//   { title: '库存', dataIndex: 'LocalNum'},
+//   { title: '出库数量', dataIndex: 'OutNum', scopedSlots: { customRender: 'OutNum' } },
+//   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+// ]
 
 export default {
   components: {
