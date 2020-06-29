@@ -2,7 +2,6 @@
 using Coldairarrow.Entity.PB;
 using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
-
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,12 +13,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using System.Text;
 using Microsoft.AspNetCore.Hosting;
-using System.Globalization;
 using System.Linq;
-using System.ComponentModel;
-//using NPOI.SS.Formula.Functions;
 
 namespace Coldairarrow.Api.Controllers.PB
 {
@@ -147,7 +142,7 @@ namespace Coldairarrow.Api.Controllers.PB
 
                 if (CountRow - 1 == 0)
                 {
-                    return Error("Excel列表数据项为空!") ; 
+                    return Error("Excel列表数据项为空!");
 
                 }
                 #region 循环验证
@@ -158,12 +153,17 @@ namespace Coldairarrow.Api.Controllers.PB
                     if (row != null)
                     {
                         //循环的验证单元格中的数据
-                        for (int j = 0; j < 5; j++)
+                        for (int j = 0; j < 6; j++)
                         {
+                            if ((j == 4 || j == 5) || (row.GetCell(j) == null || row.GetCell(j).ToString().Trim().Length == 0))
+                            {
+                                //return Error(ReturnValue += $"注意第{i + 1}行,第{j + 1}列数据为空。");
+                            }
+                            else
                             if (row.GetCell(j) == null || row.GetCell(j).ToString().Trim().Length == 0)
                             {
                                 flag = false;
-                                ReturnValue += $"第{i + 1}行,第{j + 1}列数据不能为空。";
+                                return Error(ReturnValue += $"第{i + 1}行,第{j + 1}列数据不能为空。");
                             }
                         }
                     }
@@ -171,11 +171,10 @@ namespace Coldairarrow.Api.Controllers.PB
                 #endregion
                 if (flag)
                 {
-                    for (int i = 1; i < CountRow; i++)
+                    for (int i = 1; i < CountRow; i++)//
                     {
                         //实例化实体对象
                         PB_Location commodity = new PB_Location();
-                       // List<PB_Location> commodity = new List<PB_Location>();
                         var row = sheet.GetRow(i);
                         if (row.GetCell(0) != null && row.GetCell(0).ToString().Trim().Length > 0)
                         {
@@ -184,7 +183,8 @@ namespace Coldairarrow.Api.Controllers.PB
                             commodity.IsForbid = true;//导入默认启用
                             commodity.IsDefault = false;//导入无默认
 
-                            commodity.Code = row.GetCell(0).ToString();                                                     
+                            commodity.Code = row.GetCell(0).ToString();
+
                         }
                         if (row.GetCell(1) != null && row.GetCell(1).ToString().Trim().Length > 0)
                         {
@@ -210,32 +210,28 @@ namespace Coldairarrow.Api.Controllers.PB
                         {
                             commodity.OverVol = Convert.ToDouble(row.GetCell(6).ToString());
                         }
-                        else
-                        {
-                            commodity.Remarks = "暂无";
-                        }
                         Data.Add(commodity);
                     }
-                    var listStorCodes = Data.Select(s => s.StorId).ToList();
+                    var listStorCodes = Data.Select(s => s.StorId).Select(s => s.Trim()).Distinct().ToList();
                     var dicStor = _pB_LocationBus.GetQueryable<PB_Storage>().Where(w => listStorCodes.Contains(w.Code)).ToDictionary(k => k.Code, v => v.Id);
 
-                    var listAreaCodes = Data.Select(s => s.AreaId).ToList();
+                    var listAreaCodes = Data.Select(s => s.AreaId).Select(s => s.Trim()).Distinct().ToList();
                     var dicArea = _pB_LocationBus.GetQueryable<PB_StorArea>().Where(w => listAreaCodes.Contains(w.Code)).ToDictionary(k => k.Code, v => v.Id);
 
-                    var listLanewayCodes = Data.Select(s => s.LanewayId).ToList();
-                    var dicLaneway = _pB_LocationBus.GetQueryable<PB_Laneway>().Where(w => listLanewayCodes.Contains(w.Code)).ToDictionary(k => k.Code, v => v.Id);
+                    var listLanCodes = Data.Select(s => s.LanewayId).Select(s => s.Trim()).Distinct().ToList();
+                    var dicLan = _pB_LocationBus.GetQueryable<PB_Laneway>().Where(w => listLanCodes.Contains(w.Code)).ToDictionary(k => k.Code, v => v.Id);
 
-                    var listRackCodes = Data.Select(s => s.RackId).ToList();
+                    var listRackCodes = Data.Select(s => s.RackId).Select(s => s.Trim()).Distinct().ToList();
                     var dicRack = _pB_LocationBus.GetQueryable<PB_Rack>().Where(w => listRackCodes.Contains(w.Code)).ToDictionary(k => k.Code, v => v.Id);
 
                     foreach (var item in Data)
                     {
-                        if (dicStor.ContainsKey(item.StorId))
+                        if (dicStor.ContainsKey(item.StorId.Trim()))
                             item.StorId = dicStor[item.StorId];
                         else
                             throw new Exception("仓库编号不存在！");
 
-                        if (dicArea.ContainsKey(item.AreaId))
+                        if (dicArea.ContainsKey(item.AreaId.Trim()))
                             item.AreaId = dicArea[item.AreaId];
                         else
                             throw new Exception("货区编号不存在！");
@@ -243,42 +239,65 @@ namespace Coldairarrow.Api.Controllers.PB
                         if (item.LanewayId == null)
                         {
                             item.LanewayId = null;
-                        }else if (dicLaneway.ContainsKey(item.LanewayId))
+                        }
+                        else if (dicLan.ContainsKey(item.LanewayId.Trim()))
                         {
-                            item.LanewayId = dicLaneway[item.LanewayId];
-                        }            
+                            item.LanewayId = dicLan[item.LanewayId];
+                        }
 
                         if (item.RackId == null)
                         {
                             item.RackId = null;
                         }
-                        else if (dicRack.ContainsKey(item.RackId))
+                        else if (dicRack.ContainsKey(item.RackId.Trim()))
                         {
                             item.RackId = dicRack[item.RackId];
                         }
 
                     }
-                    if (Data.Count > 0) 
+                    if (Data.Count > 0)
                     {
-                        await _pB_LocationBus.AddDataExlAsync(Data);
+                        int j = 1000;
+
+                        for (int i = 0; i < Data.Count; i += 1000)
+
+                        {
+
+                            var cList = new List<PB_Location>();
+
+                            cList = Data.Take(j).Skip(i).ToList();
+
+                            j += 1000;
+
+                            await _pB_LocationBus.AddDataExlAsync(cList);
+                            // listGroup.Add(cList);
+
+                        }
                         ReturnValue = $"数据导入成功,共导入{CountRow - 1}条数据。";
                     }
-                    
+                        
+
+                    //if (Data.Count > 0)
+                    //{
+                    //    await _pB_LocationBus.AddDataExlAsync(Data);
+                    //    ReturnValue = $"数据导入成功,共导入{CountRow - 1}条数据。";
+                    //}
+
                 }
 
                 if (!flag)
                 {
-                    ReturnValue = "数据存在问题！" + ReturnValue;
+                    return Error(ReturnValue = "数据存在问题！" + ReturnValue);
                 }
             }
             catch (Exception)
             {
-                 return Error("数据异常！");
+                return Error("数据异常！");
             }
 
             return Success(ReturnValue);
-            
-           }
+
+        }
 
         /// <summary>
         /// 货位信息表模板导出

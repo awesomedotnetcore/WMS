@@ -70,14 +70,14 @@
 </template>
 <script>
 const column = [
-  { title: '', dataIndex: 'Name', width: '15%' },
-  { title: '今天', dataIndex: 'Day0', width: '15%' },
-  { title: '昨天', dataIndex: 'Day1', width: '15%' },
-  { title: '前天', dataIndex: 'Day2', width: '15%' },
-  { title: '前2天', dataIndex: 'Day3', width: '10%' },
-  { title: '前3天', dataIndex: 'Day4', width: '10%' },
-  { title: '前4天', dataIndex: 'Day5', width: '10%' },
-  { title: '前5天', dataIndex: 'Day6', width: '10%' }
+  { title: '', dataIndex: 'Name'},
+  { title: '今天', dataIndex: 'Day0'},
+  { title: '昨天', dataIndex: 'Day1' },
+  { title: '前天', dataIndex: 'Day2'},
+  { title: '前2天', dataIndex: 'Day3'},
+  { title: '前3天', dataIndex: 'Day4' },
+  { title: '前4天', dataIndex: 'Day5' },
+  { title: '前5天', dataIndex: 'Day6' }
 ]
 export default {
   data() {

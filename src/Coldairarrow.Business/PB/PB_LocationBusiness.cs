@@ -1,12 +1,9 @@
 ﻿using Coldairarrow.Entity.PB;
 using Coldairarrow.Util;
 using EFCore.Sharding;
-using LinqKit;
 using Microsoft.EntityFrameworkCore;
-using Quartz.Util;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 
 namespace Coldairarrow.Business.PB
@@ -67,7 +64,7 @@ namespace Coldairarrow.Business.PB
 
         public async Task AddDataExlAsync(List<PB_Location> list)//void
         {
-            await InsertAsync(list);   //  BulkInsert       
+            await InsertAsync(list);   //  BulkInsert    InsertAsync    
 
         }
 
@@ -75,6 +72,8 @@ namespace Coldairarrow.Business.PB
         {
             return Service.GetIQueryable<T>();
         }
+
+        
         #endregion
 
         #region 私有成员

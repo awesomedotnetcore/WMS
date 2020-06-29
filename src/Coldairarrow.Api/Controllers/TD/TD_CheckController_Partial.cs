@@ -305,7 +305,7 @@ namespace Coldairarrow.Api.Controllers.TD
 
                 await _provider.GetRequiredService<ITD_CheckDataBusiness>().PushDataAsync(checkdata);
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 throw;
             }

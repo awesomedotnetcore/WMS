@@ -19,7 +19,7 @@ namespace Coldairarrow.Entity.PB
         /// <summary>
         /// 区域
         /// </summary>
-        
+
         [ForeignKey(nameof(AreaId))]
         public PB_StorArea PB_StorArea { get; set; }
 
