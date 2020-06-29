@@ -45,7 +45,7 @@ namespace Coldairarrow.Api.Controllers.TD
 
             if (!Directory.Exists(expDir)) Directory.CreateDirectory(expDir);
 
-            string filePath = string.Format("{0}\\CD{1}.xls", expDir, DateTime.Now.ToString("yyyyMMddHHmmss"));
+            string filePath = string.Format("{0}\\CD{1}.xlsx", expDir, DateTime.Now.ToString("yyyyMMddHHmmss"));
 
             #region 创建Excel表头
             //创建表头
@@ -142,7 +142,7 @@ namespace Coldairarrow.Api.Controllers.TD
                 workBook.Write(stream);
                 byte[] buffer = stream.ToArray();
 
-                return File(buffer, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", string.Format("盘点清单_{0}.xls", DateTime.Now.ToString("yyyyMMddHHmmss")));
+                return File(buffer, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", string.Format("盘点清单_{0}.xlsx", DateTime.Now.ToString("yyyyMMddHHmmss")));
             }
             #endregion
         }

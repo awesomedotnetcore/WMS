@@ -11,7 +11,7 @@
       <div style="background-color: #F5F5F5; padding: 12px;">
         <a-page-header :ghost="false" title="物料盘差" sub-title="盘点管理">
           <template slot="extra">   
-            <a v-if="entity.IsComplete===false" :href="ExpUrl" target="_blank" class="ant-btn ant-btn-primary">导出Excel</a>
+            <a v-if="entity.IsComplete===false" :href="$rootUrl+ExpUrl" target="_blank" class="ant-btn ant-btn-primary">导出Excel</a>
             <a-button key="2" @click="()=>{this.visible=false}">关闭</a-button>
           </template>
           <a-descriptions size="small" :column="3">
@@ -95,7 +95,7 @@ export default {
       this.init()
 
       if (id) {
-        this.ExpUrl=$rootUrl+'/TD/TD_CheckData/ExportToExcel/?checkId='+id
+        this.ExpUrl='/TD/TD_CheckData/ExportToExcel/?checkId='+id
         this.loading = true
         this.$http.post('/TD/TD_Check/GetTheData', { id: id }).then(resJson => {
           this.loading = false
