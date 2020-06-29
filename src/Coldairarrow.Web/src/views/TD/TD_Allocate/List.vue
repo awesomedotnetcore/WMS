@@ -16,12 +16,12 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
-          <a-col :md="2" :sm="24">
+          <a-col :md="4" :sm="24">
             <a-form-item>
               <enum-select code="AllocateType" v-model="queryParam.Type"></enum-select>
             </a-form-item>
           </a-col>
-          <a-col :md="2" :sm="24">
+          <a-col :md="4" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.Code" placeholder="调拨/关联单号" />
             </a-form-item>

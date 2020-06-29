@@ -31,7 +31,7 @@
         </a-col>
         <a-col :span="8">
           <a-form-model-item label="备注" prop="Remarks">
-            <a-input v-model="entity.Remarks" autocomplete="off" :disabled="disabled" />
+            <a-textarea v-model="entity.Remarks" autocomplete="off" :disabled="disabled" />
           </a-form-model-item>
         </a-col>
       </a-row>

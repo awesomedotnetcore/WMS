@@ -2,7 +2,7 @@
   <a-drawer title="移库" :width="1200" :maskClosable="false" placement="right" :visible="visible" @close="()=>{this.visible=false}" :body-style="{ paddingBottom: '80px' }">
     <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
       <a-row>
-        <a-col :span="8">
+        <a-col :span="7">
           <a-form-model-item label="移库单号" prop="Code">
             <a-input v-model="entity.Code" :disabled="$para('GenerateMoveCode')=='1' || disabled" placeholder="系统自动生成" autocomplete="off" />
           </a-form-model-item>
@@ -19,14 +19,14 @@
         </a-col>
       </a-row>
       <a-row>
-        <a-col :span="8">
+        <a-col :span="7">
           <a-form-model-item label="关联单号" prop="RefCode">
             <a-input v-model="entity.RefCode" autocomplete="off" :disabled="disabled" />
           </a-form-model-item>
         </a-col>
-        <a-col :span="16">
+        <a-col :span="8">
           <a-form-model-item label="备注" prop="Remarks">
-            <a-input v-model="entity.Remarks" autocomplete="off" :disabled="disabled" />
+            <a-textarea v-model="entity.Remarks" autocomplete="off" :disabled="disabled" />
           </a-form-model-item>
         </a-col>
       </a-row>
