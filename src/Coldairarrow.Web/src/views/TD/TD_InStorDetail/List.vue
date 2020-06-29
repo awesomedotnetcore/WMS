@@ -8,27 +8,43 @@
       <a-breadcrumb slot="Location" slot-scope="text, record">
         <a-breadcrumb-item>
           <a-tooltip>
-            <template slot="title">{{ record.Location.Code }}</template>
+            <template slot="title">货位:{{ record.Location.Code }}</template>
             {{ record.Location.Name }}
           </a-tooltip>
         </a-breadcrumb-item>
         <a-breadcrumb-item v-if="record.TrayId">
           <a-tooltip>
-            <template slot="title">{{ record.Tray.Code }}</template>
+            <template slot="title">托盘:{{ record.Tray.Code }}</template>
             {{ record.Tray.Name }}
           </a-tooltip>
         </a-breadcrumb-item>
         <a-breadcrumb-item v-if="record.ZoneId">
           <a-tooltip>
-            <template slot="title">{{ record.TrayZone.Code }}</template>
+            <template slot="title">分区:{{ record.TrayZone.Code }}</template>
             {{ record.TrayZone.Name }}
           </a-tooltip>
         </a-breadcrumb-item>
       </a-breadcrumb>
-      <a-tooltip slot="NameCode" slot-scope="text" placement="right">
-        <template slot="title">{{ text.Code }}</template>
-        {{ text.Name }}
-      </a-tooltip>
+      <a-breadcrumb slot="Material" slot-scope="text, record">
+        <a-breadcrumb-item>
+          <a-tooltip>
+            <template slot="title">物料:{{ record.Material.Code }}</template>
+            {{ record.Material.Name }}
+          </a-tooltip>
+        </a-breadcrumb-item>
+        <a-breadcrumb-item v-if="record.BatchNo">
+          <a-tooltip>
+            <template slot="title">批次</template>
+            {{ record.BatchNo }}
+          </a-tooltip>
+        </a-breadcrumb-item>
+        <a-breadcrumb-item v-if="record.BarCode">
+          <a-tooltip>
+            <template slot="title">条码</template>
+            {{ record.BarCode }}
+          </a-tooltip>
+        </a-breadcrumb-item>
+      </a-breadcrumb>
       <span slot="action" slot-scope="text, record">
         <template>
           <a :disabled="disabled" @click="handleEdit(record)">编辑</a>
@@ -45,10 +61,8 @@
 import EditForm from './EditForm'
 
 const columns = [
-  { title: '物料', dataIndex: 'Material', scopedSlots: { customRender: 'NameCode' } },
+  { title: '物料', dataIndex: 'Material', scopedSlots: { customRender: 'Material' } },
   { title: '货位', dataIndex: 'Location', scopedSlots: { customRender: 'Location' } },
-  { title: '条码', dataIndex: 'BarCode' },
-  { title: '批次号', dataIndex: 'BatchNo' },
   { title: '数量', dataIndex: 'Num' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]

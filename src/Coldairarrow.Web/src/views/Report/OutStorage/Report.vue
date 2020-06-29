@@ -43,27 +43,43 @@
       <a-breadcrumb slot="Location" slot-scope="text, record">
         <a-breadcrumb-item>
           <a-tooltip>
-            <template slot="title">{{ record.Location.Code }}</template>
+            <template slot="title">货位:{{ record.Location.Code }}</template>
             {{ record.Location.Name }}
           </a-tooltip>
         </a-breadcrumb-item>
         <a-breadcrumb-item v-if="record.TrayId">
           <a-tooltip>
-            <template slot="title">{{ record.Tray.Code }}</template>
+            <template slot="title">托盘:{{ record.Tray.Code }}</template>
             {{ record.Tray.Name }}
           </a-tooltip>
         </a-breadcrumb-item>
         <a-breadcrumb-item v-if="record.ZoneId">
           <a-tooltip>
-            <template slot="title">{{ record.TrayZone.Code }}</template>
+            <template slot="title">分区:{{ record.TrayZone.Code }}</template>
             {{ record.TrayZone.Name }}
           </a-tooltip>
         </a-breadcrumb-item>
       </a-breadcrumb>
-      <a-tooltip slot="NameCode" slot-scope="text" placement="right">
-        <template slot="title">{{ text.Code }}</template>
-        {{ text.Name }}
-      </a-tooltip>
+      <a-breadcrumb slot="Material" slot-scope="text, record">
+        <a-breadcrumb-item>
+          <a-tooltip>
+            <template slot="title">物料:{{ record.Material.Code }}</template>
+            {{ record.Material.Name }}
+          </a-tooltip>
+        </a-breadcrumb-item>
+        <a-breadcrumb-item v-if="record.BatchNo">
+          <a-tooltip>
+            <template slot="title">批次</template>
+            {{ record.BatchNo }}
+          </a-tooltip>
+        </a-breadcrumb-item>
+        <a-breadcrumb-item v-if="record.BarCode">
+          <a-tooltip>
+            <template slot="title">条码</template>
+            {{ record.BarCode }}
+          </a-tooltip>
+        </a-breadcrumb-item>
+      </a-breadcrumb>
     </a-table>
   </a-card>
 </template>
@@ -84,9 +100,7 @@ const columns = [
   { title: '出库类型', dataIndex: 'OutStorage.OutType', scopedSlots: { customRender: 'OutType' } },
   { title: '出库时间', dataIndex: 'OutStorage.OutTime', customRender: filterDate },
   { title: '出库货位', dataIndex: 'Location', scopedSlots: { customRender: 'Location' } },
-  { title: '物料', dataIndex: 'Material', scopedSlots: { customRender: 'NameCode' } },
-  { title: '批次', dataIndex: 'BatchNo' },
-  { title: '条码', dataIndex: 'BarCode' },
+  { title: '物料', dataIndex: 'Material', scopedSlots: { customRender: 'Material' } },
   { title: '出库数量', dataIndex: 'OutNum' },
   { title: '单价', dataIndex: 'Price' },
   { title: '总额', dataIndex: 'TotalAmt' }
