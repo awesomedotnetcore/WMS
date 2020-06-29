@@ -5,9 +5,30 @@
       <a-button type="primary" icon="minus" @click="handleDelete(selectedRows)" :disabled="!hasSelected() || disabled">删除</a-button>
     </div>
     <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :pagination="false" :dataSource="data" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
-      <template slot="Material" slot-scope="text, record">
-        <span>{{ record.Material.Name }}({{ record.Material.Code }})</span>
-      </template>
+      <a-breadcrumb slot="Location" slot-scope="text, record">
+        <a-breadcrumb-item>
+          <a-tooltip>
+            <template slot="title">{{ record.Location.Code }}</template>
+            {{ record.Location.Name }}
+          </a-tooltip>
+        </a-breadcrumb-item>
+        <a-breadcrumb-item v-if="record.TrayId">
+          <a-tooltip>
+            <template slot="title">{{ record.Tray.Code }}</template>
+            {{ record.Tray.Name }}
+          </a-tooltip>
+        </a-breadcrumb-item>
+        <a-breadcrumb-item v-if="record.ZoneId">
+          <a-tooltip>
+            <template slot="title">{{ record.TrayZone.Code }}</template>
+            {{ record.TrayZone.Name }}
+          </a-tooltip>
+        </a-breadcrumb-item>
+      </a-breadcrumb>
+      <a-tooltip slot="NameCode" slot-scope="text" placement="right">
+        <template slot="title">{{ text.Code }}</template>
+        {{ text.Name }}
+      </a-tooltip>
       <span slot="action" slot-scope="text, record">
         <template>
           <a :disabled="disabled" @click="handleEdit(record)">编辑</a>
@@ -23,32 +44,13 @@
 <script>
 import EditForm from './EditForm'
 
-const columns1 = [
-  { title: '物料', dataIndex: 'Material.Name', scopedSlots: { customRender: 'Material' } },
-  { title: '货位', dataIndex: 'Location.Name' },
-  { title: '条码', dataIndex: 'BarCode'},
+const columns = [
+  { title: '物料', dataIndex: 'Material', scopedSlots: { customRender: 'NameCode' } },
+  { title: '货位', dataIndex: 'Location', scopedSlots: { customRender: 'Location' } },
+  { title: '条码', dataIndex: 'BarCode' },
   { title: '批次号', dataIndex: 'BatchNo' },
-  { title: '数量', dataIndex: 'Num'},
+  { title: '数量', dataIndex: 'Num' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
-]
-const columns2 = [
-  { title: '物料', dataIndex: 'Material.Name', scopedSlots: { customRender: 'Material' } },
-  { title: '货位', dataIndex: 'Location.Name'},
-  { title: '托盘', dataIndex: 'Tray.Name' },
-  { title: '条码', dataIndex: 'BarCode'},
-  { title: '批次号', dataIndex: 'BatchNo'},
-  { title: '数量', dataIndex: 'Num' },
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }}
-]
-const columns3 = [
-  { title: '物料', dataIndex: 'Material.Name', scopedSlots: { customRender: 'Material' } },
-  { title: '货位', dataIndex: 'Location.Name' },
-  { title: '托盘', dataIndex: 'Tray.Name'},
-  { title: '托盘分区', dataIndex: 'TrayZone.Name'},
-  { title: '条码', dataIndex: 'BarCode'},
-  { title: '批次号', dataIndex: 'BatchNo'},
-  { title: '数量', dataIndex: 'Num' },
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }}
 ]
 
 export default {
@@ -63,7 +65,7 @@ export default {
     return {
       storage: {},
       data: [],
-      columns: columns1,
+      columns,
       tempId: 0,
       selectedRowKeys: [],
       selectedRows: []
@@ -83,13 +85,6 @@ export default {
       this.$http.get('/PB/PB_Storage/GetCurStorage')
         .then(resJson => {
           this.storage = resJson.Data
-          if (this.storage.IsTray && this.storage.IsZone) {
-            this.columns = columns3
-          } else if (this.storage.IsTray) {
-            this.columns = columns2
-          } else {
-            this.columns = columns1
-          }
         })
     },
     onSelectChange(selectedRowKeys, selectedRows) {
