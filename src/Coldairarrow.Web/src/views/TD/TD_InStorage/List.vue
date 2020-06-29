@@ -87,15 +87,15 @@ const filterDate = (value, row, index) => {
   }
 }
 const columns = [
-  { title: '入库单号', dataIndex: 'Code'},
+  { title: '入库单号', dataIndex: 'Code' },
   { title: '入库类型', dataIndex: 'InType', scopedSlots: { customRender: 'InType' } },
   { title: '入库时间', dataIndex: 'InStorTime', customRender: filterDate },
-  { title: '关联单号', dataIndex: 'RefCode'},
-  { title: '状态', dataIndex: 'Status', scopedSlots: { customRender: 'Status' }},
-  { title: '供应商', dataIndex: 'Supplier.Name'},
-  { title: '入库数量', dataIndex: 'TotalNum'},
-  { title: '制单人', dataIndex: 'CreateUser.RealName'},
-  { title: '审核人', dataIndex: 'AuditUser.RealName'},
+  { title: '关联单号', dataIndex: 'RefCode' },
+  { title: '状态', dataIndex: 'Status', scopedSlots: { customRender: 'Status' } },
+  { title: '供应商', dataIndex: 'Supplier.Name' },
+  { title: '入库数量', dataIndex: 'TotalNum' },
+  { title: '制单人', dataIndex: 'CreateUser.RealName' },
+  { title: '审核人', dataIndex: 'AuditUser.RealName' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 

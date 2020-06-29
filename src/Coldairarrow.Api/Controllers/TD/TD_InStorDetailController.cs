@@ -12,11 +12,12 @@ namespace Coldairarrow.Api.Controllers.TD
     {
         #region DI
 
-        public TD_InStorDetailController(ITD_InStorDetailBusiness tD_InStorDetailBus)
+        public TD_InStorDetailController(ITD_InStorDetailBusiness tD_InStorDetailBus,IOperator @op)
         {
             _tD_InStorDetailBus = tD_InStorDetailBus;
+            _Op = @op;
         }
-
+        IOperator _Op { get; }
         ITD_InStorDetailBusiness _tD_InStorDetailBus { get; }
 
         #endregion
@@ -24,8 +25,9 @@ namespace Coldairarrow.Api.Controllers.TD
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<TD_InStorDetail>> GetDataList(PageInput<ConditionDTO> input)
+        public async Task<PageResult<TD_InStorDetail>> GetDataList(TD_InStorDetailPageInput input)
         {
+            input.StorId = _Op.Property.DefaultStorageId;
             return await _tD_InStorDetailBus.GetDataListAsync(input);
         }
 
