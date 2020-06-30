@@ -72,10 +72,10 @@
           <a v-if="hasPerm('PB_Storage.Laneway')" @click="openLanewayList(record)">设置巷道</a>
           <a-divider v-if="hasPerm('PB_Storage.Laneway')" type="vertical" />
           <a v-if="hasPerm('PB_Storage.Rack')" @click="openRackList(record)">设置货架</a>
-          <a-divider v-if="record.Disable===false || hasPerm('PB_Storage.Edit')" type="vertical" />
-          <a v-if="record.Disable===false || hasPerm('PB_Storage.Edit')" @click="handleEdit(record.Id)">编辑</a>
           <a-divider v-if="hasPerm('PB_Storage.Config')" type="vertical" />
           <a v-if="hasPerm('PB_Storage.Config')"  @click="handleConfig(record.Id)">配置</a>
+          <a-divider v-if="record.Disable===false || hasPerm('PB_Storage.Edit')" type="vertical" />
+          <a v-if="record.Disable===false || hasPerm('PB_Storage.Edit')" @click="handleEdit(record.Id)">编辑</a>          
           <a-divider v-if="record.Disable===false || hasPerm('PB_Storage.Delete')" type="vertical" />
           <a v-if="record.Disable===false || hasPerm('PB_Storage.Delete') ">删除</a>                   
         </template>

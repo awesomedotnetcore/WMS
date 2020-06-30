@@ -20,7 +20,7 @@ namespace Coldairarrow.Business.TD
     {
         public async Task<PageResult<TD_Check>> QueryDataListAsync(string storId,PageInput<TDCheckQueryDTO> input)
         {
-            var q = GetIQueryable();
+            var q = GetIQueryable().Include(i => i.AuditUser);
             var where = LinqHelper.True<TD_Check>();
             var search = input.Search;
 

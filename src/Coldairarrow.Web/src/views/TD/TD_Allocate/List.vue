@@ -56,11 +56,11 @@
       </template>
       <span slot="action" slot-scope="text, record">
         <template>
-          <a v-if="record.Status===0 && hasPerm('TD_Allcate.Edit')" @click="handleEdit(record.Id)">编辑</a>
-          <a-divider v-if="record.Status===0 && hasPerm('TD_Allcate.Delete')" type="vertical" />
-          <a v-if="record.Status===0 && hasPerm('TD_Allcate.Delete')" @click="handleDelete([record.Id])">删除</a>
-          <a-divider v-if="record.Status===0 && hasPerm('TD_Allcate.Auditing')" type="vertical" />
-          <a v-if="record.Status===1 || hasPerm('TD_Allcate.Auditing')" @click="handleShow(record.Id)">{{ record.Status === 0?'审核':'查看' }}</a>
+          <a v-if="record.Status===0 && hasPerm('TD_Allocate.Edit')" @click="handleEdit(record.Id)">编辑</a>
+          <a-divider v-if="record.Status===0 && hasPerm('TD_Allocate.Delete')" type="vertical" />
+          <a v-if="record.Status===0 && hasPerm('TD_Allocate.Delete')" @click="handleDelete([record.Id])">删除</a>
+          <a-divider v-if="record.Status===0 && hasPerm('TD_Allocate.Auditing')" type="vertical" />
+          <a v-if="record.Status===1 || hasPerm('TD_Allocate.Auditing')" @click="handleShow(record.Id)">{{ record.Status === 0?'审核':'查看' }}</a>
         </template>
       </span>
     </a-table>

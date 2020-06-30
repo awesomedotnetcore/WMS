@@ -5,8 +5,8 @@
         <a-row>
           <a-col :span="24">
             <a-form-item>
-              <a-button v-if="hasPerm('TD_CheckData.Add')" style="margin-left: 8px" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-              <a-button v-if="hasPerm('TD_CheckData.Delete')" style="margin-left: 8px" type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
+              <a-button v-if="hasPerm('TD_Check.Add')" style="margin-left: 8px" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
+              <a-button v-if="hasPerm('TD_Check.Delete')" style="margin-left: 8px" type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
               <a-button style="margin-left: 8px" type="primary" icon="redo" @click="getDataList()">刷新</a-button>
               <a-divider type="vertical" />
               <a-radio-group v-model="queryParam.IsComplete" :default-value="-1" button-style="solid" @change="getDataList">
@@ -41,7 +41,7 @@
             </a-form-item>
           </a-col>
         </a-row>
-        <a-row :gutter="1">
+        <a-row :gutter="10">
           <a-col :md="4" :sm="24">
             <a-form-item>
               <enum-select code="CheckType" v-model="queryParam.Type" :allowClear="true"></enum-select>
@@ -62,7 +62,7 @@
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input style="margin-left:18px" v-model="queryParam.RefCode" placeholder="盘点编码/关联单号" />
+              <a-input v-model="queryParam.RefCode" placeholder="盘点编码/关联单号" />
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
@@ -75,13 +75,13 @@
 
     <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange, getCheckboxProps: CheckboxProps }" :bordered="true" size="small">
       <template slot="IsComplete" slot-scope="text, record">
-        <a-tag v-if="record.IsComplete===true">已盘</a-tag>
-        <a-tag v-else color="green">待盘</a-tag>
+        <a-tag v-if="record.IsComplete===true" color="green">已盘</a-tag>
+        <a-tag v-else color="blue">待盘</a-tag>
       </template>
       <template slot="Status" slot-scope="text, record">
         <span v-if="record.IsComplete===true">
-          <a-tag v-if="record.Status===0" color="green">待审核</a-tag>
-          <a-tag v-else-if="record.Status===1">审核通过</a-tag>
+          <a-tag v-if="record.Status===0" color="blue">待审核</a-tag>
+          <a-tag v-else-if="record.Status===1" color="green">审核通过</a-tag>
           <a-tag v-else-if="record.Status===2" color="red">审核失败</a-tag>
           <a-tag v-else-if="record.Status===3" color="red">退回</a-tag>
           <a-tag v-else color="green">待审核</a-tag>
@@ -98,13 +98,12 @@
           <a v-if="record.IsComplete===false && hasPerm('TD_Check.Edit')" @click="handleEdit(record.Id)">编辑</a>
           <a-divider v-if="record.IsComplete===false && hasPerm('TD_Check.Delete')" type="vertical" />
           <a v-if="record.Status!==1 && hasPerm('TD_Check.Delete')" @click="handleDelete([record.Id])">删除</a>
-          <a-divider v-if="record.Status!==1 && hasPerm('TD_Check.Check')" type="vertical" /><br>
+          <a-divider v-if="record.Status!==1 && hasPerm('TD_Check.Check')" type="vertical" />
           <a v-if="hasPerm('TD_Check.Check')" @click="handleCheck(record.Id)">盘差</a>
           <a-divider v-if="record.Status===0 && hasPerm('TD_Check.ReCheck')" type="vertical" />
           <a v-if="record.IsComplete===false && hasPerm('TD_Check.ReCheck')" @click="handleReCheck(record.Id)">复核</a>
-          <a-divider v-if="record.IsComplete===false && record.Status===0" type="vertical" />
-          <a v-if="record.IsComplete===true && record.Status===0 && hasPerm('TD_Check.Auditing')" @click="handleAudit(record.Id)">审核</a>
-          <!-- || hasPerm('TD_InStorage.Auditing') -->
+          <a-divider v-if="record.IsComplete===false && record.Status===0 && hasPerm('TD_Check.Auditing')" type="vertical" />
+          <a v-if="record.IsComplete===false && record.Status===0 && hasPerm('TD_Check.Auditing')" @click="handleAudit(record.Id)">审核</a>
         </template>
       </span>
     </a-table>
@@ -139,7 +138,7 @@ const columns = [
   { title: '关联单号', dataIndex: 'RefCode' },
   { title: '盘差状态', dataIndex: 'IsComplete', scopedSlots: { customRender: 'IsComplete' } },
   { title: '审核状态', dataIndex: 'Status',  scopedSlots: { customRender: 'Status' } },
-  { title: '审核人', dataIndex: 'AuditUserId'},
+  { title: '审核人', dataIndex: 'AuditUser.RealName'},//AuditUserId
   { title: '审核时间', dataIndex: 'AuditeTime'},
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]

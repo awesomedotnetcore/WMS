@@ -66,7 +66,7 @@
           <a v-if="hasPerm('PB_StorArea.Edit')" @click="handleEdit(record.Id)">编辑</a>
           <a-divider v-if="hasPerm('PB_StorArea.Delete')"  type="vertical" />
           <a v-if="hasPerm('PB_StorArea.Delete')" @click="handleDelete([record.Id])">删除</a>
-          <a-divider type="vertical" />
+          <a-divider v-if="hasPerm('PB_StorArea.MaterialList')" type="vertical" />
           <a v-if="hasPerm('PB_StorArea.MaterialList')" @click="openMaterialList(record.Id)">关联物料</a>
         </template>
       </span>

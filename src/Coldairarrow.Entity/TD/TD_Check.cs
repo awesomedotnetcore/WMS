@@ -8,7 +8,7 @@ namespace Coldairarrow.Entity.TD
     /// 盘点表
     /// </summary>
     [Table("TD_Check")]
-    public class TD_Check
+    public partial class TD_Check
     {
 
         /// <summary>

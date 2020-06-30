@@ -68,10 +68,10 @@
       </template>
 
       <template slot="Status" slot-scope="text, record">
-        <a-tag v-if="record.Status===0" color="green">待审核</a-tag>
-        <a-tag v-else-if="record.Status===1" color="#87d068">审核通过</a-tag>
+        <a-tag v-if="record.Status===0" color="blue">待审核</a-tag>
+        <a-tag v-else-if="record.Status===1" color="green">审核通过</a-tag>
         <a-tag v-else-if="record.Status===2" color="red">审核失败</a-tag>
-        <a-tag v-else color="green">待审核</a-tag>
+        <a-tag v-else color="blue">待审核</a-tag>
       </template>
 
       <span slot="action" slot-scope="text, record">
