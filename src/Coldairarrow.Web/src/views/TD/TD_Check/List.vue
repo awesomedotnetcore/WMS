@@ -42,6 +42,11 @@
           </a-col>
         </a-row>
         <a-row :gutter="1">
+          <a-col :md="4" :sm="24">
+            <a-form-item>
+              <enum-select code="CheckType" v-model="queryParam.Type" :allowClear="true"></enum-select>
+            </a-form-item>
+          </a-col>
           <a-col :md="5" :sm="24">
             <a-form-item>
               <a-range-picker v-model="queryParam.RangeDate" :ranges="{ 
@@ -57,11 +62,11 @@
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input style="margin-left:18px" v-model="queryParam.RefCode" placeholder="关联单号" />
+              <a-input style="margin-left:18px" v-model="queryParam.RefCode" placeholder="盘点编码/关联单号" />
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
-            <a-button type="primary" @click="() => {this.pagination.current = 1; this.getDataList()}">查询</a-button>
+            <a-button style="margin-left: 26px" type="primary" @click="() => {this.pagination.current = 1; this.getDataList()}">查询</a-button>
             <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
           </a-col>
         </a-row>
@@ -111,6 +116,7 @@
 </template>
 
 <script>
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import EditForm from './EditForm'
 import Show from './Show'
 import Check from './Check'
@@ -139,6 +145,7 @@ const columns = [
 
 export default {
   components: {
+    EnumSelect,
     EditForm,
     EnumName,
     Show,

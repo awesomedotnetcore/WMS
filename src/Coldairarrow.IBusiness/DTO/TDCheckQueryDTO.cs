@@ -12,6 +12,8 @@ namespace Coldairarrow.IBusiness.DTO
             Status = -1;
         }
 
+        public string Type { set; get; }
+
         public int IsComplete { set; get; }
 
         public int Status { set; get; }
