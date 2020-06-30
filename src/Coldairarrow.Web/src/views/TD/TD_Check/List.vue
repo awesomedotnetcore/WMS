@@ -62,11 +62,11 @@
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input style="margin-left:18px" v-model="queryParam.RefCode" placeholder="盘点编码/关联单号" />
+              <a-input v-model="queryParam.RefCode" placeholder="盘点编码/关联单号" />
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
-            <a-button style="margin-left: 26px" type="primary" @click="() => {this.pagination.current = 1; this.getDataList()}">查询</a-button>
+            <a-button style="margin-left: 8px" type="primary" @click="() => {this.pagination.current = 1; this.getDataList()}">查询</a-button>
             <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
           </a-col>
         </a-row>
