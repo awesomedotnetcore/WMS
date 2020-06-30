@@ -28,6 +28,8 @@ namespace Coldairarrow.Business.TD
             if (search.IsComplete > -1) where = where.And(p => p.IsComplete == (search.IsComplete == 1));
             if (search.Status > -1) where = where.And(p => p.Status == search.Status);
             if (!search.RefCode.IsNullOrWhiteSpace()) where = where.And(p => p.RefCode.Contains(search.RefCode));
+            if (!search.RefCode.IsNullOrWhiteSpace()) where = where.And(p => p.Code.Contains(search.RefCode));
+            if (!search.Type.IsNullOrWhiteSpace()) where = where.And(p => p.Type == search.Type);
 
             DateTime dtStartTime = Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-01 00:00:00"));
             DateTime dtEndTime= Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd 23:59:59"));

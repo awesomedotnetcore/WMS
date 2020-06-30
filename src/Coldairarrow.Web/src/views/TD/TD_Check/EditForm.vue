@@ -18,7 +18,7 @@
           <a-input v-model="entity.RefCode" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="盘点时间" prop="CheckTime">
-          <a-date-picker v-model="entity.CheckTime" show-time :style="{width:'100%'}" autocomplete="off"/>
+          <a-date-picker v-model="entity.CheckTime" :style="{width:'100%'}" autocomplete="off"/>
         </a-form-model-item>     
         <a-form-model-item label="盘点类型" prop="Type">
           <enum-select code="CheckType" v-model="entity.Type" :allowClear="true"></enum-select>
@@ -74,7 +74,7 @@ export default {
   methods: {
     init() {
       this.visible = true
-      this.entity = {Type : '', CheckTime: moment()}
+      this.entity = {Type : '', CheckTime: moment().locale('zh-cn').format('YYYY-MM-DD')}
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })
@@ -88,7 +88,7 @@ export default {
           this.loading = false
 
           this.entity = resJson.Data
-          this.entity.CheckTime = moment(this.entity.CheckTime)
+          this.entity.CheckTime = moment(this.entity.CheckTime).format('YYYY-MM-DD');
 
           if(this.entity.Type=='Area'){
             this.$http.post('/TD/TD_CheckArea/Query?checkId='+id).then(resJson => {
