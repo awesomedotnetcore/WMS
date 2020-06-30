@@ -8,10 +8,12 @@ let ParameterCache = {
         return inited
     },
     init() {
-        Axios.get('/Base/Base_Parameter/GetConfig').then(resJson => {
-            baseParameters = { ...resJson.Data }
-            inited = true
-        })
+        if (!inited) {
+            Axios.get('/Base/Base_Parameter/GetConfig').then(resJson => {
+                baseParameters = { ...resJson.Data }
+                inited = true
+            })
+        }
     },
     getPara(code) {
         return baseParameters[code]
