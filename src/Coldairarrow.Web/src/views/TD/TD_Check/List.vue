@@ -118,10 +118,17 @@ import Audite from './Audite'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import moment from 'moment'
 
+const filterDate = (value, row, index) => {
+  if (value) {
+    return moment(value).format('YYYY-MM-DD')
+  } else {
+    return ' '
+  }
+}
 const columns = [
   { title: '盘点编码', dataIndex: 'Code', },
   { title: '盘点类型', dataIndex: 'Type',  scopedSlots: { customRender: 'Type' } },
-  { title: '盘点时间', dataIndex: 'CheckTime'},
+  { title: '盘点时间', dataIndex: 'CheckTime', customRender: filterDate},
   { title: '关联单号', dataIndex: 'RefCode' },
   { title: '盘差状态', dataIndex: 'IsComplete', scopedSlots: { customRender: 'IsComplete' } },
   { title: '审核状态', dataIndex: 'Status',  scopedSlots: { customRender: 'Status' } },
