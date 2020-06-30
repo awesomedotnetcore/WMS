@@ -96,14 +96,18 @@
       <span slot="action" slot-scope="text, record">
         <template>
           <a v-if="record.IsComplete===false && hasPerm('TD_Check.Edit')" @click="handleEdit(record.Id)">编辑</a>
+
           <a-divider v-if="record.IsComplete===false && hasPerm('TD_Check.Delete')" type="vertical" />
-          <a v-if="record.Status!==1 && hasPerm('TD_Check.Delete')" @click="handleDelete([record.Id])">删除</a>
-          <a-divider v-if="record.Status!==1 && hasPerm('TD_Check.Check')" type="vertical" />
+          <a v-if="record.IsComplete===false && hasPerm('TD_Check.Delete')" @click="handleDelete([record.Id])">删除</a>
+          <a-divider v-if="record.IsComplete===false && hasPerm('TD_Check.Delete')" type="vertical" />
+
           <a v-if="hasPerm('TD_Check.Check')" @click="handleCheck(record.Id)">盘差</a>
-          <a-divider v-if="record.Status===0 && hasPerm('TD_Check.ReCheck')" type="vertical" />
+
+          <a-divider v-if="record.IsComplete===false && hasPerm('TD_Check.ReCheck')" type="vertical" />
           <a v-if="record.IsComplete===false && hasPerm('TD_Check.ReCheck')" @click="handleReCheck(record.Id)">复核</a>
-          <a-divider v-if="record.IsComplete===false && record.Status===0 && hasPerm('TD_Check.Auditing')" type="vertical" />
-          <a v-if="record.IsComplete===false && record.Status===0 && hasPerm('TD_Check.Auditing')" @click="handleAudit(record.Id)">审核</a>
+          
+          <a-divider v-if="(record.IsComplete===true && record.Status===0) && hasPerm('TD_Check.Auditing')" type="vertical" />
+          <a v-if="(record.IsComplete===true && record.Status===0) && hasPerm('TD_Check.Auditing')" @click="handleAudit(record.Id)">审核</a>
         </template>
       </span>
     </a-table>
