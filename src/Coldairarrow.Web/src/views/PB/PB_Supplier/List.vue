@@ -1,8 +1,8 @@
 ﻿<template>
   <a-card :bordered="false">
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
+      <a-button v-if="hasPerm('PB_Supplier.Add')" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
+      <a-button v-if="hasPerm('PB_Supplier.Delete')" type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
 
@@ -33,11 +33,11 @@
       </template>
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="handleEdit(record.Id)">编辑</a>
-          <a-divider type="vertical" />
-          <a @click="handleDelete([record.Id])">删除</a>
-          <a-divider type="vertical" />
-          <a @click="openAddressList(record.Id,record.Name)">地址</a>
+          <a v-if="hasPerm('PB_Supplier.Edit')" @click="handleEdit(record.Id)">编辑</a>
+          <a-divider v-if="hasPerm('PB_Supplier.Delete')" type="vertical" />
+          <a v-if="hasPerm('PB_Supplier.Delete')" @click="handleDelete([record.Id])">删除</a>
+          <a-divider v-if="hasPerm('PB_Supplier.AddressList')" type="vertical" />
+          <a v-if="hasPerm('PB_Supplier.AddressList')" @click="openAddressList(record.Id,record.Name)">地址</a>
         </template>
       </span>
     </a-table>

@@ -1,15 +1,15 @@
 ﻿<template>
   <a-card :bordered="false">
     <div class="table-operator">
-      <a-dropdown-button v-if="storage.IsTray" type="primary" @click="hanldleAdd()">
+      <a-dropdown-button v-if="storage.IsTray && hasPerm('TD_OutStorage.Add')" type="primary" @click="hanldleAdd()">
         <a-icon type="plus" />新建
-        <a-menu slot="overlay" @click="handleAddMenuClick">
+        <a-menu v-if="hasPerm('TD_OutStorage.Tray')" slot="overlay" @click="handleAddMenuClick">
           <a-menu-item key="Tray">
             <a-icon type="border" />空托盘出库</a-menu-item>
         </a-menu>
       </a-dropdown-button>
-      <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button type="primary"
+      <a-button v-else-if="hasPerm('TD_OutStorage.Add')" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
+      <a-button type="primary" v-if="hasPerm('TD_OutStorage.Delete')" 
         icon="minus"
         @click="handleDelete(selectedRowKeys)"
         :disabled="!hasSelected()"
@@ -76,11 +76,11 @@
 
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="handleAudite(record.Id)">{{ record.Status === 0?'审核':'查看' }}</a>
-          <a-divider v-if="record.Status===0" type="vertical" />
-          <a v-if="record.Status===0" @click="handleEdit(record.Id)">编辑</a>
-          <a-divider v-if="record.Status===0" type="vertical" />
-          <a v-if="record.Status===0" @click="handleDelete([record.Id])">删除</a>          
+          <a v-if="hasPerm('TD_OutStorage.Auditing') || record.Status === 1" @click="handleAudite(record.Id)">{{ record.Status === 0?'审核':'查看' }}</a>
+          <a-divider v-if="record.Status===0 && hasPerm('TD_OutStorage.Auditing')" type="vertical" />
+          <a v-if="record.Status===0 && hasPerm('TD_OutStorage.Edit')" @click="handleEdit(record.Id)">编辑</a>
+          <a-divider v-if="record.Status===0 && hasPerm('TD_OutStorage.Delete')" type="vertical" />
+          <a v-if="record.Status===0 && hasPerm('TD_OutStorage.Delete')" @click="handleDelete([record.Id])">删除</a>          
         </template>
       </span>
     </a-table>

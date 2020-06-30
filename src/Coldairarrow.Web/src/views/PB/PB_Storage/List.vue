@@ -1,8 +1,8 @@
 ﻿<template>
   <a-card :bordered="false">
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
+      <a-button v-if="hasPerm('PB_Storage.Add')" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
+      <a-button v-if="hasPerm('PB_Storage.Delete')" type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
 
@@ -67,43 +67,17 @@
           </a-tag>
         </template>
       </span>
-
-      <!-- <template  slot="IsDefault" slot-scope="text, record" >
-        <a-radio  :checked="text" @click="handleDefault(record,'IsDefault',true)">
-        </a-radio>
-      </template> -->
- 
-      <!-- <span slot="IsTray" slot-scope="text, record">
-        <template>
-          <a-switch checked-children="启用" un-checked-children="停用" @click="handleModifyIsTray(record.Id)" v-model="record.IsTray" />
-        </template>
-      </span>
-
-      <span slot="IsZone" slot-scope="text, record">    
-        <template>
-          <a-switch checked-children="启用" un-checked-children="停用" @click="handleModifyIsZone(record.Id)" v-model="record.IsZone" />
-        </template>
-      </span>
-
-      <span slot="Disable" slot-scope="text, record">    
-        <template>
-          <a-switch checked-children="启用" un-checked-children="停用" @click="handleModifyDisable(record.Id)" v-model="record.Disable" />
-        </template>
-      </span> -->
-
       <span slot="action" slot-scope="text, record">
-        <template>    
-          
-          <a @click="openLanewayList(record)">设置巷道</a>
-          <a-divider type="vertical" />
-          <a @click="openRackList(record)">设置货架</a>
-          <a-divider v-if="record.Disable===false" type="vertical" />
-          <a v-if="record.Disable===false" @click="handleEdit(record.Id)">编辑</a>
-          <a-divider type="vertical" />
-          <a @click="handleConfig(record.Id)">配置</a>
-          <a-divider v-if="record.Disable===false" type="vertical" />
-          <a v-if="record.Disable===false" @click="handleDelete(record.Id)">删除</a>         
-          
+        <template>              
+          <a v-if="hasPerm('PB_Storage.Laneway')" @click="openLanewayList(record)">设置巷道</a>
+          <a-divider v-if="hasPerm('PB_Storage.Laneway')" type="vertical" />
+          <a v-if="hasPerm('PB_Storage.Rack')" @click="openRackList(record)">设置货架</a>
+          <a-divider v-if="record.Disable===false || hasPerm('PB_Storage.Edit')" type="vertical" />
+          <a v-if="record.Disable===false || hasPerm('PB_Storage.Edit')" @click="handleEdit(record.Id)">编辑</a>
+          <a-divider v-if="hasPerm('PB_Storage.Config')" type="vertical" />
+          <a v-if="hasPerm('PB_Storage.Config')"  @click="handleConfig(record.Id)">配置</a>
+          <a-divider v-if="record.Disable===false || hasPerm('PB_Storage.Delete')" type="vertical" />
+          <a v-if="record.Disable===false || hasPerm('PB_Storage.Delete') ">删除</a>                   
         </template>
       </span>
     </a-table>

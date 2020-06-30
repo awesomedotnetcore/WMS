@@ -1,8 +1,8 @@
 ﻿<template>
   <a-card :bordered="false">
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
+      <a-button v-if="hasPerm('TD_Allocate.Add')" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
+      <a-button v-if="hasPerm('TD_Allocate.Delete')" type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
       <a-divider type="vertical" />
       <a-radio-group v-model="queryParam.Status" button-style="solid" @change="getDataList">
@@ -56,11 +56,11 @@
       </template>
       <span slot="action" slot-scope="text, record">
         <template>
-          <a v-if="record.Status===0" @click="handleEdit(record.Id)">编辑</a>
-          <a-divider v-if="record.Status===0" type="vertical" />
-          <a v-if="record.Status===0" @click="handleDelete([record.Id])">删除</a>
-          <a-divider v-if="record.Status===0" type="vertical" />
-          <a @click="handleShow(record.Id)">{{ record.Status === 0?'审核':'查看' }}</a>
+          <a v-if="record.Status===0 && hasPerm('TD_Allcate.Edit')" @click="handleEdit(record.Id)">编辑</a>
+          <a-divider v-if="record.Status===0 && hasPerm('TD_Allcate.Delete')" type="vertical" />
+          <a v-if="record.Status===0 && hasPerm('TD_Allcate.Delete')" @click="handleDelete([record.Id])">删除</a>
+          <a-divider v-if="record.Status===0 && hasPerm('TD_Allcate.Auditing')" type="vertical" />
+          <a v-if="record.Status===1 || hasPerm('TD_Allcate.Auditing')" @click="handleShow(record.Id)">{{ record.Status === 0?'审核':'查看' }}</a>
         </template>
       </span>
     </a-table>

@@ -2,7 +2,7 @@
   <a-card :bordered="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button
+      <a-button 
         type="primary"
         icon="minus"
         @click="handleDelete(selectedRowKeys)"
@@ -18,12 +18,12 @@
           <a-col :md="4" :sm="24">
             <a-form-item label="查询类别">
               <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="CheckId">盘点ID</a-select-option>
-                <a-select-option key="StorId">仓库ID</a-select-option>
-                <a-select-option key="localId">货位ID</a-select-option>
-                <a-select-option key="MaterialId">物料ID</a-select-option>
+                <a-select-option key="CheckId">盘点</a-select-option>
+                <a-select-option key="StorId">仓库</a-select-option>
+                <a-select-option key="localId">货位</a-select-option>
+                <a-select-option key="MaterialId">物料</a-select-option>
                 <a-select-option key="BatchNo">批次号</a-select-option>
-                <a-select-option key="CheckUserId">盘点人ID</a-select-option>
+                <a-select-option key="CheckUserId">盘点人</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>

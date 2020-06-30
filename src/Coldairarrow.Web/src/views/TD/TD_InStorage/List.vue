@@ -1,15 +1,15 @@
 ﻿<template>
   <a-card :bordered="false">
     <div class="table-operator">
-      <a-dropdown-button v-if="storage.IsTray" type="primary" @click="hanldleAdd()">
+      <a-dropdown-button v-if="storage.IsTray && hasPerm('TD_InStorage.Add')" type="primary" @click="hanldleAdd()">
         <a-icon type="plus" />新建
-        <a-menu slot="overlay" @click="handleAddMenuClick">
+        <a-menu v-if="hasPerm('TD_InStorage.Tray')" slot="overlay" @click="handleAddMenuClick">
           <a-menu-item key="Tray">
             <a-icon type="border" />空托盘入库</a-menu-item>
         </a-menu>
       </a-dropdown-button>
-      <a-button v-else type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
+      <a-button v-else-if="hasPerm('TD_InStorage.Add')" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
+      <a-button v-if="hasPerm('TD_InStorage.Delete')" type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
       <a-divider type="vertical" />
       <a-radio-group v-model="queryParam.Status" button-style="solid" @change="getDataList">
@@ -58,11 +58,11 @@
       </template>
       <span slot="action" slot-scope="text, record">
         <template>
-          <a v-if="record.Status===0" @click="handleEdit(record.Id)">编辑</a>
-          <a-divider v-if="record.Status===0" type="vertical" />
-          <a v-if="record.Status===0" @click="handleDelete([record.Id])">删除</a>
-          <a-divider v-if="record.Status===0" type="vertical" />
-          <a @click="handleShow(record.Id)">{{ record.Status === 0?'审核':'查看' }}</a>
+          <a v-if="hasPerm('TD_InStorage.Edit') && record.Status===0" @click="handleEdit(record.Id)">编辑</a>
+          <a-divider v-if="hasPerm('TD_InStorage.Delete') && record.Status===0" type="vertical" />
+          <a v-if="hasPerm('TD_InStorage.Delete') && record.Status===0" @click="handleDelete([record.Id])">删除</a>
+          <a-divider v-if="hasPerm('TD_InStorage.Auditing') && record.Status===0" type="vertical" />
+          <a v-if="hasPerm('TD_InStorage.Auditing') || record.Status === 1" @click="handleShow(record.Id)">{{ record.Status === 0?'审核':'查看' }}</a>
         </template>
       </span>
     </a-table>

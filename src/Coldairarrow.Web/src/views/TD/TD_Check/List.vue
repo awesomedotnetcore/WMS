@@ -5,8 +5,8 @@
         <a-row>
           <a-col :span="24">
             <a-form-item>
-              <a-button style="margin-left: 8px" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-              <a-button style="margin-left: 8px" type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
+              <a-button v-if="hasPerm('TD_CheckData.Add')" style="margin-left: 8px" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
+              <a-button v-if="hasPerm('TD_CheckData.Delete')" style="margin-left: 8px" type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
               <a-button style="margin-left: 8px" type="primary" icon="redo" @click="getDataList()">刷新</a-button>
               <a-divider type="vertical" />
               <a-radio-group v-model="queryParam.IsComplete" :default-value="-1" button-style="solid" @change="getDataList">
@@ -95,15 +95,16 @@
       </template>
       <span slot="action" slot-scope="text, record">
         <template>
-          <a v-if="record.IsComplete===false" @click="handleEdit(record.Id)">编辑</a>
-          <a-divider v-if="record.IsComplete===false" type="vertical" />
-          <a v-if="record.Status!==1" @click="handleDelete([record.Id])">删除</a>
-          <a-divider v-if="record.Status!==1" type="vertical" /><br>
-          <a @click="handleCheck(record.Id)">盘差</a>
-          <a-divider v-if="record.Status===0" type="vertical" />
-          <a v-if="record.IsComplete===false" @click="handleReCheck(record.Id)">复核</a>
+          <a v-if="record.IsComplete===false && hasPerm('TD_Check.Edit')" @click="handleEdit(record.Id)">编辑</a>
+          <a-divider v-if="record.IsComplete===false && hasPerm('TD_Check.Delete')" type="vertical" />
+          <a v-if="record.Status!==1 && hasPerm('TD_Check.Delete')" @click="handleDelete([record.Id])">删除</a>
+          <a-divider v-if="record.Status!==1 && hasPerm('TD_Check.Check')" type="vertical" /><br>
+          <a v-if="hasPerm('TD_Check.Check')" @click="handleCheck(record.Id)">盘差</a>
+          <a-divider v-if="record.Status===0 && hasPerm('TD_Check.ReCheck')" type="vertical" />
+          <a v-if="record.IsComplete===false && hasPerm('TD_Check.ReCheck')" @click="handleReCheck(record.Id)">复核</a>
           <a-divider v-if="record.IsComplete===false && record.Status===0" type="vertical" />
-          <a v-if="record.IsComplete===true && record.Status===0" @click="handleAudit(record.Id)">审核</a>
+          <a v-if="record.IsComplete===true && record.Status===0 && hasPerm('TD_Check.Auditing')" @click="handleAudit(record.Id)">审核</a>
+          <!-- || hasPerm('TD_InStorage.Auditing') -->
         </template>
       </span>
     </a-table>
