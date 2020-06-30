@@ -1,8 +1,8 @@
 ﻿<template>
   <a-card :bordered="false">
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button
+      <a-button v-if="hasPerm('PB_StorArea.Add')" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
+      <a-button v-if="hasPerm('PB_StorArea.Delete')"
         type="primary"
         icon="minus"
         @click="handleDelete(selectedRowKeys)"
@@ -63,11 +63,11 @@
 
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="handleEdit(record.Id)">编辑</a>
+          <a v-if="hasPerm('PB_StorArea.Edit')" @click="handleEdit(record.Id)">编辑</a>
+          <a-divider v-if="hasPerm('PB_StorArea.Delete')"  type="vertical" />
+          <a v-if="hasPerm('PB_StorArea.Delete')" @click="handleDelete([record.Id])">删除</a>
           <a-divider type="vertical" />
-          <a @click="handleDelete([record.Id])">删除</a>
-          <a-divider type="vertical" />
-          <a @click="openMaterialList(record.Id)">关联物料</a>
+          <a v-if="hasPerm('PB_StorArea.MaterialList')" @click="openMaterialList(record.Id)">关联物料</a>
         </template>
       </span>
     </a-table>
