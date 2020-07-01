@@ -1,5 +1,5 @@
 <template>
-  <a-modal title="报损" width="60%" :visible="visible" :confirmLoading="loading" okText="选择" @ok="handleChoose" @cancel="()=>{this.visible=false}">
+  <a-modal title="调拨" width="60%" :visible="visible" :confirmLoading="loading" okText="选择" @ok="handleChoose" @cancel="()=>{this.visible=false}">
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
