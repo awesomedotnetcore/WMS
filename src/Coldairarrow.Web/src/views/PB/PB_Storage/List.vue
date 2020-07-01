@@ -40,20 +40,20 @@
       <span slot="IsTray" slot-scope="text, record">
         <template>
           <a-tag v-if="record.IsTray===false" color="red">
-          停用
+          否
           </a-tag>
           <a-tag v-else color="green">
-          启用
+          是
           </a-tag>
         </template>
       </span>
       <span slot="IsZone" slot-scope="text, record">
         <template>
           <a-tag v-if="record.IsZone===false" color="red">
-          停用
+          否
           </a-tag>
           <a-tag v-else color="green">
-          启用
+          是
           </a-tag>
         </template>
       </span>
@@ -102,7 +102,7 @@ const columns = [
   { title: '仓库名称', dataIndex: 'Name' },
   { title: '仓库类型', dataIndex: 'Type', scopedSlots: { customRender: 'Type' } },
   { title: '托盘管理', dataIndex: 'IsTray',  scopedSlots: { customRender: 'IsTray' }},
-  { title: '托盘分区管理', dataIndex: 'IsZone', scopedSlots: { customRender: 'IsZone'}},
+  { title: '托盘分区', dataIndex: 'IsZone', scopedSlots: { customRender: 'IsZone'}},
   { title: '仓库状态', dataIndex: 'Disable' , scopedSlots: { customRender: 'Disable' }},
   { title: '默认仓库', dataIndex: 'IsDefault', scopedSlots: { customRender: 'IsDefault' } },
   // { title: '备注', dataIndex: 'Remarks'},
