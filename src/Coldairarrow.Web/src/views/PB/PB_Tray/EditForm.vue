@@ -1,5 +1,5 @@
 ﻿<template>
-  <a-modal :title="title" width="40%" :visible="visible" :confirmLoading="loading" @ok="handleSubmit" @cancel="()=>{this.visible=false}">
+  <a-modal :title="title" width="60%" :visible="visible" :confirmLoading="loading" @ok="handleSubmit" @cancel="()=>{this.visible=false}">
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
         <a-row>
@@ -27,10 +27,14 @@
               <a-date-picker v-model="entity.StartTime" :style="{width:'100%'}" />
             </a-form-model-item>
           </a-col>
+          <a-col :span="12">
+          <a-form-model-item label="备注" prop="Remarks">
+            <a-textarea v-model="entity.Remarks" autocomplete="off" />
+            <!-- :auto-size="{ minRows: 3, maxRows: 5 }" -->
+          </a-form-model-item>
+          </a-col>
         </a-row>
-        <a-form-model-item label="备注" prop="Remarks">
-          <a-textarea v-model="entity.Remarks" autocomplete="off" :auto-size="{ minRows: 3, maxRows: 5 }" />
-        </a-form-model-item>
+        
       </a-form-model>
     </a-spin>
   </a-modal>

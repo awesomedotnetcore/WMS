@@ -1,5 +1,5 @@
 ﻿<template>
-  <a-modal title="入库" width="40%" :visible="visible" @ok="handleSubmit" @cancel="()=>{this.visible=false}">
+  <a-modal title="入库" width="60%" :visible="visible" @ok="handleSubmit" @cancel="()=>{this.visible=false}">
     <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
       <a-row>
         <a-col :span="12">
