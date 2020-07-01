@@ -36,7 +36,8 @@
       </a-form>
     </div>
 
-    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys }" :bordered="true" size="small">
+      <!-- , onChange: onSelectChange -->
       <template slot="Type" slot-scope="text">
         <enum-name code="RecordBookType" :value="text"></enum-name>
       </template>
