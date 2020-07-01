@@ -2,13 +2,7 @@
   <a-card :bordered="false">
     <div class="table-operator">
       <a-button v-if="hasPerm('PB_StorArea.Add')" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button v-if="hasPerm('PB_StorArea.Delete')"
-        type="primary"
-        icon="minus"
-        @click="handleDelete(selectedRowKeys)"
-        :disabled="!hasSelected()"
-        :loading="loading"
-      >删除</a-button>
+      <a-button v-if="hasPerm('PB_StorArea.Delete')" type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
 
@@ -24,7 +18,7 @@
             <a-form-item>
               <a-input v-model="queryParam.keyword" placeholder="货区编码或名称" />
             </a-form-item>
-          </a-col>  
+          </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
               <enum-select code="StorAreaType" v-model="queryParam.AreaType"></enum-select>
@@ -38,18 +32,7 @@
       </a-form>
     </div>
 
-    <a-table
-      ref="table"
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      :bordered="true"
-      size="small"
-    >
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
       <!-- <span slot="IsCache" slot-scope="text, record">
         <template>
           <a-tag v-if="record.IsCache===false" color="red">否</a-tag>
@@ -64,7 +47,7 @@
       <span slot="action" slot-scope="text, record">
         <template>
           <a v-if="hasPerm('PB_StorArea.Edit')" @click="handleEdit(record.Id)">编辑</a>
-          <a-divider v-if="hasPerm('PB_StorArea.Delete')"  type="vertical" />
+          <a-divider v-if="hasPerm('PB_StorArea.Delete')" type="vertical" />
           <a v-if="hasPerm('PB_StorArea.Delete')" @click="handleDelete([record.Id])">删除</a>
           <a-divider v-if="hasPerm('PB_StorArea.MaterialList')" type="vertical" />
           <a v-if="hasPerm('PB_StorArea.MaterialList')" @click="openMaterialList(record.Id)">关联物料</a>
@@ -86,8 +69,8 @@ import StorageSelect from '../../../components/Storage/StorageSelect'
 
 const columns = [
   { title: '仓库', dataIndex: 'PB_Storage.Name' },
-  { title: '货区编号', dataIndex: 'Code'},
-  { title: '货区名称', dataIndex: 'Name'},
+  { title: '货区编号', dataIndex: 'Code' },
+  { title: '货区名称', dataIndex: 'Name' },
   { title: '货区类型', dataIndex: 'Type', scopedSlots: { customRender: 'Type' } },
   // { title: '缓存区', dataIndex: 'IsCache', width: '10%', scopedSlots: { customRender: 'IsCache' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
@@ -116,7 +99,7 @@ export default {
       sorter: { field: 'Id', order: 'asc' },
       loading: false,
       columns,
-      queryParam: {},
+      queryParam: { },
       selectedRowKeys: []
     }
   },
@@ -155,10 +138,10 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm(null,'新增货区')
+      this.$refs.editForm.openForm(null, '新增货区')
     },
     handleEdit(id) {
-      this.$refs.editForm.openForm(id,'编辑货区')
+      this.$refs.editForm.openForm(id, '编辑货区')
     },
     handleDelete(ids) {
       var thisObj = this
@@ -181,8 +164,8 @@ export default {
         }
       })
     },
-    openMaterialList(typeId) {
-      this.$refs.materialList.openDrawer(typeId)
+    openMaterialList(areaId) {
+      this.$refs.materialList.openDrawer(areaId)
     }
   }
 }

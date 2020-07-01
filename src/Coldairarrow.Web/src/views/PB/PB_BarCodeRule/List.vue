@@ -40,7 +40,6 @@ export default {
     EnumName
   },
   mounted() {
-    this.getDataList()
   },
   data() {
     return {

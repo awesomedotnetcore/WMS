@@ -1,38 +1,26 @@
 ﻿<template>
-<a-drawer
-    title="关联物料清单"
-    placement="right"
-    :closable="true"
-    @close="onDrawerClose"
-    :visible="visible"
-    :width="900"
-    :getContainer="false"
-  >
-  <a-card :bordered="false">
+  <a-drawer title="关联物料清单" placement="right" :closable="true" @close="onDrawerClose" :visible="visible" :width="900" :getContainer="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button
-        type="primary"
-        icon="minus"
-        @click="handleDelete(selectedRowKeys)"
-        :disabled="!hasSelected()"
-        :loading="loading"
-      >删除</a-button>
+      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
-
-    <a-table
-      ref="table"
-      :columns="columns"
-      :rowKey="row => row.MaterialId"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      :bordered="true"
-      size="small"
-    >
+    <div class="table-page-search-wrapper">
+      <a-form layout="inline">
+        <a-row :gutter="10">
+          <a-col :md="4" :sm="24">
+            <a-form-item>
+              <a-input v-model="queryParam.MaterialName" placeholder="物料" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="6" :sm="24">
+            <a-button type="primary" @click="() => {this.pagination.current = 1; this.getDataList()}">查询</a-button>
+            <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
+          </a-col>
+        </a-row>
+      </a-form>
+    </div>
+    <a-table ref="table" :columns="columns" :rowKey="row => row.MaterialId" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
       <span slot="action" slot-scope="text, record">
         <template>
           <!-- <a @click="handleEdit(record.Id)">编辑</a>
@@ -43,8 +31,7 @@
     </a-table>
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
-  </a-card>
-</a-drawer>
+  </a-drawer>
 </template>
 
 <script>
@@ -62,7 +49,6 @@ export default {
     EditForm
   },
   mounted() {
-    this.getDataList()
   },
   data() {
     return {
@@ -79,7 +65,6 @@ export default {
       queryParam: {},
       selectedRowKeys: [],
       visible: false,
-      areaId: null,
       ids: []
     }
   },
@@ -92,7 +77,6 @@ export default {
     },
     getDataList() {
       this.selectedRowKeys = []
-      this.queryParam.Keyword = this.areaId
 
       this.loading = true
       this.$http
@@ -119,7 +103,7 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm(this.areaId,"添加关联物料")
+      this.$refs.editForm.openForm(this.filters.AreaId, '添加关联物料')
     },
     // handleEdit(id) {
     //   this.$refs.editForm.openForm(id)
@@ -131,26 +115,24 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/PB/PB_AreaMaterial/DeleteData?AreaId=' + thisObj.areaId, thisObj.ids)
-            .then(resJson => {
-              resolve()
-              if (resJson.Success) {
-                thisObj.$message.success('操作成功!')
-                thisObj.getDataList()
-              } else {
-                thisObj.$message.error(resJson.Msg)
-              }
-            })
+            thisObj.$http.post('/PB/PB_AreaMaterial/DeleteData?AreaId=' + thisObj.filters.AreaId, thisObj.ids)
+              .then(resJson => {
+                resolve()
+                if (resJson.Success) {
+                  thisObj.$message.success('操作成功!')
+                  thisObj.getDataList()
+                } else {
+                  thisObj.$message.error(resJson.Msg)
+                }
+              })
           })
         }
       })
     },
     openDrawer(areaId) {
-      this.areaId = areaId
+      this.filters.AreaId = areaId
       this.visible = true
-      if (areaId != null) {
-        this.getDataList()
-      }
+      this.getDataList()
     },
     onDrawerClose() {
       this.visible = false
