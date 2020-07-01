@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Coldairarrow.Business.PB
 {
-    public interface IPB_AreaMaterialBusiness
+    public partial interface IPB_AreaMaterialBusiness
     {
         Task<PageResult<PB_AreaMaterial>> GetDataListAsync(PageInput<ConditionDTO> input);
         Task<List<PB_AreaMaterial>> GetDataListAsync(string areaId);
