@@ -67,30 +67,7 @@ namespace Coldairarrow.Api.Controllers.PB
         [HttpPost]
         public async Task SaveDatas(PBAreaMateriaConditionDTO data)
         {
-            //var areaId = data.id;
-            //var targetKeys = data.keys;
-
-            //var list = await _pB_AreaMaterialBus.GetDataListAsync(areaId);
-            //var amlist = list.Select(t => t.MaterialId).ToList();
-
-            //var reault = targetKeys.Except(amlist);
-
-            //var addList = new List<PB_AreaMaterial>();
-
-            //foreach (var i in reault)
-            //{
-            //    addList.Add(new PB_AreaMaterial()
-            //    {
-            //        AreaId = areaId,
-            //        MaterialId = i
-            //    });
-            //}
-
-            //var deleteList = list.Select(s => s.MaterialId).Distinct().ToList();
-            // await _pB_AreaMaterialBus.DeleteDataAsync(areaId, deleteList);
-
             await _pB_AreaMaterialBus.AddDataAsync(data);
-
         }
 
         [HttpPost]
