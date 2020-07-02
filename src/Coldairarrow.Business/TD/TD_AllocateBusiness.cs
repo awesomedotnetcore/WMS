@@ -30,6 +30,7 @@ namespace Coldairarrow.Business.TD
             return await q.Where(where).GetPageResultAsync(input);
         }
 
+        [DataDeleteLog(UserLogType.调拨管理, "Code", "调拨单")]
         public async Task DeleteDataAsync(List<string> ids)
         {
             await DeleteAsync(ids);

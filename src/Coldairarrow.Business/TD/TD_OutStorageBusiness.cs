@@ -58,6 +58,7 @@ namespace Coldairarrow.Business.TD
         //    await UpdateAsync(data);
         //}
 
+        [DataDeleteLog(UserLogType.出库管理, "Code", "出库单")]
         public async Task DeleteDataAsync(List<string> ids)
         {
             await DeleteAsync(ids);

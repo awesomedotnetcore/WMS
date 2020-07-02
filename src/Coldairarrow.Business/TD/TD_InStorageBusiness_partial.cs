@@ -63,6 +63,7 @@ namespace Coldairarrow.Business.TD
                 .SingleOrDefaultAsync(w => w.Id == id);
         }
 
+        [DataAddLog(UserLogType.入库管理, "Code", "入库单")]
         [Transactional]
         public async Task AddDataAsync(TD_InStorage data)
         {
@@ -76,6 +77,7 @@ namespace Coldairarrow.Business.TD
             await InsertAsync(data);
         }
 
+        [DataEditLog(UserLogType.入库管理, "Code", "入库单")]
         [Transactional]
         public async Task UpdateDataAsync(TD_InStorage data)
         {
@@ -109,6 +111,7 @@ namespace Coldairarrow.Business.TD
             await UpdateAsync(data);
         }
 
+        [DataEditLog(UserLogType.入库管理, "Code", "入库单审批")]
         [Transactional]
         public async Task Approve(AuditDTO audit)
         {
@@ -286,6 +289,7 @@ namespace Coldairarrow.Business.TD
             }
         }
 
+        [DataEditLog(UserLogType.入库管理, "Code", "入库单驳回")]
         public async Task Reject(AuditDTO audit)
         {
             var data = await this.GetEntityAsync(audit.Id);

@@ -49,16 +49,21 @@ namespace Coldairarrow.Business.PB
             return await GetEntityAsync(id);
         }
 
+        [DataAddLog(UserLogType.物料管理, "Name", "物料")]
+        [DataRepeatValidate(new string[] { "Code", "Name" }, new string[] { "编号", "名称" })]
         public async Task AddDataAsync(PB_Material data)
         {
             await InsertAsync(data);
         }
 
+        [DataEditLog(UserLogType.物料管理, "Name", "物料")]
+        [DataRepeatValidate(new string[] { "Code", "Name" }, new string[] { "编号", "名称" })]
         public async Task UpdateDataAsync(PB_Material data)
         {
             await UpdateAsync(data);
         }
 
+        [DataDeleteLog(UserLogType.物料管理, "Name", "物料")]
         public async Task DeleteDataAsync(List<string> ids)
         {
             await DeleteAsync(ids);

@@ -42,16 +42,21 @@ namespace Coldairarrow.Business.PB
             return await GetEntityAsync(id);
         }
 
+        [DataAddLog(UserLogType.条码类型, "Type", "条码规则")]
+        [DataRepeatAndValidate(new string[] { "TypeId", "Type" }, new string[] { "条码类型", "规则" })]
         public async Task AddDataAsync(PB_BarCodeRule data)
         {
             await InsertAsync(data);
         }
 
+        [DataEditLog(UserLogType.条码类型, "Type", "条码规则")]
+        [DataRepeatAndValidate(new string[] { "TypeId", "Type" }, new string[] { "条码类型", "规则" })]
         public async Task UpdateDataAsync(PB_BarCodeRule data)
         {
             await UpdateAsync(data);
         }
 
+        [DataDeleteLog(UserLogType.条码类型, "Type", "条码规则")]
         public async Task DeleteDataAsync(List<string> ids)
         {
             await DeleteAsync(ids);

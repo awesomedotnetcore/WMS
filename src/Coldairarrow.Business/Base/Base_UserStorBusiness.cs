@@ -49,6 +49,8 @@ namespace Coldairarrow.Business.Base
             return await GetEntityAsync(id);
         }
 
+        [DataAddLog(UserLogType.仓库权限, "Id", "仓库权限")]
+        [DataRepeatAndValidate(new string[] { "UserId", "StorId" }, new string[] { "用户", "仓库" })]
         public async Task AddDataAsync(Base_UserStor data)
         {
             await InsertAsync(data);
@@ -57,11 +59,15 @@ namespace Coldairarrow.Business.Base
         {
             await UpdateWhereAsync(w => w.UserId == userId && w.IsDefault, entity => { entity.IsDefault = false; });
         }
+
+        [DataEditLog(UserLogType.仓库权限, "Id", "仓库权限")]
+        [DataRepeatAndValidate(new string[] { "UserId", "StorId" }, new string[] { "用户", "仓库" })]
         public async Task UpdateDataAsync(Base_UserStor data)
         {
             await UpdateAsync(data);
         }
 
+        [DataDeleteLog(UserLogType.仓库权限, "Id", "仓库权限")]
         public async Task DeleteDataAsync(List<string> ids)
         {
             await DeleteAsync(ids);

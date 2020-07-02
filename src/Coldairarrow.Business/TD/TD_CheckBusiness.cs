@@ -45,16 +45,19 @@ namespace Coldairarrow.Business.TD
             return await GetEntityAsync(id);
         }
 
+        [DataAddLog(UserLogType.盘点管理, "Code", "盘点单")]
         public async Task AddDataAsync(TD_Check data)
         {
             await InsertAsync(data);
         }
 
+        [DataEditLog(UserLogType.盘点管理, "Code", "盘点单")]
         public async Task UpdateDataAsync(TD_Check data)
         {
             await UpdateAsync(data);
         }
 
+        [DataDeleteLog(UserLogType.盘点管理, "Code", "盘点单")]
         public async Task DeleteDataAsync(List<string> ids)
         {
             await DeleteAsync(ids);

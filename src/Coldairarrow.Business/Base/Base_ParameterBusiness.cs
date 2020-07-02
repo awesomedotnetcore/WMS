@@ -43,16 +43,20 @@ namespace Coldairarrow.Business.Base
         {
             return await this.GetIQueryable().ToDictionaryAsync(k => k.Code, v => v.Val);
         }
+
+        [DataAddLog(UserLogType.系统参数, "Code", "参数")]
+        [DataRepeatAndValidate(new string[] { "Code" }, new string[] { "参数" })]
         public async Task AddDataAsync(Base_Parameter data)
         {
             await InsertAsync(data);
         }
-
+        [DataEditLog(UserLogType.系统参数, "Code", "参数")]
+        [DataRepeatAndValidate(new string[] { "Code" }, new string[] { "参数" })]
         public async Task UpdateDataAsync(Base_Parameter data)
         {
             await UpdateAsync(data);
         }
-
+        [DataDeleteLog(UserLogType.系统参数, "Code", "参数")]
         public async Task DeleteDataAsync(List<string> ids)
         {
             await DeleteAsync(ids);

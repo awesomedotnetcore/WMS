@@ -17,7 +17,7 @@ namespace Coldairarrow.Business.PB
 
         #region 外部接口
 
-        
+
 
         public async Task<List<PB_Location>> GetDataListAsync()
         {
@@ -31,16 +31,21 @@ namespace Coldairarrow.Business.PB
             return await GetEntityAsync(id);
         }
 
+        [DataAddLog(UserLogType.货位管理, "Name", "货位")]
+        [DataRepeatAndValidate(new string[] { "StorId", "AreaId", "Code" }, new string[] { "仓库", "货区", "货位" })]
         public async Task AddDataAsync(PB_Location data)
         {
             await InsertAsync(data);
         }
 
+        [DataEditLog(UserLogType.货位管理, "Name", "货位")]
+        [DataRepeatAndValidate(new string[] { "StorId", "AreaId", "Code" }, new string[] { "仓库", "货区", "货位" })]
         public async Task UpdateDataAsync(PB_Location data)
         {
             await UpdateAsync(data);
         }
 
+        [DataDeleteLog(UserLogType.货位管理, "Name", "货位")]
         public async Task DeleteDataAsync(List<string> ids)
         {
             await DeleteAsync(ids);
@@ -73,7 +78,7 @@ namespace Coldairarrow.Business.PB
             return Db.GetIQueryable<T>();
         }
 
-        
+
         #endregion
 
         #region 私有成员

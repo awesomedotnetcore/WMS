@@ -42,12 +42,16 @@ namespace Coldairarrow.Business.PB
             return await GetEntityAsync(id);
         }
 
+        [DataAddLog(UserLogType.物料类型, "Code", "物料类型")]
+        [DataRepeatValidate(new string[] { "Code", "Name" }, new string[] { "编号", "名称" })]
         public async Task AddDataAsync(PB_MaterialType data)
         {
             await SetPathAsync(data);
             await InsertAsync(data);
         }
 
+        [DataEditLog(UserLogType.物料类型, "Code", "物料类型")]
+        [DataRepeatValidate(new string[] { "Code", "Name" }, new string[] { "编号", "名称" })]
         public async Task UpdateDataAsync(PB_MaterialType data)
         {
             await SetPathAsync(data);
@@ -55,6 +59,7 @@ namespace Coldairarrow.Business.PB
             await UpdateAsync(data);
         }
 
+        [DataDeleteLog(UserLogType.物料类型, "Code", "物料类型")]
         public async Task DeleteDataAsync(List<string> ids)
         {
             await DeleteAsync(ids);

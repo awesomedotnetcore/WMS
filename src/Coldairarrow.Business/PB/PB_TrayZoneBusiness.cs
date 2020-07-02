@@ -49,16 +49,21 @@ namespace Coldairarrow.Business.PB
             return await GetEntityAsync(id);
         }
 
+        [DataAddLog(UserLogType.托盘类型, "Name", "托盘分区")]
+        [DataRepeatAndValidate(new string[] { "TrayTypeId", "Name" }, new string[] { "托盘类型", "分区" })]
         public async Task AddDataAsync(PB_TrayZone data)
         {
             await InsertAsync(data);
         }
 
+        [DataEditLog(UserLogType.托盘类型, "Name", "托盘分区")]
+        [DataRepeatAndValidate(new string[] { "TrayTypeId", "Name" }, new string[] { "托盘类型", "分区" })]
         public async Task UpdateDataAsync(PB_TrayZone data)
         {
             await UpdateAsync(data);
         }
 
+        [DataDeleteLog(UserLogType.托盘类型, "Name", "托盘分区")]
         public async Task DeleteDataAsync(List<string> ids)
         {
             await DeleteAsync(ids);

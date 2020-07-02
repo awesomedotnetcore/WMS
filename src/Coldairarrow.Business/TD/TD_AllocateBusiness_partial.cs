@@ -66,6 +66,7 @@ namespace Coldairarrow.Business.TD
                 .SingleOrDefaultAsync(w => w.Id == id);
         }
 
+        [DataAddLog(UserLogType.调拨管理, "Code", "调拨单")]
         [Transactional]
         public async Task AddDataAsync(TD_Allocate data)
         {
@@ -79,6 +80,7 @@ namespace Coldairarrow.Business.TD
             await InsertAsync(data);
         }
 
+        [DataEditLog(UserLogType.调拨管理, "Code", "调拨单")]
         [Transactional]
         public async Task UpdateDataAsync(TD_Allocate data)
         {
@@ -113,7 +115,7 @@ namespace Coldairarrow.Business.TD
         }
 
 
-
+        [DataEditLog(UserLogType.调拨管理, "Id", "调拨单审批")]
         [Transactional]
         public async Task Approve(AuditDTO audit)
         {
@@ -363,6 +365,7 @@ namespace Coldairarrow.Business.TD
             }
         }
 
+        [DataEditLog(UserLogType.调拨管理, "Id", "调拨单驳回")]
         public async Task Reject(AuditDTO audit)
         {
             var data = await this.GetEntityAsync(audit.Id);

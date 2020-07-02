@@ -22,8 +22,9 @@ namespace Coldairarrow.Business.PB
             return await GetEntityAsync(id);
         }
 
-        
 
+        [DataEditLog(UserLogType.托盘管理, "Code", "托盘")]
+        [DataRepeatAndValidate(new string[] { "TrayTypeId", "Code" }, new string[] { "托盘类型", "编码" })]
         public async Task UpdateDataAsync(PB_Tray data)
         {
             await UpdateAsync(data);
@@ -39,6 +40,7 @@ namespace Coldairarrow.Business.PB
             await UpdateWhereAsync(w => w.Id == id, entity => { entity.Status = 0; });
         }
 
+        [DataDeleteLog(UserLogType.托盘管理, "Code", "托盘")]
         public async Task DeleteDataAsync(List<string> ids)
         {
             await DeleteAsync(ids);

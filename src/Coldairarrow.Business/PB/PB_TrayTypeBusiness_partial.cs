@@ -20,6 +20,9 @@ namespace Coldairarrow.Business.PB
             _ServiceProvider = svcProvider;
         }
         readonly IServiceProvider _ServiceProvider;
+
+        [DataAddLog(UserLogType.托盘类型, "Name", "托盘类型")]
+        [DataRepeatValidate(new string[] { "Code", "Name" }, new string[] { "编号", "名称" })]
         public async Task AddDataAsync(PB_TrayType data)
         {
             if (data.Code.IsNullOrEmpty())
