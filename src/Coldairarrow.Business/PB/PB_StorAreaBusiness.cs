@@ -20,7 +20,7 @@ namespace Coldairarrow.Business.PB
 
         #region 外部接口
 
-       // public async Task<PageResult<PB_StorArea>> GetDataListAsync(PageInput<ConditionDTO> input)
+        // public async Task<PageResult<PB_StorArea>> GetDataListAsync(PageInput<ConditionDTO> input)
         public async Task<PageResult<PB_StorArea>> GetDataListAsync(PB_StorAreaPageInput input)
         {
             var q = GetIQueryable();
@@ -31,7 +31,7 @@ namespace Coldairarrow.Business.PB
             //筛选
             if (!search.Keyword.IsNullOrEmpty())
             {
-                where = where.And(w=>w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
+                where = where.And(w => w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
             }
             if (!search.StorageId.IsNullOrEmpty())
             {
@@ -52,16 +52,21 @@ namespace Coldairarrow.Business.PB
             return await GetEntityAsync(id);
         }
 
+        [DataAddLog(UserLogType.货区管理, "Name", "货区")]
+        [DataRepeatAndValidate(new string[] { "StorId", "Name" }, new string[] { "仓库", "货区" })]
         public async Task AddDataAsync(PB_StorArea data)
         {
             await InsertAsync(data);
         }
 
+        [DataEditLog(UserLogType.货区管理, "Name", "货区")]
+        [DataRepeatAndValidate(new string[] { "StorId", "Name" }, new string[] { "仓库", "货区" })]
         public async Task UpdateDataAsync(PB_StorArea data)
         {
             await UpdateAsync(data);
         }
 
+        [DataDeleteLog(UserLogType.货区管理, "Name", "货区")]
         public async Task DeleteDataAsync(List<string> ids)
         {
             await DeleteAsync(ids);

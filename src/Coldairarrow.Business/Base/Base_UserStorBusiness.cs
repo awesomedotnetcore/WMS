@@ -50,7 +50,7 @@ namespace Coldairarrow.Business.Base
         }
 
         [DataAddLog(UserLogType.仓库权限, "Id", "仓库权限")]
-        [DataRepeatValidate(new string[] { "UserId", "StorId" }, new string[] { "用户", "仓库" })]
+        [DataRepeatAndValidate(new string[] { "UserId", "StorId" }, new string[] { "用户", "仓库" })]
         public async Task AddDataAsync(Base_UserStor data)
         {
             await InsertAsync(data);
@@ -61,7 +61,7 @@ namespace Coldairarrow.Business.Base
         }
 
         [DataEditLog(UserLogType.仓库权限, "Id", "仓库权限")]
-        [DataRepeatValidate(new string[] { "UserId", "StorId" }, new string[] { "用户", "仓库" })]
+        [DataRepeatAndValidate(new string[] { "UserId", "StorId" }, new string[] { "用户", "仓库" })]
         public async Task UpdateDataAsync(Base_UserStor data)
         {
             await UpdateAsync(data);

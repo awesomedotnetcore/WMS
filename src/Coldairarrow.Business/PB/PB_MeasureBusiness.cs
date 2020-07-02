@@ -40,6 +40,8 @@ namespace Coldairarrow.Business.PB
             return await GetEntityAsync(id);
         }
 
+        [DataAddLog(UserLogType.计量单位, "Name", "计量单位")]
+        [DataRepeatValidate(new string[] { "Code", "Name" }, new string[] { "编号", "名称" })]
         public async Task AddDataAsync(PB_Measure data)
         {
             if (data.Code.IsNullOrEmpty())
@@ -50,11 +52,14 @@ namespace Coldairarrow.Business.PB
             await InsertAsync(data);
         }
 
+        [DataEditLog(UserLogType.计量单位, "Name", "计量单位")]
+        [DataRepeatValidate(new string[] { "Code", "Name" }, new string[] { "编号", "名称" })]
         public async Task UpdateDataAsync(PB_Measure data)
         {
             await UpdateAsync(data);
         }
 
+        [DataDeleteLog(UserLogType.计量单位, "Name", "计量单位")]
         public async Task DeleteDataAsync(List<string> ids)
         {
             await DeleteAsync(ids);

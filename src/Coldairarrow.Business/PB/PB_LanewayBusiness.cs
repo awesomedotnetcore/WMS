@@ -21,7 +21,7 @@ namespace Coldairarrow.Business.PB
 
         public async Task<PageResult<PB_Laneway>> GetDataListAsync(PB_LanewayPageInput input)
         {
-            var q = GetIQueryable().Where(w => w.StorId == input.StorId);            
+            var q = GetIQueryable().Where(w => w.StorId == input.StorId);
             var where = LinqHelper.True<PB_Laneway>();
             var search = input.Search;
             q = q.Include(i => i.PB_Storage);
@@ -31,7 +31,7 @@ namespace Coldairarrow.Business.PB
                 search.Keyword = search.Keyword.Trim();
                 where = where.And(w => w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
             }
-                
+
 
 
             return await q.Where(where).GetPageResultAsync(input);
@@ -42,16 +42,21 @@ namespace Coldairarrow.Business.PB
             return await GetEntityAsync(id);
         }
 
+        [DataAddLog(UserLogType.巷道管理, "Name", "巷道")]
+        [DataRepeatAndValidate(new string[] { "StorId", "Name" }, new string[] { "仓库", "巷道" })]
         public async Task AddDataAsync(PB_Laneway data)
         {
             await InsertAsync(data);
         }
 
+        [DataEditLog(UserLogType.巷道管理, "Name", "巷道")]
+        [DataRepeatAndValidate(new string[] { "StorId", "Name" }, new string[] { "仓库", "巷道" })]
         public async Task UpdateDataAsync(PB_Laneway data)
         {
             await UpdateAsync(data);
         }
 
+        [DataDeleteLog(UserLogType.巷道管理, "Name", "巷道")]
         public async Task DeleteDataAsync(List<string> ids)
         {
             await DeleteAsync(ids);

@@ -59,6 +59,7 @@ namespace Coldairarrow.Business.TD
                 .SingleOrDefaultAsync(w => w.Id == id);
         }
 
+        [DataAddLog(UserLogType.出库管理, "Code", "出库单")]
         public async Task AddDataAsync(TD_OutStorage data)
         {
             if (data.Code.IsNullOrEmpty())
@@ -82,7 +83,7 @@ namespace Coldairarrow.Business.TD
             data.TotalAmt = data.OutStorDetails.Sum(s => s.TotalAmt);
             await UpdateAsync(data);
         }
-
+        [DataEditLog(UserLogType.出库管理, "Code", "出库单")]
         public async Task UpdateDataAsync(TD_OutStorage data)
         {
             var curDetail = data.OutStorDetails;
@@ -115,7 +116,7 @@ namespace Coldairarrow.Business.TD
             await UpdateAsync(data);
         }
 
-
+        [DataEditLog(UserLogType.出库管理, "Id", "出库单审批")]
         [Transactional]
         public async Task Approve(AuditDTO audit)
         {
@@ -299,6 +300,7 @@ namespace Coldairarrow.Business.TD
             }
         }
 
+        [DataEditLog(UserLogType.出库管理, "Id", "出库单驳回")]
         public async Task Reject(AuditDTO audit)
         {
             var data = await this.GetEntityAsync(audit.Id);

@@ -68,6 +68,8 @@ namespace Coldairarrow.Business.PB
             return await q.Where(where).Where(idWhere).OrderBy(o => o.Name).Take(search.Take).ToListAsync();
         }
 
+        [DataAddLog(UserLogType.托盘管理, "Code", "托盘")]
+        [DataRepeatAndValidate(new string[] { "TrayTypeId", "Code" }, new string[] { "托盘类型", "编码" })]
         public async Task AddDataAsync(PB_Tray data)
         {
             if (data.Code.IsNullOrEmpty())

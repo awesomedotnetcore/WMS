@@ -115,7 +115,7 @@ namespace Coldairarrow.Business.TD
         }
 
 
-        [DataEditLog(UserLogType.调拨管理, "Id", "调拨单审批通过")]
+        [DataEditLog(UserLogType.调拨管理, "Id", "调拨单审批")]
         [Transactional]
         public async Task Approve(AuditDTO audit)
         {
@@ -365,7 +365,7 @@ namespace Coldairarrow.Business.TD
             }
         }
 
-        [DataEditLog(UserLogType.调拨管理, "Id", "调拨单审批驳回")]
+        [DataEditLog(UserLogType.调拨管理, "Id", "调拨单驳回")]
         public async Task Reject(AuditDTO audit)
         {
             var data = await this.GetEntityAsync(audit.Id);

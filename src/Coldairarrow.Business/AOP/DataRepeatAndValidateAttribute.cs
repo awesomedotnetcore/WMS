@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Coldairarrow.Business
 {
-    public class DataRepeatValidateAttribute : BaseAOPAttribute
+    public class DataRepeatAndValidateAttribute : BaseAOPAttribute
     {
-        public DataRepeatValidateAttribute(string[] validateFields, string[] validateFieldNames, bool allData = false)
+        public DataRepeatAndValidateAttribute(string[] validateFields, string[] validateFieldNames, bool allData = false)
         {
             if (validateFields.Length != validateFieldNames.Length)
                 throw new Exception("校验列与列描述信息不对应!");
@@ -46,7 +46,7 @@ namespace Coldairarrow.Business
                 q = context.InvocationTarget.GetType().GetMethod("GetIQueryable").Invoke(context.InvocationTarget, new object[] { }) as IQueryable;
             q = q.Where("Id != @0", data.GetPropertyValue("Id"));
             q = q.Where(
-                string.Join("||", whereList),
+                string.Join(" && ", whereList),
                 properties.Select(x => data.GetPropertyValue(x.Key)).ToArray());
             var list = q.CastToList<object>();
             if (list.Count > 0)

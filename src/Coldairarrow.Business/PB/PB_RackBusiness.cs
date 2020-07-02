@@ -30,7 +30,7 @@ namespace Coldairarrow.Business.PB
             {
                 search.Keyword = search.Keyword.Trim();
                 //if (!search.Keyword.IsNullOrEmpty())
-                    where = where.And(w => w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
+                where = where.And(w => w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
             }
             return await q.Where(where).GetPageResultAsync(input);
         }
@@ -40,16 +40,22 @@ namespace Coldairarrow.Business.PB
             return await GetEntityAsync(id);
         }
 
+        [DataAddLog(UserLogType.仓库管理, "Name", "货架")]
+        [DataRepeatAndValidate(new string[] { "StorId", "Code" }, new string[] { "仓库", "货架" })]
         public async Task AddDataAsync(PB_Rack data)
         {
             await InsertAsync(data);
         }
 
+        [DataEditLog(UserLogType.仓库管理, "Name", "货架")]
+        [DataRepeatAndValidate(new string[] { "StorId", "Code" }, new string[] { "仓库", "货架" })]
         public async Task UpdateDataAsync(PB_Rack data)
         {
             await UpdateAsync(data);
         }
 
+        [DataDeleteLog(UserLogType.仓库管理, "Name", "货架")]
+        [DataRepeatAndValidate(new string[] { "StorId", "Code" }, new string[] { "仓库", "货架" })]
         public async Task DeleteDataAsync(List<string> ids)
         {
             await DeleteAsync(ids);
