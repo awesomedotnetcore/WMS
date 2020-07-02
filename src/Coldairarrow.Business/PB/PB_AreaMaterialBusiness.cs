@@ -1,4 +1,5 @@
 ﻿using Coldairarrow.Entity.PB;
+using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using EFCore.Sharding;
 using LinqKit;
@@ -57,7 +58,30 @@ namespace Coldairarrow.Business.PB
 
         public async Task AddDataAsync(PB_AreaMaterial data)
         {
-            await InsertAsync(data);
+             await InsertAsync(data);
+        }
+
+        public async Task AddDataAsync(PBAreaMateriaConditionDTO data)
+        {
+            var areaId = data.id;
+            var targetKeys = data.keys;
+
+            var list = await GetDataListAsync(areaId);
+            var amlist = list.Select(t => t.MaterialId).ToList();
+
+            var reault = targetKeys.Except(amlist);
+
+            var addList = new List<PB_AreaMaterial>();
+
+            foreach (var i in reault)
+            {
+                addList.Add(new PB_AreaMaterial()
+                {
+                    AreaId = areaId,
+                    MaterialId = i
+                });
+            }
+            await InsertAsync(addList);
         }
 
         public async Task<int> AddDataAsync(List<PB_AreaMaterial> datas)

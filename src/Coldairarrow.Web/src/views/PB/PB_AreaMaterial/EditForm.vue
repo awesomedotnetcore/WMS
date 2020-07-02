@@ -2,7 +2,7 @@
   <a-modal
     ref="form"    
     :title="title"
-    width="70%"
+    width="45%"
     :visible="visible"
     :confirmLoading="loading"
     @ok="handleSubmit"

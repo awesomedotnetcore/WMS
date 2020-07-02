@@ -67,32 +67,30 @@ namespace Coldairarrow.Api.Controllers.PB
         [HttpPost]
         public async Task SaveDatas(PBAreaMateriaConditionDTO data)
         {
-            var areaId = data.id;
-            var targetKeys = data.keys;
+            //var areaId = data.id;
+            //var targetKeys = data.keys;
 
-            var list = await _pB_AreaMaterialBus.GetDataListAsync(areaId);
-            var addList = new List<PB_AreaMaterial>();
+            //var list = await _pB_AreaMaterialBus.GetDataListAsync(areaId);
+            //var amlist = list.Select(t => t.MaterialId).ToList();
 
-            foreach (var i in targetKeys)
-            {
-                //foreach (var s in list)
-                //{
-                //    if (i == s.MaterialId)
-                //    {
-                //        list.Remove(s);
-                //    }
-                //}
-                addList.Add(new PB_AreaMaterial()
-                {
-                    AreaId = areaId,
-                    MaterialId = i
-                });
-            }
-            var deleteList = list.Select(s => s.MaterialId).ToList();
+            //var reault = targetKeys.Except(amlist);
 
-            await _pB_AreaMaterialBus.DeleteDataAsync(areaId, deleteList);
-            await _pB_AreaMaterialBus.AddDataAsync(addList);
-           
+            //var addList = new List<PB_AreaMaterial>();
+
+            //foreach (var i in reault)
+            //{
+            //    addList.Add(new PB_AreaMaterial()
+            //    {
+            //        AreaId = areaId,
+            //        MaterialId = i
+            //    });
+            //}
+
+            //var deleteList = list.Select(s => s.MaterialId).Distinct().ToList();
+            // await _pB_AreaMaterialBus.DeleteDataAsync(areaId, deleteList);
+
+            await _pB_AreaMaterialBus.AddDataAsync(data);
+
         }
 
         [HttpPost]

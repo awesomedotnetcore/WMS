@@ -1,4 +1,5 @@
 ﻿using Coldairarrow.Entity.PB;
+using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace Coldairarrow.Business.PB
         Task<List<PB_AreaMaterial>> GetDataListAsync(string areaId);
         Task<PB_AreaMaterial> GetTheDataAsync(string id);
         Task AddDataAsync(PB_AreaMaterial data);
+        Task AddDataAsync(PBAreaMateriaConditionDTO data);
         Task UpdateDataAsync(PB_AreaMaterial data);
         
         Task<int> AddDataAsync(List<PB_AreaMaterial> datas);

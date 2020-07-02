@@ -1,7 +1,7 @@
 ﻿<template>
-  <a-drawer title="关联物料清单" placement="right" :closable="true" @close="onDrawerClose" :visible="visible" :width="900" :getContainer="false">
+  <a-drawer title="关联物料清单" placement="right" :closable="true" @close="onDrawerClose" :visible="visible" :width="800" :getContainer="false">
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
+      <a-button type="primary" icon="plus" @click="hanldleAdd()">添加</a-button>
       <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
@@ -31,11 +31,13 @@
     </a-table>
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
+    <material-Choose ref="materialChoose" @onChoose="handleChoose" :parentObj="this" type="checkbox"></material-Choose>
   </a-drawer>
 </template>
 
 <script>
 import EditForm from './EditForm'
+import MaterialChoose from '../../../components/Material/MaterialChoose'
 
 const columns = [
   { title: '物料编码', dataIndex: 'PB_Material.Code', width: '20%' },
@@ -46,7 +48,8 @@ const columns = [
 
 export default {
   components: {
-    EditForm
+    EditForm,
+    MaterialChoose
   },
   mounted() {
   },
@@ -65,10 +68,14 @@ export default {
       queryParam: {},
       selectedRowKeys: [],
       visible: false,
-      ids: []
+      ids: [],
+      targetKeys: [],
     }
   },
   methods: {
+    init() {
+      this.targetKeys = []
+    },
     handleTableChange(pagination, filters, sorter) {
       this.pagination = { ...pagination }
       this.filters = { ...filters }
@@ -103,7 +110,8 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm(this.filters.AreaId, '添加关联物料')
+      this.$refs.materialChoose.openChoose()
+      //this.$refs.editForm.openForm(this.filters.AreaId, '添加关联物料')
     },
     // handleEdit(id) {
     //   this.$refs.editForm.openForm(id)
@@ -136,6 +144,27 @@ export default {
     },
     onDrawerClose() {
       this.visible = false
+    },
+    handleChoose(chooseRows){
+      this.targetKeys = []
+      chooseRows.forEach( row =>{    
+        if(this.targetKeys.indexOf(row.Id)===-1){     
+          this.targetKeys.push(row.Id)
+        }
+        })
+        this.loading = true
+        this.$http.post('/PB/PB_AreaMaterial/SaveDatas', {id:this.filters.AreaId,keys:this.targetKeys}).then(resJson => {
+          this.loading = false
+          if (resJson.Success) {
+            this.$message.success('操作成功!')
+           // this.visible = false
+
+            this.getDataList()
+          } else {
+            this.$message.error(resJson.Msg)
+          }
+        })
+        
     }
   }
 }

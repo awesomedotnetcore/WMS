@@ -108,6 +108,7 @@ export default {
       this.visible = true
     },
     handleChoose() {
+
       this.visible = false
       this.$emit('onChoose', this.selectedRows)
     }
