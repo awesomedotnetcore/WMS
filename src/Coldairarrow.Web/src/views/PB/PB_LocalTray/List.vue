@@ -34,7 +34,7 @@
       size="small"
     >
       <template slot="Type" slot-scope="text">
-        <enum-name code="	LocationType" :value="text"></enum-name>
+        <enum-name code="	StorAreaType" :value="text"></enum-name>
       </template>
 
       <span slot="action" slot-scope="text, record">
@@ -47,6 +47,7 @@
     </a-table>
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
+    <location-Choose ref="locationChoose" @onChoose="handleChoose" :parentObj="this" type="checkbox"></location-Choose>
   </a-card>
 </a-drawer>
 </template>
@@ -54,11 +55,13 @@
 <script>
 import EditForm from './EditForm'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
+import LocationChoose from '../../../components/Location/LocationChoose'
 
 const columns = [
-  { title: '货位编号', dataIndex: 'PB_Location.Code', width: '20%' },
-  { title: '货位名称', dataIndex: 'PB_Location.Name', width: '20%' },
-  { title: '货位类型', dataIndex: 'PB_Location.Type', width: '10%' , scopedSlots: { customRender: 'Type' } },
+  { title: '货位编号', dataIndex: 'PB_Location.Code'},
+  { title: '货位名称', dataIndex: 'PB_Location.Name'},  
+  { title: '货区', dataIndex: 'PB_Location.PB_StorArea.Name' },//, scopedSlots: { customRender: 'Type' }
+  { title: '仓库', dataIndex: 'PB_Location.PB_Storage.Name' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
@@ -66,6 +69,7 @@ export default {
   components: {
     EditForm,
     EnumName, 
+    LocationChoose
   },
   mounted() {
     this.getDataList()
@@ -125,7 +129,7 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm(this.typeId,"添加关联货位")
+      this.$refs.locationChoose.openChoose()
     },
     // handleEdit(id) {
     //   this.$refs.editForm.openForm(id)
@@ -160,6 +164,24 @@ export default {
     },
     onDrawerClose() {
       this.visible = false
+    },
+    handleChoose(chooseRows){
+      this.targetKeys = []
+      chooseRows.forEach( row =>{    
+        if(this.targetKeys.indexOf(row.Id)===-1){     
+          this.targetKeys.push(row.Id)
+        }
+        })
+        this.loading = true
+        this.$http.post('/PB/PB_LocalTray/SaveDatas', {id:this.typeId,keys:this.targetKeys}).then(resJson => {
+          this.loading = false
+          if (resJson.Success) {
+            this.$message.success('操作成功!')
+            this.getDataList()
+          } else {
+            this.$message.error(resJson.Msg)
+          }
+        })        
     }
   }
 }

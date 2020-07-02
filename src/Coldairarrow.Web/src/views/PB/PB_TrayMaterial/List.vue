@@ -41,7 +41,7 @@
       </a-table>
 
       <edit-form ref="editForm" :parentObj="this"></edit-form>
-       <material-Choose ref="materialChoose" @onChoose="handleChoose" :parentObj="this" type="checkbox"></material-Choose>
+      <material-Choose ref="materialChoose" @onChoose="handleChoose" :parentObj="this" type="checkbox"></material-Choose>
     </a-card>
   </a-drawer>
 </template>

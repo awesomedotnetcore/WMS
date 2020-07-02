@@ -1,4 +1,5 @@
 ﻿using Coldairarrow.Entity.PB;
+using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using EFCore.Sharding;
 using LinqKit;
@@ -23,7 +24,10 @@ namespace Coldairarrow.Business.PB
         {
             var q = GetIQueryable();
             var search = input.Search;
-            q = q.Include(i => i.PB_Location);
+            q = q.Include(i => i.PB_Location)
+                    .ThenInclude(i=> i.PB_StorArea)
+                .Include(i => i.PB_Location)
+                    .ThenInclude(i => i.PB_Storage);
 
             //筛选
             if (!search.Keyword.IsNullOrEmpty())
@@ -58,6 +62,32 @@ namespace Coldairarrow.Business.PB
         public async Task AddDataAsync(PB_LocalTray data)
         {
             await InsertAsync(data);
+        }
+
+        public async Task AddDataAsync(PBLocalTrayConditionDTO data)
+        {
+            var typeId = data.id;
+            var targetKeys = data.keys;
+
+            var list = await GetDataListAsync(typeId);
+            var addList = new List<PB_LocalTray>();
+
+            foreach (var i in targetKeys)
+            {
+                foreach (var s in list)
+                {
+                    if (i == s.LocalId)
+                    {
+                        list.Remove(s);
+                    }
+                }
+                addList.Add(new PB_LocalTray()
+                {
+                    TrayTypeId = typeId,
+                    LocalId = i
+                });
+            }
+            await InsertAsync(addList);
         }
 
         public async Task<int> AddDataAsync(List<PB_LocalTray> datas)

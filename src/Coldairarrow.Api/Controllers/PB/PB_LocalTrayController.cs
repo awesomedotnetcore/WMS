@@ -56,31 +56,7 @@ namespace Coldairarrow.Api.Controllers.PB
         [HttpPost]
         public async Task SaveDatas(PBLocalTrayConditionDTO data)
         {
-            var typeId = data.id;
-            var targetKeys = data.keys;
-
-            var list = await _pB_LocalTrayBus.GetDataListAsync(typeId);
-            var addList = new List<PB_LocalTray>();
-
-            foreach (var i in targetKeys)
-            {
-                foreach (var s in list)
-                {
-                    if (i == s.LocalId)
-                    {
-                        list.Remove(s);
-                    }
-                }
-                addList.Add(new PB_LocalTray()
-                {
-                    TrayTypeId = typeId,
-                    LocalId = i
-                });
-            }
-            var deleteList = list.Select(s => s.LocalId).ToList();
-
-            await _pB_LocalTrayBus.AddDataAsync(addList);
-            await _pB_LocalTrayBus.DeleteDataAsync(typeId, deleteList);
+            await _pB_LocalTrayBus.AddDataAsync(data);
         }
 
         [HttpPost]
