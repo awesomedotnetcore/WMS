@@ -46,7 +46,7 @@ namespace Coldairarrow.Business
                 q = context.InvocationTarget.GetType().GetMethod("GetIQueryable").Invoke(context.InvocationTarget, new object[] { }) as IQueryable;
             q = q.Where("Id != @0", data.GetPropertyValue("Id"));
             q = q.Where(
-                string.Join("||", whereList),
+                string.Join(" && ", whereList),
                 properties.Select(x => data.GetPropertyValue(x.Key)).ToArray());
             var list = q.CastToList<object>();
             if (list.Count > 0)
