@@ -13,7 +13,7 @@
               <a-input v-model="queryParam.MaterialName" placeholder="物料/批次/条码" />
             </a-form-item>
           </a-col>
-          <a-col :md="4" :sm="24">
+          <a-col :md="6" :sm="24">
             <a-row>
               <a-col :span="12">
                 <a-form-item label="少于预警">
