@@ -76,8 +76,9 @@
 
       <span slot="action" slot-scope="text, record">
         <template>
-          <a v-if="hasPerm('TD_OutStorage.Auditing') || record.Status === 1" @click="handleAudite(record.Id)">{{ record.Status === 0?'审核':'查看' }}</a>
-          <a-divider v-if="record.Status===0 && hasPerm('TD_OutStorage.Auditing')" type="vertical" />
+          <a @click="handleAudite(record.Id)">查看</a>
+          <!-- {{ record.Status === 0?'审核':'查看' }} -->
+          <a-divider v-if="record.Status===0 && hasPerm('TD_OutStorage.Edit')" type="vertical" />
           <a v-if="record.Status===0 && hasPerm('TD_OutStorage.Edit')" @click="handleEdit(record.Id)">编辑</a>
           <a-divider v-if="record.Status===0 && hasPerm('TD_OutStorage.Delete')" type="vertical" />
           <a v-if="record.Status===0 && hasPerm('TD_OutStorage.Delete')" @click="handleDelete([record.Id])">删除</a>          
