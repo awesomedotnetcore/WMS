@@ -1,5 +1,6 @@
 ﻿using Coldairarrow.Business.PB;
 using Coldairarrow.Entity.PB;
+using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -61,32 +62,37 @@ namespace Coldairarrow.Api.Controllers.PB
             //}
             await _pB_TrayMaterialBus.AddDataAsync(data);
         }
-
+        
         [HttpPost]
-        public async Task SaveDatas(string typeId, List<string> targetKeys)
-        {
-            var list = await _pB_TrayMaterialBus.GetDataListAsync(typeId);
-            var addList = new List<PB_TrayMaterial>();
+        public async Task SaveDatas(PBTrayMateriaConditionDTO data)
+        {           
+            await _pB_TrayMaterialBus.AddDataAsync(data);
 
-            foreach (var i in targetKeys)
-            {
-                foreach(var s in list)
-                {
-                    if(i == s.MaterialId)
-                    {
-                        list.Remove(s);
-                    }
-                }
-                addList.Add(new PB_TrayMaterial() { 
-                    TrayTypeId = typeId,
-                    MaterialId = i
-                });
-            }
-            var deleteList = list.Select(s => s.MaterialId).ToList();
-
-            await _pB_TrayMaterialBus.AddDataAsync(addList);
-            await _pB_TrayMaterialBus.DeleteDataAsync(typeId, deleteList);
         }
+        //public async Task SaveDatas(string typeId, List<string> targetKeys)
+        //{
+        //    var list = await _pB_TrayMaterialBus.GetDataListAsync(typeId);
+        //    var addList = new List<PB_TrayMaterial>();
+
+        //    foreach (var i in targetKeys)
+        //    {
+        //        foreach(var s in list)
+        //        {
+        //            if(i == s.MaterialId)
+        //            {
+        //                list.Remove(s);
+        //            }
+        //        }
+        //        addList.Add(new PB_TrayMaterial() { 
+        //            TrayTypeId = typeId,
+        //            MaterialId = i
+        //        });
+        //    }
+        //    var deleteList = list.Select(s => s.MaterialId).ToList();
+
+        //    await _pB_TrayMaterialBus.AddDataAsync(addList);
+        //    //await _pB_TrayMaterialBus.DeleteDataAsync(typeId, deleteList);
+        //}
 
         [HttpPost]
         public async Task DeleteData(string trayTypeId, List<string> materialIds)

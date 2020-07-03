@@ -10,7 +10,7 @@
   >
     <a-card :bordered="false">
       <div class="table-operator">
-        <a-button type="primary" icon="plus" @click="hanldleAdd()">编辑</a-button>
+        <a-button type="primary" icon="plus" @click="hanldleAdd()">添加</a-button>
         <a-button
           type="primary"
           icon="minus"
@@ -41,12 +41,14 @@
       </a-table>
 
       <edit-form ref="editForm" :parentObj="this"></edit-form>
+      <material-Choose ref="materialChoose" @onChoose="handleChoose" :parentObj="this" type="checkbox"></material-Choose>
     </a-card>
   </a-drawer>
 </template>
 
 <script>
 import EditForm from './EditForm'
+import MaterialChoose from '../../../components/Material/MaterialChoose'
 
 const columns = [
   { title: '物料编码', dataIndex: 'PB_Material.Code', width: '25%' },
@@ -57,7 +59,8 @@ const columns = [
 
 export default {
   components: {
-    EditForm
+    EditForm,
+    MaterialChoose
   },
   mounted() {},
   data() {
@@ -115,7 +118,8 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm(this.typeId,"新增关联物料")
+      this.$refs.materialChoose.openChoose()
+      //this.$refs.editForm.openForm(this.typeId,"新增关联物料")
     },
     handleDelete(ids) {
       this.ids = ids
@@ -149,6 +153,24 @@ export default {
     },
     onDrawerClose() {
       this.visible = false
+    },
+    handleChoose(chooseRows){
+      this.targetKeys = []
+      chooseRows.forEach( row =>{    
+        if(this.targetKeys.indexOf(row.Id)===-1){     
+          this.targetKeys.push(row.Id)
+        }
+        })
+        this.loading = true
+        this.$http.post('/PB/PB_TrayMaterial/SaveDatas', {id:this.typeId,keys:this.targetKeys}).then(resJson => {
+          this.loading = false
+          if (resJson.Success) {
+            this.$message.success('操作成功!')
+            this.getDataList()
+          } else {
+            this.$message.error(resJson.Msg)
+          }
+        })        
     }
   }
 }
