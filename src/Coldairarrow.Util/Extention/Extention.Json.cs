@@ -17,6 +17,7 @@ namespace Coldairarrow.Util
         {
             ContractResolver = new DefaultContractResolver(),
             DateFormatHandling = DateFormatHandling.MicrosoftDateFormat,
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             DateFormatString = "yyyy-MM-dd HH:mm:ss.fff"
         };
 
