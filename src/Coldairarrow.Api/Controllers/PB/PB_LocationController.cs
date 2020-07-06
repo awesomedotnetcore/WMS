@@ -220,10 +220,10 @@ namespace Coldairarrow.Api.Controllers.PB
                     var dicArea = _pB_LocationBus.GetQueryable<PB_StorArea>().Where(w => listAreaCodes.Contains(w.Code)).ToDictionary(k => k.Code, v => v.Id);
 
 
-                    var listLanewayCodes = Data.Select(s => s.LanewayId).Distinct().ToList();
+                    var listLanewayCodes = Data.Select(s => s.LanewayId).Select(s => s.Trim()).Distinct().ToList();
                     var dicLaneway = _pB_LocationBus.GetQueryable<PB_Laneway>().Where(w => listLanewayCodes.Contains(w.Code)).ToDictionary(k => k.Code, v => v.Id);
 
-                    var listRackCodes = Data.Select(s => s.RackId).Distinct().ToList();
+                    var listRackCodes = Data.Select(s => s.RackId).Select(s => s.Trim()).Distinct().ToList();
                     var dicRack = _pB_LocationBus.GetQueryable<PB_Rack>().Where(w => listRackCodes.Contains(w.Code)).ToDictionary(k => k.Code, v => v.Id);
 
                     foreach (var item in Data)
