@@ -60,18 +60,6 @@ namespace Coldairarrow.Util
             }
         }
 
-        /// <summary>
-        /// 将对象序列化成Json字符串
-        /// </summary>
-        /// <param name="obj">需要序列化的对象</param>
-        /// <returns></returns>
-        public static string ToJson(this object obj)
-        {
-            var setting = new JsonSerializerSettings();
-            setting.ContractResolver = new DefaultContractResolver();
-            setting.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-            return JsonConvert.SerializeObject(obj, setting);
-        }
 
         /// <summary>
         /// 实体类转json数据，速度快

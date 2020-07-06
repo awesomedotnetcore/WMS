@@ -19,9 +19,9 @@ Date: 2020-04-19 15:03:39
 -- Table structure for Base_Action
 -- ----------------------------
 CREATE TABLE [Base_Action] (
-[Id] varchar(50) NOT NULL ,
+[Id] nvarchar(50) NOT NULL ,
 [CreateTime] datetime NOT NULL ,
-[CreatorId] varchar(50) NULL ,
+[CreatorId] nvarchar(50) NULL ,
 [Deleted] bit NOT NULL DEFAULT ('false') ,
 [ParentId] nvarchar(50) NULL ,
 [Type] int NOT NULL DEFAULT ((0)) ,
@@ -221,7 +221,7 @@ GO
 -- ----------------------------
 BEGIN TRANSACTION
 GO
-INSERT INTO [Base_Action] ([Id], [CreateTime], [CreatorId], [Deleted], [ParentId], [Type], [Name], [Url], [Value], [NeedAction], [Icon], [Sort]) VALUES (N'1178957405992521728', N'2019-10-01 16:58:44.000', null, N'0', null, N'0', N'系统管理', N'', null, N'1', N'setting', N'1'), (N'1178957553778823168', N'2019-10-01 16:59:19.000', null, N'0', N'1178957405992521728', N'1', N'权限管理', N'/Base_Manage/Base_Action/List', null, N'1', null, N'20'), (N'1179018395304071168', N'2019-10-01 21:01:05.000', null, N'0', N'1178957405992521728', N'1', N'密钥管理', N'/Base_Manage/Base_AppSecret/List', null, N'1', null, N'15'), (N'1182652266117599232', N'2019-10-11 21:40:47.000', null, N'0', N'1178957405992521728', N'1', N'用户管理', N'/Base_Manage/Base_User/List', null, N'1', null, N'0'), (N'1182652367447789568', N'2019-10-11 21:41:11.000', null, N'0', N'1178957405992521728', N'1', N'角色管理', N'/Base_Manage/Base_Role/List', null, N'1', null, N'5'), (N'1182652433302556672', N'2019-10-11 21:41:27.000', null, N'0', N'1178957405992521728', N'1', N'部门管理', N'/Base_Manage/Base_Department/List', null, N'1', null, N'10'), , (N'1188801057778569216', N'2019-10-28 20:53:53.687', null, N'0', N'1182652367447789568', N'2', N'增', null, N'Base_Role.Add', N'1', null, N'0'), (N'1188801057778569217', N'2019-10-28 20:53:53.687', null, N'0', N'1182652367447789568', N'2', N'改', null, N'Base_Role.Edit', N'1', null, N'0'), (N'1188801057778569218', N'2019-10-28 20:53:53.687', null, N'0', N'1182652367447789568', N'2', N'删', null, N'Base_Role.Delete', N'1', null, N'0'), (N'1188801109783744512', N'2019-10-28 20:54:06.087', null, N'0', N'1182652433302556672', N'2', N'增', null, N'Base_Department.Add', N'1', null, N'0'), (N'1188801109783744513', N'2019-10-28 20:54:06.087', null, N'0', N'1182652433302556672', N'2', N'改', null, N'Base_Department.Edit', N'1', null, N'0'), (N'1188801109783744514', N'2019-10-28 20:54:06.087', null, N'0', N'1182652433302556672', N'2', N'删', null, N'Base_Department.Delete', N'1', null, N'0'), (N'1188801273885888512', N'2019-10-28 20:54:45.213', null, N'0', N'1179018395304071168', N'2', N'增', null, N'Base_AppSecret.Add', N'1', null, N'0'), (N'1188801273885888513', N'2019-10-28 20:54:45.213', null, N'0', N'1179018395304071168', N'2', N'改', null, N'Base_AppSecret.Edit', N'1', null, N'0'), (N'1188801273885888514', N'2019-10-28 20:54:45.213', null, N'0', N'1179018395304071168', N'2', N'删', null, N'Base_AppSecret.Delete', N'1', null, N'0'), (N'1188801341661646848', N'2019-10-28 20:55:01.370', null, N'0', N'1178957553778823168', N'2', N'增', null, N'Base_Action.Add', N'1', null, N'0'), (N'1188801341661646849', N'2019-10-28 20:55:01.370', null, N'0', N'1178957553778823168', N'2', N'改', null, N'Base_Action.Edit', N'1', null, N'0'), (N'1188801341661646850', N'2019-10-28 20:55:01.370', null, N'0', N'1178957553778823168', N'2', N'删', null, N'Base_Action.Delete', N'1', null, N'0'), (N'1193158266167758848', N'2019-11-09 21:27:53.000', N'Admin', N'0', null, N'0', N'首页', null, null, N'1', N'home', N'0'), (N'1193158630615027712', N'2019-11-09 21:29:20.013', N'Admin', N'0', N'1193158266167758848', N'1', N'框架介绍', N'/Home/Introduce', null, N'0', null, N'0'), (N'1193158780011941888', N'2019-11-09 21:29:55.630', N'Admin', N'0', N'1193158266167758848', N'1', N'运营统计', N'/Home/Statis', null, N'0', null, N'0'), (N'1193527101521661952', N'2019-11-10 21:53:30.320', null, N'0', N'1182652266117599232', N'2', N'增', null, N'Base_User.Add', N'1', null, N'0'), (N'1193527101521661953', N'2019-11-10 21:53:30.320', null, N'0', N'1182652266117599232', N'2', N'改', null, N'Base_User.Edit', N'1', null, N'0'), (N'1193527101521661954', N'2019-11-10 21:53:30.320', null, N'0', N'1182652266117599232', N'2', N'删', null, N'Base_User.Delete', N'1', null, N'0'), (N'1248570020770877440', N'2020-04-10 19:14:24.000', N'Admin', N'0', N'1178957405992521728', N'1', N'操作日志', N'/Base_Manage/Base_UserLog/List', null, N'0', null, N'22')
+INSERT INTO [Base_Action] ([Id], [CreateTime], [CreatorId], [Deleted], [ParentId], [Type], [Name], [Url], [Value], [NeedAction], [Icon], [Sort]) VALUES (N'1178957405992521728', N'2019-10-01 16:58:44.000', null, N'0', null, N'0', N'系统管理', N'', null, N'1', N'setting', N'1'), (N'1178957553778823168', N'2019-10-01 16:59:19.000', null, N'0', N'1178957405992521728', N'1', N'权限管理', N'/Base_Manage/Base_Action/List', null, N'1', null, N'20'), (N'1179018395304071168', N'2019-10-01 21:01:05.000', null, N'0', N'1178957405992521728', N'1', N'密钥管理', N'/Base_Manage/Base_AppSecret/List', null, N'1', null, N'15'), (N'1182652266117599232', N'2019-10-11 21:40:47.000', null, N'0', N'1178957405992521728', N'1', N'用户管理', N'/Base_Manage/Base_User/List', null, N'1', null, N'0'), (N'1182652367447789568', N'2019-10-11 21:41:11.000', null, N'0', N'1178957405992521728', N'1', N'角色管理', N'/Base_Manage/Base_Role/List', null, N'1', null, N'5'), (N'1182652433302556672', N'2019-10-11 21:41:27.000', null, N'0', N'1178957405992521728', N'1', N'部门管理', N'/Base_Manage/Base_Department/List', null, N'1', null, N'10'),  (N'1188801057778569216', N'2019-10-28 20:53:53.687', null, N'0', N'1182652367447789568', N'2', N'增', null, N'Base_Role.Add', N'1', null, N'0'), (N'1188801057778569217', N'2019-10-28 20:53:53.687', null, N'0', N'1182652367447789568', N'2', N'改', null, N'Base_Role.Edit', N'1', null, N'0'), (N'1188801057778569218', N'2019-10-28 20:53:53.687', null, N'0', N'1182652367447789568', N'2', N'删', null, N'Base_Role.Delete', N'1', null, N'0'), (N'1188801109783744512', N'2019-10-28 20:54:06.087', null, N'0', N'1182652433302556672', N'2', N'增', null, N'Base_Department.Add', N'1', null, N'0'), (N'1188801109783744513', N'2019-10-28 20:54:06.087', null, N'0', N'1182652433302556672', N'2', N'改', null, N'Base_Department.Edit', N'1', null, N'0'), (N'1188801109783744514', N'2019-10-28 20:54:06.087', null, N'0', N'1182652433302556672', N'2', N'删', null, N'Base_Department.Delete', N'1', null, N'0'), (N'1188801273885888512', N'2019-10-28 20:54:45.213', null, N'0', N'1179018395304071168', N'2', N'增', null, N'Base_AppSecret.Add', N'1', null, N'0'), (N'1188801273885888513', N'2019-10-28 20:54:45.213', null, N'0', N'1179018395304071168', N'2', N'改', null, N'Base_AppSecret.Edit', N'1', null, N'0'), (N'1188801273885888514', N'2019-10-28 20:54:45.213', null, N'0', N'1179018395304071168', N'2', N'删', null, N'Base_AppSecret.Delete', N'1', null, N'0'), (N'1188801341661646848', N'2019-10-28 20:55:01.370', null, N'0', N'1178957553778823168', N'2', N'增', null, N'Base_Action.Add', N'1', null, N'0'), (N'1188801341661646849', N'2019-10-28 20:55:01.370', null, N'0', N'1178957553778823168', N'2', N'改', null, N'Base_Action.Edit', N'1', null, N'0'), (N'1188801341661646850', N'2019-10-28 20:55:01.370', null, N'0', N'1178957553778823168', N'2', N'删', null, N'Base_Action.Delete', N'1', null, N'0'), (N'1193158266167758848', N'2019-11-09 21:27:53.000', N'Admin', N'0', null, N'0', N'首页', null, null, N'1', N'home', N'0'), (N'1193158630615027712', N'2019-11-09 21:29:20.013', N'Admin', N'0', N'1193158266167758848', N'1', N'框架介绍', N'/Home/Introduce', null, N'0', null, N'0'), (N'1193158780011941888', N'2019-11-09 21:29:55.630', N'Admin', N'0', N'1193158266167758848', N'1', N'运营统计', N'/Home/Statis', null, N'0', null, N'0'), (N'1193527101521661952', N'2019-11-10 21:53:30.320', null, N'0', N'1182652266117599232', N'2', N'增', null, N'Base_User.Add', N'1', null, N'0'), (N'1193527101521661953', N'2019-11-10 21:53:30.320', null, N'0', N'1182652266117599232', N'2', N'改', null, N'Base_User.Edit', N'1', null, N'0'), (N'1193527101521661954', N'2019-11-10 21:53:30.320', null, N'0', N'1182652266117599232', N'2', N'删', null, N'Base_User.Delete', N'1', null, N'0'), (N'1248570020770877440', N'2020-04-10 19:14:24.000', N'Admin', N'0', N'1178957405992521728', N'1', N'操作日志', N'/Base_Manage/Base_UserLog/List', null, N'0', null, N'22')
 GO
 GO
 COMMIT TRANSACTION
@@ -231,13 +231,13 @@ GO
 -- Table structure for Base_AppSecret
 -- ----------------------------
 CREATE TABLE [Base_AppSecret] (
-[Id] varchar(50) NOT NULL ,
+[Id] nvarchar(50) NOT NULL ,
 [CreateTime] datetime NOT NULL ,
-[CreatorId] varchar(50) NULL ,
+[CreatorId] nvarchar(50) NULL ,
 [Deleted] bit NOT NULL DEFAULT ('false') ,
-[AppId] varchar(50) NULL ,
-[AppSecret] varchar(50) NULL ,
-[AppName] varchar(50) NULL 
+[AppId] nvarchar(50) NULL ,
+[AppSecret] nvarchar(50) NULL ,
+[AppName] nvarchar(50) NULL 
 )
 
 
@@ -368,15 +368,15 @@ GO
 -- Table structure for Base_BuildTest
 -- ----------------------------
 CREATE TABLE [Base_BuildTest] (
-[Id] varchar(50) NOT NULL ,
+[Id] nvarchar(50) NOT NULL ,
 [CreateTime] datetime NOT NULL ,
-[CreatorId] varchar(50) NULL ,
+[CreatorId] nvarchar(50) NULL ,
 [Deleted] bit NOT NULL DEFAULT ('false') ,
-[Column1] varchar(50) NULL ,
-[Column2] varchar(50) NULL ,
-[Column3] varchar(50) NULL ,
-[Column4] varchar(50) NULL ,
-[Column5] varchar(50) NULL 
+[Column1] nvarchar(50) NULL ,
+[Column2] nvarchar(50) NULL ,
+[Column3] nvarchar(50) NULL ,
+[Column4] nvarchar(50) NULL ,
+[Column5] nvarchar(50) NULL 
 )
 
 
@@ -535,13 +535,13 @@ GO
 -- Table structure for Base_DbLink
 -- ----------------------------
 CREATE TABLE [Base_DbLink] (
-[Id] varchar(50) NOT NULL ,
+[Id] nvarchar(50) NOT NULL ,
 [CreateTime] datetime NOT NULL ,
-[CreatorId] varchar(50) NULL ,
+[CreatorId] nvarchar(50) NULL ,
 [Deleted] bit NOT NULL DEFAULT ('false') ,
-[LinkName] varchar(50) NULL ,
-[ConnectionStr] varchar(500) NULL ,
-[DbType] varchar(50) NULL 
+[LinkName] nvarchar(50) NULL ,
+[ConnectionStr] nvarchar(500) NULL ,
+[DbType] nvarchar(50) NULL 
 )
 
 
@@ -672,12 +672,12 @@ GO
 -- Table structure for Base_Department
 -- ----------------------------
 CREATE TABLE [Base_Department] (
-[Id] varchar(50) NOT NULL ,
+[Id] nvarchar(50) NOT NULL ,
 [CreateTime] datetime NOT NULL ,
-[CreatorId] varchar(50) NULL ,
+[CreatorId] nvarchar(50) NULL ,
 [Deleted] bit NOT NULL DEFAULT ('false') ,
-[Name] varchar(50) NULL ,
-[ParentId] varchar(50) NULL 
+[Name] nvarchar(50) NULL ,
+[ParentId] nvarchar(50) NULL 
 )
 
 
@@ -794,9 +794,9 @@ GO
 -- Table structure for Base_Role
 -- ----------------------------
 CREATE TABLE [Base_Role] (
-[Id] varchar(50) NOT NULL ,
+[Id] nvarchar(50) NOT NULL ,
 [CreateTime] datetime NOT NULL ,
-[CreatorId] varchar(50) NULL ,
+[CreatorId] nvarchar(50) NULL ,
 [Deleted] bit NOT NULL DEFAULT ('false') ,
 [RoleName] nvarchar(50) NULL 
 )
@@ -901,12 +901,12 @@ GO
 -- Table structure for Base_RoleAction
 -- ----------------------------
 CREATE TABLE [Base_RoleAction] (
-[Id] varchar(50) NOT NULL ,
+[Id] nvarchar(50) NOT NULL ,
 [CreateTime] datetime NOT NULL ,
-[CreatorId] varchar(50) NULL ,
+[CreatorId] nvarchar(50) NULL ,
 [Deleted] bit NOT NULL DEFAULT ('false') ,
-[RoleId] varchar(50) NULL ,
-[ActionId] varchar(50) NULL 
+[RoleId] nvarchar(50) NULL ,
+[ActionId] nvarchar(50) NULL 
 )
 
 
@@ -1023,16 +1023,16 @@ GO
 -- Table structure for Base_User
 -- ----------------------------
 CREATE TABLE [Base_User] (
-[Id] varchar(50) NOT NULL ,
+[Id] nvarchar(50) NOT NULL ,
 [CreateTime] datetime NOT NULL ,
-[CreatorId] varchar(50) NULL ,
+[CreatorId] nvarchar(50) NULL ,
 [Deleted] bit NOT NULL DEFAULT ('false') ,
-[UserName] varchar(50) NULL ,
-[Password] varchar(50) NULL ,
+[UserName] nvarchar(50) NULL ,
+[Password] nvarchar(50) NULL ,
 [RealName] nvarchar(50) NULL ,
 [Sex] int NOT NULL DEFAULT ((0)) ,
 [Birthday] date NULL ,
-[DepartmentId] varchar(50) NULL 
+[DepartmentId] nvarchar(50) NULL 
 )
 
 
@@ -1205,12 +1205,12 @@ GO
 -- Table structure for Base_UserLog
 -- ----------------------------
 CREATE TABLE [Base_UserLog] (
-[Id] varchar(50) NOT NULL ,
+[Id] nvarchar(50) NOT NULL ,
 [CreateTime] datetime NOT NULL ,
-[CreatorId] varchar(50) NULL ,
+[CreatorId] nvarchar(50) NULL ,
 [CreatorRealName] nvarchar(50) NULL ,
-[LogType] varchar(50) NULL ,
-[LogContent] varchar(MAX) NULL 
+[LogType] nvarchar(50) NULL ,
+[LogContent] nvarchar(MAX) NULL 
 )
 
 
@@ -1324,12 +1324,12 @@ GO
 -- Table structure for Base_UserRole
 -- ----------------------------
 CREATE TABLE [Base_UserRole] (
-[Id] varchar(50) NOT NULL ,
+[Id] nvarchar(50) NOT NULL ,
 [CreateTime] datetime NOT NULL ,
-[CreatorId] varchar(50) NULL ,
+[CreatorId] nvarchar(50) NULL ,
 [Deleted] bit NOT NULL DEFAULT ('false') ,
-[UserId] varchar(50) NULL ,
-[RoleId] varchar(50) NULL 
+[UserId] nvarchar(50) NULL ,
+[RoleId] nvarchar(50) NULL 
 )
 
 
