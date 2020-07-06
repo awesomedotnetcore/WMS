@@ -10,7 +10,7 @@
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.MaterialName" placeholder="物料/批次/条码" />
+              <a-input v-model="queryParam.MaterialName" placeholder="物料/条码" />
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
