@@ -35,7 +35,7 @@
           </a-col>
         </a-row>
         <a-row :gutter="20">
-          <a-col :md="10" :sm="24">
+          <a-col :md="11" :sm="24">
             <a-form-item label="时间">
               <a-date-picker v-model="queryParam.startTime" showTime format="YYYY-MM-DD HH:mm:ss" />~
               <a-date-picker v-model="queryParam.endTime" showTime format="YYYY-MM-DD HH:mm:ss" />

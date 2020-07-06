@@ -51,7 +51,7 @@ export default {
     },
     openForm(id, title) {
       this.init()
-
+      this.title = title
       if (id) {
         this.loading = true
         this.$http.post('/Base/Base_Enum/GetTheData', { id: id }).then(resJson => {

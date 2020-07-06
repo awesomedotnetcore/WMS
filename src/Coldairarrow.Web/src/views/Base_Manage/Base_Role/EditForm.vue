@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    title="编辑表单"
+    :title="title"
     width="40%"
     :visible="visible"
     :confirmLoading="confirmLoading"
@@ -76,9 +76,9 @@ export default {
         }
       })
     },
-    openForm(id) {
+    openForm(id,title) {
       this.init()
-
+      this.title = title
       if (id) {
         this.$http.post('/Base_Manage/Base_Role/GetTheData', { id: id }).then(resJson => {
           this.entity = resJson.Data

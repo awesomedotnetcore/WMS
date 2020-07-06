@@ -43,7 +43,7 @@
         </template>
       </span>
 
-      <span slot="Val" slot-scope="text, record">
+      <!-- <span slot="Val" slot-scope="text, record">
         <template>
           <a-tag v-if="record.Val==='0'" color="red">
           停用
@@ -52,7 +52,7 @@
           启用
           </a-tag>
         </template>
-      </span>
+      </span> -->
       
       <span slot="action" slot-scope="text, record">
         <template>
@@ -80,7 +80,7 @@ const columns = [
   { title: '参数类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
   { title: '参数编号', dataIndex: 'Code', width: '20%' },
   { title: '参数名称', dataIndex: 'Name', width: '15%' },
-  { title: '参数值', dataIndex: 'Val', width: '6%',  scopedSlots: { customRender: 'Val' } },
+  { title: '参数值', dataIndex: 'Val', width: '6%'},
   { title: '描述', dataIndex: 'Remarks', width: '25%' },
   { title: '系统必须', dataIndex: 'IsSystem', width: '8%',  scopedSlots: { customRender: 'IsSystem' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
@@ -145,10 +145,10 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm()
+      this.$refs.editForm.openForm(null,"新增")
     },
     handleEdit(id) {
-      this.$refs.editForm.openForm(id)
+      this.$refs.editForm.openForm(id,"编辑")
     },
     handleDelete(ids) {
       var thisObj = this

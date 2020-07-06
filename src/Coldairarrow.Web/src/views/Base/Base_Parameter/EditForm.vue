@@ -20,15 +20,15 @@
           <a-input v-model="entity.Name" autocomplete="off" />
         </a-form-model-item>
         <a-form-model-item label="参数值" prop="Val">
-          <a-radio-group v-model="entity.Val" button-style="solid">
+          <!-- <a-radio-group v-model="entity.Val" button-style="solid">
               <a-radio-button value="1">
                 启用
               </a-radio-button>
               <a-radio-button value="0">
                 停用
               </a-radio-button>
-            </a-radio-group>
-          <!-- <a-input v-model="entity.Val" autocomplete="off" /> -->
+            </a-radio-group> -->
+          <a-input v-model="entity.Val" autocomplete="off" />
         </a-form-model-item> 
         <a-form-model-item label="描述" prop="Remarks">
           <a-textarea v-model="entity.Remarks" autocomplete="off" />
@@ -83,7 +83,7 @@ export default {
     },
     openForm(id, title) {
       this.init()
-
+      this.title = title
       if (id) {
         this.loading = true
         this.$http.post('/Base/Base_Parameter/GetTheData', { id: id }).then(resJson => {
