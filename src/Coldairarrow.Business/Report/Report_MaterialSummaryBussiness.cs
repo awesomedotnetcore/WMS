@@ -28,15 +28,15 @@ namespace Coldairarrow.Business.IT
         {
             var search = input.Search;
             var mQuery = from lm in Db.GetIQueryable<IT_LocalMaterial>()
-                         group lm by lm.MaterialId into g
-                         select new { MaterialId = g.Key, SumCount = g.Sum(p => p.Num) } into lms
+                         group lm by new { lm.MaterialId,lm.BatchNo } into g
+                         select new { MaterialId = g.Key.MaterialId,BatchNo=g.Key.BatchNo, SumCount = g.Sum(p => p.Num) } into lms
                          join m in Db.GetIQueryable<PB_Material>() on lms.MaterialId equals m.Id
                          join mt in Db.GetIQueryable<PB_MaterialType>() on m.MaterialTypeId equals mt.Id
-                         join me in Db.GetIQueryable<PB_Measure>() on m.MeasureId equals me.Id
+                         join me in Db.GetIQueryable<PB_Measure>() on m.MeasureId equals me.Id                         
                          select new Report_MaterialSummaryVM
                          {
                              Id = m.Id,
-                             Name = m.Name,
+                             Name = m.Name,                         
                              Code = m.Code,
                              BarCode = m.BarCode,
                              SimpleName = m.SimpleName,
@@ -47,7 +47,8 @@ namespace Coldairarrow.Business.IT
                              Max = m.Max,
                              Min = m.Min,
                              Price = m.Price,
-                             SumCount = lms.SumCount
+                             SumCount = lms.SumCount,
+                             BatchNo = lms.BatchNo,
                          };
             if (!search.MaterialTypeId.IsNullOrEmpty())
                 mQuery = mQuery.Where(w => w.MaterialTypeId == search.MaterialTypeId);
@@ -57,7 +58,13 @@ namespace Coldairarrow.Business.IT
                 mQuery = mQuery.Where(w => w.Min >= w.SumCount && w.Min.HasValue);
             if (search.MaxAlert)
                 mQuery = mQuery.Where(w => w.Max <= w.SumCount && w.Max.HasValue);
-            return await mQuery.GetPageResultAsync(input);
+            var pageResult = await mQuery.GetPageResultAsync(input);
+            //var listbatch =
+            foreach (var item in pageResult.Data)
+            {
+                item.Id = item.Id + "_" + item.BatchNo;
+            }
+            return pageResult;
         }
     }
 }

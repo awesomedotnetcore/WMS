@@ -1,5 +1,5 @@
 ﻿<template>
-  <a-card :bordered="false">
+  <a-modal title="发货" width="80%" :visible="visible" :confirmLoading="loading" okText="选择" @ok="handleChoose" @cancel="()=>{this.visible=false}">
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
@@ -35,7 +35,9 @@
       </a-form>
     </div>
 
-    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :bordered="true" size="small">
+    <!-- <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :bordered="true" size="small"> -->
+    <a-table :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+
       <a-breadcrumb slot="Material" slot-scope="text, record">
         <a-breadcrumb-item>
           <a-tooltip>
@@ -61,7 +63,7 @@
         <a-tag v-else>{{ text === null ? '无' : text }}</a-tag>
       </a-tooltip>
     </a-table>
-  </a-card>
+  </a-modal>
 </template>
 
 <script>
@@ -97,7 +99,10 @@ export default {
       sorter: { field: 'Id', order: 'asc' },
       loading: false,
       columns,
-      queryParam: { MinAlert: false, MaxAlert: false }
+      queryParam: { MinAlert: false, MaxAlert: false },
+      selectedRowKeys: [],
+      selectedRows: [],
+      visible: false
     }
   },
   methods: {
@@ -127,6 +132,21 @@ export default {
           pagination.total = resJson.Total
           this.pagination = pagination
         })
+    },
+    openChoose() {
+      this.getDataList()
+      this.visible = true
+    },
+    onSelectChange(selectedRowKeys, selectedRows) {
+      this.selectedRowKeys = selectedRowKeys
+      this.selectedRows = selectedRows
+    },
+    hasSelected() {
+      return this.selectedRowKeys.length > 0
+    },
+    handleChoose() {
+      this.visible = false
+      this.$emit('choose', [...this.selectedRows])
     }
   }
 }

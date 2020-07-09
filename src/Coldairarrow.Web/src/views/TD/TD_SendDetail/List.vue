@@ -1,7 +1,7 @@
 ﻿<template>
   <a-card :bordered="false">
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
+      <a-button type="primary" icon="plus" @click="hanldleAdd()">添加</a-button>
       <a-button
         type="primary"
         icon="minus"
@@ -11,33 +11,6 @@
       >删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
-
-    <!-- <div class="table-page-search-wrapper">
-      <a-form layout="inline">
-        <a-row :gutter="10">
-          <a-col :md="4" :sm="24">
-            <a-form-item label="查询类别">
-              <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="SendId">发货Id</a-select-option>
-                <a-select-option key="StorId">仓库ID</a-select-option>
-                <a-select-option key="MaterialId">物料ID</a-select-option>
-                <a-select-option key="MeasureId">单位ID</a-select-option>
-                <a-select-option key="BatchNo">批次号</a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
-          <a-col :md="4" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="关键字" />
-            </a-form-item>
-          </a-col>
-          <a-col :md="6" :sm="24">
-            <a-button type="primary" @click="() => {this.pagination.current = 1; this.getDataList()}">查询</a-button>
-            <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
-          </a-col>
-        </a-row>
-      </a-form>
-    </div> -->
 
     <a-table
       ref="table"
@@ -51,38 +24,50 @@
       :bordered="true"
       size="small"
     >
+      <template slot="PlanNum" slot-scope="text, record">
+        <a-input-number  size="small" :value="text" :max="record.PlanNum" :min="1" @change="e=>handleValChange(e,'PlanNum',record)"></a-input-number>
+      </template>
+
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="handleEdit(record.Id)">编辑</a>
-          <a-divider type="vertical" />
+          <!-- <a @click="handleEdit(record.Id)">编辑</a>
+          <a-divider type="vertical" /> -->
           <a @click="handleDelete([record.Id])">删除</a>
         </template>
       </span>
     </a-table>
 
-    <edit-form ref="editForm" :parentObj="this"></edit-form>
+    <!-- <edit-form ref="editForm" :parentObj="this"></edit-form> -->
+    <material-report ref="materialReport" @choose="handlerDetailSubmit"></material-report>
   </a-card>
 </template>
 
 <script>
-import EditForm from './EditForm'
+//import EditForm from './EditForm'
+import MaterialReport from './MaterialReport'
 
 const columns = [
-  { title: '发货Id', dataIndex: 'SendId', width: '10%' },
-  { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
-  { title: '物料ID', dataIndex: 'MaterialId', width: '10%' },
-  { title: '单位ID', dataIndex: 'MeasureId', width: '10%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
-  { title: '库存数量', dataIndex: 'LocalNum', width: '10%' },
-  { title: '计划数量', dataIndex: 'PlanNum', width: '10%' },
-  { title: '发货数量', dataIndex: 'SendNum', width: '10%' },
-  { title: '总价', dataIndex: 'Amount', width: '10%' },
+  // { title: '发货Id', dataIndex: 'SendId', width: '10%' },
+  // { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
+  { title: '物料ID', dataIndex: 'MaterialId' },
+  { title: '单位ID', dataIndex: 'MeasureId'},
+  { title: '批次号', dataIndex: 'BatchNo'},
+  { title: '库存数量', dataIndex: 'LocalNum'},
+  { title: '出库数量', dataIndex: 'PlanNum' , scopedSlots: { customRender: 'PlanNum' }},
+  { title: '单价', dataIndex: 'Price'},
+  // { title: '发货数量', dataIndex: 'SendNum', width: '10%' },
+  // { title: '总价', dataIndex: 'Amount', width: '10%' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
-    EditForm
+  //  EditForm,
+    MaterialReport
+  },
+  props: {
+    value: { type: Array, required: true },
+    disabled: { type: Boolean, required: false, default: false }
   },
   mounted() {
     this.getDataList()
@@ -138,7 +123,8 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm()
+      this.$refs.materialReport.openChoose()
+      //this.$refs.editForm.openForm()
     },
     handleEdit(id) {
       this.$refs.editForm.openForm(id)
@@ -163,6 +149,30 @@ export default {
           })
         }
       })
+    },
+    handlerDetailSubmit(rows) {
+      console.log('handlerDetailSubmit', rows)
+      rows.forEach(element => {
+        this.tempId += 1
+        var item = { ...element }
+        delete item.Id
+        delete item.Material
+        delete item.MaterialId
+        item.Id = 'newid_' + this.tempId
+        item.Material = { ...element.Material }
+        item.MaterialId = element.MaterialTypeName
+        item.MeasureId = element.MeasureName
+        item.LocalNum = element.SumCount
+        item.PlanNum = 1
+        // item.Surplus = 0
+        item.Price = element.Price
+        this.data.push(item)
+      })
+      this.$emit('input', [...this.data])
+    },
+    handleValChange(val, name, item) {
+      item[name] = val
+      this.$emit('input', [...this.data])
     }
   }
 }

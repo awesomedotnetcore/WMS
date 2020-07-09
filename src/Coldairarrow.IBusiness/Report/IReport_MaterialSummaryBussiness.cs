@@ -36,6 +36,11 @@ namespace Coldairarrow.IBusiness.Report
         public String Code { get; set; }
 
         /// <summary>
+        /// 批次号
+        /// </summary>
+        public String BatchNo { get; set; }
+
+        /// <summary>
         /// 条码
         /// </summary>
         public String BarCode { get; set; }

@@ -58,6 +58,11 @@ namespace Coldairarrow.Entity.TD
         public Double SendNum { get; set; }
 
         /// <summary>
+        /// 单价
+        /// </summary>
+        public Double Price { get; set; }
+
+        /// <summary>
         /// 总价
         /// </summary>
         public Double Amount { get; set; }
