@@ -1,4 +1,5 @@
 ﻿using Coldairarrow.Entity.TD;
+using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using EFCore.Sharding;
 using LinqKit;
@@ -12,11 +13,7 @@ namespace Coldairarrow.Business.TD
 {
     public partial class TD_ReceivingBusiness : BaseBusiness<TD_Receiving>, ITD_ReceivingBusiness, ITransientDependency
     {
-        public TD_ReceivingBusiness(IDbAccessor db)
-            : base(db)
-        {
-        }
-
+        
         #region 外部接口
 
         public async Task<PageResult<TD_Receiving>> GetDataListAsync(PageInput<ConditionDTO> input)
@@ -36,25 +33,7 @@ namespace Coldairarrow.Business.TD
             return await q.Where(where).GetPageResultAsync(input);
         }
 
-        public async Task<TD_Receiving> GetTheDataAsync(string id)
-        {
-            return await GetEntityAsync(id);
-        }
-
-        public async Task AddDataAsync(TD_Receiving data)
-        {
-            await InsertAsync(data);
-        }
-
-        public async Task UpdateDataAsync(TD_Receiving data)
-        {
-            await UpdateAsync(data);
-        }
-
-        public async Task DeleteDataAsync(List<string> ids)
-        {
-            await DeleteAsync(ids);
-        }
+        
 
         #endregion
 
