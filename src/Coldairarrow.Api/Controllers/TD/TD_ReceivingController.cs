@@ -24,7 +24,7 @@ namespace Coldairarrow.Api.Controllers.TD
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<TD_Receiving>> GetDataList(PageInput<ConditionDTO> input)
+        public async Task<PageResult<TD_Receiving>> GetDataList(TD_ReceivingPageInput input)
         {
             return await _tD_ReceivingBus.GetDataListAsync(input);
         }
