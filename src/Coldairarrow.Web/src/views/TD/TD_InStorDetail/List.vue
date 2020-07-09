@@ -5,6 +5,7 @@
       <a-button type="primary" icon="minus" @click="handleDelete(selectedRows)" :disabled="!hasSelected() || disabled">删除</a-button>
     </div>
     <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :pagination="false" :dataSource="data" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+      
       <a-breadcrumb slot="Location" slot-scope="text, record">
         <a-breadcrumb-item>
           <a-tooltip>
@@ -25,6 +26,7 @@
           </a-tooltip>
         </a-breadcrumb-item>
       </a-breadcrumb>
+      
       <a-breadcrumb slot="Material" slot-scope="text, record">
         <a-breadcrumb-item>
           <a-tooltip>
@@ -62,7 +64,7 @@ import EditForm from './EditForm'
 
 const columns = [
   { title: '物料', dataIndex: 'Material', scopedSlots: { customRender: 'Material' } },
-  { title: '货位', dataIndex: 'Location', scopedSlots: { customRender: 'Location' } },
+   { title: '货位', dataIndex: 'Location', scopedSlots: { customRender: 'Location' } },
   { title: '数量', dataIndex: 'Num' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
