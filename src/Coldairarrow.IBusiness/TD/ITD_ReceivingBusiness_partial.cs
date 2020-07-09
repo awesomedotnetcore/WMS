@@ -1,4 +1,5 @@
 ﻿using Coldairarrow.Entity.TD;
+using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ namespace Coldairarrow.Business.TD
     public partial interface ITD_ReceivingBusiness
     {
         Task<PageResult<TD_Receiving>> GetDataListAsync(TD_ReceivingPageInput input);
+        Task Approval(AuditDTO audit);
     }
     public class TD_ReceivingQM
     {

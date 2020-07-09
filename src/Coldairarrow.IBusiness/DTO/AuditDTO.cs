@@ -36,6 +36,14 @@ namespace Coldairarrow.IBusiness.DTO
     public enum AuditType
     {
         /// <summary>
+        /// 确认
+        /// </summary>
+        Confirm,
+        /// <summary>
+        /// 取消
+        /// </summary>
+        Cancel,
+        /// <summary>
         /// 通过/同意
         /// </summary>
         Approve,

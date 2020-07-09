@@ -1,8 +1,8 @@
 ﻿<template>
   <a-card :bordered="false">
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
+      <a-button type="primary" icon="plus" v-if="hasPerm('TD_Receiving.Add')" @click="hanldleAdd()">新建</a-button>
+      <a-button type="primary" icon="minus" v-if="hasPerm('TD_Receiving.Delete')" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
       <a-divider type="vertical" />
       <a-radio-group v-model="queryParam.Status" button-style="solid" @change="getDataList">
@@ -57,16 +57,20 @@
       </template>
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="handleEdit(record.Id)">编辑</a>
-          <a-divider type="vertical" />
-          <a @click="handleEdit(record.Id)">删除</a>
-          <a-divider type="vertical" />
-          <a @click="handleEdit(record.Id)">确认</a>
+          <a v-if="record.Status===0 && hasPerm('TD_Receiving.Edit')" @click="handleEdit(record.Id)">编辑</a>
+          <a-divider v-if="record.Status===0 && hasPerm('TD_Receiving.Edit')" type="vertical" />
+          <a v-if="record.Status===0 && hasPerm('TD_Receiving.Delete')" @click="handleDelete([record.Id])">删除</a>
+          <a-divider v-if="record.Status===0 && hasPerm('TD_Receiving.Delete')" type="vertical" />
+          <a v-if="record.Status===0" @click="handleApproval(record.Id)">确认</a>
+          <a-divider v-if="record.Status===0" type="vertical" />
+          <a v-if="record.Status===3 && hasPerm('TD_Receiving.InStorage')" @click="handleApproval(record.Id)">入库</a>
+          <a-divider v-if="record.Status===3 && hasPerm('TD_Receiving.InStorage')" type="vertical" />
+          <a v-if="record.Status>1" @click="handleApproval(record.Id)">{{ record.Status>=3?'查看':'审批' }}</a>
         </template>
       </span>
     </a-table>
 
-    <edit-form ref="editForm" :parentObj="this"></edit-form>
+    <edit-form ref="editForm" :disabled="disabled" :parentObj="this"></edit-form>
   </a-card>
 </template>
 
@@ -169,6 +173,10 @@ export default {
     },
     handleEdit(id) {
       this.disabled = false
+      this.$refs.editForm.openForm(id)
+    },
+    handleApproval(id) {
+      this.disabled = true
       this.$refs.editForm.openForm(id)
     },
     handleDelete(ids) {
