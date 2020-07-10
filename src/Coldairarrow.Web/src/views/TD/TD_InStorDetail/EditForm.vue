@@ -94,6 +94,10 @@ export default {
   methods: {
     openForm(entity) {
       this.entity = entity
+      this.location = entity.Location
+      this.material = entity.Material
+      this.tray = entity.Tray
+      this.trayZone = entity.TrayZone
       this.visible = true
     },
     getCurStorage() {

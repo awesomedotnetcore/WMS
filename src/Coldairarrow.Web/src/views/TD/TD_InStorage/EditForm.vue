@@ -36,7 +36,7 @@
         </a-col>
       </a-row>
     </a-form-model>
-    <list-detail v-model="listDetail" :disabled="disabled"></list-detail>
+    <list-detail v-model="listDetail" :disabled="disabled" :receive="receive"></list-detail>
     <div :style="{ position:'absolute',right:0,bottom:0,width:'100%',borderTop:'1px solid #e9e9e9',padding:'10px 16px',background:'#fff',textAlign:'right',zIndex: 1}">
       <a-button :style="{ marginRight: '8px' }" @click="()=>{this.visible=false}">取消</a-button>
       <a-button type="primary" :style="{ marginRight: '8px' }" v-if="entity.Id !== '' && entity.Status === 0 && disabled && hasPerm('TD_InStorage.Auditing') " @click="handleAudit(entity.Id,'Approve')">通过</a-button>
@@ -71,6 +71,7 @@ export default {
       },
       visible: false,
       loading: false,
+      receive: false, // 是否收货入库
       entity: { Id: '', Status: 0 },
       listDetail: [],
       rules: {
@@ -91,6 +92,7 @@ export default {
       })
     },
     openForm(id, title) {
+      this.receive = false
       this.init()
 
       if (id) {
@@ -103,6 +105,26 @@ export default {
         })
       }
     },
+    openReceivingForm(id) {
+      this.receive = true
+      this.init()
+      if (id) {
+        this.loading = true
+        this.$http.post('/TD/TD_Receiving/GetTheData', { id: id }).then(resJson => {
+          this.loading = false
+          var receive = resJson.Data
+          this.entity = { Id: '', RecId: receive.Id, StorId: receive.StorId, InStorTime: moment(), InType: receive.Type, RefCode: receive.Code, Status: 0, SupId: receive.SupId }
+          var listItem = []
+          var tempId = 0
+          receive.RecDetails.forEach(detail => {
+            tempId += 1
+            var item = { Id: 'newid_' + tempId.toString(), StorId: receive.StorId, MaterialId: detail.MaterialId, Material: detail.Material, Price: detail.Price, PlanNum: detail.PlanNum, RecNum: detail.RecNum, Num: detail.PlanNum - detail.RecNum, LocalId: null, TrayId: null, ZoneId: null }
+            listItem.push(item)
+          })
+          this.listDetail = listItem
+        })
+      }
+    },
     handleSubmit() {
       this.$refs['form'].validate(valid => {
         if (!valid) {
@@ -110,14 +132,17 @@ export default {
         }
         this.loading = true
         // 数据处理
-        var InStorDetails = [...this.listDetail]
-        InStorDetails.forEach(element => {
+        var InStorDetails = []
+        for (let index = 0; index < this.listDetail.length; index++) {
+          const element = this.listDetail[index]
+          if (!element.LocalId || element.Num === 0) continue
           element.InStorage = null
           element.Location = null
           element.Tray = null
           element.TrayZone = null
           element.Material = null
-        })
+          InStorDetails.push({ ...element })
+        }
         var entityData = { ...this.entity }
         entityData.InStorDetails = InStorDetails
         this.$http.post('/TD/TD_InStorage/SaveData', entityData).then(resJson => {
