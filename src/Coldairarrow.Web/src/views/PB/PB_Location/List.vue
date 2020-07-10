@@ -16,7 +16,7 @@
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <all-storage-select v-model="queryParam.StorName"></all-storage-select>
+              <all-storage-select v-model="queryParam.StorId"></all-storage-select>
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
@@ -24,11 +24,6 @@
               <a-input v-model="queryParam.Keyword" placeholder="货位/巷道/货架" />
             </a-form-item>
           </a-col>
-          <!-- <a-col :md="4" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.StorName" placeholder="仓库编码/名称" />
-            </a-form-item>
-          </a-col> -->
           <a-col :md="4" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.AreaName" placeholder="货区编码/名称" />

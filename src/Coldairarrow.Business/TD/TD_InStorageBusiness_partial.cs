@@ -129,6 +129,17 @@ namespace Coldairarrow.Business.TD
         public async Task DeleteDataAsync(List<string> ids)
         {
             await DeleteAsync(ids);
+
+            // 更新收货单数据
+            var listRecId = await this.GetIQueryable().Where(w => ids.Contains(w.Id) && string.IsNullOrEmpty(w.RecId)).Select(s => s.RecId).ToListAsync();
+            if (listRecId.Count > 0)
+            {
+                var recSvc = _ServiceProvider.GetRequiredService<ITD_ReceivingBusiness>();
+                foreach (var item in listRecId)
+                {
+                    await recSvc.UpdateByInStorage(item);
+                }
+            }
         }
 
         [DataEditLog(UserLogType.入库管理, "Id", "入库单审批")]

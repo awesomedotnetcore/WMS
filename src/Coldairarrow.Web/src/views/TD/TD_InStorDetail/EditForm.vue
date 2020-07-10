@@ -9,7 +9,7 @@
         </a-col>
         <a-col :span="12">
           <a-form-model-item label="货位" prop="LocalId">
-            <location-select v-model="entity.LocalId" @select="handleLocalIdSelect"></location-select>
+            <location-select v-model="entity.LocalId" :storid="storage.Id" @select="handleLocalIdSelect"></location-select>
           </a-form-model-item>
         </a-col>
       </a-row>

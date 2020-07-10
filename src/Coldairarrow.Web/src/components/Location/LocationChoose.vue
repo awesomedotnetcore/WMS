@@ -5,7 +5,7 @@
         <a-row :gutter="10">
           <a-col :md="5" :sm="24">
             <a-form-item>
-              <all-storage-select v-model="queryParam.StorName"></all-storage-select>
+              <all-storage-select v-model="queryParam.StorId"></all-storage-select>
             </a-form-item>
           </a-col>
           <a-col :md="5" :sm="24">
@@ -13,12 +13,6 @@
               <a-input v-model="queryParam.Keyword" placeholder="编码\名称\巷道\货架" />
             </a-form-item>
           </a-col>
-          <!-- <a-col :md="4" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.StorName" placeholder="仓库编码/名称" />
-              <all-storage-select v-model="queryParam.StorName"></all-storage-select>
-            </a-form-item>
-          </a-col> -->
           <a-col :md="4" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.AreaName" placeholder="货区编码/名称" />
@@ -48,13 +42,13 @@ const filterYesOrNo = (value, row, index) => {
   else return '否'
 }
 const columns = [
-  { title: '货位编号', dataIndex: 'Code'},
+  { title: '货位编号', dataIndex: 'Code' },
   { title: '货位名称', dataIndex: 'Name' },
   // { title: '货位类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
-  { title: '仓库', dataIndex: 'PB_Storage.Name'},
-  { title: '货区', dataIndex: 'PB_StorArea.Name'},
+  { title: '仓库', dataIndex: 'PB_Storage.Name' },
+  { title: '货区', dataIndex: 'PB_StorArea.Name' },
   { title: '巷道', dataIndex: 'PB_Laneway.Name' },
-  { title: '货架', dataIndex: 'PB_Rack.Name' },
+  { title: '货架', dataIndex: 'PB_Rack.Name' }
   // { title: '剩余容量', dataIndex: 'OverVol', width: '10%' },
   // { title: '是否禁用', dataIndex: 'IsForbid', width: '5%', customRender: filterYesOrNo }, // 是否禁用
   // { title: '是否默认', dataIndex: 'IsDefault', width: '5%', customRender: filterYesOrNo }// 是否默认库位
@@ -62,14 +56,12 @@ const columns = [
 
 export default {
   props: {
-    type: { type: String, default: 'radio', required: false }
+    type: { type: String, default: 'radio', required: false },
+    storid: { type: String, default: '', required: false }
   },
   components: {
     EnumName,
     AllStorageSelect
-  },
-  mounted() {
-    
   },
   data() {
     return {
@@ -87,6 +79,18 @@ export default {
       selectedRowKeys: [],
       selectedRows: [],
       visible: false
+    }
+  },
+  mounted() {
+    if (this.storid) {
+      this.queryParam.StorId = this.storid
+    }
+  },
+  watch: {
+    storid(storid) {
+      if (this.storid) {
+        this.queryParam.StorId = this.storid
+      }
     }
   },
   methods: {

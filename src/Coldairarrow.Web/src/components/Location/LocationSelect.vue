@@ -12,7 +12,7 @@
         </a-button>
       </a-col>
     </a-row>
-    <location-choose ref="locationChoose" @onChoose="handleChoose"></location-choose>
+    <location-choose ref="locationChoose" :storid="storid" @onChoose="handleChoose"></location-choose>
   </div>
 </template>
 <script>
@@ -21,7 +21,8 @@ export default {
   props: {
     size: { type: String, default: 'default', required: false },
     disabled: { type: Boolean, default: false, required: false },
-    value: { type: String, default: '', required: false }
+    value: { type: String, default: '', required: false },
+    storid: { type: String, default: '', required: false }
   },
   components: {
     LocationChoose
@@ -55,7 +56,7 @@ export default {
       if (q === '' && (this.curValue === '' || this.curValue === undefined || this.curValue === null)) return false
       clearTimeout(this.timeout)
       this.timeout = setTimeout(() => {
-        this.$http.post('/PB/PB_Location/GetQueryData', { Id: this.curValue, Keyword: q, Take: 10 })
+        this.$http.post('/PB/PB_Location/GetQueryData', { Id: this.curValue, StorId: this.storid, Keyword: q, Take: 10 })
           .then(resJson => {
             if (resJson.Success && q == this.keyword) {
               this.dataSource = resJson.Data

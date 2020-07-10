@@ -119,7 +119,9 @@ export default {
           receive.RecDetails.forEach(detail => {
             tempId += 1
             var item = { Id: 'newid_' + tempId.toString(), StorId: receive.StorId, MaterialId: detail.MaterialId, Material: detail.Material, Price: detail.Price, PlanNum: detail.PlanNum, RecNum: detail.RecNum, Num: detail.PlanNum - detail.RecNum, LocalId: null, TrayId: null, ZoneId: null }
-            listItem.push(item)
+            if (item.Num > 0) {
+              listItem.push(item)
+            }
           })
           this.listDetail = listItem
         })
@@ -142,6 +144,10 @@ export default {
           element.TrayZone = null
           element.Material = null
           InStorDetails.push({ ...element })
+        }
+        if (InStorDetails.length === 0) {
+          this.$message.error('入库明细数据不正确')
+          return
         }
         var entityData = { ...this.entity }
         entityData.InStorDetails = InStorDetails
