@@ -11,6 +11,8 @@ namespace Coldairarrow.Business.TD
     {
         Task<PageResult<TD_Receiving>> GetDataListAsync(TD_ReceivingPageInput input);
         Task Approval(AuditDTO audit);
+
+        Task UpdateByInStorage(string id);
     }
     public class TD_ReceivingQM
     {

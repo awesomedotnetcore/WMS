@@ -63,14 +63,15 @@
           <a-divider v-if="record.Status===0 && hasPerm('TD_Receiving.Delete')" type="vertical" />
           <a v-if="record.Status===0" @click="handleApproval(record.Id)">确认</a>
           <a-divider v-if="record.Status===0" type="vertical" />
-          <a v-if="record.Status===3 && hasPerm('TD_Receiving.InStorage')" @click="handleApproval(record.Id)">入库</a>
-          <a-divider v-if="record.Status===3 && hasPerm('TD_Receiving.InStorage')" type="vertical" />
+          <a v-if="(record.Status===3 || record.Status===5) && hasPerm('TD_Receiving.InStorage')" @click="handleInStorage(record.Id)">入库</a>
+          <a-divider v-if="(record.Status===3 || record.Status===5) && hasPerm('TD_Receiving.InStorage')" type="vertical" />
           <a v-if="record.Status>1" @click="handleApproval(record.Id)">{{ record.Status>=3?'查看':'审批' }}</a>
         </template>
       </span>
     </a-table>
 
     <edit-form ref="editForm" :disabled="disabled" :parentObj="this"></edit-form>
+    <in-storage ref="inStorage" :parentObj="this"></in-storage>
   </a-card>
 </template>
 
@@ -79,6 +80,7 @@ import moment from 'moment'
 import EditForm from './EditForm'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
+import InStorage from '../TD_InStorage/EditForm'
 const filterDate = (value, row, index) => {
   if (value) {
     return moment(value).format('YYYY-MM-DD')
@@ -103,7 +105,8 @@ export default {
   components: {
     EditForm,
     EnumName,
-    EnumSelect
+    EnumSelect,
+    InStorage
   },
   mounted() {
     this.getDataList()
@@ -178,6 +181,9 @@ export default {
     handleApproval(id) {
       this.disabled = true
       this.$refs.editForm.openForm(id)
+    },
+    handleInStorage(id) {
+      this.$refs.inStorage.openReceivingForm(id)
     },
     handleDelete(ids) {
       var thisObj = this

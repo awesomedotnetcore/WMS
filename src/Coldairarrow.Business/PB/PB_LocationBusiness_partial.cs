@@ -19,16 +19,16 @@ namespace Coldairarrow.Business.PB
 {
     public partial class PB_LocationBusiness : BaseBusiness<PB_Location>, IPB_LocationBusiness, ITransientDependency
     {
-        public async Task<List<PB_Location>> GetQueryData(SelectQueryDTO search)
+        public async Task<List<PB_Location>> GetQueryData(PB_LocationSelectQueryDTO search)
         {
             var q = GetIQueryable();
-            var where = LinqHelper.False<PB_Location>();
+            var where = LinqHelper.True<PB_Location>();
+            where = where.AndIf(!search.StorId.IsNullOrEmpty(), w => w.StorId == search.StorId);
+            where = where.AndIf(!search.Keyword.IsNullOrEmpty(), w => w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
 
-            if (!search.Keyword.IsNullOrEmpty())
-                where = where.Or(w => w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
-
-            if (!search.Id.IsNullOrEmpty())
-                where = where.Or(w => w.Id == search.Id);
+            var whereOr = LinqHelper.False<PB_Location>();
+            whereOr = whereOr.OrIf(!search.Id.IsNullOrEmpty(), w => w.Id == search.Id);
+            where = where.Or(whereOr);
             return await q.Where(where).OrderBy(o => o.Name).Take(search.Take).ToListAsync();
         }
 
@@ -45,9 +45,9 @@ namespace Coldairarrow.Business.PB
             var search = input.Search;
             q = q.Include(i => i.PB_Storage).Include(i => i.PB_Laneway).Include(i => i.PB_StorArea).Include(i => i.PB_Rack);
 
-            if (!search.StorName.IsNullOrEmpty())
+            if (!search.StorId.IsNullOrEmpty())
             {
-                where = where.And(p => p.StorId == search.StorName);
+                where = where.And(p => p.StorId == search.StorId);
             }
 
             if (!search.Keyword.IsNullOrEmpty())

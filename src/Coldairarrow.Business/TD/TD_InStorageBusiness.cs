@@ -16,11 +16,7 @@ namespace Coldairarrow.Business.TD
 
         #region 外部接口
 
-        [DataDeleteLog(UserLogType.入库管理, "Code", "入库单")]
-        public async Task DeleteDataAsync(List<string> ids)
-        {
-            await DeleteAsync(ids);
-        }
+        
 
         #endregion
 

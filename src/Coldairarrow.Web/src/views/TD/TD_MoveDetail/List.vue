@@ -51,7 +51,7 @@
         <a-input-number size="small" :disabled="disabled" :value="text" :max="record.LocalNum" :min="1" @change="e=>handleValChange(e,'MoveNum',record)"></a-input-number>
       </template>
       <template slot="ToLocalId" slot-scope="text, record">
-        <local-select size="small" v-model="record.ToLocalId" :disabled="disabled"></local-select>
+        <local-select size="small" v-model="record.ToLocalId" :storid="storage.Id" :disabled="disabled"></local-select>
       </template>
       <template slot="ToTrayId" slot-scope="text, record">
         <tray-select size="small" v-model="record.ToTrayId" :locartalId="record.ToLocalId" :materialId="record.MaterialId" :disabled="disabled"></tray-select>

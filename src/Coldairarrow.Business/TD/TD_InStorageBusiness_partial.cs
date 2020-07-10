@@ -75,6 +75,13 @@ namespace Coldairarrow.Business.TD
             data.TotalNum = data.InStorDetails.Sum(s => s.Num);
             data.TotalAmt = data.InStorDetails.Sum(s => s.TotalAmt);
             await InsertAsync(data);
+
+            // 更新收货单数据
+            if (!data.RecId.IsNullOrEmpty())
+            {
+                var recSvc = _ServiceProvider.GetRequiredService<ITD_ReceivingBusiness>();
+                await recSvc.UpdateByInStorage(data.RecId);
+            }
         }
 
         [DataEditLog(UserLogType.入库管理, "Code", "入库单")]
@@ -109,9 +116,33 @@ namespace Coldairarrow.Business.TD
             data.TotalAmt = data.InStorDetails.Sum(s => s.TotalAmt);
 
             await UpdateAsync(data);
+
+            // 更新收货单数据
+            if (!data.RecId.IsNullOrEmpty())
+            {
+                var recSvc = _ServiceProvider.GetRequiredService<ITD_ReceivingBusiness>();
+                await recSvc.UpdateByInStorage(data.RecId);
+            }
         }
 
-        [DataEditLog(UserLogType.入库管理, "Code", "入库单审批")]
+        [DataDeleteLog(UserLogType.入库管理, "Code", "入库单")]
+        public async Task DeleteDataAsync(List<string> ids)
+        {
+            await DeleteAsync(ids);
+
+            // 更新收货单数据
+            var listRecId = await this.GetIQueryable().Where(w => ids.Contains(w.Id) && string.IsNullOrEmpty(w.RecId)).Select(s => s.RecId).ToListAsync();
+            if (listRecId.Count > 0)
+            {
+                var recSvc = _ServiceProvider.GetRequiredService<ITD_ReceivingBusiness>();
+                foreach (var item in listRecId)
+                {
+                    await recSvc.UpdateByInStorage(item);
+                }
+            }
+        }
+
+        [DataEditLog(UserLogType.入库管理, "Id", "入库单审批")]
         [Transactional]
         public async Task Approve(AuditDTO audit)
         {
@@ -287,9 +318,16 @@ namespace Coldairarrow.Business.TD
                 data.AuditUserId = audit.AuditUserId;
                 await UpdateAsync(data);
             }
-        }
 
-        [DataEditLog(UserLogType.入库管理, "Code", "入库单驳回")]
+            // 更新收货单数据
+            if (!data.RecId.IsNullOrEmpty())
+            {
+                var recSvc = _ServiceProvider.GetRequiredService<ITD_ReceivingBusiness>();
+                await recSvc.UpdateByInStorage(data.RecId);
+            }
+        }
+        [DataEditLog(UserLogType.入库管理, "Id", "入库单驳回")]
+        [Transactional]
         public async Task Reject(AuditDTO audit)
         {
             var data = await this.GetEntityAsync(audit.Id);
@@ -299,6 +337,13 @@ namespace Coldairarrow.Business.TD
                 data.AuditeTime = audit.AuditTime;
                 data.AuditUserId = audit.AuditUserId;
                 await UpdateAsync(data);
+            }
+
+            // 更新收货单数据
+            if (!data.RecId.IsNullOrEmpty())
+            {
+                var recSvc = _ServiceProvider.GetRequiredService<ITD_ReceivingBusiness>();
+                await recSvc.UpdateByInStorage(data.RecId);
             }
         }
 

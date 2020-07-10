@@ -6,7 +6,7 @@
     </div>
     <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :pagination="false" :dataSource="data" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
       <template slot="LocalId" slot-scope="text, record">
-        <local-select v-model="record.LocalId"></local-select>
+        <local-select v-model="record.LocalId" :storid="storage.Id" size="small"></local-select>
       </template>
       <span slot="action" slot-scope="text, record">
         <template>
@@ -40,10 +40,14 @@ export default {
       loading: false,
       data: [],
       columns,
+      storage: {},
       selectedRowKeys: [],
       selectedRows: [],
       title: '空托盘入库'
     }
+  },
+  mounted() {
+    this.getCurStorage()
   },
   methods: {
     init() {
@@ -52,6 +56,12 @@ export default {
     },
     openForm() {
       this.init()
+    },
+    getCurStorage() {
+      this.$http.get('/PB/PB_Storage/GetCurStorage')
+        .then(resJson => {
+          this.storage = resJson.Data
+        })
     },
     handleSubmit() {
       if (this.data.length == 0) return false

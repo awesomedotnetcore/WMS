@@ -63,7 +63,7 @@ namespace Coldairarrow.Api.Controllers.PB
         }
 
         [HttpPost]
-        public async Task<List<PB_Location>> GetQueryData(SelectQueryDTO search)
+        public async Task<List<PB_Location>> GetQueryData(PB_LocationSelectQueryDTO search)
         {
             return await _pB_LocationBus.GetQueryData(search);
         }
