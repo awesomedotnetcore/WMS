@@ -1,5 +1,6 @@
 ﻿using Coldairarrow.Business.TD;
 using Coldairarrow.Entity.TD;
+using Coldairarrow.IBusiness;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -12,12 +13,15 @@ namespace Coldairarrow.Api.Controllers.TD
     {
         #region DI
 
-        public TD_SendController(ITD_SendBusiness tD_SendBus)
+        public TD_SendController(ITD_SendBusiness tD_SendBus, IOperator op)
         {
             _tD_SendBus = tD_SendBus;
+            _Op = op;
         }
 
         ITD_SendBusiness _tD_SendBus { get; }
+
+        IOperator _Op { get; }
 
         #endregion
 
@@ -45,14 +49,41 @@ namespace Coldairarrow.Api.Controllers.TD
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
-
+                data.StorId = _Op.Property.DefaultStorageId;
+                foreach (var item in data.SendDetails)
+                {
+                    InitEntity(item);
+                    item.StorId = data.Id;
+                    item.StorId = data.StorId;
+                    item.Amount = item.Price * item.LocalNum;
+                }
                 await _tD_SendBus.AddDataAsync(data);
             }
             else
             {
+                foreach (var item in data.SendDetails)
+                {
+                    if (item.Id.StartsWith("newid_"))
+                        InitEntity(item);
+                    item.StorId = data.Id;
+                    item.StorId = data.StorId;
+                    item.Amount = item.Price * item.LocalNum;
+                }
                 await _tD_SendBus.UpdateDataAsync(data);
             }
         }
+        //{
+        //    if (data.Id.IsNullOrEmpty())
+        //    {
+        //        InitEntity(data);
+
+        //        await _tD_SendBus.AddDataAsync(data);
+        //    }
+        //    else
+        //    {
+        //        await _tD_SendBus.UpdateDataAsync(data);
+        //    }
+        //}
 
         [HttpPost]
         public async Task DeleteData(List<string> ids)

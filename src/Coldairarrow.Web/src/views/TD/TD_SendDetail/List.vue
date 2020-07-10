@@ -9,7 +9,7 @@
         :disabled="!hasSelected()"
         :loading="loading"
       >删除</a-button>
-      <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
+      
     </div>
 
     <a-table
@@ -49,8 +49,8 @@ import MaterialReport from './MaterialReport'
 const columns = [
   // { title: '发货Id', dataIndex: 'SendId', width: '10%' },
   // { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
-  { title: '物料ID', dataIndex: 'MaterialId' },
-  { title: '单位ID', dataIndex: 'MeasureId'},
+  { title: '物料ID', dataIndex: 'Material.Name' },
+  { title: '单位ID', dataIndex: 'Measure.Name'},
   { title: '批次号', dataIndex: 'BatchNo'},
   { title: '库存数量', dataIndex: 'LocalNum'},
   { title: '出库数量', dataIndex: 'PlanNum' , scopedSlots: { customRender: 'PlanNum' }},
@@ -69,8 +69,15 @@ export default {
     value: { type: Array, required: true },
     disabled: { type: Boolean, required: false, default: false }
   },
+  watch: {
+    value(val) {
+      this.data = [...this.value]
+    }
+  },
   mounted() {
-    this.getDataList()
+    this.data = [...this.value]
+    this.getCurStorage()
+    // this.getDataList()
   },
   data() {
     return {
@@ -89,33 +96,42 @@ export default {
     }
   },
   methods: {
-    handleTableChange(pagination, filters, sorter) {
-      this.pagination = { ...pagination }
-      this.filters = { ...filters }
-      this.sorter = { ...sorter }
-      this.getDataList()
-    },
-    getDataList() {
-      this.selectedRowKeys = []
-
-      this.loading = true
-      this.$http
-        .post('/TD/TD_SendDetail/GetDataList', {
-          PageIndex: this.pagination.current,
-          PageRows: this.pagination.pageSize,
-          SortField: this.sorter.field || 'Id',
-          SortType: this.sorter.order,
-          Search: this.queryParam,
-          ...this.filters
-        })
+    getCurStorage() {
+      this.$http.get('/PB/PB_Storage/GetCurStorage')
         .then(resJson => {
-          this.loading = false
-          this.data = resJson.Data
-          const pagination = { ...this.pagination }
-          pagination.total = resJson.Total
-          this.pagination = pagination
+          this.storage = resJson.Data
+          if (this.storage) {
+            this.columns = columns
+          }
         })
     },
+    // handleTableChange(pagination, filters, sorter) {
+    //   this.pagination = { ...pagination }
+    //   this.filters = { ...filters }
+    //   this.sorter = { ...sorter }
+    //   this.getDataList()
+    // },
+    // getDataList() {
+    //   this.selectedRowKeys = []
+
+    //   this.loading = true
+    //   this.$http
+    //     .post('/TD/TD_SendDetail/GetDataList', {
+    //       PageIndex: this.pagination.current,
+    //       PageRows: this.pagination.pageSize,
+    //       SortField: this.sorter.field || 'Id',
+    //       SortType: this.sorter.order,
+    //       Search: this.queryParam,
+    //       ...this.filters
+    //     })
+    //     .then(resJson => {
+    //       this.loading = false
+    //       this.data = resJson.Data
+    //       const pagination = { ...this.pagination }
+    //       pagination.total = resJson.Total
+    //       this.pagination = pagination
+    //     })
+    // },
     onSelectChange(selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },
@@ -152,19 +168,22 @@ export default {
     },
     handlerDetailSubmit(rows) {
       console.log('handlerDetailSubmit', rows)
+
       rows.forEach(element => {
         this.tempId += 1
         var item = { ...element }
-        delete item.Id
-        delete item.Material
-        delete item.MaterialId
+        // delete item.Id
+        // delete item.Material
+        // delete item.MaterialId
         item.Id = 'newid_' + this.tempId
         item.Material = { ...element.Material }
-        item.MaterialId = element.MaterialTypeName
-        item.MeasureId = element.MeasureName
+        // item.MaterialId = element.MaterialTypeName
+        // item.MeasureId = element.MeasureName
+        item.MaterialId = element.MaterialId
+        item.MeasureId = element.MeasureId
+        item.BatchNo = element.BatchNo
         item.LocalNum = element.SumCount
         item.PlanNum = 1
-        // item.Surplus = 0
         item.Price = element.Price
         this.data.push(item)
       })

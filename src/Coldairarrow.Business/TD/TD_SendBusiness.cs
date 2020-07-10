@@ -36,15 +36,15 @@ namespace Coldairarrow.Business.TD
             return await q.Where(where).GetPageResultAsync(input);
         }
 
-        public async Task<TD_Send> GetTheDataAsync(string id)
-        {
-            return await GetEntityAsync(id);
-        }
+        //public async Task<TD_Send> GetTheDataAsync(string id)
+        //{
+        //    return await GetEntityAsync(id);
+        //}
 
-        public async Task AddDataAsync(TD_Send data)
-        {
-            await InsertAsync(data);
-        }
+        //public async Task AddDataAsync(TD_Send data)
+        //{
+        //    await InsertAsync(data);
+        //}
 
         public async Task UpdateDataAsync(TD_Send data)
         {
