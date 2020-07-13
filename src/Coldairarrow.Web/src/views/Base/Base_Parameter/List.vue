@@ -1,22 +1,11 @@
 ﻿<template>
   <a-card :bordered="false">
-    <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
-      <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
-    </div>
-
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.Code" placeholder="编码" />
-            </a-form-item>
-          </a-col>
-          <a-col :md="4" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.Name" placeholder="名称" />
+              <a-input v-model="queryParam.Keyword" placeholder="编码/名称" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -27,38 +16,19 @@
       </a-form>
     </div>
 
-    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :bordered="true" size="small">
       <template slot="Type" slot-scope="text">
         <enum-name code="SystemType" :value="text"></enum-name>
       </template>
-
+      <template slot="CusVal" slot-scope="text, record">
+        <a-select v-if="record.ValConfig.Type==='select'" :value="record.Val" :style="{width:'100%'}" @select="e=>handleValChange(record,e)">
+          <a-select-option v-for="item in record.ValConfig.Data" :key="item.Value" :value="item.Value">{{ item.Name }}</a-select-option>
+        </a-select>
+      </template>
       <span slot="IsSystem" slot-scope="text, record">
         <template>
-          <a-tag v-if="record.IsSystem===false" color="red">
-          否
-          </a-tag>
-          <a-tag v-else color="green">
-          是
-          </a-tag>
-        </template>
-      </span>
-
-      <!-- <span slot="Val" slot-scope="text, record">
-        <template>
-          <a-tag v-if="record.Val==='0'" color="red">
-          停用
-          </a-tag>
-          <a-tag v-else color="green">
-          启用
-          </a-tag>
-        </template>
-      </span> -->
-      
-      <span slot="action" slot-scope="text, record">
-        <template>
-          <a v-if="record.IsSystem===false" @click="handleEdit(record.Id)">编辑</a>
-          <a-divider v-if="record.IsSystem===false" type="vertical" />
-          <a v-if="record.IsSystem===false" @click="handleDelete([record.Id])">删除</a>
+          <a-tag v-if="record.IsSystem===false" color="red">否</a-tag>
+          <a-tag v-else color="green">是</a-tag>
         </template>
       </span>
     </a-table>
@@ -71,19 +41,13 @@
 import EditForm from './EditForm'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 
-const filterYesOrNo = (value, row, index) => {
-  if (value) return '启用'
-  else return '停用'
-}
-
 const columns = [
-  { title: '参数类型', dataIndex: 'Type', width: '10%', scopedSlots: { customRender: 'Type' } },
-  { title: '参数编号', dataIndex: 'Code', width: '20%' },
-  { title: '参数名称', dataIndex: 'Name', width: '15%' },
-  { title: '参数值', dataIndex: 'Val', width: '6%'},
-  { title: '描述', dataIndex: 'Remarks', width: '25%' },
-  { title: '系统必须', dataIndex: 'IsSystem', width: '8%',  scopedSlots: { customRender: 'IsSystem' } },
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+  { title: '参数类型', dataIndex: 'Type', scopedSlots: { customRender: 'Type' } },
+  { title: '参数编号', dataIndex: 'Code' },
+  { title: '参数名称', dataIndex: 'Name' },
+  { title: '参数值', dataIndex: 'Val', width: '10%', scopedSlots: { customRender: 'CusVal' } },
+  { title: '描述', dataIndex: 'Remarks' },
+  { title: '系统必须', dataIndex: 'IsSystem', scopedSlots: { customRender: 'IsSystem' } }
 ]
 
 export default {
@@ -106,8 +70,7 @@ export default {
       sorter: { field: 'Id', order: 'asc' },
       loading: false,
       columns,
-      queryParam: {},
-      selectedRowKeys: []
+      queryParam: {}
     }
   },
   methods: {
@@ -119,7 +82,6 @@ export default {
     },
     getDataList() {
       this.selectedRowKeys = []
-
       this.loading = true
       this.$http
         .post('/Base/Base_Parameter/GetDataList', {
@@ -133,43 +95,16 @@ export default {
         .then(resJson => {
           this.loading = false
           this.data = resJson.Data
+          this.data.forEach(item => {
+            item.ValConfig = JSON.parse(item.ValConfig)
+          })
           const pagination = { ...this.pagination }
           pagination.total = resJson.Total
           this.pagination = pagination
         })
     },
-    onSelectChange(selectedRowKeys) {
-      this.selectedRowKeys = selectedRowKeys
-    },
-    hasSelected() {
-      return this.selectedRowKeys.length > 0
-    },
-    hanldleAdd() {
-      this.$refs.editForm.openForm(null,"新增")
-    },
-    handleEdit(id) {
-      this.$refs.editForm.openForm(id,"编辑")
-    },
-    handleDelete(ids) {
-      var thisObj = this
-      this.$confirm({
-        title: '确认删除吗?',
-        onOk() {
-          return new Promise((resolve, reject) => {
-            thisObj.$http.post('/Base/Base_Parameter/DeleteData', ids).then(resJson => {
-              resolve()
-
-              if (resJson.Success) {
-                thisObj.$message.success('操作成功!')
-
-                thisObj.getDataList()
-              } else {
-                thisObj.$message.error(resJson.Msg)
-              }
-            })
-          })
-        }
-      })
+    handleValChange(item, val) {
+      item.Val = val
     }
   }
 }

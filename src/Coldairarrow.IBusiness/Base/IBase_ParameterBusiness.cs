@@ -16,8 +16,7 @@ namespace Coldairarrow.Business.Base
     }
     public class PB_ParameterQM
     {
-        public string Name { get; set; }
-        public string Code { get; set; }
+        public string Keyword { get; set; }
     }
     public class PB_ParameterPageInput : PageInput<PB_ParameterQM>
     {

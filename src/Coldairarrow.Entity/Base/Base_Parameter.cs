@@ -33,6 +33,11 @@ namespace Coldairarrow.Entity.Base
         public String Name { get; set; }
 
         /// <summary>
+        /// 参数值配置
+        /// </summary>
+        public String ValConfig { get; set; }
+
+        /// <summary>
         /// 参数值
         /// </summary>
         public string Val { get; set; }
