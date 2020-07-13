@@ -261,3 +261,4 @@ __pycache__/
 *.pyc
 /src/Coldairarrow.Web/wwwroot/Upload/File
 /src/Coldairarrow.Api/wwwroot/Upload
+src/Coldairarrow.Web/Deploy.ps1

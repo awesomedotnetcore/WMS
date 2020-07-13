@@ -27,7 +27,11 @@
       </a-breadcrumb>
       <a-breadcrumb slot="Location" slot-scope="text, record">
         <a-breadcrumb-item>
-          <local-select size="small" v-model="record.LocalId" :storid="storage.Id" :disabled="disabled" @select="e=>handleValChange(e,'Location',record)"></local-select>
+          <local-select v-if="receive" size="small" v-model="record.LocalId" :storid="storage.Id" :disabled="disabled" @select="e=>handleValChange(e,'Location',record)"></local-select>
+          <a-tooltip v-else>
+            <template slot="title">货位:{{ record.Location.Code }}</template>
+            {{ record.Location.Name }}
+          </a-tooltip>
         </a-breadcrumb-item>
         <a-breadcrumb-item v-if="record.TrayId">
           <a-tooltip>
