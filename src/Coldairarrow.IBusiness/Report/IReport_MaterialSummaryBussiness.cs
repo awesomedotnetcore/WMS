@@ -56,6 +56,13 @@ namespace Coldairarrow.IBusiness.Report
         /// </summary>
         public String MaterialTypeName { get; set; }
 
+        public string MaterialId { get; set; }
+        /// <summary>
+        /// 物料ID
+        /// </summary>
+        public String MaterialName { get; set; }
+
+        public string MeasureId { get; set; }
         /// <summary>
         /// 单位ID
         /// </summary>

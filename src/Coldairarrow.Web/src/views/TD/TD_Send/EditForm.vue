@@ -4,8 +4,7 @@
         <a-row>
         <a-col :span="8">
           <a-form-model-item label="发货编号" prop="Code">
-            <!-- <a-input v-model="entity.Code" :disabled="$para('GenerateOutStorageCode')=='1'|| disabled" placeholder="系统自动生成" autocomplete="off" /> -->
-            <a-input v-model="entity.Code" autocomplete="off" />
+            <a-input v-model="entity.Code" :disabled="$para('GenerateSendCode')=='1'|| disabled" placeholder="系统自动生成" autocomplete="off" />
           </a-form-model-item>
         </a-col>
         <a-col :span="8">
@@ -37,7 +36,7 @@
         </a-col>
         <a-col :span="8">
           <a-form-model-item label="客户地址" prop="AddId">
-            <a-select placeholder="请选择" v-model="entity.AddrId" :disabled="disabled">
+            <a-select placeholder="请选择" v-model="entity.AddId" :disabled="disabled">
             <a-select-option v-for="item in this.CusAddrList" :key="item.Id" >{{item.Address}}</a-select-option>
             </a-select>
           </a-form-model-item>          
@@ -64,6 +63,7 @@
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import ListDetail from '../TD_SendDetail/List'
 import CusSelect from '../../../components/PB/CustomerSelect'
+import moment from 'moment'
 
 export default {
   components: {
@@ -75,7 +75,7 @@ export default {
   props: {
     parentObj: Object
   },
-  data() {
+  data() {    
     return {
       layout: {
         labelCol: { span: 5 },
@@ -100,9 +100,10 @@ export default {
     },//键路径必须加上引号
   },
   methods: {
+    moment,
     init() {
       this.visible = true
-      this.entity = {Status: 0}
+      this.entity = {Status: 0,OrderTime:moment(),SendTime:moment()}
       this.listDetail = []
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
@@ -110,14 +111,12 @@ export default {
     },
     openForm(id, title) {
       this.init()
-
       if (id) {
         this.loading = true
         this.$http.post('/TD/TD_Send/GetTheData', { id: id }).then(resJson => {
           this.loading = false
 
           this.entity = resJson.Data
-          debugger
           this.entity.OrderTime = moment(this.entity.OrderTime)
           this.entity.SendTime = moment(this.entity.SendTime)
           this.listDetail = [...resJson.Data.SendDetails]

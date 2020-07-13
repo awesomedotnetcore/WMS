@@ -53,7 +53,7 @@ namespace Coldairarrow.Api.Controllers.TD
                 foreach (var item in data.SendDetails)
                 {
                     InitEntity(item);
-                    item.StorId = data.Id;
+                    item.SendId = data.Id;
                     item.StorId = data.StorId;
                     item.Amount = item.Price * item.LocalNum;
                 }
@@ -65,7 +65,7 @@ namespace Coldairarrow.Api.Controllers.TD
                 {
                     if (item.Id.StartsWith("newid_"))
                         InitEntity(item);
-                    item.StorId = data.Id;
+                    item.SendId = data.Id;
                     item.StorId = data.StorId;
                     item.Amount = item.Price * item.LocalNum;
                 }

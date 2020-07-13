@@ -49,8 +49,8 @@ import MaterialReport from './MaterialReport'
 const columns = [
   // { title: '发货Id', dataIndex: 'SendId', width: '10%' },
   // { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
-  { title: '物料ID', dataIndex: 'Material.Name' },
-  { title: '单位ID', dataIndex: 'Measure.Name'},
+  { title: '物料ID', dataIndex: 'MaterialId' },
+  { title: '单位ID', dataIndex: 'MeasureId'},
   { title: '批次号', dataIndex: 'BatchNo'},
   { title: '库存数量', dataIndex: 'LocalNum'},
   { title: '出库数量', dataIndex: 'PlanNum' , scopedSlots: { customRender: 'PlanNum' }},
@@ -105,33 +105,6 @@ export default {
           }
         })
     },
-    // handleTableChange(pagination, filters, sorter) {
-    //   this.pagination = { ...pagination }
-    //   this.filters = { ...filters }
-    //   this.sorter = { ...sorter }
-    //   this.getDataList()
-    // },
-    // getDataList() {
-    //   this.selectedRowKeys = []
-
-    //   this.loading = true
-    //   this.$http
-    //     .post('/TD/TD_SendDetail/GetDataList', {
-    //       PageIndex: this.pagination.current,
-    //       PageRows: this.pagination.pageSize,
-    //       SortField: this.sorter.field || 'Id',
-    //       SortType: this.sorter.order,
-    //       Search: this.queryParam,
-    //       ...this.filters
-    //     })
-    //     .then(resJson => {
-    //       this.loading = false
-    //       this.data = resJson.Data
-    //       const pagination = { ...this.pagination }
-    //       pagination.total = resJson.Total
-    //       this.pagination = pagination
-    //     })
-    // },
     onSelectChange(selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },
@@ -176,11 +149,12 @@ export default {
         // delete item.Material
         // delete item.MaterialId
         item.Id = 'newid_' + this.tempId
-        item.Material = { ...element.Material }
+        //item.Material = { ...element.Material }
         // item.MaterialId = element.MaterialTypeName
         // item.MeasureId = element.MeasureName
         item.MaterialId = element.MaterialId
         item.MeasureId = element.MeasureId
+        debugger
         item.BatchNo = element.BatchNo
         item.LocalNum = element.SumCount
         item.PlanNum = 1

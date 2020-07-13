@@ -13,29 +13,18 @@
 
       <a-radio-group v-model="queryParam.Status" :default-value="null" button-style="solid" @change="getDataList">
         <a-radio-button :value="null">全部</a-radio-button>
-        <a-radio-button :value="0">待审核</a-radio-button>
-        <a-radio-button :value="1">审核通过</a-radio-button>
-        <a-radio-button :value="2">审核失败</a-radio-button>
+        <a-radio-button :value="0">编制中</a-radio-button>
+        <a-radio-button :value="1">已确认</a-radio-button>
+        <a-radio-button :value="3">审核通过</a-radio-button>
+        <a-radio-button :value="4">审核失败</a-radio-button>
+        <a-radio-button :value="5">部分出库</a-radio-button>
+        <a-radio-button :value="6">全部出库</a-radio-button>
       </a-radio-group>
     </div>
 
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
-        <a-row :gutter="10">
-          <a-col :md="4" :sm="24">
-            <a-form-item label="查询类别">
-              <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="StorId">仓库ID</a-select-option>
-                <a-select-option key="Code">发货编号</a-select-option>
-                <a-select-option key="Type">发货类型</a-select-option>
-                <a-select-option key="RefCode">关联单号/出库单号</a-select-option>
-                <a-select-option key="CusId">客户ID</a-select-option>
-                <a-select-option key="Remarks">备注</a-select-option>
-                <a-select-option key="ConfirmUserId">确认ID</a-select-option>
-                <a-select-option key="AuditUserId">审核人ID</a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
+        <a-row :gutter="10">          
           <a-col :md="4" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.keyword" placeholder="关键字" />
@@ -61,11 +50,33 @@
       :bordered="true"
       size="small"
     >
+
+      <template slot="SendType" slot-scope="text">
+        <enum-name code="SendType" :value="text"></enum-name>
+      </template>
+
+      <template slot="Status" slot-scope="text, record">
+        <a-tag v-if="record.Status===0" color="blue">编制中</a-tag>
+        <a-tag v-else-if="record.Status===1" color="blue">已确认</a-tag>
+        <a-tag v-else-if="record.Status===3" color="green">审核通过</a-tag>
+        <a-tag v-else-if="record.Status===4" color="red">审核失败</a-tag>
+        <a-tag v-else-if="record.Status===5" color="green">部分出库</a-tag>
+        <a-tag v-else-if="record.Status===6" color="green">全部出库</a-tag>
+        <a-tag v-else color="blue">编制中</a-tag>
+      </template>
+
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
           <a-divider type="vertical" />
           <a @click="handleDelete([record.Id])">删除</a>
+          <a-divider v-if="record.Status===0" type="vertical" />
+          <a v-if="record.Status===0" @click="handleApproval(record.Id)">确认</a>   
+          <a-divider type="vertical" />
+          <a @click="handleApproval(record.Id)">{{ record.Status>=3?'查看':'审批' }}</a>   
+          <a-divider type="vertical" />   
+          <a @click="handleInStorage(record.Id)">出库</a>
+           
         </template>
       </span>
     </a-table>
@@ -75,31 +86,43 @@
 </template>
 
 <script>
+import moment from 'moment'
 import EditForm from './EditForm'
+import EnumName from '../../../components/BaseEnum/BaseEnumName'
 
-const columns = [
-  // { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
-  { title: '发货编号', dataIndex: 'Code', width: '10%' },
-  { title: '单据日期', dataIndex: 'OrderTime', width: '10%' },
-  { title: '发货日期', dataIndex: 'SendTime', width: '10%' },
-  { title: '发货类型', dataIndex: 'Type', width: '10%' },
-  // { title: '关联单号/出库单号', dataIndex: 'RefCode', width: '10%' },
-  { title: '发货状态', dataIndex: 'Status', width: '10%' },
-  // { title: '客户ID', dataIndex: 'CusId', width: '10%' },
-  // { title: '总共数量', dataIndex: 'TotalNum', width: '10%' },
-  { title: '发货数量', dataIndex: 'SendNum', width: '10%' },
-  // { title: '发货金额', dataIndex: 'TotalAmt', width: '10%' },
-  { title: '备注', dataIndex: 'Remarks', width: '10%' },
-  { title: '确认ID', dataIndex: 'ConfirmUserId', width: '10%' },
-  // { title: '确认时间', dataIndex: 'ConfirmTime', width: '10%' },
-  { title: '审核人', dataIndex: 'AuditUserId', width: '10%' },
-  // { title: '审核时间', dataIndex: 'AuditeTime', width: '10%' },
+const filterDate = (value, row, index) => {
+  if (value) {
+    return moment(value).format('YYYY-MM-DD')
+  } else {
+    return ' '
+  }
+}
+
+const columns = [  
+  { title: '发货编号', dataIndex: 'Code'},
+  { title: '单据日期', dataIndex: 'OrderTime',  customRender: filterDate },
+  { title: '发货日期', dataIndex: 'SendTime', customRender: filterDate },
+  { title: '发货类型', dataIndex: 'Type' , scopedSlots: { customRender: 'SendType' } },  
+  { title: '发货状态', dataIndex: 'Status', scopedSlots: { customRender: 'Status' }},
+  { title: '发货数量', dataIndex: 'SendNum'},
+  { title: '确认人', dataIndex: 'ConfirmUserId'},
+  { title: '审核人', dataIndex: 'AuditUserId' },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+
+// { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
+  // { title: '客户ID', dataIndex: 'CusId', width: '10%' },
+  // { title: '总共数量', dataIndex: 'TotalNum', width: '10%' },  
+  // { title: '发货金额', dataIndex: 'TotalAmt', width: '10%' },
+  // { title: '备注', dataIndex: 'Remarks'},  
+  // { title: '确认时间', dataIndex: 'ConfirmTime', width: '10%' },  
+  // { title: '审核时间', dataIndex: 'AuditeTime', width: '10%' },  
+  // { title: '关联单号/出库单号', dataIndex: 'RefCode', width: '10%' },
 ]
 
 export default {
   components: {
-    EditForm
+    EditForm,
+    EnumName, 
   },
   mounted() {
     this.getDataList()
@@ -158,6 +181,10 @@ export default {
       this.$refs.editForm.openForm()
     },
     handleEdit(id) {
+      this.$refs.editForm.openForm(id)
+    },
+    handleApproval(id) {
+      this.disabled = true
       this.$refs.editForm.openForm(id)
     },
     handleDelete(ids) {
