@@ -45,7 +45,7 @@ namespace Coldairarrow.Entity.TD
         /// <summary>
         /// 库存数量
         /// </summary>
-        public Double? LocalNum { get; set; }
+        public Double LocalNum { get; set; }
 
         /// <summary>
         /// 计划数量

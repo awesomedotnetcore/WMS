@@ -1,5 +1,6 @@
 ﻿using Coldairarrow.Business.TD;
 using Coldairarrow.Entity.TD;
+using Coldairarrow.IBusiness;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -12,10 +13,13 @@ namespace Coldairarrow.Api.Controllers.TD
     {
         #region DI
 
-        public TD_SendDetailController(ITD_SendDetailBusiness tD_SendDetailBus)
+        public TD_SendDetailController(ITD_SendDetailBusiness tD_SendDetailBus, IOperator @op)
         {
             _tD_SendDetailBus = tD_SendDetailBus;
+            _Op = @op;
         }
+
+        IOperator _Op { get; }
 
         ITD_SendDetailBusiness _tD_SendDetailBus { get; }
 
@@ -24,8 +28,9 @@ namespace Coldairarrow.Api.Controllers.TD
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<TD_SendDetail>> GetDataList(PageInput<ConditionDTO> input)
+        public async Task<PageResult<TD_SendDetail>> GetDataList(TD_SendDetailPageInput input)
         {
+            input.StorId = _Op.Property.DefaultStorageId;
             return await _tD_SendDetailBus.GetDataListAsync(input);
         }
 

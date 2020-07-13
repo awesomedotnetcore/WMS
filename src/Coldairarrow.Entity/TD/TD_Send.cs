@@ -58,6 +58,11 @@ namespace Coldairarrow.Entity.TD
         public String CusId { get; set; }
 
         /// <summary>
+        /// 客户地址
+        /// </summary>
+        public String AddrId { get; set; }
+
+        /// <summary>
         /// 总共数量
         /// </summary>
         public Double TotalNum { get; set; }

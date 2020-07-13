@@ -4,7 +4,8 @@
         <a-row>
         <a-col :span="8">
           <a-form-model-item label="发货编号" prop="Code">
-            <a-input v-model="entity.Code" :disabled="$para('GenerateOutStorageCode')=='1'|| disabled" placeholder="系统自动生成" autocomplete="off" />
+            <!-- <a-input v-model="entity.Code" :disabled="$para('GenerateOutStorageCode')=='1'|| disabled" placeholder="系统自动生成" autocomplete="off" /> -->
+            <a-input v-model="entity.Code" autocomplete="off" />
           </a-form-model-item>
         </a-col>
         <a-col :span="8">
@@ -48,12 +49,12 @@
         </a-col>
       </a-row>      
       </a-form-model>
-      <list-detail v-model="listDetail" :disabled="disabled"></list-detail>
+      <list-detail v-model="listDetail" ></list-detail>
       <div :style="{ position:'absolute',right:0,bottom:0,width:'100%',borderTop:'1px solid #e9e9e9',padding:'10px 16px',background:'#fff',textAlign:'right',zIndex: 1}">
       <a-button :style="{ marginRight: '8px' }" @click="()=>{this.visible=false}">取消</a-button>
       <!-- <a-button type="danger" :style="{ marginRight: '8px' }" v-if="entity.Id !== '' && entity.Status === 0 && disabled  && hasPerm('TD_OutStorage.Auditing')" @click="handleAudit(entity.Id,'Reject')">驳回</a-button>     
       <a-button type="primary" :style="{ marginRight: '8px' }" v-if="entity.Id !== '' && entity.Status === 0 && disabled && hasPerm('TD_OutStorage.Auditing')" @click="handleAudit(entity.Id,'Approve')">通过</a-button> -->
-      <a-button :disabled="disabled" type="primary" @click="handleSubmit" v-if="entity.Status === 0">保存</a-button>      
+      <a-button type="primary" @click="handleSubmit" v-if="entity.Status === 0">保存</a-button>      
       
     </div>
   </a-drawer>
@@ -86,6 +87,7 @@ export default {
       rules: {},
       title: '',
       CusAddrList:[],
+      listDetail:[]
     }
   },
   watch:{
@@ -101,6 +103,7 @@ export default {
     init() {
       this.visible = true
       this.entity = {Status: 0}
+      this.listDetail = []
       this.$nextTick(() => {
         this.$refs['form'].clearValidate()
       })
@@ -114,6 +117,10 @@ export default {
           this.loading = false
 
           this.entity = resJson.Data
+          debugger
+          this.entity.OrderTime = moment(this.entity.OrderTime)
+          this.entity.SendTime = moment(this.entity.SendTime)
+          this.listDetail = [...resJson.Data.SendDetails]
         })
       }
     },
@@ -123,7 +130,16 @@ export default {
           return
         }
         this.loading = true
-        this.$http.post('/TD/TD_Send/SaveData', this.entity).then(resJson => {
+        // 数据处理
+        
+        var SendDetails = [...this.listDetail]        
+        SendDetails.forEach(element => {
+          element.Material = null
+        })
+        var entityData = { ...this.entity }
+        entityData.SendDetails = SendDetails
+        
+        this.$http.post('/TD/TD_Send/SaveData', entityData).then(resJson => {
           this.loading = false
 
           if (resJson.Success) {
@@ -136,7 +152,27 @@ export default {
           }
         })
       })
-    },
+    }, 
+    // handleSubmit() {
+    //   this.$refs['form'].validate(valid => {
+    //     if (!valid) {
+    //       return
+    //     }
+    //     this.loading = true
+    //     this.$http.post('/TD/TD_Send/SaveData', this.entity).then(resJson => {
+    //       this.loading = false
+
+    //       if (resJson.Success) {
+    //         this.$message.success('操作成功!')
+    //         this.visible = false
+
+    //         this.parentObj.getDataList()
+    //       } else {
+    //         this.$message.error(resJson.Msg)
+    //       }
+    //     })
+    //   })
+    // },
     GetCusAddrList() {      
       this.loading = true
       this.$http.post('/PB/PB_Address/QueryDataList',{

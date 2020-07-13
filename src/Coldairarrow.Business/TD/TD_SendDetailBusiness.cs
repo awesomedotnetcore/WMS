@@ -19,19 +19,19 @@ namespace Coldairarrow.Business.TD
 
         #region 外部接口
 
-        public async Task<PageResult<TD_SendDetail>> GetDataListAsync(PageInput<ConditionDTO> input)
+        public async Task<PageResult<TD_SendDetail>> GetDataListAsync(TD_OutStoragePageInput input)
         {
             var q = GetIQueryable();
             var where = LinqHelper.True<TD_SendDetail>();
             var search = input.Search;
 
             //筛选
-            if (!search.Condition.IsNullOrEmpty() && !search.Keyword.IsNullOrEmpty())
-            {
-                var newWhere = DynamicExpressionParser.ParseLambda<TD_SendDetail, bool>(
-                    ParsingConfig.Default, false, $@"{search.Condition}.Contains(@0)", search.Keyword);
-                where = where.And(newWhere);
-            }
+            //if (!search.Condition.IsNullOrEmpty() && !search.Keyword.IsNullOrEmpty())
+            //{
+            //    var newWhere = DynamicExpressionParser.ParseLambda<TD_SendDetail, bool>(
+            //        ParsingConfig.Default, false, $@"{search.Condition}.Contains(@0)", search.Keyword);
+            //    where = where.And(newWhere);
+            //}
 
             return await q.Where(where).GetPageResultAsync(input);
         }
@@ -54,6 +54,11 @@ namespace Coldairarrow.Business.TD
         public async Task DeleteDataAsync(List<string> ids)
         {
             await DeleteAsync(ids);
+        }
+
+        public Task<PageResult<TD_SendDetail>> GetDataListAsync(TD_SendDetailPageInput input)
+        {
+            throw new System.NotImplementedException();
         }
 
         #endregion
