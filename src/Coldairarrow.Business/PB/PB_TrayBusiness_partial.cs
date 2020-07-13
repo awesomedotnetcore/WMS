@@ -60,12 +60,13 @@ namespace Coldairarrow.Business.PB
             if (!search.Keyword.IsNullOrEmpty())
                 where = where.And(w => w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
 
-
-            var idWhere = LinqHelper.False<PB_Tray>();
+            var result = await q.Where(where).OrderBy(o => o.Name).Take(search.Take).ToListAsync();
             if (!search.Id.IsNullOrEmpty())
-                idWhere = idWhere.Or(w => w.Id == search.Id);
-
-            return await q.Where(where).Where(idWhere).OrderBy(o => o.Name).Take(search.Take).ToListAsync();
+            {
+                var one = await this.GetIQueryable().Where(w => w.Id == search.Id).SingleOrDefaultAsync();
+                result.Add(one);
+            }
+            return result;
         }
 
         [DataAddLog(UserLogType.托盘管理, "Code", "托盘")]

@@ -65,7 +65,7 @@
           <a-divider v-if="record.Status===0" type="vertical" />
           <a v-if="(record.Status===3 || record.Status===5) && hasPerm('TD_Receiving.InStorage')" @click="handleInStorage(record.Id)">入库</a>
           <a-divider v-if="(record.Status===3 || record.Status===5) && hasPerm('TD_Receiving.InStorage')" type="vertical" />
-          <a v-if="record.Status>1" @click="handleApproval(record.Id)">{{ record.Status>=3?'查看':'审批' }}</a>
+          <a v-if="record.Status>0" @click="handleApproval(record.Id)">{{ record.Status>=3?'查看':'审批' }}</a>
         </template>
       </span>
     </a-table>
