@@ -109,7 +109,7 @@ namespace Coldairarrow.Business.IT
                             if (b.ActionType == 1)
                             {
                                 i.Num -= b.Num;
-                                if(i.Num == 0)
+                                if (i.Num == 0)
                                 {
                                     deletDatas.Add(i.Id);
                                 }
@@ -153,7 +153,7 @@ namespace Coldairarrow.Business.IT
                 {
                     await InsertAsync(addDatas);
                 }
-                if(deletDatas.Count > 0)
+                if (deletDatas.Count > 0)
                 {
                     await DeleteDataAsync(deletDatas);
                 }
@@ -186,11 +186,11 @@ namespace Coldairarrow.Business.IT
         public async Task<PageResult<IT_LocalMaterial>> GetDataListAsync(IT_LocalMaterialPageInput input)
         {
             var q = GetIQueryable()
-                .Include(i=>i.Location)
-                .Include(i=>i.Tray)
-                .Include(i=>i.TrayZone)
-                .Include(i=>i.Material)
-                .Include(i=>i.Measure);
+                .Include(i => i.Location)
+                .Include(i => i.Tray)
+                .Include(i => i.TrayZone)
+                .Include(i => i.Material)
+                .Include(i => i.Measure);
             var where = LinqHelper.True<IT_LocalMaterial>();
             where = where.And(w => w.StorId == input.StorId);
             var search = input.Search;
@@ -209,14 +209,18 @@ namespace Coldairarrow.Business.IT
         public async Task<List<IT_LocalMaterial>> GetQueryData(SelectQueryDTO search, string storId)
         {
             var q = GetIQueryable().Include(i => i.Material).Where(w => w.StorId == storId);
-            var where = LinqHelper.False<IT_LocalMaterial>();
+            var where = LinqHelper.True<IT_LocalMaterial>();
 
             if (!search.Keyword.IsNullOrEmpty())
-                where = where.Or(w => w.Material.Name.Contains(search.Keyword) || w.Material.Code.Contains(search.Keyword));
+                where = where.And(w => w.Material.Name.Contains(search.Keyword) || w.Material.Code.Contains(search.Keyword));
 
+            var result = await q.Where(where).OrderBy(o => o.Material.Name).Take(search.Take).ToListAsync();
             if (!search.Id.IsNullOrEmpty())
-                where = where.Or(w => w.Id == search.Id);
-            return await q.Where(where).OrderBy(o => o.Material.Name).Take(search.Take).ToListAsync();
+            {
+                var one = await this.GetIQueryable().Where(w => w.Id == search.Id).SingleOrDefaultAsync();
+                result.Add(one);
+            }
+            return result;
         }
 
 

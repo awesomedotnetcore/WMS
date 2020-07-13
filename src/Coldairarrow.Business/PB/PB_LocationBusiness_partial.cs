@@ -25,11 +25,13 @@ namespace Coldairarrow.Business.PB
             var where = LinqHelper.True<PB_Location>();
             where = where.AndIf(!search.StorId.IsNullOrEmpty(), w => w.StorId == search.StorId);
             where = where.AndIf(!search.Keyword.IsNullOrEmpty(), w => w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
-
-            var whereOr = LinqHelper.False<PB_Location>();
-            whereOr = whereOr.OrIf(!search.Id.IsNullOrEmpty(), w => w.Id == search.Id);
-            where = where.Or(whereOr);
-            return await q.Where(where).OrderBy(o => o.Name).Take(search.Take).ToListAsync();
+            var list = await q.Where(where).OrderBy(o => o.Name).Take(search.Take).ToListAsync();
+            if (!search.Id.IsNullOrEmpty())
+            {
+                var one = await this.GetIQueryable().Where(w => w.Id == search.Id).SingleOrDefaultAsync();
+                list.Add(one);
+            }
+            return list;
         }
 
         public async Task<PB_Location> GetDefaultLocal(string storId, string storAreaId)
