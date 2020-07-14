@@ -51,8 +51,10 @@ namespace Coldairarrow.Business.Base
         [DataRepeatAndValidate(new string[] { "Code" }, new string[] { "参数" })]
         public async Task UpdateDataAsync(Base_Parameter data)
         {
-            await UpdateAsync(data);
+            //await UpdateAsync(data);
+            await UpdateWhere_SqlAsync(w => w.Id == data.Id, ("Val", UpdateType.Equal, data.Val));
         }
+
         [DataDeleteLog(UserLogType.系统参数, "Code", "参数")]
         public async Task DeleteDataAsync(List<string> ids)
         {
