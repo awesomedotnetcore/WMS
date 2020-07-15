@@ -10,7 +10,7 @@ namespace Coldairarrow.Entity.PB
     /// 条码规则
     /// </summary>
     [Table("PB_BarCodeRule")]
-    public class PB_BarCodeRule
+    public partial class PB_BarCodeRule
     {
 
         /// <summary>
@@ -23,9 +23,6 @@ namespace Coldairarrow.Entity.PB
         /// BarCodeId
         /// </summary>
         public String TypeId { get; set; }
-
-        [ForeignKey(nameof(TypeId))]
-        public PB_BarCodeType BarCodeType { get; set; }
 
         /// <summary>
         /// 类型
@@ -63,13 +60,5 @@ namespace Coldairarrow.Entity.PB
         /// </summary>
         public Boolean Deleted { get; set; }
 
-    }
-
-    public class PB_BarCodeRuleEntityTypeConfig : IEntityTypeConfiguration<PB_BarCodeRule>
-    {
-        public void Configure(EntityTypeBuilder<PB_BarCodeRule> builder)
-        {
-            builder.HasQueryFilter(w => w.Deleted == false);
-        }
     }
 }
