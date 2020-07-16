@@ -40,21 +40,6 @@ namespace Coldairarrow.Api.Controllers.PB
         #region 提交
 
         [HttpPost]
-        public async Task SaveData(PB_MaterialPoint data)
-        {
-            if (data.Id.IsNullOrEmpty())
-            {
-                InitEntity(data);
-
-                await _pB_MaterialPointBus.AddDataAsync(data);
-            }
-            else
-            {
-                await _pB_MaterialPointBus.UpdateDataAsync(data);
-            }
-        }
-
-        [HttpPost]
         public async Task DeleteData(List<string> ids)
         {
             await _pB_MaterialPointBus.DeleteDataAsync(ids);
