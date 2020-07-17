@@ -30,7 +30,7 @@ namespace Coldairarrow.Business.TD
                 .Include(i => i.Tray)
                 .Include(i => i.TrayZone)
                 .Include(i => i.Material)
-                .Where(w => w.StorId == input.StorId);
+                .Where(w => w.StorId == input.StorId && w.OutStorage.Status == 1);
             var search = input.Search;
             var where = LinqHelper.True<TD_OutStorDetail>();
             if (!search.Code.IsNullOrEmpty())

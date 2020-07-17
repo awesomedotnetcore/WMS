@@ -165,5 +165,11 @@ namespace Coldairarrow.Business.TD
 
             await this.UpdateAsync(receive);
         }
+
+        public async Task AutoInStorage(string id)
+        {
+            await Task.Delay(0);
+
+        }
     }
 }
