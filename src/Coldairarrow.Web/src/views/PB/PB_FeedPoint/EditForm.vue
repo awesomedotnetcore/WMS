@@ -1,19 +1,12 @@
 ﻿<template>
-  <a-modal
-    :title="title"
-    width="40%"
-    :visible="visible"
-    :confirmLoading="loading"
-    @ok="handleSubmit"
-    @cancel="()=>{this.visible=false}"
-  >
+  <a-modal :title="title" width="40%" :visible="visible" :confirmLoading="loading" @ok="handleSubmit" @cancel="()=>{this.visible=false}">
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="entity" :rules="rules" v-bind="layout">
-        <a-form-model-item label="仓库Id" prop="StorId">
-          <a-input v-model="entity.StorId" autocomplete="off" />
+        <a-form-model-item label="仓库" prop="StorId">
+          <storage-select v-model="entity.StorId"></storage-select>
         </a-form-model-item>
-        <a-form-model-item label="巷道Id" prop="LaneId">
-          <a-input v-model="entity.LaneId" autocomplete="off" />
+        <a-form-model-item label="巷道" prop="LaneId">
+          <laneway-select :storId="entity.StorId" v-model="entity.LaneId"></laneway-select>
         </a-form-model-item>
         <a-form-model-item label="名称" prop="Name">
           <a-input v-model="entity.Name" autocomplete="off" />
@@ -21,11 +14,8 @@
         <a-form-model-item label="编码" prop="Code">
           <a-input v-model="entity.Code" autocomplete="off" />
         </a-form-model-item>
-        <a-form-model-item label="类型：只进/进出/只出/出回" prop="Type">
-          <a-input v-model="entity.Type" autocomplete="off" />
-        </a-form-model-item>
-        <a-form-model-item label="是否启用" prop="IsEnable">
-          <a-input v-model="entity.IsEnable" autocomplete="off" />
+        <a-form-model-item label="类型" prop="Type">
+          <enum-select code="PointType" v-model="entity.Type"></enum-select>
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -33,7 +23,15 @@
 </template>
 
 <script>
+import StorageSelect from '../../../components/Storage/AllStorageSelect'
+import LanewaySelect from '../../../components/Storage/LanewaySelect'
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 export default {
+  components: {
+    StorageSelect,
+    LanewaySelect,
+    EnumSelect
+  },
   props: {
     parentObj: Object
   },
@@ -60,7 +58,7 @@ export default {
     },
     openForm(id, title) {
       this.init()
-
+      this.title = title
       if (id) {
         this.loading = true
         this.$http.post('/PB/PB_FeedPoint/GetTheData', { id: id }).then(resJson => {

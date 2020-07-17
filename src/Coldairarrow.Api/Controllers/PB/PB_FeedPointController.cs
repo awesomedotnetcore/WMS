@@ -24,7 +24,7 @@ namespace Coldairarrow.Api.Controllers.PB
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<PB_FeedPoint>> GetDataList(PageInput<ConditionDTO> input)
+        public async Task<PageResult<PB_FeedPoint>> GetDataList(PageInput<PB_FeedPointQM> input)
         {
             return await _pB_FeedPointBus.GetDataListAsync(input);
         }
