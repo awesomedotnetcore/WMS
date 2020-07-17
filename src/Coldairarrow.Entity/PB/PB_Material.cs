@@ -74,6 +74,11 @@ namespace Coldairarrow.Entity.PB
         public String SupId { get; set; }
 
         /// <summary>
+        /// 默认存储仓库
+        /// </summary>
+        public String StorId { get; set; }
+
+        /// <summary>
         /// 单价
         /// </summary>
         public Double? Price { get; set; }

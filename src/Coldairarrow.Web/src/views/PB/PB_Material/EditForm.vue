@@ -83,6 +83,14 @@
               <supplier-select v-model="entity.SupId"></supplier-select>
             </a-form-model-item>
           </a-col>
+          <a-col :span="12"></a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="12">
+            <a-form-model-item label="仓库" prop="StorId">
+              <storage-select v-model="entity.StorId" ></storage-select>
+            </a-form-model-item>
+          </a-col>
         </a-row>
         <a-form-model-item label="备注" prop="Remarks">
           <a-textarea v-model="entity.Remarks" autocomplete="off"></a-textarea>
@@ -93,12 +101,14 @@
 </template>
 
 <script>
+import StorageSelect from '../../../components/Storage/StorageSelect'
 import CustomerSelect from '../../../components/PB/CustomerSelect'
 import MaterialTypeSelect from '../../../components/PB/MaterialTypeSelect'
 import SupplierSelect from '../../../components/PB/SupplierSelect'
 import MeasureSelect from '../../../components/PB/MeasureSelect'
 export default {
   components: {
+    StorageSelect,
     MeasureSelect,
     CustomerSelect,
     MaterialTypeSelect,
@@ -117,6 +127,7 @@ export default {
       loading: false,
       entity: {},
       rules: {
+        StorId: [{ required: true, message: '请选择仓库', trigger: 'change' }],
         Name: [{ required: true, message: '请输入物料名称', trigger: 'blur' }],
         MaterialTypeId: [{ required: true, message: '请选择物料类型', trigger: 'change' }],
         MeasureId: [{ required: true, message: '请选择物料单位', trigger: 'change' }],

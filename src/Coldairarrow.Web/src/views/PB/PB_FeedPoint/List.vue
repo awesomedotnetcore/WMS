@@ -1,5 +1,5 @@
 ﻿<template>
-  <a-drawer title="字典值" placement="right" :closable="true" :maskClosable="false" @close="onDrawerClose" :visible="visible" :width="1024" :getContainer="false">
+  <a-card :bordered="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
       <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
@@ -11,7 +11,17 @@
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.Keyword" placeholder="字典值/名称/编码" />
+              <a-input v-model="queryParam.Keyword" placeholder="名称/编码" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="4" :sm="24">
+            <a-form-item>
+              <storage-select v-model="queryParam.StorId"></storage-select>
+            </a-form-item>
+          </a-col>
+          <a-col :md="4" :sm="24">
+            <a-form-item>
+              <enum-select code="PointType" v-model="queryParam.Type"></enum-select>
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -23,43 +33,65 @@
     </div>
 
     <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+      <template slot="NameCode" slot-scope="obj">
+        <a-tooltip>
+          <template slot="title">
+            {{ obj.Code }}
+          </template>
+          {{ obj.Name }}
+        </a-tooltip>
+      </template>
+      <template slot="YesOrNo" slot-scope="text">
+        <a-tag v-if="text" color="green">是</a-tag>
+        <a-tag v-else color="pink">否</a-tag>
+      </template>
+      <template slot="EnumName" slot-scope="text">
+        <enum-name code="PointType" :value="text"></enum-name>
+      </template>
       <span slot="action" slot-scope="text, record">
         <template>
-          <a v-if="!record.IsSystem" @click="handleEdit(record.Id)">编辑</a>
-          <a-divider v-if="!record.IsSystem" type="vertical" />
-          <a v-if="!record.IsSystem" @click="handleDelete([record.Id])">删除</a>
+          <a v-if="!record.IsEnable" @click="handleEdit(record.Id)">编辑</a>
+          <a-divider v-if="!record.IsEnable" type="vertical" />
+          <a v-if="!record.IsEnable" @click="handleDelete([record.Id])">删除</a>
+          <a-divider v-if="!record.IsEnable" type="vertical" />
+          <a @click="handleEnable(record.Id,!record.IsEnable)">{{ record.IsEnable?'停用':'启用' }}</a>
+          <a-divider type="vertical" />
+          <a @click="handleEdit(record.Id)">关联物料</a>
         </template>
       </span>
     </a-table>
 
-    <edit-form ref="editForm" :parentObj="this" :enumObj="enumData"></edit-form>
-  </a-drawer>
+    <edit-form ref="editForm" :parentObj="this"></edit-form>
+  </a-card>
 </template>
 
 <script>
 import EditForm from './EditForm'
-const filterYesOrNo = (value, row, index) => {
-  if (value) return '是'
-  else return '否'
-}
+import StorageSelect from '../../../components/Storage/AllStorageSelect'
+import EnumName from '../../../components/BaseEnum/BaseEnumName'
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 const columns = [
-  { title: '字典名称', dataIndex: 'Name', width: '20%' },
-  { title: '字典值', dataIndex: 'Value', width: '20%' },
-  { title: '字典编码', dataIndex: 'Code', width: '20%' },
-  { title: '系统必须', dataIndex: 'IsSystem', customRender: filterYesOrNo, width: '10%' },
+  { title: '名称', dataIndex: 'Name' },
+  { title: '编码', dataIndex: 'Code' },
+  { title: '仓库', dataIndex: 'Storage', scopedSlots: { customRender: 'NameCode' } },
+  { title: '巷道', dataIndex: 'Laneway', scopedSlots: { customRender: 'NameCode' } },
+  { title: '类型', dataIndex: 'Type', scopedSlots: { customRender: 'EnumName' } },
+  { title: '启用', dataIndex: 'IsEnable', scopedSlots: { customRender: 'YesOrNo' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
-    EditForm
+    EditForm,
+    StorageSelect,
+    EnumName,
+    EnumSelect
   },
   mounted() {
+    this.getDataList()
   },
   data() {
     return {
-      enumData: {},
-      visible: false,
       data: [],
       pagination: {
         current: 1,
@@ -86,7 +118,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/Base/Base_EnumItem/GetDataList', {
+        .post('/PB/PB_FeedPoint/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
@@ -102,21 +134,17 @@ export default {
           this.pagination = pagination
         })
     },
-    onSelectChange(selectedRowKeys, selectedRows) {
-      var ids = []
-      selectedRows.forEach((val, index, arr) => {
-        if (!val.IsSystem) ids.push(val.Id)
-      })
-      this.selectedRowKeys = ids
+    onSelectChange(selectedRowKeys) {
+      this.selectedRowKeys = selectedRowKeys
     },
     hasSelected() {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm(null,"新增")
+      this.$refs.editForm.openForm(null, '新建')
     },
     handleEdit(id) {
-      this.$refs.editForm.openForm(id,"编辑")
+      this.$refs.editForm.openForm(id, '编辑')
     },
     handleDelete(ids) {
       var thisObj = this
@@ -124,7 +152,7 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/Base/Base_EnumItem/DeleteData', ids).then(resJson => {
+            thisObj.$http.post('/PB/PB_FeedPoint/DeleteData', ids).then(resJson => {
               resolve()
 
               if (resJson.Success) {
@@ -139,14 +167,24 @@ export default {
         }
       })
     },
-    openDrawer(record) {
-      this.filters.EnumId = record.Id
-      this.enumData = record
-      this.visible = true
-      this.getDataList()
-    },
-    onDrawerClose() {
-      this.visible = false
+    handleEnable(id, enable) {
+      var thisObj = this
+      this.$confirm({
+        title: '确认' + (enable ? '启用' : '停用') + '此料点吗?',
+        onOk() {
+          return new Promise((resolve, reject) => {
+            thisObj.$http.post('/PB/PB_FeedPoint/Enable?Id=' + id + '&enable=' + enable).then(resJson => {
+              resolve()
+              if (resJson.Success) {
+                thisObj.$message.success('操作成功!')
+                thisObj.getDataList()
+              } else {
+                thisObj.$message.error(resJson.Msg)
+              }
+            })
+          })
+        }
+      })
     }
   }
 }

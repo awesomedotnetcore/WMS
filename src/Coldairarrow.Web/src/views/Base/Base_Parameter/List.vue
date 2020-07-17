@@ -5,7 +5,7 @@
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.Keyword" placeholder="编码/名称" />
+              <a-input v-model="queryParam.Keyword" placeholder="参数编号/名称" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -21,9 +21,23 @@
         <enum-name code="SystemType" :value="text"></enum-name>
       </template>
       <template slot="CusVal" slot-scope="text, record">
-        <a-select v-if="record.ValConfig.Type==='select'" :value="record.Val" :style="{width:'100%'}" @select="e=>handleValChange(record,e)">
-          <a-select-option v-for="item in record.ValConfig.Data" :key="item.Value" :value="item.Value">{{ item.Name }}</a-select-option>
-        </a-select>
+        <div class="editable-cell">
+          <div v-if="record.editable" class="editable-cell-input-wrapper">
+            <a-select v-if="record.ValConfig.Type==='select'" :value="record.Val" :style="{width:'70%'}" size="small" @select="e=>handleValChange(record,e)">
+              <a-select-option v-for="item in record.ValConfig.Data" :key="item.Value" :value="item.Value">{{ item.Name }}</a-select-option>
+            </a-select>
+            <a-input v-else :value="record.Val" :style="{width:'70%'}" size="small"></a-input>
+            <a-icon type="check" class="editable-cell-icon-check" @click="handleUpdate(record)" />
+          </div>
+          <div v-else class="editable-cell-text-wrapper">
+            <span v-if="record.ValConfig.Type==='select'">
+              {{ record.ValConfig.Data.find(n=>n.Value===record.Val).Name }}
+            </span>
+            <span v-else>{{ text }}</span>
+            <a-icon type="edit" class="editable-cell-icon" @click="e=>{record.editable=true}" />
+          </div>
+        </div>
+
       </template>
       <span slot="IsSystem" slot-scope="text, record">
         <template>
@@ -94,10 +108,11 @@ export default {
         })
         .then(resJson => {
           this.loading = false
-          this.data = resJson.Data
-          this.data.forEach(item => {
+          resJson.Data.forEach(item => {
             item.ValConfig = JSON.parse(item.ValConfig)
+            item.editable = false
           })
+          this.data = resJson.Data
           const pagination = { ...this.pagination }
           pagination.total = resJson.Total
           this.pagination = pagination
@@ -105,6 +120,17 @@ export default {
     },
     handleValChange(item, val) {
       item.Val = val
+    },
+    handleUpdate(record) {
+      record.editable = false
+      var entity = { Id: record.Id, Code: record.Code, Val: record.Val }
+      this.$http.post('/Base/Base_Parameter/SaveData', entity).then(resJson => {
+        if (resJson.Success) {
+          this.$message.success('参数修改成功!')
+        } else {
+          this.$message.error(resJson.Msg)
+        }
+      })
     }
   }
 }

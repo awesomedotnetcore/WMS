@@ -13,6 +13,8 @@ namespace Coldairarrow.Business.TD
         Task Approval(AuditDTO audit);
 
         Task UpdateByInStorage(string id);
+
+        Task AutoInStorage(string id);
     }
     public class TD_ReceivingQM
     {

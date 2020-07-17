@@ -41,7 +41,7 @@ namespace Coldairarrow.Business.PB
             return await q.Where(where).ToListAsync();
         }
 
-        public async Task<List<PB_Customer>> GetQueryData(SelectQueryDTO search)
+        public async Task<List<PB_Customer>> GetQueryData( SelectQueryDTO search)
         {
             var q = GetIQueryable();
             var where = LinqHelper.True<PB_Customer>();

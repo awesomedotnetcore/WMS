@@ -1,49 +1,51 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Coldairarrow.Entity.PB
 {
     /// <summary>
-    /// 条码规则
+    /// 进料点/出料点
     /// </summary>
-    [Table("PB_BarCodeRule")]
-    public partial class PB_BarCodeRule
+    [Table("PB_FeedPoint")]
+    public partial class PB_FeedPoint
     {
 
         /// <summary>
-        /// Id
+        /// 主键ID
         /// </summary>
         [Key, Column(Order = 1)]
         public String Id { get; set; }
 
         /// <summary>
-        /// BarCodeId
+        /// 仓库Id
         /// </summary>
-        public String TypeId { get; set; }
+        public String StorId { get; set; }
 
         /// <summary>
-        /// 类型
-        /// 常量 日期 流水号 引用 每日流水号 随机数(GUID) 参数
+        /// 巷道Id
+        /// </summary>
+        public String LaneId { get; set; }
+
+        /// <summary>
+        /// 名称
+        /// </summary>
+        public String Name { get; set; }
+
+        /// <summary>
+        /// 编码
+        /// </summary>
+        public String Code { get; set; }
+
+        /// <summary>
+        /// 类型：只进/进出/只出/出回
         /// </summary>
         public String Type { get; set; }
 
         /// <summary>
-        /// 排序
+        /// 是否启用
         /// </summary>
-        public String Sort { get; set; }
-
-        /// <summary>
-        /// 规则
-        /// </summary>
-        public String Rule { get; set; }
-
-        /// <summary>
-        /// 长度
-        /// </summary>
-        public Int32? length { get; set; }
+        public Boolean IsEnable { get; set; }
 
         /// <summary>
         /// 创建时间
