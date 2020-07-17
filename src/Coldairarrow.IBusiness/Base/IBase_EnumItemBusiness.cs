@@ -17,9 +17,7 @@ namespace Coldairarrow.Business.Base
 
     public class Base_EnumItemQM
     {
-        public string Name { get; set; }
-        public string Code { get; set; }
-        public string Value { get; set; }
+        public string Keyword { get; set; }
     }
     public class Base_EnumItemPageInput : PageInput<Base_EnumItemQM>
     {

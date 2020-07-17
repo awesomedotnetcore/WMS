@@ -11,17 +11,7 @@
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.Name" placeholder="字典名称" />
-            </a-form-item>
-          </a-col>
-          <a-col :md="4" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.Value" placeholder="字典值" />
-            </a-form-item>
-          </a-col>
-          <a-col :md="4" :sm="24">
-            <a-form-item>
-              <a-input v-model="queryParam.Code" placeholder="字典编码" />
+              <a-input v-model="queryParam.Keyword" placeholder="字典值/名称/编码" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">

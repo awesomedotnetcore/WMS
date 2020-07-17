@@ -16,7 +16,7 @@
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="货区编码或名称" />
+              <a-input v-model="queryParam.keyword" placeholder="货区编号或名称" />
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
