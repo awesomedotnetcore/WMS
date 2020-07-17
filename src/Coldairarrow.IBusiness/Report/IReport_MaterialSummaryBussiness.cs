@@ -18,6 +18,7 @@ namespace Coldairarrow.IBusiness.Report
     {
         public string MaterialTypeId { get; set; }
         public string MaterialName { get; set; }
+        public string BatchNo { get; set; }
         public bool MinAlert { get; set; }
         public bool MaxAlert { get; set; }
     }

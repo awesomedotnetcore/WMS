@@ -1,8 +1,10 @@
 ﻿using Coldairarrow.Business.TD;
 using Coldairarrow.Entity.TD;
 using Coldairarrow.IBusiness;
+using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -28,8 +30,9 @@ namespace Coldairarrow.Api.Controllers.TD
         #region 获取
 
         [HttpPost]
-        public async Task<PageResult<TD_Send>> GetDataList(PageInput<ConditionDTO> input)
+        public async Task<PageResult<TD_Send>> GetDataList(TD_SendPageInput input)
         {
+            input.StorId = _Op.Property.DefaultStorageId;
             return await _tD_SendBus.GetDataListAsync(input);
         }
 
@@ -89,6 +92,15 @@ namespace Coldairarrow.Api.Controllers.TD
         public async Task DeleteData(List<string> ids)
         {
             await _tD_SendBus.DeleteDataAsync(ids);
+        }
+
+        [HttpPost]
+        public async Task Approval(AuditDTO audit)
+        {
+            audit.StorId = _Op.Property.DefaultStorageId;
+            audit.AuditUserId = _Op.UserId;
+            audit.AuditTime = DateTime.Now;
+            await _tD_SendBus.Approval(audit);
         }
 
         #endregion

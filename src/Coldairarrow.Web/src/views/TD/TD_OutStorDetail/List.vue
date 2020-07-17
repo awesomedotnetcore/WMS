@@ -1,12 +1,12 @@
 ﻿<template>
     <div>
-    <div class="table-operator">
+    <div class="table-operator"  v-if="!receive">
       <a-button :disabled="disabled" type="primary" icon="plus" @click="hanldleAdd()"  >添加</a-button>
       <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected() || disabled" >删除</a-button>
     </div>
     <a-table
-      ref="table"
-      :columns="columns"
+      ref="table"    
+      :columns="receive?sendColumns:columns" 
       :rowKey="row => row.Id"
       :pagination="false" 
       :dataSource="data"
@@ -16,6 +16,8 @@
     >
       <a-breadcrumb slot="Location" slot-scope="text, record">
         <a-breadcrumb-item>
+          <!-- <sendmaterial-list v-if="receive" size="small" v-model="record.LocalId" :storid="storage.Id" :disabled="disabled" @select="e=>handleValChange(e,'Location',record)"></sendmaterial-list> -->
+          <!-- <local-select v-if="receive" size="small" v-model="record.LocalId" :storid="storage.Id" :disabled="disabled" @select="e=>handleValChange(e,'Location',record)"></local-select> -->
           <a-tooltip>
             <template slot="title">货位:{{ record.Location.Code }}</template>
             {{ record.Location.Name }}
@@ -52,8 +54,10 @@
 
 <script>
 import LocalmaterialList from './LocalMaterialList'
+// import LocalSelect from '../../../components/Location/LocationSelect'
+// import SendmaterialList from '../TD_SendDetail/SendMaterialList'
 
-const columns1 = [
+const columns = [
   { title: '物料', dataIndex: 'Material.Name'},
   { title: '编码', dataIndex: 'Material.Code' },
   { title: '货位', dataIndex: 'Location', scopedSlots: { customRender: 'Location' } },
@@ -64,21 +68,34 @@ const columns1 = [
   { title: '出库数量', dataIndex: 'OutNum', scopedSlots: { customRender: 'OutNum' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
+const sendColumns = [
+  { title: '物料', dataIndex: 'Material.Name'},
+  { title: '编码', dataIndex: 'Material.Code' },
+  { title: '货位', dataIndex: 'Location', scopedSlots: { customRender: 'Location' } },
+  { title: '批次号', dataIndex: 'BatchNo'},
+  { title: '库存', dataIndex: 'LocalNum'},
+  { title: '出库数量', dataIndex: 'OutNum', scopedSlots: { customRender: 'OutNum' } },
+  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+]
 
 export default {
   components: {
-    LocalmaterialList
+    LocalmaterialList,
+    // LocalSelect
+    // SendmaterialList
   },
   props: {
     value: { type: Array, required: true },
-    disabled: { type: Boolean, required: false, default: false }
+    disabled: { type: Boolean, required: false, default: false },
+    receive: { type: Boolean, required: false, default: false } 
   },
   data() {
     return {
       storage: {},
       data: [],
       // curDetail: {},
-      columns: columns1,
+      columns,
+      sendColumns,
       tempId: 0,
       selectedRowKeys: [],
       selectedRows: []
@@ -115,7 +132,9 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.localmaterialList.openChoose()
+      //this.tempId += 1
+      //var SendDetail = { Id: 'newid_' + this.tempId.toString(), LocalId: '', TrayId: null, ZoneId: null, MaterialId: '' }
+      this.$refs.localmaterialList.openChoose()//SendDetail
     },
     handleDelete(items) {
       var thisObj = this
@@ -134,7 +153,7 @@ export default {
           })
         }
       })
-    },
+    },    
     handlerDetailSubmit(rows) {
       console.log('handlerDetailSubmit', rows)
       rows.forEach(element => {

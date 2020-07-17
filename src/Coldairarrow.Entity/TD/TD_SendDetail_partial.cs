@@ -14,10 +14,15 @@ namespace Coldairarrow.Entity.TD
         [ForeignKey(nameof(SendId))]
         public TD_Send Send { get; set; }
 
+        [ForeignKey(nameof(LocalId))]
+        public PB_Location Location { get; set; }
+
         [ForeignKey(nameof(MaterialId))]
         public PB_Material Material { get; set; }
 
         [ForeignKey(nameof(MeasureId))]
         public PB_Measure Measure { get; set; }
+
+
     }
 }

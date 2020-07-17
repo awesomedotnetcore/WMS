@@ -1,4 +1,5 @@
 ﻿using Coldairarrow.Entity.Base_Manage;
+using Coldairarrow.Entity.IT;
 using Coldairarrow.Entity.PB;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,8 @@ namespace Coldairarrow.Entity.TD
     public partial class TD_OutStorage
     {
         public List<TD_OutStorDetail> OutStorDetails { get; set; }
+
+        //public List<IT_LocalMaterial> LocalMaterias { get; set; }
 
         [ForeignKey(nameof(CusId))]
         public PB_Customer Customer { get; set; }

@@ -60,7 +60,7 @@ namespace Coldairarrow.Entity.TD
         /// <summary>
         /// 客户地址
         /// </summary>
-        public String AddId { get; set; }
+        public String AddrId { get; set; }
 
         /// <summary>
         /// 总共数量
