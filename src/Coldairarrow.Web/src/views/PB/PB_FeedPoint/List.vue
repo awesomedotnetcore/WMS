@@ -2,13 +2,7 @@
   <a-card :bordered="false">
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button
-        type="primary"
-        icon="minus"
-        @click="handleDelete(selectedRowKeys)"
-        :disabled="!hasSelected()"
-        :loading="loading"
-      >删除</a-button>
+      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
 
@@ -16,19 +10,18 @@
       <a-form layout="inline">
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
-            <a-form-item label="查询类别">
-              <a-select allowClear v-model="queryParam.condition">
-                <a-select-option key="StorId">仓库Id</a-select-option>
-                <a-select-option key="LaneId">巷道Id</a-select-option>
-                <a-select-option key="Name">名称</a-select-option>
-                <a-select-option key="Code">编码</a-select-option>
-                <a-select-option key="Type">类型：只进/进出/只出/出回</a-select-option>
-              </a-select>
+            <a-form-item>
+              <a-input v-model="queryParam.Keyword" placeholder="名称/编码" />
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.keyword" placeholder="关键字" />
+              <storage-select v-model="queryParam.StorId"></storage-select>
+            </a-form-item>
+          </a-col>
+          <a-col :md="4" :sm="24">
+            <a-form-item>
+              <enum-select code="PointType" v-model="queryParam.Type"></enum-select>
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -39,18 +32,19 @@
       </a-form>
     </div>
 
-    <a-table
-      ref="table"
-      :columns="columns"
-      :rowKey="row => row.Id"
-      :dataSource="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      :bordered="true"
-      size="small"
-    >
+    <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+      <template slot="NameCode" slot-scope="obj">
+        <a-tooltip>
+          <template slot="title">
+            {{ obj.Code }}
+          </template>
+          {{ obj.Name }}
+        </a-tooltip>
+      </template>
+      <template slot="YesOrNo" slot-scope="text">
+        <a-tag v-if="text" color="green">是</a-tag>
+        <a-tag v-else color="pink">否</a-tag>
+      </template>
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleEdit(record.Id)">编辑</a>
@@ -66,20 +60,25 @@
 
 <script>
 import EditForm from './EditForm'
-
+import StorageSelect from '../../../components/Storage/AllStorageSelect'
+import EnumName from '../../../components/BaseEnum/BaseEnumName'
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 const columns = [
-  { title: '仓库Id', dataIndex: 'StorId', width: '10%' },
-  { title: '巷道Id', dataIndex: 'LaneId', width: '10%' },
-  { title: '名称', dataIndex: 'Name', width: '10%' },
-  { title: '编码', dataIndex: 'Code', width: '10%' },
-  { title: '类型：只进/进出/只出/出回', dataIndex: 'Type', width: '10%' },
-  { title: '是否启用', dataIndex: 'IsEnable', width: '10%' },
+  { title: '仓库', dataIndex: 'Storage', scopedSlots: { customRender: 'NameCode' } },
+  { title: '巷道', dataIndex: 'Laneway', scopedSlots: { customRender: 'NameCode' } },
+  { title: '名称', dataIndex: 'Name' },
+  { title: '编码', dataIndex: 'Code' },
+  { title: '类型', dataIndex: 'Type' },
+  { title: '启用', dataIndex: 'IsEnable', scopedSlots: { customRender: 'YesOrNo' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
-    EditForm
+    EditForm,
+    StorageSelect,
+    EnumName,
+    EnumSelect
   },
   mounted() {
     this.getDataList()
@@ -135,10 +134,10 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm()
+      this.$refs.editForm.openForm(null, '新建')
     },
     handleEdit(id) {
-      this.$refs.editForm.openForm(id)
+      this.$refs.editForm.openForm(id, '编辑')
     },
     handleDelete(ids) {
       var thisObj = this
