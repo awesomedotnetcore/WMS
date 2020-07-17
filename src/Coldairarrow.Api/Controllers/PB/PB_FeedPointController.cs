@@ -60,6 +60,12 @@ namespace Coldairarrow.Api.Controllers.PB
             await _pB_FeedPointBus.DeleteDataAsync(ids);
         }
 
+        [HttpPost]
+        public async Task Enable(string id,bool enable)
+        {
+            await _pB_FeedPointBus.Enable(id, enable);
+        }
+
         #endregion
     }
 }

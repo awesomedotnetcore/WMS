@@ -45,11 +45,18 @@
         <a-tag v-if="text" color="green">是</a-tag>
         <a-tag v-else color="pink">否</a-tag>
       </template>
+      <template slot="EnumName" slot-scope="text">
+        <enum-name code="PointType" :value="text"></enum-name>
+      </template>
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="handleEdit(record.Id)">编辑</a>
+          <a v-if="!record.IsEnable" @click="handleEdit(record.Id)">编辑</a>
+          <a-divider v-if="!record.IsEnable" type="vertical" />
+          <a v-if="!record.IsEnable" @click="handleDelete([record.Id])">删除</a>
+          <a-divider v-if="!record.IsEnable" type="vertical" />
+          <a @click="handleEnable(record.Id,!record.IsEnable)">{{ record.IsEnable?'停用':'启用' }}</a>
           <a-divider type="vertical" />
-          <a @click="handleDelete([record.Id])">删除</a>
+          <a @click="handleEdit(record.Id)">关联物料</a>
         </template>
       </span>
     </a-table>
@@ -64,11 +71,11 @@ import StorageSelect from '../../../components/Storage/AllStorageSelect'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 const columns = [
-  { title: '仓库', dataIndex: 'Storage', scopedSlots: { customRender: 'NameCode' } },
-  { title: '巷道', dataIndex: 'Laneway', scopedSlots: { customRender: 'NameCode' } },
   { title: '名称', dataIndex: 'Name' },
   { title: '编码', dataIndex: 'Code' },
-  { title: '类型', dataIndex: 'Type' },
+  { title: '仓库', dataIndex: 'Storage', scopedSlots: { customRender: 'NameCode' } },
+  { title: '巷道', dataIndex: 'Laneway', scopedSlots: { customRender: 'NameCode' } },
+  { title: '类型', dataIndex: 'Type', scopedSlots: { customRender: 'EnumName' } },
   { title: '启用', dataIndex: 'IsEnable', scopedSlots: { customRender: 'YesOrNo' } },
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
@@ -151,6 +158,25 @@ export default {
               if (resJson.Success) {
                 thisObj.$message.success('操作成功!')
 
+                thisObj.getDataList()
+              } else {
+                thisObj.$message.error(resJson.Msg)
+              }
+            })
+          })
+        }
+      })
+    },
+    handleEnable(id, enable) {
+      var thisObj = this
+      this.$confirm({
+        title: '确认' + (enable ? '启用' : '停用') + '此料点吗?',
+        onOk() {
+          return new Promise((resolve, reject) => {
+            thisObj.$http.post('/PB/PB_FeedPoint/Enable?Id=' + id + '&enable=' + enable).then(resJson => {
+              resolve()
+              if (resJson.Success) {
+                thisObj.$message.success('操作成功!')
                 thisObj.getDataList()
               } else {
                 thisObj.$message.error(resJson.Msg)

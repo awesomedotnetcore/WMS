@@ -8,6 +8,7 @@ namespace Coldairarrow.Business.PB
     public partial interface IPB_FeedPointBusiness
     {
         Task<PageResult<PB_FeedPoint>> GetDataListAsync(PageInput<PB_FeedPointQM> input);
+        Task Enable(string id, bool enable);
     }
     public class PB_FeedPointQM
     {

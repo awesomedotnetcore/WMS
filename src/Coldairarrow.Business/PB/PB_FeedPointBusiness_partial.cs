@@ -24,5 +24,9 @@ namespace Coldairarrow.Business.PB
             where = where.AndIf(!search.Type.IsNullOrEmpty(), w => w.Type == search.Type);
             return await q.Where(where).GetPageResultAsync(input);
         }
+        public async Task Enable(string id, bool enable)
+        {
+            await UpdateWhere_SqlAsync(w => w.Id == id, ("IsEnable", UpdateType.Equal, enable));
+        }
     }
 }
