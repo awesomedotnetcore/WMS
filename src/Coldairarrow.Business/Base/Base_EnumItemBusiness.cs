@@ -25,12 +25,8 @@ namespace Coldairarrow.Business.Base
             var where = LinqHelper.True<Base_EnumItem>();
             var search = input.Search;
 
-            if (!search.Name.IsNullOrEmpty())
-                where = where.And(w => w.Name.Contains(search.Name));
-            if (!search.Value.IsNullOrEmpty())
-                where = where.And(w => w.Value.Contains(search.Value));
-            if (!search.Code.IsNullOrEmpty())
-                where = where.And(w => w.Code.Contains(search.Code));
+            if (!search.Keyword.IsNullOrEmpty())
+                where = where.And(w => w.Name.Contains(search.Keyword) || w.Code.Contains(search.Keyword));
 
             return await q.Where(where).GetPageResultAsync(input);
         }
