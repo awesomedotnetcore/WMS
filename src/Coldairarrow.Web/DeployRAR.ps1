@@ -7,7 +7,7 @@ Write-Host 'RAR Starting' -ForegroundColor Yellow
 $CurDateString=Get-Date -Format "yyyyMMddHHmmss"
 $RARFileName="WMSWeb"+$CurDateString+".rar"
 $CurPath=(Resolve-Path .).Path
-Start-Process -FilePath $WinRARPath -ArgumentList "a","-r","-ep1",$RARFileName,"-cfg-",".\dist\*.*" -WorkingDirectory $CurPath -NoNewWindow -Wait
+Start-Process -FilePath $WinRARPath -ArgumentList "a","-r","-ep1","-cfg-","-ibck",$RARFileName,".\dist\*.*" -WorkingDirectory $CurPath -NoNewWindow -Wait
 Write-Host 'RAR Completed' -ForegroundColor Green
 $RARFilePath=$CurPath+"\"+$RARFileName
 Write-Host 'Deploy Starting' -ForegroundColor Yellow
@@ -22,7 +22,7 @@ $RemotePath="D:\ZEQPWMS\"
 Copy-Item $RARFilePath -Destination $RemotePath -ToSession $Session
 $RemoteRemovePath=$RemotePath+"WMSWeb\*"
 Invoke-Command -Session $Session -ScriptBlock {param($p) Remove-Item -Path $p -Recurse -Force} -ArgumentList $RemoteRemovePath
-Invoke-Command -Session $Session -ScriptBlock {param($p,$n,$rp) Start-Process -FilePath $p -ArgumentList "x",$n,"*",".\WMSWeb\" -WorkingDirectory $rp -NoNewWindow -PassThru -Wait} -ArgumentList $WinRARPath,$RARFileName,$RemotePath
+Invoke-Command -Session $Session -ScriptBlock {param($p,$n,$rp) Start-Process -FilePath $p -ArgumentList "x",$n,"*",".\WMSWeb\","-ibck" -WorkingDirectory $rp -NoNewWindow -Wait} -ArgumentList $WinRARPath,$RARFileName,$RemotePath
 Disconnect-PSSession -Session $Session
 Remove-Item -Path $RARFilePath
 Write-Host 'Disconnected from server' -ForegroundColor Yellow
