@@ -11,4 +11,11 @@ namespace Coldairarrow.IBusiness.DTO
 
         public List<string> keys { set; get; }
     }
+
+    public class PBMaterialPointConditionDTO
+    {
+        public string id { set; get; }
+
+        public List<string> keys { set; get; }
+    }
 }

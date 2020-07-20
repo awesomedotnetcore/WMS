@@ -56,17 +56,18 @@
           <a-divider v-if="!record.IsEnable" type="vertical" />
           <a @click="handleEnable(record.Id,!record.IsEnable)">{{ record.IsEnable?'停用':'启用' }}</a>
           <a-divider type="vertical" />
-          <a @click="handleEdit(record.Id)">关联物料</a>
+          <a @click="openMaterialList(record.Id)">关联物料</a>
         </template>
       </span>
     </a-table>
-
+    <material-list ref="materialList" :parentObj="this"></material-list>
     <edit-form ref="editForm" :parentObj="this"></edit-form>
   </a-card>
 </template>
 
 <script>
 import EditForm from './EditForm'
+import MaterialList from '../PB_MaterialPoint/List'
 import StorageSelect from '../../../components/Storage/AllStorageSelect'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
@@ -84,6 +85,7 @@ export default {
   components: {
     EditForm,
     StorageSelect,
+    MaterialList,
     EnumName,
     EnumSelect
   },
@@ -185,6 +187,9 @@ export default {
           })
         }
       })
+    },
+    openMaterialList(pointId) {
+      this.$refs.materialList.openDrawer(pointId)
     }
   }
 }

@@ -11,8 +11,7 @@ namespace Coldairarrow.Business.PB
     }
     public class PB_MaterialPointQM
     {
-        public string Keyword { get; set; }
-        public string MaterialTypeId { get; set; }
+        public string MaterialName { get; set; }
     }
     public class PB_MaterialPointPageInput : PageInput<PB_MaterialPointQM>
     {

@@ -1,4 +1,5 @@
 ﻿using Coldairarrow.Entity.PB;
+using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using EFCore.Sharding;
 using LinqKit;
@@ -22,18 +23,32 @@ namespace Coldairarrow.Business.PB
         public async Task<PageResult<PB_MaterialPoint>> GetDataListAsync(PageInput<ConditionDTO> input)
         {
             var q = GetIQueryable();
-            var where = LinqHelper.True<PB_MaterialPoint>();
             var search = input.Search;
+            q = q.Include(i => i.PB_Material);
 
             //筛选
-            if (!search.Condition.IsNullOrEmpty() && !search.Keyword.IsNullOrEmpty())
+            if (!search.Keyword.IsNullOrEmpty())
             {
-                var newWhere = DynamicExpressionParser.ParseLambda<PB_MaterialPoint, bool>(
-                    ParsingConfig.Default, false, $@"{search.Condition}.Contains(@0)", search.Keyword);
-                where = where.And(newWhere);
+                q = q.Where(w => w.PointId == search.Keyword);
             }
+            var res = await q.GetPageResultAsync(input);
 
-            return await q.Where(where).GetPageResultAsync(input);
+            return res;
+        }
+
+        public async Task<List<PB_MaterialPoint>> GetDataListAsync(string pointId)
+        {
+            var q = GetIQueryable();
+            q = q.Include(i => i.PB_Material);
+
+            //筛选
+            if (!pointId.IsNullOrEmpty())
+            {
+                q = q.Where(w => w.PointId == pointId);
+            }
+            var res = await q.ToListAsync();
+
+            return res;
         }
 
         public async Task<PB_MaterialPoint> GetTheDataAsync(string id)
@@ -46,14 +61,56 @@ namespace Coldairarrow.Business.PB
             await InsertAsync(data);
         }
 
+        public async Task AddDataAsync(PBMaterialPointConditionDTO data)
+        {
+            var pointId = data.id;
+            var targetKeys = data.keys;
+
+            var list = await GetDataListAsync(pointId);
+            var amlist = list.Select(t => t.MaterialId).ToList();
+
+            var reault = targetKeys.Except(amlist);
+
+            var addList = new List<PB_MaterialPoint>();
+
+            foreach (var i in reault)
+            {
+                addList.Add(new PB_MaterialPoint()
+                {
+                    PointId = pointId,
+                    MaterialId = i
+                });
+            }
+            await InsertAsync(addList);
+        }
+
+        public async Task<int> AddDataAsync(List<PB_MaterialPoint> datas)
+        {
+            return await InsertAsync(datas);
+        }
+
         public async Task UpdateDataAsync(PB_MaterialPoint data)
         {
             await UpdateAsync(data);
         }
 
-        public async Task DeleteDataAsync(List<string> ids)
+        public async Task<int> UpdateDataAsync(List<PB_MaterialPoint> datas)
         {
-            await DeleteAsync(ids);
+            return await UpdateAsync(datas);
+        }
+
+        //public async Task DeleteDataAsync(List<string> ids)
+        //{
+        //    await DeleteAsync(ids);
+        //}
+
+        public async Task DeleteDataAsync(string PointId, List<string> materialIds)
+        {
+
+            foreach (var key in materialIds)
+            {
+                await Db.ExecuteSqlAsync(string.Format("delete from PB_MaterialPoint where PointId='{0}' and MaterialId='{1}'", PointId, key));
+            }
         }
 
         #endregion

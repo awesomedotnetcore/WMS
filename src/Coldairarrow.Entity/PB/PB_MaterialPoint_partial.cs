@@ -7,15 +7,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Coldairarrow.Entity.PB
 {
     /// <summary>
-    /// 进料点/出料点 与物料对应关系
+    /// 货区物料关系表
     /// </summary>
     public partial class PB_MaterialPoint
     {
+
         [ForeignKey(nameof(PointId))]
-        public PB_FeedPoint Point { get; set; }
+        public PB_FeedPoint PB_FeedPoint { get; set; }
 
         [ForeignKey(nameof(MaterialId))]
-        public PB_Material Material { get; set; }
+        public PB_Material PB_Material { get; set; }
+
     }
 
     public class PB_MaterialPointEntityTypeConfig : IEntityTypeConfiguration<PB_MaterialPoint>
@@ -25,13 +27,10 @@ namespace Coldairarrow.Entity.PB
             builder
                 .HasKey(t => new { t.MaterialId, t.PointId });
 
-            builder.HasOne(pt => pt.Material)
-                .WithMany(p => p.MaterialPoints)
+            builder.HasOne(pt => pt.PB_Material)
+                .WithMany(p => p.PB_MaterialPoints)
                 .HasForeignKey(pt => pt.MaterialId);
 
-            builder.HasOne(pt => pt.Point)
-                .WithMany(p => p.MaterialPoints)
-                .HasForeignKey(pt => pt.PointId);
         }
     }
 }

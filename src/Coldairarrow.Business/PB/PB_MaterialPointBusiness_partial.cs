@@ -14,17 +14,18 @@ namespace Coldairarrow.Business.PB
     {
         public async Task<PageResult<PB_MaterialPoint>> GetDataListAsync(PB_MaterialPointPageInput input)
         {
-            var q = GetIQueryable()
-                .Include(i => i.Material)
-                .Include(i => i.Point)
-                .Where(w => w.PointId == input.PointId);
-            var where = LinqHelper.True<PB_MaterialPoint>();
+            var q = GetIQueryable().Where(w => w.PointId == input.PointId);
             var search = input.Search;
+            q = q.Include(i => i.PB_Material);
 
-            where = where.AndIf(!search.Keyword.IsNullOrEmpty(), w => w.Material.Name.Contains(search.Keyword) || w.Material.Code.Contains(search.Keyword) || w.Material.BarCode.Contains(search.Keyword) || w.Material.SimpleName.Contains(search.Keyword));
-            where = where.AndIf(!search.MaterialTypeId.IsNullOrEmpty(), w => w.Material.MaterialTypeId == search.MaterialTypeId);
+            //筛选
+            if (!search.MaterialName.IsNullOrEmpty())
+            {
+                q = q.Where(w => w.PB_Material.Name.Contains(search.MaterialName) || w.PB_Material.Code.Contains(search.MaterialName) || w.PB_Material.SimpleName.Contains(search.MaterialName) || w.PB_Material.BarCode.Contains(search.MaterialName));
+            }
+            var res = await q.GetPageResultAsync(input);
 
-            return await q.Where(where).GetPageResultAsync(input);
+            return res;
         }
     }
 }

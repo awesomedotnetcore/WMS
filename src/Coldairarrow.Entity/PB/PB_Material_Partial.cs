@@ -29,7 +29,7 @@ namespace Coldairarrow.Entity.PB
 
         public List<PB_AreaMaterial> PB_AreaMaterials { get; set; }
 
-        public List<PB_MaterialPoint> MaterialPoints { get; set; }
+        public List<PB_MaterialPoint> PB_MaterialPoints { get; set; }
 
     }
 }
