@@ -90,7 +90,8 @@ export default {
       sorter: { field: 'Id', order: 'desc' },
       loading: false,
       columns,
-      queryParam: {}
+      queryParam: {},
+      
     }
   },
   methods: {
@@ -106,7 +107,7 @@ export default {
       this.sorter = { ...sorter }
       this.getDataList()
     },
-    getDataList() {
+    getDataList() {      
       this.selectedRowKeys = []
 
       this.loading = true

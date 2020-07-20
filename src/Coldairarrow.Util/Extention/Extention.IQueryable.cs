@@ -126,12 +126,14 @@ namespace Coldairarrow.Util
         {
             int count = await source.CountAsync();
 
+
             var list = await source.OrderBy($@"{pageInput.SortField} {pageInput.SortType}")
                 .Skip((pageInput.PageIndex - 1) * pageInput.PageRows)
                 .Take(pageInput.PageRows)
                 .ToListAsync();
 
             return new PageResult<T> { Data = list, Total = count };
+            
         }
 
         /// <summary>

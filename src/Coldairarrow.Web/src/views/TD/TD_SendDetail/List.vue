@@ -1,7 +1,7 @@
 ﻿<template>
   <a-card :bordered="false">
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="hanldleAdd()">添加</a-button>
+      <a-button :disabled="disabled" type="primary" icon="plus" @click="hanldleAdd()">添加</a-button>
       <a-button
         type="primary"
         icon="minus"
@@ -25,32 +25,30 @@
       size="small"
     >
       <template slot="PlanNum" slot-scope="text, record">
-        <a-input-number  size="small" :value="text" :max="record.PlanNum" :min="1" @change="e=>handleValChange(e,'PlanNum',record)"></a-input-number>
+        <a-input-number  size="small" :disabled="disabled" :value="text" :max="record.PlanNum" :min="1" @change="e=>handleValChange(e,'PlanNum',record)"></a-input-number>
       </template>
 
       <span slot="action" slot-scope="text, record">
         <template>
           <!-- <a @click="handleEdit(record.Id)">编辑</a>
           <a-divider type="vertical" /> -->
-          <a @click="handleDelete([record.Id])">删除</a>
+          <a :disabled="disabled" @click="handleDelete([record.Id])">删除</a>
         </template>
       </span>
     </a-table>
 
-    <!-- <edit-form ref="editForm" :parentObj="this"></edit-form> -->
-    <material-report ref="materialReport" @choose="handlerDetailSubmit"></material-report>
+    <sendmaterial-list ref="sendmaterialList" @choose="handlerDetailSubmit"></sendmaterial-list>
   </a-card>
 </template>
 
 <script>
-//import EditForm from './EditForm'
-import MaterialReport from './MaterialReport'
+import SendmaterialList from './SendMaterialList'
 
 const columns = [
   // { title: '发货Id', dataIndex: 'SendId', width: '10%' },
   // { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
-  { title: '物料ID', dataIndex: 'MaterialId' },
-  { title: '单位ID', dataIndex: 'MeasureId'},
+  { title: '物料', dataIndex: 'Material.Name' },//MaterialId
+  { title: '单位', dataIndex: 'Measure.Name'},//MeasureId
   { title: '批次号', dataIndex: 'BatchNo'},
   { title: '库存数量', dataIndex: 'LocalNum'},
   { title: '出库数量', dataIndex: 'PlanNum' , scopedSlots: { customRender: 'PlanNum' }},
@@ -62,8 +60,7 @@ const columns = [
 
 export default {
   components: {
-  //  EditForm,
-    MaterialReport
+    SendmaterialList
   },
   props: {
     value: { type: Array, required: true },
@@ -112,53 +109,48 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.materialReport.openChoose()
+      this.$refs.sendmaterialList.openChoose()
+      // this.$refs.materialReport.openChoose()
       //this.$refs.editForm.openForm()
     },
     handleEdit(id) {
       this.$refs.editForm.openForm(id)
     },
-    handleDelete(ids) {
+    handleDelete(items) {
       var thisObj = this
       this.$confirm({
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/TD/TD_SendDetail/DeleteData', ids).then(resJson => {
-              resolve()
-
-              if (resJson.Success) {
-                thisObj.$message.success('操作成功!')
-
-                thisObj.getDataList()
-              } else {
-                thisObj.$message.error(resJson.Msg)
-              }
+            items.forEach(element => {
+              var index = thisObj.data.indexOf(element)
+              thisObj.data.splice(index, 1)
+              var keyIndex = thisObj.selectedRowKeys.indexOf(element.Id)
+              thisObj.selectedRowKeys.splice(keyIndex, 1)
             })
+            thisObj.$emit('input', [...thisObj.data])
+            resolve()
           })
         }
       })
     },
     handlerDetailSubmit(rows) {
       console.log('handlerDetailSubmit', rows)
-
       rows.forEach(element => {
         this.tempId += 1
         var item = { ...element }
-        // delete item.Id
-        // delete item.Material
-        // delete item.MaterialId
         item.Id = 'newid_' + this.tempId
-        //item.Material = { ...element.Material }
-        // item.MaterialId = element.MaterialTypeName
-        // item.MeasureId = element.MeasureName
+        //  item.Location = { ...element.Location }
+        item.localId = element.localId
         item.MaterialId = element.MaterialId
         item.MeasureId = element.MeasureId
-        debugger
+   
         item.BatchNo = element.BatchNo
-        item.LocalNum = element.SumCount
+        item.LocalNum = element.Num
         item.PlanNum = 1
-        item.Price = element.Price
+        item.Price = element.Material.Price
+        
+        // item.Price = element.Price
         this.data.push(item)
       })
       this.$emit('input', [...this.data])

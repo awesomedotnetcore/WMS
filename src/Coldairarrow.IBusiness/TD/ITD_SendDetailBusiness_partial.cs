@@ -14,5 +14,18 @@ namespace Coldairarrow.Business.TD
         Task<PageResult<TD_SendDetail>> GetDataListAsync(TD_SendDetailPageInput input);
 
     }
-    
+    public class TD_SendDetailQM
+    {
+        public string Code { get; set; }
+        public string Type { get; set; }
+        public DateTime? OutTimeStart { get; set; }
+        public DateTime? OutTimeEnd { get; set; }
+        public string MaterialName { get; set; }
+        public string MeasureName { get; set; }
+
+    }
+    public class TD_SendDetailPageInput : PageInput<TD_SendDetailQM>
+    {
+        public string StorId { get; set; }
+    }
 }

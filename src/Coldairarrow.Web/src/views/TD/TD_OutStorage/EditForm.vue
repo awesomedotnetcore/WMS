@@ -43,7 +43,7 @@
         </a-col> 
       </a-row>
     </a-form-model>
-    <list-detail v-model="listDetail" :disabled="disabled"></list-detail>
+    <list-detail v-model="listDetail" :disabled="disabled" :receive="receive"></list-detail>
     <div :style="{ position:'absolute',right:0,bottom:0,width:'100%',borderTop:'1px solid #e9e9e9',padding:'10px 16px',background:'#fff',textAlign:'right',zIndex: 1}">
       <a-button :style="{ marginRight: '8px' }" @click="()=>{this.visible=false}">取消</a-button>
       <a-button type="danger" :style="{ marginRight: '8px' }" v-if="entity.Id !== '' && entity.Status === 0 && disabled  && hasPerm('TD_OutStorage.Auditing')" @click="handleAudit(entity.Id,'Reject')">驳回</a-button>     
@@ -86,6 +86,7 @@ export default {
       },
       visible: false,
       loading: false,
+      receive: false, // 是否发货出库
       entity: {Id: '', Status: 0 },
       rules: {
         OutTime: [{ required: true, message: '请选择出库时间', trigger: 'change' }],
@@ -120,12 +121,13 @@ export default {
       return new Date().toLocaleDateString()
     },
     openForm(id, title) {
+      this.receive = false
       this.init()
       if (id) {
         this.loading = true
         this.$http.post('/TD/TD_OutStorage/GetTheData', { id: id }).then(resJson => {
           this.loading = false
-
+          
           this.entity = resJson.Data
           this.entity.OutTime = moment(this.entity.OutTime)
           this.listDetail = [...resJson.Data.OutStorDetails]
@@ -192,7 +194,31 @@ export default {
           this.$message.error(resJson.Msg)
         }
       })
-    }
+    },
+    openSendForm(id) {
+      this.receive = true
+      this.init()
+      if (id) {
+        this.loading = true
+        this.$http.post('/TD/TD_Send/GetTheData', { id: id }).then(resJson => {
+          this.loading = false
+          var receive = resJson.Data
+          this.entity = { Id: '', SendId: receive.Id, StorId: receive.StorId, OutTime: moment(), OutType: receive.Type, RefCode: receive.Code, Status: 0, CusId: receive.CusId, AddrId:receive.AddrId}
+          var listItem = []
+          var tempId = 0
+          receive.SendDetails.forEach(detail => {
+            tempId += 1
+            
+           // var item = { Id: 'newid_' + tempId.toString(), StorId: receive.StorId, MaterialId: detail.MaterialId, Material: detail.Material, Price: detail.Price, PlanNum: detail.PlanNum, RecNum: detail.RecNum, Num: detail.PlanNum - detail.RecNum, LocalId: null, TrayId: null, ZoneId: null }
+            var item = { Id: 'newid_' + tempId.toString(), StorId: receive.StorId, LocalId:detail.LocalId,Location:detail.Location , TrayId: null, ZoneId: null ,MaterialId: detail.MaterialId, Material: detail.Material, BatchNo: detail.BatchNo , Price: detail.Price,LocalNum:detail.LocalNum,  PlanNum: detail.PlanNum, SendNum: detail.SendNum , OutNum: detail.PlanNum,Num: detail.PlanNum - detail.SendNum}//
+            if (item.Num > 0) {
+              listItem.push(item)
+            }
+          })
+          this.listDetail = listItem
+        })
+      }
+    },
   }
 }
 </script>

@@ -61,6 +61,8 @@ namespace Coldairarrow.Business.IT
                 mQuery = mQuery.Where(w => w.Min >= w.SumCount && w.Min.HasValue);
             if (search.MaxAlert)
                 mQuery = mQuery.Where(w => w.Max <= w.SumCount && w.Max.HasValue);
+            if (!search.BatchNo.IsNullOrEmpty())
+                mQuery = mQuery.Where(w => w.BatchNo == search.BatchNo);
             var pageResult = await mQuery.GetPageResultAsync(input);
             //var listbatch =
             foreach (var item in pageResult.Data)

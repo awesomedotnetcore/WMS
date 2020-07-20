@@ -67,21 +67,24 @@
 
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="handleEdit(record.Id)">编辑</a>
-          <a-divider type="vertical" />
-          <a @click="handleDelete([record.Id])">删除</a>
+          <a v-if="record.Status===0 && hasPerm('TD_Send.Edit')" @click="handleEdit(record.Id)">编辑</a>
+          <a-divider v-if="record.Status===0 && hasPerm('TD_Send.Delete')" type="vertical" />
+          <a v-if="record.Status===0 && hasPerm('TD_Send.Delete')" @click="handleDelete([record.Id])">删除</a>
+          <a-divider v-if="record.Status===0 && hasPerm('TD_Send.Delete')" type="vertical" />
+          <a v-if="record.Status===0" @click="handleApproval(record.Id)">确认</a>  
           <a-divider v-if="record.Status===0" type="vertical" />
-          <a v-if="record.Status===0" @click="handleApproval(record.Id)">确认</a>   
-          <a-divider type="vertical" />
-          <a @click="handleApproval(record.Id)">{{ record.Status>=3?'查看':'审批' }}</a>   
-          <a-divider type="vertical" />   
-          <a @click="handleInStorage(record.Id)">出库</a>
+          
+          <a v-if="record.Status>0" @click="handleApproval(record.Id)">{{ record.Status>=3?'查看':'审批' }}</a>   
+          
+          <a-divider v-if="(record.Status===3 || record.Status===5) && hasPerm('TD_Send.OutStorage')" type="vertical" />   
+          <a v-if="(record.Status===3 || record.Status===5) && hasPerm('TD_Send.OutStorage')" @click="handleOutStorage(record.Id)">出库</a>
            
         </template>
       </span>
     </a-table>
 
-    <edit-form ref="editForm" :parentObj="this"></edit-form>
+    <edit-form ref="editForm" :disabled="disabled" :parentObj="this" ></edit-form>
+    <out-storage ref="outStorage" :parentObj="this"></out-storage>
   </a-card>
 </template>
 
@@ -89,6 +92,7 @@
 import moment from 'moment'
 import EditForm from './EditForm'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
+import OutStorage from '../TD_OutStorage/EditForm'
 
 const filterDate = (value, row, index) => {
   if (value) {
@@ -104,14 +108,17 @@ const columns = [
   { title: '发货日期', dataIndex: 'SendTime', customRender: filterDate },
   { title: '发货类型', dataIndex: 'Type' , scopedSlots: { customRender: 'SendType' } },  
   { title: '发货状态', dataIndex: 'Status', scopedSlots: { customRender: 'Status' }},
+  { title: '计划数量', dataIndex: 'TotalNum'},  //总共数量
   { title: '发货数量', dataIndex: 'SendNum'},
-  { title: '确认人', dataIndex: 'ConfirmUserId'},
-  { title: '审核人', dataIndex: 'AuditUserId' },
+  // { title: '确认人', dataIndex: 'ConfirmUserId'},
+  // { title: '审核人', dataIndex: 'AuditUserId' },
+  { title: '确认人', dataIndex: 'CreateUser.RealName'},
+  { title: '审核人', dataIndex: 'AuditUser.RealName'},
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 
 // { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
   // { title: '客户ID', dataIndex: 'CusId', width: '10%' },
-  // { title: '总共数量', dataIndex: 'TotalNum', width: '10%' },  
+  // 
   // { title: '发货金额', dataIndex: 'TotalAmt', width: '10%' },
   // { title: '备注', dataIndex: 'Remarks'},  
   // { title: '确认时间', dataIndex: 'ConfirmTime', width: '10%' },  
@@ -123,6 +130,7 @@ export default {
   components: {
     EditForm,
     EnumName, 
+    OutStorage
   },
   mounted() {
     this.getDataList()
@@ -140,7 +148,8 @@ export default {
       loading: false,
       columns,
       queryParam: {},
-      selectedRowKeys: []
+      selectedRowKeys: [],
+      disabled: false,
     }
   },
   methods: {
@@ -178,14 +187,19 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
+      this.disabled = false
       this.$refs.editForm.openForm()
     },
     handleEdit(id) {
+      this.disabled = false
       this.$refs.editForm.openForm(id)
     },
     handleApproval(id) {
       this.disabled = true
       this.$refs.editForm.openForm(id)
+    },
+    handleOutStorage(id) {
+      this.$refs.outStorage.openSendForm(id)
     },
     handleDelete(ids) {
       var thisObj = this
@@ -211,3 +225,8 @@ export default {
   }
 }
 </script>
+<style>
+.ant-btn-group > .ant-btn:first-child:not(:last-child) {
+  margin-right: 0px;
+}
+</style>

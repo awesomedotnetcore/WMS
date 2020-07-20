@@ -68,8 +68,15 @@ namespace Coldairarrow.Business.TD
                 data.Code = await codeSvc.Generate("TD_OutStorage");
             }
             data.OutNum = data.OutStorDetails.Sum(s => s.OutNum);
-            data.TotalAmt = data.OutStorDetails.Sum(s => s.TotalAmt);
+            data.TotalAmt = data.OutStorDetails.Sum(s => s.TotalAmt);         
             await InsertAsync(data);
+
+            // 更新发货单数据
+            if (!data.SendId.IsNullOrEmpty())
+            {
+                var recSvc = _ServiceProvider.GetRequiredService<ITD_SendBusiness>();
+                await recSvc.UpdateByOutStorage(data.SendId);
+            }
         }
 
         public async Task UpdateDetailAsync(TD_OutStorage data)

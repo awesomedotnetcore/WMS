@@ -28,6 +28,11 @@ namespace Coldairarrow.Entity.TD
         public String StorId { get; set; }
 
         /// <summary>
+        /// 货位ID
+        /// </summary>
+        public String LocalId { get; set; }
+
+        /// <summary>
         /// 物料ID
         /// </summary>
         public String MaterialId { get; set; }
