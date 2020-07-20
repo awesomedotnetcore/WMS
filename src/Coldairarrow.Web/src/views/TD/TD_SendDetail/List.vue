@@ -1,7 +1,7 @@
 ﻿<template>
   <a-card :bordered="false">
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="hanldleAdd()">添加</a-button>
+      <a-button :disabled="disabled" type="primary" icon="plus" @click="hanldleAdd()">添加</a-button>
       <a-button
         type="primary"
         icon="minus"
@@ -25,14 +25,14 @@
       size="small"
     >
       <template slot="PlanNum" slot-scope="text, record">
-        <a-input-number  size="small" :value="text" :max="record.PlanNum" :min="1" @change="e=>handleValChange(e,'PlanNum',record)"></a-input-number>
+        <a-input-number  size="small" :disabled="disabled" :value="text" :max="record.PlanNum" :min="1" @change="e=>handleValChange(e,'PlanNum',record)"></a-input-number>
       </template>
 
       <span slot="action" slot-scope="text, record">
         <template>
           <!-- <a @click="handleEdit(record.Id)">编辑</a>
           <a-divider type="vertical" /> -->
-          <a @click="handleDelete([record.Id])">删除</a>
+          <a :disabled="disabled" @click="handleDelete([record.Id])">删除</a>
         </template>
       </span>
     </a-table>
@@ -47,8 +47,8 @@ import SendmaterialList from './SendMaterialList'
 const columns = [
   // { title: '发货Id', dataIndex: 'SendId', width: '10%' },
   // { title: '仓库ID', dataIndex: 'StorId', width: '10%' },
-  { title: '物料ID', dataIndex: 'Material.Name' },//MaterialId
-  { title: '单位ID', dataIndex: 'Measure.Name'},//MeasureId
+  { title: '物料', dataIndex: 'Material.Name' },//MaterialId
+  { title: '单位', dataIndex: 'Measure.Name'},//MeasureId
   { title: '批次号', dataIndex: 'BatchNo'},
   { title: '库存数量', dataIndex: 'LocalNum'},
   { title: '出库数量', dataIndex: 'PlanNum' , scopedSlots: { customRender: 'PlanNum' }},
@@ -148,7 +148,8 @@ export default {
         item.BatchNo = element.BatchNo
         item.LocalNum = element.Num
         item.PlanNum = 1
-        item.Price = 10
+        item.Price = element.Material.Price
+        
         // item.Price = element.Price
         this.data.push(item)
       })

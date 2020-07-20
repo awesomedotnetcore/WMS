@@ -18,6 +18,11 @@ namespace Coldairarrow.Entity.TD
         public String Id { get; set; }
 
         /// <summary>
+        /// 发货ID
+        /// </summary>
+        public String SendId { get; set; }
+
+        /// <summary>
         /// 仓库ID
         /// </summary>
         public String StorageId { get; set; }

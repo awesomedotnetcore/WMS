@@ -12,5 +12,7 @@ namespace Coldairarrow.Business.TD
 
        // Task<TD_Send> GetTheDataAsync(string id);
         Task Approval(AuditDTO audit);
+
+        Task UpdateByOutStorage(string id);
     }
 }
