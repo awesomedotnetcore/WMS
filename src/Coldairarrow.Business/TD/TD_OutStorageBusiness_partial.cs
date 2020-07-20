@@ -72,11 +72,11 @@ namespace Coldairarrow.Business.TD
             await InsertAsync(data);
 
             // 更新发货单数据
-            //if (!data.SendId.IsNullOrEmpty())
-            //{
-            //    var recSvc = _ServiceProvider.GetRequiredService<ITD_SendBusiness>();
-            //    await recSvc.UpdateByInStorage(data.SendId);
-            //}
+            if (!data.SendId.IsNullOrEmpty())
+            {
+                var recSvc = _ServiceProvider.GetRequiredService<ITD_SendBusiness>();
+                await recSvc.UpdateByOutStorage(data.SendId);
+            }
         }
 
         public async Task UpdateDetailAsync(TD_OutStorage data)

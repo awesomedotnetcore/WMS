@@ -160,5 +160,42 @@ namespace Coldairarrow.Business.TD
             }
             await UpdateAsync(data);
         }
+
+        public async Task UpdateByOutStorage(string id)
+        {
+            var listOut = await Db.GetIQueryable<TD_OutStorage>().Include(i => i.OutStorDetails).Where(w => w.SendId == id && w.Status <= 1).ToListAsync();
+            var receive = await this.GetTheDataAsync(id);
+
+            // 所有出库的
+            var listOutDetail1 = new List<TD_OutStorDetail>();
+            // 已经审批出库
+            var listOutDetail2 = new List<TD_OutStorDetail>();
+            foreach (var item in listOut)
+            {
+                listOutDetail1.AddRange(item.OutStorDetails);
+                if (item.Status == 1)
+                    listOutDetail2.AddRange(item.OutStorDetails);
+            }
+
+            var dicIn1 = listOutDetail1.GroupBy(g => g.MaterialId).Select(s => new { s.Key, Num = s.Sum(i => i.OutNum) }).ToDictionary(k => k.Key, v => v.Num);
+            var dicIn2 = listOutDetail2.GroupBy(g => g.MaterialId).Select(s => new { s.Key, Num = s.Sum(i => i.OutNum) }).ToDictionary(k => k.Key, v => v.Num);
+            var receiveDetail = receive.SendDetails;
+            foreach (var item in receiveDetail)
+            {
+                if (dicIn1.ContainsKey(item.MaterialId))
+                    item.SendNum = dicIn1[item.MaterialId];
+                if (dicIn2.ContainsKey(item.MaterialId))
+                    item.SendNum = dicIn2[item.MaterialId];
+            }
+
+            var detailSvc = _ServiceProvider.GetRequiredService<ITD_SendDetailBusiness>();
+            await detailSvc.UpdateDataAsync(receiveDetail);
+
+            var sunRec = dicIn1.Values.Sum();
+            receive.SendNum = sunRec;
+            receive.Status = receive.TotalNum == sunRec ? 6 : 5;
+
+            await this.UpdateAsync(receive);
+        }
     }
 }
