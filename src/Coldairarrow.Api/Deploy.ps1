@@ -1,14 +1,16 @@
-Write-Host 'Build Starting' -ForegroundColor Yellow
-$BuildScript={npm run build:live}
-Invoke-Command -ScriptBlock $BuildScript
+﻿Write-Host 'Build Starting' -ForegroundColor Yellow
+$CurPath=(Resolve-Path .).Path
+$OutputPath=$CurPath+"\bin\publish\"
+Remove-Item -Path $OutputPath -Force -Recurse
+Invoke-Command -ScriptBlock {param($o) dotnet publish -o $o -c "Release" --no-self-contained -v m --nologo "05.Coldairarrow.Api.csproj"} -ArgumentList $OutputPath
 Write-Host 'Build Completed' -ForegroundColor Green
 
 Write-Host 'Compress Starting' -ForegroundColor Yellow
 $CurDateString=Get-Date -Format "yyyyMMddHHmmss"
-$ZIPFileName="WMSWeb"+$CurDateString+".zip"
-$CurPath=(Resolve-Path .).Path
+$ZIPFileName="WMSAPI"+$CurDateString+".zip"
 $ZIPFilePath=$CurPath+"\"+$ZIPFileName
-Compress-Archive -Path ".\dist\*" -DestinationPath $ZIPFilePath
+$CompressPath=$OutputPath+"*"
+Compress-Archive -Path $CompressPath -DestinationPath $ZIPFilePath
 Write-Host 'Compress Completed' -ForegroundColor Green
 
 Write-Host 'Deploy Starting' -ForegroundColor Yellow
@@ -23,10 +25,13 @@ $RemotePath="D:\ZEQPWMS\"
 Copy-Item $ZIPFilePath -Destination $RemotePath -ToSession $Session
 Write-Host 'Copy files completed' -ForegroundColor Green
 Write-Host 'Start Expand files on the server' -ForegroundColor Yellow
-$RemoteDestinationPath=$RemotePath+"WMSWeb\"
+$RemoteDestinationPath=$RemotePath+"WMSAPI\"
 $RemoteZipPath=$RemotePath+$ZIPFileName
+Invoke-Command -Session $Session -ScriptBlock {Stop-Service -Name "W3SVC"}
+#Invoke-Command -Session $Session -ScriptBlock {iisreset}
 Invoke-Command -Session $Session -ScriptBlock {param($p) Remove-Item -Path $p -Recurse -Force} -ArgumentList $RemoteDestinationPath
 Invoke-Command -Session $Session -ScriptBlock {param($p,$dp) Expand-Archive -Path $p -DestinationPath $dp} -ArgumentList $RemoteZipPath,$RemoteDestinationPath
+Invoke-Command -Session $Session -ScriptBlock {Start-Service -Name "W3SVC"}
 Write-Host 'Expand Completed' -ForegroundColor Green
 Disconnect-PSSession -Session $Session
 Remove-Item -Path $ZIPFilePath
