@@ -149,8 +149,6 @@ export default {
         item.LocalNum = element.Num
         item.PlanNum = 1
         item.Price = element.Material.Price
-        
-        // item.Price = element.Price
         this.data.push(item)
       })
       this.$emit('input', [...this.data])

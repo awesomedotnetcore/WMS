@@ -130,7 +130,7 @@ export default {
           
           this.entity = resJson.Data
           this.entity.OutTime = moment(this.entity.OutTime)
-          this.listDetail = [...resJson.Data.OutStorDetails]
+          this.listDetail = [...resJson.Data.OutStorDetails]          
         })
       }
     },   
@@ -210,7 +210,7 @@ export default {
             tempId += 1
             
            // var item = { Id: 'newid_' + tempId.toString(), StorId: receive.StorId, MaterialId: detail.MaterialId, Material: detail.Material, Price: detail.Price, PlanNum: detail.PlanNum, RecNum: detail.RecNum, Num: detail.PlanNum - detail.RecNum, LocalId: null, TrayId: null, ZoneId: null }
-            var item = { Id: 'newid_' + tempId.toString(), StorId: receive.StorId, LocalId:detail.LocalId,Location:detail.Location , TrayId: null, ZoneId: null ,MaterialId: detail.MaterialId, Material: detail.Material, BatchNo: detail.BatchNo , Price: detail.Price,LocalNum:detail.LocalNum,  PlanNum: detail.PlanNum, SendNum: detail.SendNum , OutNum: detail.PlanNum,Num: detail.PlanNum - detail.SendNum}//
+            var item = { Id: 'newid_' + tempId.toString(), StorId: receive.StorId, LocalId:detail.LocalId,Location:detail.Location , TrayId: null, ZoneId: null ,MaterialId: detail.MaterialId, Material: detail.Material, BatchNo: detail.BatchNo , Price: detail.Price,LocalNum:detail.LocalNum,  PlanNum: detail.PlanNum, SendNum: detail.SendNum , OutNum: detail.PlanNum - detail.SendNum,Num: detail.PlanNum - detail.SendNum}//
             if (item.Num > 0) {
               listItem.push(item)
             }
