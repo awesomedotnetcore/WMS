@@ -25,5 +25,10 @@ namespace Coldairarrow.Business.Base_Manage
                 where = where.Or(w => w.RealName.Contains(keyword) || w.UserName.Contains(keyword));
             return await queryable.Where(where).Take(20).ToListAsync();
         }
+        public async Task<Base_User> GetCurUser()
+        {
+            var userId = _operator.UserId;
+            return await this.GetTheDataAsync(userId);
+        }
     }
 }

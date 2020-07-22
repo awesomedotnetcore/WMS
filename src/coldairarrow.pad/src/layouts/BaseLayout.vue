@@ -1,8 +1,17 @@
 <template>
-  <div>
-    <div>Base</div>
-    <router-view />
-  </div>
+  <a-layout>
+    <a-layout-header class="layout-header">
+      <div :style="{marginLeft:'0px'}">
+        <a href="/Home/Index">
+          <img src="@/assets/logo.svg" class="logo" />
+          <span>WMS</span>
+        </a>
+      </div>
+    </a-layout-header>
+    <a-layout-content>
+      <router-view />
+    </a-layout-content>
+  </a-layout>
 </template>
 
 <script>
@@ -11,3 +20,18 @@ export default {
   name: 'BlankLayout'
 }
 </script>
+<style scoped>
+.layout-header {
+  padding-left: 10px;
+}
+.layout-header .logo {
+  height: 50px;
+  padding-bottom: 10px;
+  padding-right: 5px;
+}
+.layout-header span {
+  font-size: 25px;
+  color: white;
+  font-weight: 500;
+}
+</style>

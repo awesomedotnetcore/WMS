@@ -8,5 +8,6 @@ namespace Coldairarrow.Business.Base_Manage
     public partial interface IBase_UserBusiness
     {
         Task<List<Base_User>> GetSelectUser(string keyword, string selected);
+        Task<Base_User> GetCurUser();
     }
 }

@@ -15,17 +15,23 @@ export default new Router({
         },
         {
             path: '/Home',
-            component: UserLayout,
+            component: BaseLayout,
             redirect: '/Home/Index',
-            hidden: true,
             children: [
                 {
                     path: '/Home/Index',
                     name: 'Index',
                     component: () => import('@/views/Home/Index')
-                },
+                }
+            ]
+        },
+        {
+            path: '/User',
+            component: UserLayout,
+            redirect: '/User/Login',
+            children: [
                 {
-                    path: '/Home/Login',
+                    path: '/User/Login',
                     name: 'Login',
                     component: () => import('@/views/Home/Login')
                 }
@@ -35,7 +41,6 @@ export default new Router({
             path: '/TD',
             component: BaseLayout,
             redirect: '/TD/Receive',
-            hidden: true,
             children: [
                 {
                     path: '/TD/Receive',

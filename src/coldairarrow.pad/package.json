@@ -9,7 +9,9 @@
   },
   "dependencies": {
     "ant-design-vue": "^1.6.4",
+    "axios": "^0.19.2",
     "core-js": "^3.6.5",
+    "moment": "^2.27.0",
     "vue": "^2.6.11",
     "vue-router": "^3.3.4"
   },
@@ -20,6 +22,7 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
+    "vue-svg-loader": "^0.16.0",
     "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {

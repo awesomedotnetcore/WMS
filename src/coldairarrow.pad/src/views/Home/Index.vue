@@ -1,23 +1,48 @@
 <template>
-  <div>
-    <div>首页</div>
-    <a-list :grid="{ gutter: 16, column: 2 }">
-      <a-list-item>
-        <a-button type="link" @click="$router.go(-1)">返回</a-button>
-        <a-button type="link" @click="$router.push({path:'/Home/Login'})">登录</a-button>
-        <a-button type="link" @click="$router.push({path:'/Home/Index'})">首页</a-button>
-        <a-button type="link" @click="$router.push({path:'/TD/Receive'})">收货</a-button>
-        <a-button type="link" @click="$router.push({path:'/TD/Send'})">发货</a-button>
-      </a-list-item>
-    </a-list>
-  </div>
+  <a-row :gutter="10">
+    <a-col :span="12">
+      <in-svg class="svg"></in-svg>
+    </a-col>
+    <a-col :span="12">
+      <out-svg class="svg"></out-svg>
+    </a-col>
+    <a-col :span="12">
+      <receive-svg class="svg"></receive-svg>
+    </a-col>
+    <a-col :span="12">
+      <send-svg class="svg"></send-svg>
+    </a-col>
+  </a-row>
 </template>
 
 <script>
+import InSvg from '../../assets/in.svg'
+import OutSvg from '../../assets/out.svg'
+import ReceiveSvg from '../../assets/receive.svg'
+import SendSvg from '../../assets/send.svg'
+// const data = [
+//   { title: '收货', icon: 'pic-left', path: '/TD/Receive' },
+//   { title: '发货', icon: 'pic-right', path: '/TD/Send' },
+//   { title: '入库', icon: 'login', path: '/TD/InStorage' },
+//   { title: '出库', icon: 'logout', path: '/TD/OutStorage' }
+// ];
+
 export default {
-
-}
+  components:{
+    InSvg,
+    OutSvg,
+    ReceiveSvg,
+    SendSvg
+  },
+  data() {
+    return {
+      
+    };
+  }
+};
 </script>
-
 <style>
+.svg{
+  width:60%;
+}
 </style>

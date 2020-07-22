@@ -14,5 +14,11 @@ namespace Coldairarrow.Api.Controllers.Base_Manage
         {
             return await _userBus.GetSelectUser(keyword, selected);
         }
+
+        [HttpGet]
+        public async Task<Base_User> GetCurUser()
+        {
+            return await _userBus.GetCurUser();
+        }
     }
 }
