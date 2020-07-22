@@ -87,13 +87,12 @@
           <a v-if="record.Status===0 && hasPerm('TD_Send.Delete')" @click="handleDelete([record.Id])">删除</a>
           <a-divider v-if="record.Status===0 && hasPerm('TD_Send.Delete')" type="vertical" />
           <a v-if="record.Status===0" @click="handleApproval(record.Id)">确认</a>  
-          <a-divider v-if="record.Status===0" type="vertical" />
-          
-          <a v-if="record.Status>0" @click="handleApproval(record.Id)">{{ record.Status>=3?'查看':'审批' }}</a>   
-          
-          <a-divider v-if="(record.Status===3 || record.Status===5) && hasPerm('TD_Send.OutStorage')" type="vertical" />   
+
+           <a-divider v-if="(record.Status===3 || record.Status===5) && hasPerm('TD_Send.OutStorage')" type="vertical" />          
           <a v-if="(record.Status===3 || record.Status===5) && hasPerm('TD_Send.OutStorage')" @click="handleOutStorage(record.Id)">出库</a>
-           
+          <a-divider v-if="(record.Status===3 || record.Status===5) && hasPerm('TD_Send.OutStorage')" type="vertical" /> 
+          
+          <a v-if="record.Status>0" @click="handleApproval(record.Id)">{{ record.Status>=3?'查看':'审批' }}</a>  
         </template>
       </span>
     </a-table>
