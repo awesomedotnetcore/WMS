@@ -15,16 +15,4 @@ namespace Coldairarrow.Business.TD
         Task DeleteDataAsync(List<string> ids);
     }
 
-    public class TD_SendQM
-    {
-        public string Code { get; set; }
-        public int? Status { get; set; }
-        public string OutType { get; set; }
-        public DateTime? OutStorTimeStart { get; set; }
-        public DateTime? OutStorTimeEnd { get; set; }
-    }
-    public class TD_SendPageInput : PageInput<TD_SendQM>
-    {
-        public string StorId { get; set; }
-    }
 }

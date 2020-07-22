@@ -1,6 +1,4 @@
-﻿using Coldairarrow.Business.IT;
-using Coldairarrow.Business.PB;
-using Coldairarrow.Entity.IT;
+﻿using Coldairarrow.Business.PB;
 using Coldairarrow.Entity.TD;
 using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
@@ -12,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Coldairarrow.Business.TD
@@ -28,27 +25,14 @@ namespace Coldairarrow.Business.TD
 
         public async Task<PageResult<TD_Send>> GetDataListAsync(TD_SendPageInput input)
         {
-            var q = GetIQueryable()
-                .Include(i => i.Customer)
-                .Include(i => i.Address)
-                .Include(i => i.CreateUser)
-                .Include(i => i.AuditUser)
-                .Where(w => w.StorId == input.StorId);
-            var where = LinqHelper.True<TD_Send>();
+            var q = this.GetIQueryable().Include(i => i.Customer).Where(w => w.StorId == input.StorId);
             var search = input.Search;
-
-
-            if (search.Status.HasValue)
-                where = where.And(w => w.Status == search.Status.Value);
-            if (!search.Code.IsNullOrEmpty())
-                where = where.And(w => w.Code.Contains(search.Code) || w.RefCode.Contains(search.Code));
-            if (!search.OutType.IsNullOrEmpty())
-                where = where.And(w => w.Type == search.OutType);
-            //if (search.OutStorTimeStart.HasValue)
-            //    where = where.And(w => w.OutTime >= search.OutStorTimeStart.Value);
-            //if (search.OutStorTimeEnd.HasValue)
-            //    where = where.And(w => w.OutTime <= search.OutStorTimeEnd.Value);
-
+            var where = LinqHelper.True<TD_Send>();
+            where = where.AndIf(!search.Keyword.IsNullOrEmpty(), w => w.Code.Contains(search.Keyword) || w.RefCode.Contains(search.Keyword) || w.Customer.Code.Contains(search.Keyword) || w.Customer.Name.Contains(search.Keyword));
+            where = where.AndIf(!search.Type.IsNullOrEmpty(), w => w.Type == search.Type);
+            where = where.AndIf(search.Status.HasValue, w => w.Status == search.Status.Value);
+            where = where.AndIf(search.OrderTimeStart.HasValue, w => w.OrderTime >= search.OrderTimeStart.Value);
+            where = where.AndIf(search.OrderTimeEnd.HasValue, w => w.OrderTime <= search.OrderTimeEnd.Value);
             return await q.Where(where).GetPageResultAsync(input);
         }
 

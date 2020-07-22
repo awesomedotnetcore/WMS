@@ -24,15 +24,30 @@
 
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
-        <a-row :gutter="10">          
+        <a-row :gutter="10"> 
           <a-col :md="4" :sm="24">
+            <a-form-item>
+              <a-input v-model="queryParam.Keyword" placeholder="单号/客户" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="4" :sm="24">
+            <a-form-item>
+              <enum-select code="SendType" v-model="queryParam.Type"></enum-select>
+            </a-form-item>
+          </a-col>
+          <a-col :md="5" :sm="24">
+            <a-form-item>
+              <a-range-picker @change="onOrderTimeChange" />
+            </a-form-item>
+          </a-col>         
+          <!-- <a-col :md="4" :sm="24">
             <a-form-item>
               <a-input v-model="queryParam.keyword" placeholder="关键字" />
             </a-form-item>
-          </a-col>
+          </a-col> -->
           <a-col :md="6" :sm="24">
             <a-button type="primary" @click="() => {this.pagination.current = 1; this.getDataList()}">查询</a-button>
-            <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
+            <a-button style="margin-left: 8px" @click="() => (queryParam = {Status: null})">重置</a-button>
           </a-col>
         </a-row>
       </a-form>
@@ -72,13 +87,12 @@
           <a v-if="record.Status===0 && hasPerm('TD_Send.Delete')" @click="handleDelete([record.Id])">删除</a>
           <a-divider v-if="record.Status===0 && hasPerm('TD_Send.Delete')" type="vertical" />
           <a v-if="record.Status===0" @click="handleApproval(record.Id)">确认</a>  
-          <a-divider v-if="record.Status===0" type="vertical" />
-          
-          <a v-if="record.Status>0" @click="handleApproval(record.Id)">{{ record.Status>=3?'查看':'审批' }}</a>   
-          
-          <a-divider v-if="(record.Status===3 || record.Status===5) && hasPerm('TD_Send.OutStorage')" type="vertical" />   
+
+           <a-divider v-if="(record.Status===3 || record.Status===5) && hasPerm('TD_Send.OutStorage')" type="vertical" />          
           <a v-if="(record.Status===3 || record.Status===5) && hasPerm('TD_Send.OutStorage')" @click="handleOutStorage(record.Id)">出库</a>
-           
+          <a-divider v-if="(record.Status===3 || record.Status===5) && hasPerm('TD_Send.OutStorage')" type="vertical" /> 
+          
+          <a v-if="record.Status>0" @click="handleApproval(record.Id)">{{ record.Status>=3?'查看':'审批' }}</a>  
         </template>
       </span>
     </a-table>
@@ -92,6 +106,7 @@
 import moment from 'moment'
 import EditForm from './EditForm'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
+import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import OutStorage from '../TD_OutStorage/EditForm'
 
 const filterDate = (value, row, index) => {
@@ -108,6 +123,7 @@ const columns = [
   { title: '发货日期', dataIndex: 'SendTime', customRender: filterDate },
   { title: '发货类型', dataIndex: 'Type' , scopedSlots: { customRender: 'SendType' } },  
   { title: '发货状态', dataIndex: 'Status', scopedSlots: { customRender: 'Status' }},
+  { title: '客户', dataIndex: 'Customer.Name' },
   { title: '计划数量', dataIndex: 'TotalNum'},  //总共数量
   { title: '发货数量', dataIndex: 'SendNum'},
   // { title: '确认人', dataIndex: 'ConfirmUserId'},
@@ -130,6 +146,7 @@ export default {
   components: {
     EditForm,
     EnumName, 
+    EnumSelect,
     OutStorage
   },
   mounted() {
@@ -200,6 +217,10 @@ export default {
     },
     handleOutStorage(id) {
       this.$refs.outStorage.openSendForm(id)
+    },
+    onOrderTimeChange(dates, dateStrings) {
+      this.queryParam.OrderTimeStart = dateStrings[0]
+      this.queryParam.OrderTimeEnd = dateStrings[1]
     },
     handleDelete(ids) {
       var thisObj = this

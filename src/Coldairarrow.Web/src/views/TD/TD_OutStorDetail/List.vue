@@ -16,8 +16,6 @@
     >
       <a-breadcrumb slot="Location" slot-scope="text, record">
         <a-breadcrumb-item>
-          <!-- <sendmaterial-list v-if="receive" size="small" v-model="record.LocalId" :storid="storage.Id" :disabled="disabled" @select="e=>handleValChange(e,'Location',record)"></sendmaterial-list> -->
-          <!-- <local-select v-if="receive" size="small" v-model="record.LocalId" :storid="storage.Id" :disabled="disabled" @select="e=>handleValChange(e,'Location',record)"></local-select> -->
           <a-tooltip>
             <template slot="title">货位:{{ record.Location.Code }}</template>
             {{ record.Location.Name }}
@@ -38,8 +36,15 @@
       </a-breadcrumb>
 
       <template slot="OutNum" slot-scope="text, record">
-        <a-input-number :disabled="disabled"  size="small" :value="text" :max="record.LocalNum" :min="1" @change="e=>handleValChange(e,'OutNum',record)"></a-input-number>
+        <div v-if="record.Num > 0">          
+          <a-input-number :disabled="disabled"  size="small" :value="text" :max="record.Num"  :min="1" @change="e=>handleValChange(e,'OutNum',record)"></a-input-number>
+        </div>
+        <div v-else>
+          <a-input-number :disabled="disabled"  size="small" :value="text" :max="record.LocalNum"  :min="1" @change="e=>handleValChange(e,'OutNum',record)"></a-input-number>
+        </div>
+        <!-- <a-input-number :disabled="disabled"  size="small" :value="text" :max="record.LocalNum"  :min="1" @change="e=>handleValChange(e,'OutNum',record)"></a-input-number> -->
       </template>
+
 
       <span slot="action" slot-scope="text, record">       
         <template>
