@@ -23,7 +23,7 @@ Axios.interceptors.response.use(res => {
     //授权失败
     if (!res.data.Success && res.data.ErrorCode == 401) {
         TokenCache.deleteToken()
-        this.$router.replace({path:'/User/Login'})
+        location.href = '/User/Login'
     }
     return res.data
 }, error => {

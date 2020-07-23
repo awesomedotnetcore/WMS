@@ -2,7 +2,7 @@
   <a-layout>
     <a-layout-header class="layout-header">
       <div :style="{marginLeft:'0px'}">
-        <logo-svg></logo-svg>
+        <img src="../assets/logo.svg" class="logo" />
         <span>WMS</span>
       </div>
     </a-layout-header>
@@ -13,11 +13,9 @@
 </template>
 
 <script>
-import LogoSvg from '../assets/logo.svg'
 export default {
   name: 'UserLayout',
   components: {
-    LogoSvg
   }
 }
 </script>

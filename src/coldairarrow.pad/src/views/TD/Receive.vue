@@ -1,24 +1,30 @@
 <template>
   <div>
-    <div>收货</div>
-    <a-list :grid="{ gutter: 16, column: 2 }">
-      <a-list-item>
-        <a-button type="link" @click="$router.go(-1)">返回</a-button>
-        <a-button type="link" @click="$router.push({path:'/Home/Login'})">登录</a-button>
-        <a-button type="link" @click="$router.push({path:'/Home/Index'})">首页</a-button>
-        <a-button type="link" @click="$router.push({path:'/TD/Receive'})">收货</a-button>
-        <a-button type="link" @click="$router.push({path:'/TD/Send'})">发货</a-button>
-      </a-list-item>
-    </a-list>
+    <a-button type="primary" @click="handlerReader">扫描</a-button>
+    <barcode-reader ref="barcodeReader" @success="readerSuccess"></barcode-reader>
   </div>
 </template>
 
 <script>
+import BarcodeReader from '../../components/BarcodeReader'
 export default {
-
+  components: {
+    BarcodeReader
+  },
+  data() {
+    return {
+    }
+  },
+  methods: {
+    handlerReader() {
+      this.$refs.barcodeReader.openReader()
+    },
+    readerSuccess(result) {
+      this.$message.success(result.text)
+    }
+  }
 }
 </script>
 
 <style>
-
 </style>

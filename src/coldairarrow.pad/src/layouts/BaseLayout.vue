@@ -1,12 +1,19 @@
 <template>
   <a-layout>
     <a-layout-header class="layout-header">
-      <div :style="{marginLeft:'0px'}">
-        <a href="/Home/Index">
-          <img src="@/assets/logo.svg" class="logo" />
-          <span>WMS</span>
-        </a>
-      </div>
+      <a-row>
+        <a-col :span="6">
+          <a @click="$router.push({ path: '/Home/Index' })">
+            <img src="../assets/logo.svg" width="50px" />
+          </a>
+        </a-col>
+        <a-col :span="14">
+          <storage-switch></storage-switch>
+        </a-col>
+        <a-col :span="4">
+          <user-menu></user-menu>
+        </a-col>
+      </a-row>
     </a-layout-header>
     <a-layout-content>
       <router-view />
@@ -15,23 +22,18 @@
 </template>
 
 <script>
-
+import UserMenu from '../components/UserMenu'
+import StorageSwitch from '../components/StorageSwitch'
 export default {
-  name: 'BlankLayout'
+  name: 'BlankLayout',
+  components: {
+    UserMenu,
+    StorageSwitch
+  }
 }
 </script>
 <style scoped>
 .layout-header {
   padding-left: 10px;
-}
-.layout-header .logo {
-  height: 50px;
-  padding-bottom: 10px;
-  padding-right: 5px;
-}
-.layout-header span {
-  font-size: 25px;
-  color: white;
-  font-weight: 500;
 }
 </style>
