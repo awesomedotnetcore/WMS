@@ -1,6 +1,7 @@
 $CurPath=(Resolve-Path .).Path
 $APIPath=$CurPath+"\Coldairarrow.Api"
 $WebPath=$CurPath+"\Coldairarrow.Web"
+$PadPath=$CurPath+"\Coldairarrow.Pad"
 $CurDateString=Get-Date -Format "yyyyMMddHHmmss"
 
 Set-Location -Path $APIPath
@@ -31,6 +32,19 @@ $WebCompressPath=$WebPath+"\dist\*"
 Compress-Archive -Path $WebCompressPath -DestinationPath $WebZIPFilePath
 Write-Host 'Compress Web Completed' -ForegroundColor Green
 
+Set-Location -Path $PadPath
+Write-Host 'Build Pad Starting' -ForegroundColor Yellow
+$BuildScript={npm run build:live}
+Invoke-Command -ScriptBlock $BuildScript
+Write-Host 'Build Pad Completed' -ForegroundColor Green
+
+Write-Host 'Compress Pad Starting' -ForegroundColor Yellow
+$PadZIPFileName="WMSPad"+$CurDateString+".zip"
+$PadZIPFilePath=$PadPath+"\"+$PadZIPFileName
+$PadCompressPath=$PadPath+"\dist\*"
+Compress-Archive -Path $PadCompressPath -DestinationPath $PadZIPFilePath
+Write-Host 'Compress Pad Completed' -ForegroundColor Green
+
 Set-Location -Path $CurPath
 
 Write-Host 'Deploy Starting' -ForegroundColor Yellow
@@ -44,22 +58,28 @@ Write-Host 'Start copying files to the server' -ForegroundColor Yellow
 $RemotePath="D:\ZEQPWMS\"
 Copy-Item $APIZIPFilePath -Destination $RemotePath -ToSession $Session
 Copy-Item $WebZIPFilePath -Destination $RemotePath -ToSession $Session
+Copy-Item $PadZIPFilePath -Destination $RemotePath -ToSession $Session
 Write-Host 'Copy files completed' -ForegroundColor Green
 Write-Host 'Start Expand files on the server' -ForegroundColor Yellow
 $APIRemoteDestinationPath=$RemotePath+"WMSAPI\"
 $APIRemoteZipPath=$RemotePath+$APIZIPFileName
 $WebRemoteDestinationPath=$RemotePath+"WMSWeb\"
 $WebRemoteZipPath=$RemotePath+$WebZIPFileName
+$PadRemoteDestinationPath=$RemotePath+"WMSPad\"
+$PadRemoteZipPath=$RemotePath+$PadZIPFileName
 Invoke-Command -Session $Session -ScriptBlock {Stop-Service -Name "W3SVC"}
 Invoke-Command -Session $Session -ScriptBlock {param($p) Remove-Item -Path $p -Recurse -Force} -ArgumentList $APIRemoteDestinationPath
 Invoke-Command -Session $Session -ScriptBlock {param($p) Remove-Item -Path $p -Recurse -Force} -ArgumentList $WebRemoteDestinationPath
+Invoke-Command -Session $Session -ScriptBlock {param($p) Remove-Item -Path $p -Recurse -Force} -ArgumentList $PadRemoteDestinationPath
 Invoke-Command -Session $Session -ScriptBlock {param($p,$dp) Expand-Archive -Path $p -DestinationPath $dp} -ArgumentList $APIRemoteZipPath,$APIRemoteDestinationPath
 Invoke-Command -Session $Session -ScriptBlock {param($p,$dp) Expand-Archive -Path $p -DestinationPath $dp} -ArgumentList $WebRemoteZipPath,$WebRemoteDestinationPath
+Invoke-Command -Session $Session -ScriptBlock {param($p,$dp) Expand-Archive -Path $p -DestinationPath $dp} -ArgumentList $PadRemoteZipPath,$PadRemoteDestinationPath
 Invoke-Command -Session $Session -ScriptBlock {Start-Service -Name "W3SVC"}
 Write-Host 'Expand Completed' -ForegroundColor Green
 
 Disconnect-PSSession -Session $Session
 Remove-Item -Path $APIZIPFilePath
 Remove-Item -Path $WebZIPFilePath
+Remove-Item -Path $PadZIPFilePath
 Write-Host 'Disconnected from server' -ForegroundColor Yellow
 Write-Host 'Deploy Completed' -ForegroundColor Green
