@@ -32,12 +32,12 @@ namespace Coldairarrow.Business.PB
 
         public async Task EnableTheData(string id)
         {
-            await UpdateWhereAsync(w => w.Id == id, entity => { entity.Status = 1; });
+            await UpdateAsync(w => w.Id == id, entity => { entity.Status = 1; });
         }
 
         public async Task DisableTheData(string id)
         {
-            await UpdateWhereAsync(w => w.Id == id, entity => { entity.Status = 0; });
+            await UpdateAsync(w => w.Id == id, entity => { entity.Status = 0; });
         }
 
         [DataDeleteLog(UserLogType.托盘管理, "Code", "托盘")]

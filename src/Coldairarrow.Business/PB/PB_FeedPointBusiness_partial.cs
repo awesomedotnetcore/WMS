@@ -26,7 +26,7 @@ namespace Coldairarrow.Business.PB
         }
         public async Task Enable(string id, bool enable)
         {
-            await UpdateWhere_SqlAsync(w => w.Id == id, ("IsEnable", UpdateType.Equal, enable));
+            await Update_SqlAsync(w => w.Id == id, ("IsEnable", UpdateType.Equal, enable));
         }
     }
 }

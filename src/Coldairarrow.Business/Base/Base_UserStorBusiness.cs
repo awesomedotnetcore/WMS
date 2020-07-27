@@ -57,7 +57,7 @@ namespace Coldairarrow.Business.Base
         }
         public async Task UpdateDefault(string userId)
         {
-            await UpdateWhereAsync(w => w.UserId == userId && w.IsDefault, entity => { entity.IsDefault = false; });
+            await UpdateAsync(w => w.UserId == userId && w.IsDefault, entity => { entity.IsDefault = false; });
         }
 
         [DataEditLog(UserLogType.仓库权限, "Id", "仓库权限")]
@@ -115,7 +115,7 @@ namespace Coldairarrow.Business.Base
         }
         public async Task SwitchDefault(string userId, string storageId)
         {
-            await UpdateWhereAsync(w => w.UserId == userId && w.IsDefault, (entity) => { entity.IsDefault = false; });
+            await UpdateAsync(w => w.UserId == userId && w.IsDefault, (entity) => { entity.IsDefault = false; });
             var userStorage = await this.GetIQueryable().SingleOrDefaultAsync(w => w.UserId == userId && w.StorId == storageId);
             if (userStorage != null)
             {
