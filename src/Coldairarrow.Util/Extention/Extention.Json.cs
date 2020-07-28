@@ -28,7 +28,7 @@ namespace Coldairarrow.Util
         /// <returns></returns>
         public static string ToJson(this object obj)
         {
-            return JsonConvert.SerializeObject(obj);
+            return JsonConvert.SerializeObject(obj, DefaultJsonSetting);
         }
 
         /// <summary>

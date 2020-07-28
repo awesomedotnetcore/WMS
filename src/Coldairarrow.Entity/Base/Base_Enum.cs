@@ -11,7 +11,7 @@ namespace Coldairarrow.Entity.Base
     /// 数据字典
     /// </summary>
     [Table("Base_Enum")]
-    public class Base_Enum
+    public partial class Base_Enum
     {
 
         /// <summary>
@@ -55,16 +55,5 @@ namespace Coldairarrow.Entity.Base
         /// </summary>
         public Boolean Deleted { get; set; }
 
-        public List<Base_EnumItem> EnumItems { get; set; }
-
-    }
-    public class Base_EnumEntityTypeConfig : IEntityTypeConfiguration<Base_Enum>
-    {
-        public void Configure(EntityTypeBuilder<Base_Enum> builder)
-        {
-            builder
-            .HasMany(b => b.EnumItems)
-            .WithOne();
-        }
     }
 }

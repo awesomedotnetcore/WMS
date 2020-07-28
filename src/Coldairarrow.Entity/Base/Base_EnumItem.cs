@@ -10,7 +10,7 @@ namespace Coldairarrow.Entity.Base
     /// 字典值
     /// </summary>
     [Table("Base_EnumItem")]
-    public class Base_EnumItem
+    public partial class Base_EnumItem
     {
 
         /// <summary>
@@ -23,8 +23,6 @@ namespace Coldairarrow.Entity.Base
         /// EnumId
         /// </summary>
         public String EnumId { get; set; }
-
-        public Base_Enum Enum { get; set; }
 
         /// <summary>
         /// EnumCode
@@ -70,16 +68,5 @@ namespace Coldairarrow.Entity.Base
         /// </summary>
         public Boolean Deleted { get; set; }
 
-    }
-
-    public class Base_EnumItemEntityTypeConfig : IEntityTypeConfiguration<Base_EnumItem>
-    {
-        public void Configure(EntityTypeBuilder<Base_EnumItem> builder)
-        {
-            builder
-            .HasOne(p => p.Enum)
-            .WithMany(b => b.EnumItems)
-            .HasForeignKey(p => p.EnumId);
-        }
     }
 }
