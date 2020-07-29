@@ -69,6 +69,11 @@ namespace Coldairarrow.Entity.PB
         public Boolean IsDefault { get; set; }
 
         /// <summary>
+        /// 锁类型，1：入库锁，2：出库锁
+        /// </summary>
+        public int LockType { get; set; }
+
+        /// <summary>
         /// 故障代码
         /// </summary>
         public String ErrorCode { get; set; }

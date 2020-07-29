@@ -13,6 +13,8 @@ namespace Coldairarrow.Business.PB
 
         Task AddDataAsync(List<PB_Tray> list);
         Task UpdateDataAsync(List<PB_Tray> list);
+
+        Task<PB_Tray> GetByCode(string code);
     }
     public class PB_TrayQM
     {

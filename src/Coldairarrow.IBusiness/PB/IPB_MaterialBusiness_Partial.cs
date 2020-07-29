@@ -11,5 +11,7 @@ namespace Coldairarrow.Business.PB
         Task<List<PB_Material>> GetQueryData(SelectQueryDTO search);
 
         Task<PageResult<PB_Material>> QueryDataListAsync(PageInput<PBMaterialConditionDTO> input);
+
+        Task<PB_Material> GetByCode(string code);
     }
 }

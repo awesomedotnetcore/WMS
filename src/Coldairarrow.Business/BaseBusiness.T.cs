@@ -15,7 +15,7 @@ namespace Coldairarrow.Business
     /// 描述：业务处理基类
     /// </summary>
     /// <typeparam name="T">泛型约束（数据库实体）</typeparam>
-    public abstract class BaseBusiness<T> where T : class, new()
+    public abstract partial class BaseBusiness<T> where T : class, new()
     {
         #region 构造函数
 

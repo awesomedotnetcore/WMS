@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Coldairarrow.IBusiness;
+using Microsoft.Extensions.DependencyInjection;
+using Coldairarrow.Business.PB;
 
 namespace Coldairarrow.Api.Controllers.TD
 {
@@ -16,12 +18,13 @@ namespace Coldairarrow.Api.Controllers.TD
     {
         #region DI
 
-        public TD_InStorageController(ITD_InStorageBusiness tD_InStorageBus, IOperator op)
+        public TD_InStorageController(ITD_InStorageBusiness tD_InStorageBus, IOperator op, IServiceProvider svcProvider)
         {
             _tD_InStorageBus = tD_InStorageBus;
             _Op = op;
+            this.serviceProvider = svcProvider;
         }
-
+        IServiceProvider serviceProvider { get; }
         ITD_InStorageBusiness _tD_InStorageBus { get; }
         IOperator _Op { get; }
 
@@ -74,6 +77,19 @@ namespace Coldairarrow.Api.Controllers.TD
                 }
                 await _tD_InStorageBus.UpdateDataAsync(data);
             }
+        }
+
+        /// <summary>
+        /// 生产自动入库
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<AjaxResult> AutoInByTary(ProduceInStorageByTary data)
+        {
+            var tarySvc = this.serviceProvider.GetRequiredService<IPB_TrayBusiness>();
+            var tary = await tarySvc.GetByCode(data.TaryCode);
+            return Success();
         }
 
         [HttpPost]
