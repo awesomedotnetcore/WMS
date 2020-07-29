@@ -1,27 +1,16 @@
 ﻿<template>
   <a-card :bordered="false">
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
+      <a-button v-if="hasPerm('PD_Plan.Add')" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
+      <a-button v-if="hasPerm('PD_Plan.Delete')" type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
     </div>
-
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.Keyword" placeholder="名称/编码" />
-            </a-form-item>
-          </a-col>
-          <a-col :md="4" :sm="24">
-            <a-form-item>
-              <storage-select v-model="queryParam.StorId"></storage-select>
-            </a-form-item>
-          </a-col>
-          <a-col :md="4" :sm="24">
-            <a-form-item>
-              <enum-select code="PointType" v-model="queryParam.Type"></enum-select>
+              <a-input v-model="queryParam.Keyword" placeholder="编号或物料Id" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -33,61 +22,45 @@
     </div>
 
     <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
-      <template slot="NameCode" slot-scope="obj">
-        <a-tooltip>
-          <template slot="title">
-            {{ obj.Code }}
-          </template>
-            {{ obj.Name }}
-        </a-tooltip>
-      </template>
-      <template slot="YesOrNo" slot-scope="text">
-        <a-tag v-if="text" color="green">是</a-tag>
-        <a-tag v-else color="pink">否</a-tag>
-      </template>
-      <template slot="EnumName" slot-scope="text">
-        <enum-name code="PointType" :value="text"></enum-name>
-      </template>
       <span slot="action" slot-scope="text, record">
+        <template slot="Status" slot-scope="text">
+          <a-tag v-if="record.Status===1" color="green">已完成</a-tag>
+          <a-tag v-else color="pink">未完成</a-tag>
+        </template>      
         <template>
-          <a v-if="!record.IsEnable" @click="handleEdit(record.Id)">编辑</a>
-          <a-divider v-if="!record.IsEnable" type="vertical" />
-          <a v-if="!record.IsEnable" @click="handleDelete([record.Id])">删除</a>
-          <a-divider v-if="!record.IsEnable" type="vertical" />
-          <a @click="handleEnable(record.Id,!record.IsEnable)">{{ record.IsEnable?'停用':'启用' }}</a>
-          <a-divider type="vertical" />
-          <a @click="openMaterialList(record.Id)">关联物料</a>
+          <a v-if="!record.Status" @click="handleEdit(record.Id)">编辑</a>
+          <a-divider v-if="!record.Status" type="vertical" />
+          <a v-if="!record.Status" @click="handleDelete([record.Id])">删除</a>
+          <a-divider v-if="!record.Status" type="vertical" />
+          <a @click="handleStatus(record.Id,!record.Status)">{{ record.Status?'未完成':'已完成' }}</a>
+          <a-divider type="vertical" />      
         </template>
       </span>
     </a-table>
-    <material-list ref="materialList" :parentObj="this"></material-list>
+
     <edit-form ref="editForm" :parentObj="this"></edit-form>
   </a-card>
 </template>
 
 <script>
 import EditForm from './EditForm'
-import MaterialList from '../PB_MaterialPoint/List'
-import StorageSelect from '../../../components/Storage/AllStorageSelect'
-import EnumName from '../../../components/BaseEnum/BaseEnumName'
-import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
+
 const columns = [
-  { title: '名称', dataIndex: 'Name' },
-  { title: '编码', dataIndex: 'Code' },
-  { title: '仓库', dataIndex: 'Storage', scopedSlots: { customRender: 'NameCode' } },
-  { title: '巷道', dataIndex: 'Laneway', scopedSlots: { customRender: 'NameCode' } },
-  { title: '类型', dataIndex: 'Type', scopedSlots: { customRender: 'EnumName' } },
-  { title: '启用', dataIndex: 'IsEnable', scopedSlots: { customRender: 'YesOrNo' } },
+  { title: '计划编号', dataIndex: 'Code', width: '10%' },
+  { title: '物料Id', dataIndex: 'MaterialId', width: '10%' },
+  { title: 'Bom版本', dataIndex: 'BomVerId', width: '10%' },
+  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
+  { title: '计划日期', dataIndex: 'PlanDate', width: '10%' },
+  { title: '开始日期', dataIndex: 'StartDate', width: '10%' },
+  { title: '完成日期', dataIndex: 'FinishDate', width: '10%' },
+  { title: '生产单元', dataIndex: 'UnitCode', width: '10%' },
+  { title: '状态', dataIndex: 'Status', width: '10%', scopedSlots: { customRender: 'Status' } }, //是否完成},
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
-    EditForm,
-    StorageSelect,
-    MaterialList,
-    EnumName,
-    EnumSelect
+    EditForm
   },
   mounted() {
     this.getDataList()
@@ -120,7 +93,7 @@ export default {
 
       this.loading = true
       this.$http
-        .post('/PB/PB_FeedPoint/GetDataList', {
+        .post('/PD/PD_Plan/GetDataList', {
           PageIndex: this.pagination.current,
           PageRows: this.pagination.pageSize,
           SortField: this.sorter.field || 'Id',
@@ -143,7 +116,7 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm(null, '新建')
+      this.$refs.editForm.openForm(null, '新增')
     },
     handleEdit(id) {
       this.$refs.editForm.openForm(id, '编辑')
@@ -154,7 +127,7 @@ export default {
         title: '确认删除吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/PB/PB_FeedPoint/DeleteData', ids).then(resJson => {
+            thisObj.$http.post('/PD/PD_Plan/DeleteData', ids).then(resJson => {
               resolve()
 
               if (resJson.Success) {
@@ -169,13 +142,13 @@ export default {
         }
       })
     },
-    handleEnable(id, enable) {
+    handleStatus(id, status) {
       var thisObj = this
       this.$confirm({
-        title: '确认' + (enable ? '启用' : '停用') + '此料点吗?',
+        title: '确认' + (status ? '已完成' : '未完成') + '吗?',
         onOk() {
           return new Promise((resolve, reject) => {
-            thisObj.$http.post('/PB/PB_FeedPoint/Enable?Id=' + id + '&enable=' + enable).then(resJson => {
+            thisObj.$http.post('/PD/PD_Plan/Status?Id=' + id + '&status=' + status).then(resJson => {
               resolve()
               if (resJson.Success) {
                 thisObj.$message.success('操作成功!')
@@ -188,9 +161,6 @@ export default {
         }
       })
     },
-    openMaterialList(pointId) {
-      this.$refs.materialList.openDrawer(pointId)
-    }
   }
 }
 </script>
