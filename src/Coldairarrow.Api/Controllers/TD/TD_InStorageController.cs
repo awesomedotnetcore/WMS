@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Coldairarrow.IBusiness;
 using Microsoft.Extensions.DependencyInjection;
 using Coldairarrow.Business.PB;
+using Coldairarrow.Business.PD;
 
 namespace Coldairarrow.Api.Controllers.TD
 {
@@ -85,11 +86,16 @@ namespace Coldairarrow.Api.Controllers.TD
         /// <param name="data"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<AjaxResult> AutoInByTary(ProduceInStorageByTary data)
+        public async Task<AjaxResult<(string Id, string LocalId)>> AutoInByTary(ProduceInStorageByTary data)
         {
             var tarySvc = this.serviceProvider.GetRequiredService<IPB_TrayBusiness>();
             var tary = await tarySvc.GetByCode(data.TaryCode);
-            return Success();
+            var planSvc = this.serviceProvider.GetRequiredService<IPD_PlanBusiness>();
+            var plan = await planSvc.GetByCode(data.PlanCode);
+            var StorId = _Op.Property.DefaultStorageId;
+            (string StorId, string MaterialId, string TaryId) para = (StorId, plan.MaterialId, tary.Id);
+            var localId = await _tD_InStorageBus.ReqLocation(para);
+            return Success<(string Id, string LocalId)>(("", localId));
         }
 
         [HttpPost]

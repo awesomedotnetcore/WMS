@@ -1,9 +1,11 @@
 ﻿using Coldairarrow.Entity.Base_Manage;
 using Coldairarrow.Util;
+using Dynamitey.DynamicObjects;
 using EFCore.Sharding;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -44,6 +46,17 @@ namespace Coldairarrow.Api.Controllers
         public async Task<PageResult<Base_UserLog>> GetLogList()
         {
             return await _repository.GetIQueryable<Base_UserLog>().GetPageResultAsync(new PageInput());
+        }
+
+        [HttpGet]
+        public List<string> GetId(int count)
+        {
+            var result = new List<string>(count);
+            for (int i = 0; i < count; i++)
+            {
+                result.Add(IdHelper.GetId());
+            }
+            return result;
         }
     }
 }

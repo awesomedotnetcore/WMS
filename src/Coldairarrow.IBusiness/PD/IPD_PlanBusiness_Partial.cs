@@ -9,5 +9,7 @@ namespace Coldairarrow.Business.PD
     {
         Task<List<PD_Plan>> QueryAllDataAsync();
         Task Status(string id, bool status);
+
+        Task<PD_Plan> GetByCode(string code);
     }
 }

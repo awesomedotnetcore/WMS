@@ -69,7 +69,7 @@ namespace Coldairarrow.Entity.PB
         public Boolean IsDefault { get; set; }
 
         /// <summary>
-        /// 锁类型，1：入库锁，2：出库锁
+        /// 锁类型,0：没有锁，1：入库锁，2：出库锁
         /// </summary>
         public int LockType { get; set; }
 

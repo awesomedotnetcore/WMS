@@ -57,7 +57,7 @@ namespace Coldairarrow.Business.PD
 
         public async Task Status(string id, bool status)
         {
-            await UpdateWhere_SqlAsync(w => w.Id == id, ("Status", UpdateType.Equal, status));
+            await Update_SqlAsync(w => w.Id == id, ("Status", UpdateType.Equal, status));
         }
 
         #endregion

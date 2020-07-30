@@ -360,5 +360,43 @@ namespace Coldairarrow.Business.TD
             var traySvc = _ServiceProvider.GetRequiredService<IPB_TrayBusiness>();
             await traySvc.UpdateDataAsync(trays);
         }
+
+        public async Task<string> ReqLocation((string StorId, string MaterialId, string TaryId) data)
+        {
+            //托盘类型
+            var tray = await Db.GetIQueryable<PB_Tray>().SingleOrDefaultAsync(w => w.Id == data.TaryId);
+
+            //找到可存此物料的货区
+            var listAreaId = from sa in Db.GetIQueryable<PB_StorArea>()
+                             join am in Db.GetIQueryable<PB_AreaMaterial>() on sa.Id equals am.AreaId
+                             where sa.StorId == data.StorId && am.MaterialId == data.MaterialId
+                             select sa.Id;
+
+            //有库存的货位
+            var lmLocal = from lm in Db.GetIQueryable<IT_LocalMaterial>()
+                          join l in Db.GetIQueryable<PB_Location>() on lm.LocalId equals l.Id
+                          where l.StorId == data.StorId && lm.StorId == data.StorId
+                          select l.Id;
+
+            // 有托盘的货位
+            var trayLocal = from t in Db.GetIQueryable<PB_Tray>()
+                            join l in Db.GetIQueryable<PB_Location>() on t.LocalId equals l.Id
+                            where l.StorId == data.StorId
+                            select t.LocalId;
+
+            //过滤货位
+            var LocalQuery = from lt in Db.GetIQueryable<PB_LocalTray>()
+                             join l in Db.GetIQueryable<PB_Location>() on lt.LocalId equals l.Id
+                             join tt in Db.GetIQueryable<PB_TrayType>() on lt.TrayTypeId equals tt.Id
+                             where l.StorId == data.StorId && tt.Id == tray.TrayTypeId
+                             && listAreaId.Contains(l.AreaId)  //货区过滤
+                             && l.LockType == 0  //锁定过滤
+                             && !lmLocal.Contains(l.Id) //库存过滤
+                             && !trayLocal.Contains(l.Id) // 托盘过滤
+                             select new { l.Id, NewId = Guid.NewGuid() };
+
+            var result = await LocalQuery.OrderBy(o=>o.NewId).FirstOrDefaultAsync();
+            return result.Id;
+        }
     }
 }
