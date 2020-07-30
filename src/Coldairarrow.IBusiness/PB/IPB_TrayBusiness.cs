@@ -1,6 +1,7 @@
 ﻿using Coldairarrow.Entity.PB;
 using Coldairarrow.Util;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Coldairarrow.Business.PB
@@ -14,6 +15,8 @@ namespace Coldairarrow.Business.PB
         Task EnableTheData(string id);
         Task DisableTheData(string id);
         Task DeleteDataAsync(List<string> ids);
+        IQueryable<T> GetQueryable<T>() where T : class, new();
+        Task AddDataExlAsync(List<PB_Tray> list);
     }
     
 }

@@ -272,19 +272,10 @@ namespace Coldairarrow.Api.Controllers.PB
                             j += 1000;
 
                             await _pB_LocationBus.AddDataExlAsync(cList);
-                            // listGroup.Add(cList);
 
                         }
                         ReturnValue = $"数据导入成功,共导入{CountRow - 1}条数据。";
                     }
-                        
-
-                    //if (Data.Count > 0)
-                    //{
-                    //    await _pB_LocationBus.AddDataExlAsync(Data);
-                    //    ReturnValue = $"数据导入成功,共导入{CountRow - 1}条数据。";
-                    //}
-
                 }
 
                 if (!flag)
