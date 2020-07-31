@@ -1,7 +1,8 @@
 <template>
   <a-modal
     :title="title"
-    width="40%"
+    width="20%"
+    :bodyStyle="{height:'150px'}"
     :visible="visible"
     :confirmLoading="loading"
     :footer="null"
@@ -9,7 +10,7 @@
   >    
   <template>
     <a-row :gutter="10">
-      <a-col :md="12" :sm="24">
+      <a-col :md="15" :sm="24">
         <a-upload          
           name="file"
           :multiple="true"

@@ -272,10 +272,8 @@ namespace Coldairarrow.Api.Controllers.PB
         /// <returns></returns>
         [HttpGet]
         [NoCheckJWT]
-        public IActionResult ExportToExcel()//async Task<IActionResult>
+        public IActionResult ExportToExcel()
         {
-            //var data = await _tD_CheckDataBus.QueryDataListAsync(checkId);
-
             //创建EXCEL工作薄
             IWorkbook workBook = new XSSFWorkbook();
             //创建sheet文件表
