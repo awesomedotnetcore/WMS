@@ -1,9 +1,14 @@
 ﻿<template>
   <a-card :bordered="false">
     <div class="table-operator">
+      <a-row :gutter="10">
+        <a-col :md="20" :sm="24">
       <a-button type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
       <a-button type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
+        </a-col>
+      <a-button v-if="hasPerm('PB_FeedPoint.Leading')" type="primary" @click="hanldleLeading()">导入上下料点</a-button>  
+      </a-row>
     </div>
 
     <div class="table-page-search-wrapper">
@@ -62,6 +67,7 @@
     </a-table>
     <material-list ref="materialList" :parentObj="this"></material-list>
     <edit-form ref="editForm" :parentObj="this"></edit-form>
+    <leading-show ref="leadingShow" :parentObj="this"></leading-show>
   </a-card>
 </template>
 
@@ -71,6 +77,8 @@ import MaterialList from '../PB_MaterialPoint/List'
 import StorageSelect from '../../../components/Storage/AllStorageSelect'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
+import LeadingShow from '../../../components/PB/LeadingShow'
+
 const columns = [
   { title: '名称', dataIndex: 'Name' },
   { title: '编码', dataIndex: 'Code' },
@@ -87,7 +95,8 @@ export default {
     StorageSelect,
     MaterialList,
     EnumName,
-    EnumSelect
+    EnumSelect,
+    LeadingShow
   },
   mounted() {
     this.getDataList()
@@ -147,6 +156,9 @@ export default {
     },
     handleEdit(id) {
       this.$refs.editForm.openForm(id, '编辑')
+    },
+    hanldleLeading() {
+      this.$refs.leadingShow.openForm(null, '导入上下料点','/PB/PB_FeedPoint/Import','/PB/PB_FeedPoint/ExportToExcel')
     },
     handleDelete(ids) {
       var thisObj = this

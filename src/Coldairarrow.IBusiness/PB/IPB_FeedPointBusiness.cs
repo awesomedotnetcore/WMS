@@ -12,5 +12,6 @@ namespace Coldairarrow.Business.PB
         Task AddDataAsync(PB_FeedPoint data);
         Task UpdateDataAsync(PB_FeedPoint data);
         Task DeleteDataAsync(List<string> ids);
+        Task AddDataExlAsync(List<PB_FeedPoint> list);
     }
 }

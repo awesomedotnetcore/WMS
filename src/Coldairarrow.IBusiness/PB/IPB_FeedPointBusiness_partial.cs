@@ -1,6 +1,7 @@
 ﻿using Coldairarrow.Entity.PB;
 using Coldairarrow.Util;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Coldairarrow.Business.PB
@@ -9,6 +10,7 @@ namespace Coldairarrow.Business.PB
     {
         Task<PageResult<PB_FeedPoint>> GetDataListAsync(PageInput<PB_FeedPointQM> input);
         Task Enable(string id, bool enable);
+        IQueryable<T> GetQueryable<T>() where T : class, new();
     }
     public class PB_FeedPointQM
     {
