@@ -65,6 +65,17 @@ namespace Coldairarrow.Business.PB
             await DeleteAsync(ids);
         }
 
+        public async Task AddDataExlAsync(List<PB_MaterialType> list)
+        {
+            await InsertAsync(list);    
+
+        }
+
+        public IQueryable<T> GetQueryable<T>() where T : class, new()
+        {
+            return Db.GetIQueryable<T>();
+        }
+
         #endregion
 
         #region 私有成员
