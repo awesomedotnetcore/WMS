@@ -1,11 +1,15 @@
 ﻿<template>
   <a-card :bordered="false">
     <div class="table-operator">
-      <a-button v-if="hasPerm('PB_Tray.Add')" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button v-if="hasPerm('PB_Tray.Delete')" type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
-      <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
+      <a-row :gutter="10">
+        <a-col :md="20" :sm="24">
+        <a-button v-if="hasPerm('PB_Tray.Add')" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
+        <a-button v-if="hasPerm('PB_Tray.Delete')" type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
+        <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>  
+        </a-col>
+      <a-button v-if="hasPerm('PB_Tray.Leading')" type="primary" @click="hanldleLeading()">导入托盘</a-button>
+     </a-row>
     </div>
-
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="10">
@@ -40,11 +44,14 @@
     </a-table>
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
+    <leading-show ref="leadingShow" :parentObj="this"></leading-show>
   </a-card>
 </template>
 
 <script>
 import EditForm from './EditForm'
+import LeadingShow from '../../../components/PB/LeadingShow'
+                                                
 const filterYesOrNo = (value, row, index) => {
   if (value) return '启用'
   else return '停用'
@@ -53,15 +60,16 @@ const columns = [
   { title: '托盘号', dataIndex: 'Code'},
   { title: '托盘名称', dataIndex: 'Name' },
   { title: '托盘类型', dataIndex: 'PB_TrayType.Name' },
-  { title: '启用日期', dataIndex: 'StartTime' },
-  { title: '托盘状态', dataIndex: 'Status', customRender: filterYesOrNo },
   { title: '货位', dataIndex: 'PB_Location.Name' },
+  { title: '启用日期', dataIndex: 'StartTime' },
+  { title: '托盘状态', dataIndex: 'Status', customRender: filterYesOrNo },  
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
   components: {
-    EditForm
+    EditForm,
+    LeadingShow
   },
   mounted() {
     this.getDataList()
@@ -121,6 +129,9 @@ export default {
     },
     handleEdit(id) {
       this.$refs.editForm.openForm(id, '编辑')
+    },
+    hanldleLeading() {
+      this.$refs.leadingShow.openForm(null, '导入托盘','/PB/PB_Tray/Import','/PB/PB_Tray/ExportToExcel')
     },
     handleDelete(ids) {
       var thisObj = this
