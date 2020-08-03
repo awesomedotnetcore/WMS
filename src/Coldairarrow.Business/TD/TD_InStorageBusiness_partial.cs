@@ -314,7 +314,14 @@ namespace Coldairarrow.Business.TD
             // 解锁货位 在自动入库的时候，货位可能被入库锁锁定了
             {
                 var localIds = detail.Select(s => s.LocalId).ToList();
-                await Db.Update_SqlAsync<PB_Location>(w => localIds.Contains(w.Id) && w.LockType == 1, ("LockType", UpdateType.Equal, 0));
+                var listLocal = await Db.GetIQueryable<PB_Location>().Where(w => localIds.Contains(w.Id) && w.LockType == 1).ToListAsync();
+                //await Db.Update_SqlAsync<PB_Location>(w => localIds.Contains(w.Id) && w.LockType == 1, ("LockType", UpdateType.Equal, 0));
+                foreach (var item in listLocal)
+                {
+                    item.LockType = 0;
+                }
+                var localSvc = _ServiceProvider.GetRequiredService<IPB_LocationBusiness>();
+                await localSvc.UpdateDataAsync(listLocal);
             }
 
             // 修改主数据状态
