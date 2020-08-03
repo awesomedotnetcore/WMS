@@ -1,8 +1,8 @@
 <template>
   <a-row :gutter="10">
     <a-col :span="12">
-      <a @click="$router.push({ path: '/TD/Receive' })">
-        <a-result title="收货">
+      <a @click="$router.push({ path: '/TD/InStorage' })">
+        <a-result title="生产入库">
           <template #icon>
             <img src="../../assets/receive.svg" width="100" />
           </template>

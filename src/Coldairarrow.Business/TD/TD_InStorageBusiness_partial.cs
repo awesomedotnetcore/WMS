@@ -311,6 +311,12 @@ namespace Coldairarrow.Business.TD
                 }
             }
 
+            // 解锁货位 在自动入库的时候，货位可能被入库锁锁定了
+            {
+                var localIds = detail.Select(s => s.LocalId).ToList();
+                await Db.Update_SqlAsync<PB_Location>(w => localIds.Contains(w.Id) && w.LockType == 1, ("LockType", UpdateType.Equal, 0));
+            }
+
             // 修改主数据状态
             {
                 data.Status = 1;
@@ -361,6 +367,7 @@ namespace Coldairarrow.Business.TD
             await traySvc.UpdateDataAsync(trays);
         }
 
+        [Transactional(System.Data.IsolationLevel.Serializable)]
         public async Task<string> ReqLocation((string StorId, string MaterialId, string TaryId) data)
         {
             //托盘类型
@@ -393,9 +400,17 @@ namespace Coldairarrow.Business.TD
                              && l.LockType == 0  //锁定过滤
                              && !lmLocal.Contains(l.Id) //库存过滤
                              && !trayLocal.Contains(l.Id) // 托盘过滤
-                             select new { l.Id, NewId = Guid.NewGuid() };
+                             select new { l.Id };
 
-            var result = await LocalQuery.OrderBy(o=>o.NewId).FirstOrDefaultAsync();
+            //TODO:可以做到从数据库随机取一个
+            var count = await LocalQuery.CountAsync();
+            if (count == 0) return null;
+            var skip = RandomHelper.Next(0, count - 1);
+            var result = await LocalQuery.Skip(skip).Take(1).FirstOrDefaultAsync();
+
+            //锁定货位
+            await Db.Update_SqlAsync<PB_Location>(w => w.Id == result.Id, ("LockType", UpdateType.Equal, 1));
+
             return result.Id;
         }
     }

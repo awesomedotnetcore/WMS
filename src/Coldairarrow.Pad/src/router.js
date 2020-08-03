@@ -45,7 +45,7 @@ export default new Router({
                 {
                     path: '/TD/Receive',
                     name: 'Receive',
-                    component: () => import('@/views/TD/Receive')
+                    component: () => import('@/views/TD/InStorage')
                 },
                 {
                     path: '/TD/Send',
