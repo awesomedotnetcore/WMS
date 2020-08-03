@@ -86,20 +86,20 @@ namespace Coldairarrow.Api.Controllers.TD
         /// <param name="data"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<AjaxResult<(string Id, string LocalId)>> AutoInByTary(ProduceInStorageByTary data)
+        public async Task<AjaxResult<TD_InStorage>> AutoInByTary(ProduceInStorageByTary data)
         {
             var traySvc = this.serviceProvider.GetRequiredService<IPB_TrayBusiness>();
-            var tray = await traySvc.GetByCode(data.TaryCode);
+            var tray = await traySvc.GetByCode(data.TrayCode);
             //var planSvc = this.serviceProvider.GetRequiredService<IPD_PlanBusiness>();
             //var plan = await planSvc.GetByCode(data.PlanCode);
             var materialSvc= this.serviceProvider.GetRequiredService<IPB_MaterialBusiness>();
-            var material = await materialSvc.GetByCode(data.MaterialCode);
+            var material = await materialSvc.GetByBarcode(data.MaterialCode);
             var StorId = _Op.Property.DefaultStorageId;
 
-            if (tray == null || material == null) return new AjaxResult<(string Id, string LocalId)>() { Success = false, Msg = "托盘或计划输入不正确" };
+            if (tray == null || material == null) return new AjaxResult<TD_InStorage>() { Success = false, Msg = "托盘或计划输入不正确" };
             (string StorId, string MaterialId, string TaryId) para = (StorId, material.Id, tray.Id);
             var localId = await _tD_InStorageBus.ReqLocation(para);
-            if (localId.IsNullOrEmpty()) return new AjaxResult<(string Id, string LocalId)>() { Success = false, Msg = "没有可以入库的货位" };
+            if (localId.IsNullOrEmpty()) return new AjaxResult<TD_InStorage>() { Success = false, Msg = "没有可以入库的货位" };
 
             var entity = new TD_InStorage()
             {
@@ -130,7 +130,7 @@ namespace Coldairarrow.Api.Controllers.TD
             }
             await _tD_InStorageBus.AddDataAsync(entity);
 
-            return Success<(string Id, string LocalId)>((entity.Id, localId));
+            return Success<TD_InStorage>(entity);
         }
 
         /// <summary>

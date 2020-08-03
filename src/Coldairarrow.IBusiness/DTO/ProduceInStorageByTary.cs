@@ -25,7 +25,7 @@ namespace Coldairarrow.IBusiness.DTO
 
         public string MaterialCode { get; set; }
         public string BatchNo { get; set; }
-        public string TaryCode { get; set; }
+        public string TrayCode { get; set; }
         public double Num { get; set; }
     }
 }

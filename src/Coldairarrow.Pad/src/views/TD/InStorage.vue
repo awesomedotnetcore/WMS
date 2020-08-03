@@ -1,6 +1,6 @@
 <template>
   <a-card title="生产入库" :bordered="false" :loading="loading">
-    <a-button slot="extra" type="primary" size="small" @click="handlerSubmit">确定</a-button>
+    <a-button slot="extra" type="primary" @click="handlerSubmit">确定</a-button>
     <a-form-model layout="horizontal" :model="entity" :rules="rules" ref="form">
       <a-form-model-item prop="MaterialCode">
         <input-code v-model="entity.MaterialCode" placeholder="物料"></input-code>
@@ -12,7 +12,7 @@
         <a-input v-model="entity.BatchNo" placeholder="批次号" />
       </a-form-model-item>
       <a-form-model-item prop="Num">
-        <a-input-number v-model="entity.Num" :min="1" />
+        <a-input-number v-model="entity.Num" :style="{width:'100%'}" :min="1" placeholder="物料数量" />
       </a-form-model-item>
     </a-form-model>
   </a-card>

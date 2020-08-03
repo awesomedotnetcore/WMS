@@ -40,10 +40,10 @@ export default new Router({
         {
             path: '/TD',
             component: BaseLayout,
-            redirect: '/TD/Receive',
+            redirect: '/TD/InStorage',
             children: [
                 {
-                    path: '/TD/Receive',
+                    path: '/TD/InStorage',
                     name: 'Receive',
                     component: () => import('@/views/TD/InStorage')
                 },
