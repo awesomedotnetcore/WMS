@@ -67,5 +67,10 @@ namespace Coldairarrow.Business.PB
 
             return await q.ToListAsync();
         }
+
+        public async Task UpdateDataAsync(List<PB_Location> list)
+        {
+            await UpdateAsync(list);
+        }
     }
 }

@@ -40,17 +40,23 @@ export default new Router({
         {
             path: '/TD',
             component: BaseLayout,
-            redirect: '/TD/Receive',
+            redirect: '/TD/InStorage',
             children: [
                 {
-                    path: '/TD/Receive',
+                    path: '/TD/InStorage',
                     name: 'Receive',
-                    component: () => import('@/views/TD/Receive')
+                    component: () => import('@/views/TD/InStorage')
                 },
                 {
-                    path: '/TD/Send',
-                    name: 'Send',
-                    component: () => import('@/views/TD/Send')
+                    path: '/TD/InStorageList',
+                    name: 'InStorageList',
+                    component: () => import('@/views/TD/InStorageList')
+                },
+                {
+                    path: '/TD/InStorageDetail/:id',
+                    name: 'InStorageDetail',
+                    component: () => import('@/views/TD/InStorageDetail'),
+                    props: true
                 }
             ]
         }

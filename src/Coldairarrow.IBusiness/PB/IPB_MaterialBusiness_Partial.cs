@@ -14,6 +14,7 @@ namespace Coldairarrow.Business.PB
         Task<PageResult<PB_Material>> QueryDataListAsync(PageInput<PBMaterialConditionDTO> input);
 
         Task<PB_Material> GetByCode(string code);
+        Task<PB_Material> GetByBarcode(string code);
 
         IQueryable<T> GetQueryable<T>() where T : class, new();
     }

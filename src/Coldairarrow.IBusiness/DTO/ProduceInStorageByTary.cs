@@ -9,8 +9,23 @@ namespace Coldairarrow.IBusiness.DTO
     /// </summary>
     public class ProduceInStorageByTary
     {
-        public string PlanCode { get; set; }
-        public string TaryCode { get; set; }
+        ///// <summary>
+        ///// 生产线Id
+        ///// 在控制台写固定值
+        ///// </summary>
+        //public string SupId { get; set; }
+        ///// <summary>
+        ///// 下料点ID
+        ///// 在控制台写固定值
+        ///// </summary>
+        //public string AddrId { get; set; }
+
+
+        //public string PlanCode { get; set; }
+
+        public string MaterialCode { get; set; }
+        public string BatchNo { get; set; }
+        public string TrayCode { get; set; }
         public double Num { get; set; }
     }
 }

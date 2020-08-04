@@ -50,5 +50,10 @@ namespace Coldairarrow.Business.PB
 
         //    return await q.ToListAsync();
         //}
+
+        public async Task<PB_Material> GetByBarcode(string code)
+        {
+            return await this.GetIQueryable().SingleOrDefaultAsync(w => w.BarCode == code);
+        }
     }
 }
