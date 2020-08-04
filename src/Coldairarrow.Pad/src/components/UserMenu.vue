@@ -1,7 +1,8 @@
 <template>
   <a-dropdown>
     <a class="ant-dropdown-link" @click="e => e.preventDefault()">
-      <a-icon type="user" />{{ User.RealName }}</a>
+      {{ User.RealName }}
+    </a>
     <a-menu slot="overlay">
       <a-menu-item>
         <a @click="hadlerLogout">退出登录</a>
@@ -28,9 +29,9 @@ export default {
         this.User = resJson.Data
       })
     },
-    hadlerLogout(){
-        TokenCache.deleteToken()
-        this.$router.push({path:'/User/Login'})
+    hadlerLogout() {
+      TokenCache.deleteToken()
+      this.$router.push({ path: '/User/Login' })
     }
   }
 }

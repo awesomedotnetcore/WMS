@@ -48,9 +48,15 @@ export default new Router({
                     component: () => import('@/views/TD/InStorage')
                 },
                 {
-                    path: '/TD/Send',
-                    name: 'Send',
-                    component: () => import('@/views/TD/Send')
+                    path: '/TD/InStorageList',
+                    name: 'InStorageList',
+                    component: () => import('@/views/TD/InStorageList')
+                },
+                {
+                    path: '/TD/InStorageDetail/:id',
+                    name: 'InStorageDetail',
+                    component: () => import('@/views/TD/InStorageDetail'),
+                    props: true
                 }
             ]
         }

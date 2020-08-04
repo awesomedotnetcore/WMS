@@ -1,7 +1,8 @@
 <template>
   <a-dropdown>
     <a class="ant-dropdown-link" @click="e => e.preventDefault()">
-      <a-icon type="setting" />{{ curStorage.Name }}({{ curStorage.Code }})</a>
+      {{ curStorage.Name }}
+    </a>
     <a-menu slot="overlay">
       <a-menu-item v-for="item in listData" :key="item.Id">
         <a href="javascript:;" @click="handleSwitch(item)">

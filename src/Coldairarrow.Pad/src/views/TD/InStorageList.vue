@@ -1,0 +1,67 @@
+<template>
+  <a-card title="入库管理">
+    <a-list :data-source="listData" :rowKey="item=>item.Id" item-layout="horizontal" :loading="loading" :pagination="pagination">
+      <a-list-item slot="renderItem" slot-scope="item">
+        <a-list-item-meta>
+          <div slot="title">
+            <span :style="{marginRight:'10px'}">{{ item.Code }}</span>
+            <a-badge v-if="item.Status==0" status="processing" text="入库中" />
+            <a-badge v-if="item.Status==1" status="success" text="入库完成" />
+            <a-badge v-if="item.Status==2" status="error" text="入库失败" />
+          </div>
+          <span slot="description">时间：{{ moment(item.InStorTime).format('YY/M/D H:m') }} 数量：{{ item.TotalNum }}</span>
+        </a-list-item-meta>
+        <a-button type="link" slot="actions" @click="handlerShow(item)">查看</a-button>
+      </a-list-item>
+    </a-list>
+  </a-card>
+</template>
+
+<script>
+import moment from 'moment'
+import InStorageSvc from '../../api/TD/InStorageSvc'
+export default {
+  data() {
+    return {
+      loading: false,
+      pagination: { current: 1, pageSize: 10, size: 'small', total: 0, onChange: this.handlerChange },
+      queryData: {
+        PageIndex: 1, PageRows: 10, SortField: 'Id', SortType: 'desc',
+        Search: { Status: null }
+      },
+      listData: []
+    }
+  },
+  mounted() {
+    this.getList()
+  },
+  methods: {
+    moment,
+    getList() {
+      this.loading = true
+      InStorageSvc.GetDataList(this.queryData).then(resJson => {
+        this.loading = false
+        if (resJson.Success) {
+          // this.listData = this.listData.concat(resJson.Data)
+          this.listData = resJson.Data
+          this.pagination.current = this.queryData.PageIndex
+          this.pagination.total = resJson.Total
+        } else {
+          this.$message.error(resJson.Msg)
+        }
+      });
+    },
+    handlerShow(item) {
+      this.$router.push({ path: `/TD/InStorageDetail/${item.Id}` })
+    },
+    handlerChange(page, size) {
+      this.queryData.PageIndex = page
+      this.queryData.PageRows = size
+      this.getList()
+    }
+  }
+}
+</script>
+
+<style>
+</style>
