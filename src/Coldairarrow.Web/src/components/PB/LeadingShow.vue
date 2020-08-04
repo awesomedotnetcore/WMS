@@ -1,7 +1,7 @@
 <template>
   <a-modal
     :title="title"
-    width="20%"
+    width="25%"
     :bodyStyle="{height:'150px'}"
     :visible="visible"
     :confirmLoading="loading"
@@ -10,7 +10,7 @@
   >    
   <template>
     <a-row :gutter="10">
-      <a-col :md="15" :sm="24">
+      <a-col :md="14" :sm="24">
         <a-upload          
           name="file"
           :multiple="true"
@@ -41,8 +41,8 @@ export default {
   },
   props: {    
     parentObj: Object,
-    leading: String,
-    templet: String
+    leading: {type: String, default: 'leading', required: false},
+    templet: {type: String, default: 'templet', required: false}
   },
   data() {
     return {
@@ -52,7 +52,6 @@ export default {
       },
       visible: false,
       loading: false,
-     // entity: {},
       rules: {},
       title: '',
       headers: {
@@ -67,8 +66,8 @@ export default {
     openForm(id, title,leading,templet) {
       this.init()
       this.title = title
-      this.leading = leading
-      this.templet = templet
+      // this.leading = leading 
+      // this.templet = templet
     },
     handleChange(info) {
       if (info.file.status !== 'uploading') {
