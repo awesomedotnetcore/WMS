@@ -187,48 +187,31 @@ namespace Coldairarrow.Api.Controllers.PB
                         {
                             commodity.TrayTypeId = row.GetCell(3).ToString();
                         }
-                        //if (row.GetCell(4) != null && row.GetCell(4).ToString().Trim().Length > 0)
-                        //{
-                        //    commodity.StartTime = Convert.ToDateTime(row.GetCell(6).ToString());
-                        //}
                         Data.Add(commodity);
                     }
-                    var listLocalCodes = Data.Select(s => s.LocalId).Select(s => s.Trim()).Distinct().ToList();
-                    var dicStor = _pB_TrayBus.GetQueryable<PB_Location>().Where(w => listLocalCodes.Contains(w.Code)).ToDictionary(k => k.Code, v => v.Id);
+                    var listLocalCodes = Data.Select(s => s.LocalId).Distinct().ToList();
+                    //s => .Select(s.Trim())
+                    var dicLocal = _pB_TrayBus.GetQueryable<PB_Location>().Where(w => listLocalCodes.Contains(w.Code)).ToDictionary(k => k.Code, v => v.Id);
 
                     var listTrayTypeCodes = Data.Select(s => s.TrayTypeId).Select(s => s.Trim()).Distinct().ToList();
-                    var dicArea = _pB_TrayBus.GetQueryable<PB_TrayType>().Where(w => listTrayTypeCodes.Contains(w.Code)).ToDictionary(k => k.Code, v => v.Id);
+                    var dicTrayType = _pB_TrayBus.GetQueryable<PB_TrayType>().Where(w => listTrayTypeCodes.Contains(w.Code)).ToDictionary(k => k.Code, v => v.Id);
 
 
                     foreach (var item in Data)
                     {
-                        if (dicStor.ContainsKey(item.LocalId.Trim()))
-                            item.LocalId = dicStor[item.LocalId.Trim()];
-                        else
-                            throw new Exception("货位编号不存在！");
-
-                        if (dicArea.ContainsKey(item.TrayTypeId.Trim()))
-                            item.TrayTypeId = dicArea[item.TrayTypeId.Trim()];
+                        if (dicTrayType.ContainsKey(item.TrayTypeId.Trim()))
+                            item.TrayTypeId = dicTrayType[item.TrayTypeId.Trim()];
                         else
                             throw new Exception("托盘类型编号不存在！");
 
-                        //if (item.LanewayId == null)
-                        //{
-                        //    item.LanewayId = null;
-                        //}
-                        //else if (dicLaneway.ContainsKey(item.LanewayId.Trim()))
-                        //{
-                        //    item.LanewayId = dicLaneway[item.LanewayId.Trim()];
-                        //}
-
-                        //if (item.RackId == null)
-                        //{
-                        //    item.RackId = null;
-                        //}
-                        //else if (dicRack.ContainsKey(item.RackId.Trim()))
-                        //{
-                        //    item.RackId = dicRack[item.RackId.Trim()];
-                        //}
+                        if (item.LocalId == null)
+                        {
+                            item.LocalId = null;
+                        }
+                        else if (dicLocal.ContainsKey(item.LocalId.Trim()))
+                        {
+                            item.LocalId = dicLocal[item.LocalId.Trim()];
+                        }
 
                     }
                     if (Data.Count > 0)
@@ -301,17 +284,6 @@ namespace Coldairarrow.Api.Controllers.PB
             cell = header.CreateCell(3);
             cell.SetCellValue("托盘类型");
 
-            //cell = header.CreateCell(4);
-            //cell.SetCellValue("导入日期");
-
-            //cell = header.CreateCell(5);
-            //cell.SetCellValue("托盘状态(true/false)");
-
-            //cell = header.CreateCell(6);
-            //cell.SetCellValue("剩余容量");
-
-            //cell = header.CreateCell(7);
-            //cell.SetCellValue("是否默认(true/false)");
             #endregion            
             //工作流写入，通过流的方式进行创建生成文件
             using (MemoryStream stream = new MemoryStream())
