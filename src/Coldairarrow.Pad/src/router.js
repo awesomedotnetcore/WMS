@@ -38,24 +38,47 @@ export default new Router({
             ]
         },
         {
-            path: '/TD',
+            path: '/InStorage',
             component: BaseLayout,
-            redirect: '/TD/InStorage',
+            redirect: '/InStorage/ProductIn',
             children: [
                 {
-                    path: '/TD/InStorage',
-                    name: 'Receive',
-                    component: () => import('@/views/TD/InStorage')
+                    path: '/InStorage/ProductIn',
+                    name: 'ProductIn',
+                    component: () => import('@/views/InStorage/ProductIn')
                 },
                 {
-                    path: '/TD/InStorageList',
+                    path: '/InStorage/List',
                     name: 'InStorageList',
-                    component: () => import('@/views/TD/InStorageList')
+                    component: () => import('@/views/InStorage/List')
                 },
                 {
-                    path: '/TD/InStorageDetail/:id',
+                    path: '/InStorage/Detail/:id',
                     name: 'InStorageDetail',
-                    component: () => import('@/views/TD/InStorageDetail'),
+                    component: () => import('@/views/InStorage/Detail'),
+                    props: true
+                }
+            ]
+        },
+        {
+            path: '/OutStorage',
+            component: BaseLayout,
+            redirect: '/OutStorage/ProductOut',
+            children: [
+                {
+                    path: '/OutStorage/ProductOut',
+                    name: 'ProductOut',
+                    component: () => import('@/views/OutStorage/ProductOut')
+                },
+                {
+                    path: '/OutStorage/List',
+                    name: 'OutStorageList',
+                    component: () => import('@/views/OutStorage/List')
+                },
+                {
+                    path: '/OutStorage/Detail/:id',
+                    name: 'OutStorageDetail',
+                    component: () => import('@/views/OutStorage/Detail'),
                     props: true
                 }
             ]

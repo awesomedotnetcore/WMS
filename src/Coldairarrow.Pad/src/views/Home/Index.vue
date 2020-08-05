@@ -1,18 +1,38 @@
 <template>
-  <a-row :gutter="10">
-    <a-col :span="6">
-      <div class="app-card" @click="$router.push({ path: '/TD/InStorage' })">
-        <a-avatar shape="square" :size="64" icon="login" />
-        <div class="app-text">生产入库</div>
-      </div>
-    </a-col>
-    <a-col :span="6">
-      <div class="app-card" @click="$router.push({ path: '/TD/InStorageList' })">
-        <a-avatar shape="square" :size="64" icon="ordered-list" />
-        <div class="app-text">入库管理</div>
-      </div>
-    </a-col>
-  </a-row>
+  <div>
+    <a-card title="入库" size="small">
+      <a-row :gutter="10">
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/InStorage/ProductIn' })">
+            <a-avatar shape="square" :size="64" icon="login" />
+            <div class="app-text">生产入库</div>
+          </div>
+        </a-col>
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/InStorage/List' })">
+            <a-avatar shape="square" :size="64" icon="ordered-list" />
+            <div class="app-text">入库管理</div>
+          </div>
+        </a-col>
+      </a-row>
+    </a-card>
+    <a-card title="出库" size="small">
+      <a-row :gutter="10">
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/OutStorage/ProductOut' })">
+            <a-avatar shape="square" :size="64" icon="logout" />
+            <div class="app-text">生产入库</div>
+          </div>
+        </a-col>
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/OutStorage/List' })">
+            <a-avatar shape="square" :size="64" icon="ordered-list" />
+            <div class="app-text">入库管理</div>
+          </div>
+        </a-col>
+      </a-row>
+    </a-card>
+  </div>
 </template>
 <script>
 export default {
@@ -27,7 +47,6 @@ export default {
 </script>
 <style>
 .app-card {
-  margin: 20px;
   width: 100%;
   height: 100%;
   text-align: center;
