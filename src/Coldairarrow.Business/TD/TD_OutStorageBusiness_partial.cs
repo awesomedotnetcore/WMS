@@ -68,7 +68,7 @@ namespace Coldairarrow.Business.TD
                 data.Code = await codeSvc.Generate("TD_OutStorage");
             }
             data.OutNum = data.OutStorDetails.Sum(s => s.OutNum);
-            data.TotalAmt = data.OutStorDetails.Sum(s => s.TotalAmt);         
+            data.TotalAmt = data.OutStorDetails.Sum(s => s.TotalAmt);
             await InsertAsync(data);
 
             // 更新发货单数据
@@ -342,6 +342,87 @@ namespace Coldairarrow.Business.TD
             {
                 return Error("托盘上有物料,请重新选择托盘!");
             }
+        }
+
+        /// <summary>
+        /// 自动分拣物料
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        [Transactional(System.Data.IsolationLevel.Serializable)]
+        public async Task<AjaxResult<List<ReqMaterialResultDTO>>> ReqMaterial(ReqMaterialQM data)
+        {
+            var listResult = new List<ReqMaterialResultDTO>();
+            if (data.BatchNo.IsNullOrEmpty())
+            {
+                //先检查物料是否满足数量
+                var lmCount = await Db.GetIQueryable<IT_LocalMaterial>().Where(w => w.StorId == data.StorId && w.MaterialId == data.MaterialId).SumAsync(w => w.Num);
+                if (lmCount < data.Num) return new AjaxResult<List<ReqMaterialResultDTO>>() { Success = false, Msg = "库存不足" };
+
+                var listLM = from lm in Db.GetIQueryable<IT_LocalMaterial>()
+                             join l in Db.GetIQueryable<PB_Location>() on lm.LocalId equals l.Id
+                             where lm.StorId == data.StorId
+                             && lm.MaterialId == data.MaterialId
+                             && l.StorId == data.StorId
+                             && l.LockType == 0
+                             orderby lm.Num ascending, lm.Id ascending
+                             select new ReqMaterialResultDTO()
+                             {
+                                 LocalId = lm.LocalId,
+                                 TrayId = lm.TrayId,
+                                 LocalNum = lm.Num
+                             };
+                listResult = await listLM.ToListAsync();
+            }
+            else
+            {
+                //先检查物料是否满足数量
+                var lmCount = await Db.GetIQueryable<IT_LocalMaterial>().Where(w => w.StorId == data.StorId && w.MaterialId == data.MaterialId && w.BatchNo == data.BatchNo).SumAsync(w => w.Num);
+                if (lmCount < data.Num) return new AjaxResult<List<ReqMaterialResultDTO>>() { Success = false, Msg = "库存不足" };
+
+                var listLM = from lm in Db.GetIQueryable<IT_LocalMaterial>()
+                             join l in Db.GetIQueryable<PB_Location>() on lm.LocalId equals l.Id
+                             where lm.StorId == data.StorId
+                             && lm.MaterialId == data.MaterialId
+                             && lm.BatchNo == data.BatchNo
+                             && l.StorId == data.StorId
+                             && l.LockType == 0
+                             orderby lm.Num ascending, lm.Id ascending
+                             select new ReqMaterialResultDTO()
+                             {
+                                 LocalId = lm.LocalId,
+                                 TrayId = lm.TrayId,
+                                 LocalNum = lm.Num
+                             };
+                listResult = await listLM.ToListAsync();
+            }
+            var result = new List<ReqMaterialResultDTO>();
+            double diffNum = data.Num;
+            foreach (var item in listResult)
+            {
+                if (diffNum <= 0) break;
+                if (item.LocalNum <= diffNum)
+                    item.OutNum = item.LocalNum;
+                else
+                    item.OutNum = diffNum;
+                result.Add(item);
+                diffNum -= item.OutNum;
+            }
+            if (diffNum > 0) return new AjaxResult<List<ReqMaterialResultDTO>>() { Success = false, Msg = "可用库存不足" };
+
+            // 锁定货位
+            {
+                var localIds = result.Select(s => s.LocalId).ToList();
+                var listLocal = await Db.GetIQueryable<PB_Location>().Where(w => localIds.Contains(w.Id)).ToListAsync();
+                foreach (var item in listLocal)
+                {
+                    item.LockType = 2;
+                }
+                var localSvc = _ServiceProvider.GetRequiredService<IPB_LocationBusiness>();
+                await localSvc.UpdateDataAsync(listLocal);
+            }
+
+            return new AjaxResult<List<ReqMaterialResultDTO>>() { Success = true, Data = result, Msg = "分拣成功" };
         }
     }
 }

@@ -1,5 +1,13 @@
 <template>
   <a-card title="入库管理">
+    <div>
+      <a-radio-group v-model="queryData.Search.Status" button-style="solid" @change="e=>{this.queryData.PageIndex=1;this.getList()}">
+        <a-radio-button :value="null">全部</a-radio-button>
+        <a-radio-button :value="0">入库中</a-radio-button>
+        <a-radio-button :value="1">入库完成</a-radio-button>
+        <a-radio-button :value="2">入库失败</a-radio-button>
+      </a-radio-group>
+    </div>
     <a-list :data-source="listData" :rowKey="item=>item.Id" item-layout="horizontal" :loading="loading" :pagination="pagination">
       <a-list-item slot="renderItem" slot-scope="item">
         <a-list-item-meta>
@@ -52,7 +60,7 @@ export default {
       });
     },
     handlerShow(item) {
-      this.$router.push({ path: `/TD/InStorageDetail/${item.Id}` })
+      this.$router.push({ path: `/InStorage/Detail/${item.Id}` })
     },
     handlerChange(page, size) {
       this.queryData.PageIndex = page
