@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
+using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
 using Quartz.Util;
 using System;
@@ -258,7 +259,7 @@ namespace Coldairarrow.Api.Controllers.PB
         [HttpGet]
         [NoCheckJWT]
         public IActionResult ExportToExcel()
-        {
+        {            
             //创建EXCEL工作薄
             IWorkbook workBook = new XSSFWorkbook();
             //创建sheet文件表
@@ -290,14 +291,22 @@ namespace Coldairarrow.Api.Controllers.PB
             cell.SetCellValue("传真/Fax");
 
             cell = header.CreateCell(5);
-            cell.SetCellValue("邮箱/Email");
+            cell.SetCellValue("邮箱/Email");      
 
-            //cell = header.CreateCell(6);
-            //cell.SetCellValue("剩余容量");
+            //IName range = workBook.CreateName();//创建一个命名公式
+            //range.RefersToFormula = "客户信息!$A$1:$A$4";//公式内容，就是上面的区域
+            //range.NameName = "sectionName";//公式名称，可以在"公式"-->"名称管理器"中看到
 
-            //cell = header.CreateCell(7);
-            //cell.SetCellValue("是否默认(true/false)");
-            #endregion            
+            ISheet sheet1 = workBook.GetSheetAt(0);//获得第一个工作表
+            CellRangeAddressList regions = new CellRangeAddressList(1, 65535, 2, 2);//设定位置 行起，行止,列起,列终
+            XSSFDataValidationHelper helper = new XSSFDataValidationHelper((XSSFSheet)sheet1);//获得一个数据验证Helper
+            IDataValidation validation = helper.CreateValidation(helper.CreateExplicitListConstraint(new string[] { "Company", "Personal", "Virtual", "Internal" }), regions);//创建一个特定约束范围内的公式列表约束（即第一节里说的"自定义"方式）
+            validation.CreateErrorBox("错误", "请按右侧下拉箭头选择!");//不符合约束时的提示
+            validation.ShowErrorBox = true;//显示上面提示 = True
+            sheet1.AddValidationData(validation);//添加进去
+            sheet1.ForceFormulaRecalculation = true;
+
+            #endregion
             //工作流写入，通过流的方式进行创建生成文件
             using (MemoryStream stream = new MemoryStream())
             {
