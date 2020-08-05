@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
+using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
 using Quartz.Util;
 using System;
@@ -192,25 +193,8 @@ namespace Coldairarrow.Api.Controllers.PB
                         }
                         Data.Add(commodity);
                     }
-                    //var listLocalCodes = Data.Select(s => s.LocalId).Select(s => s.Trim()).Distinct().ToList();
-                    //var dicStor = _pB_TrayBus.GetQueryable<PB_Location>().Where(w => listLocalCodes.Contains(w.Code)).ToDictionary(k => k.Code, v => v.Id);
-
-                    //var listTrayTypeCodes = Data.Select(s => s.TrayTypeId).Select(s => s.Trim()).Distinct().ToList();
-                    //var dicArea = _pB_TrayBus.GetQueryable<PB_TrayType>().Where(w => listTrayTypeCodes.Contains(w.Code)).ToDictionary(k => k.Code, v => v.Id);
-
-
                     foreach (var item in Data)
                     {
-                        //if (dicStor.ContainsKey(item.LocalId.Trim()))
-                        //    item.LocalId = dicStor[item.LocalId.Trim()];
-                        //else
-                        //    throw new Exception("货位编号不存在！");
-
-                        //if (dicArea.ContainsKey(item.TrayTypeId.Trim()))
-                        //    item.TrayTypeId = dicArea[item.TrayTypeId.Trim()];
-                        //else
-                        //    throw new Exception("托盘类型编号不存在！");
-
                         if (item.Phone == null)
                         {
                             item.Phone = null;
@@ -231,7 +215,6 @@ namespace Coldairarrow.Api.Controllers.PB
                         {
                             item.Address = null;
                         }
-
                     }
                     if (Data.Count > 0)
                     {
@@ -240,7 +223,6 @@ namespace Coldairarrow.Api.Controllers.PB
                         for (int i = 0; i < Data.Count; i += 1000)
 
                         {
-
                             var cList = new List<PB_Supplier>();
 
                             cList = Data.Take(j).Skip(i).ToList();
@@ -248,7 +230,6 @@ namespace Coldairarrow.Api.Controllers.PB
                             j += 1000;
 
                             await _pB_SupplierBus.AddDataExlAsync(cList);
-
                         }
                         ReturnValue = $"数据导入成功,共导入{CountRow - 1}条数据。";
                     }
@@ -292,7 +273,7 @@ namespace Coldairarrow.Api.Controllers.PB
             //创建表头
             IRow header = sheet.CreateRow(0);
             ICell cell = header.CreateCell(0);
-            cell.SetCellValue("供应商编号");
+            cell.SetCellValue("供应商编号");            
 
             cell = header.CreateCell(1);
             cell.SetCellValue("供应商名称");
@@ -314,6 +295,15 @@ namespace Coldairarrow.Api.Controllers.PB
 
             cell = header.CreateCell(7);
             cell.SetCellValue("地址");
+
+            ISheet sheet1 = workBook.GetSheetAt(0);//获得第一个工作表
+            CellRangeAddressList regions = new CellRangeAddressList(1, 65535, 2, 2);//设定位置 行起，行止,列起,列终
+            XSSFDataValidationHelper helper = new XSSFDataValidationHelper((XSSFSheet)sheet1);//获得一个数据验证Helper
+            IDataValidation validation = helper.CreateValidation(helper.CreateExplicitListConstraint(new string[] { "Company", "Personal", "Virtual", "Internal", "Product" }), regions);//创建一个特定约束范围内的公式列表约束（即第一节里说的"自定义"方式）
+            validation.CreateErrorBox("错误", "请按右侧下拉箭头选择!");//不符合约束时的提示
+            validation.ShowErrorBox = true;//显示上面提示 = True
+            sheet1.AddValidationData(validation);//添加进去
+            sheet1.ForceFormulaRecalculation = true;
             #endregion            
             //工作流写入，通过流的方式进行创建生成文件
             using (MemoryStream stream = new MemoryStream())
@@ -323,9 +313,7 @@ namespace Coldairarrow.Api.Controllers.PB
 
                 return File(buffer, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", string.Format("供应商信息表_{0}.xlsx", DateTime.Now.ToString("yyyyMMddHHmmss")));
             }
-
         }
-
         #endregion
     }
 }
