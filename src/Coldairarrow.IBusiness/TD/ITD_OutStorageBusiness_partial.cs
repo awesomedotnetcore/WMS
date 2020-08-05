@@ -15,5 +15,40 @@ namespace Coldairarrow.Business.TD
         Task Reject(AuditDTO audit);
 
         Task<AjaxResult> OutBlankTray(List<KeyValuePair<string, string>> listTray, string storid);
+        /// <summary>
+        /// 申请物料出库，自动分拣
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns>返回物料对应的货位与数量</returns>
+        Task<List<ReqMaterialResultDTO>> ReqMaterial(ReqMaterialQM data);
+    }
+    /// <summary>
+    /// 请求物料参数
+    /// </summary>
+    public class ReqMaterialQM
+    {
+        public string StorId { get; set; }
+        public string MaterialId { get; set; }
+        public string BatchNo { get; set; }
+        public double Num { get; set; }
+    }
+    /// <summary>
+    /// 返回请求物料结果
+    /// </summary>
+    public class ReqMaterialResultDTO
+    {
+        public string LocalId { get; set; }
+        public string TrayId { get; set; }
+        public double LocalNum { get; set; }
+        public double OutNum { get; set; }
+    }
+    /// <summary>
+    /// 生产物料出库
+    /// </summary>
+    public class ProduceOutStorageQM
+    {
+        public string MaterialId { get; set; }
+        public string BatchNo { get; set; }
+        public double Num { get; set; }
     }
 }

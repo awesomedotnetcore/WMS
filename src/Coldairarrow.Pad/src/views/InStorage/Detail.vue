@@ -17,6 +17,7 @@
           <a-descriptions-item label="名称">{{ item.Material.Name }}</a-descriptions-item>
           <a-descriptions-item label="编码">{{ item.Material.Code }}</a-descriptions-item>
           <a-descriptions-item label="条码">{{ item.Material.BarCode }}</a-descriptions-item>
+          <a-descriptions-item label="货位">{{ item.Location.Code }}</a-descriptions-item>
           <a-descriptions-item label="托盘">{{ item.Tray.Code }}</a-descriptions-item>
           <a-descriptions-item label="批次">{{ item.BatchNo }}</a-descriptions-item>
           <a-descriptions-item label="数量">{{ item.Num }}</a-descriptions-item>

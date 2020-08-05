@@ -47,8 +47,6 @@ export default {
 </script>
 <style>
 .app-card {
-  width: 100%;
-  height: 100%;
   text-align: center;
 }
 .app-card .app-text {
