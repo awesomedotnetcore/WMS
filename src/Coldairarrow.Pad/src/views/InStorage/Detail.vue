@@ -61,7 +61,7 @@ export default {
       InStorageSvc.Audit(this.id, type).then(resJson => {
         this.loading = false
         if (resJson.Success) {
-          this.$message.success('操作成功!')
+          this.$message.success(resJson.Msg)
           this.getData()
         } else {
           this.$message.error(resJson.Msg)

@@ -1,13 +1,75 @@
 <template>
-  <a-card title="出库管理"></a-card>
+  <a-card title="出库管理">
+    <div>
+      <a-radio-group v-model="queryData.Search.Status" button-style="solid" @change="e=>{this.queryData.PageIndex=1;this.getList()}">
+        <a-radio-button :value="null">全部</a-radio-button>
+        <a-radio-button :value="0">出库中</a-radio-button>
+        <a-radio-button :value="1">出库完成</a-radio-button>
+        <a-radio-button :value="2">出库失败</a-radio-button>
+      </a-radio-group>
+    </div>
+    <a-list :data-source="listData" :rowKey="item=>item.Id" item-layout="horizontal" :loading="loading" :pagination="pagination">
+      <a-list-item slot="renderItem" slot-scope="item">
+        <a-list-item-meta>
+          <div slot="title">
+            <span :style="{marginRight:'10px'}">{{ item.Code }}</span>
+            <a-badge v-if="item.Status==0" status="processing" text="出库中" />
+            <a-badge v-if="item.Status==1" status="success" text="出库完成" />
+            <a-badge v-if="item.Status==2" status="error" text="出库失败" />
+          </div>
+          <span slot="description">时间：{{ moment(item.OutTime).format('YY/M/D H:m') }} 数量：{{ item.OutNum }}</span>
+        </a-list-item-meta>
+        <a-button type="link" slot="actions" @click="handlerShow(item)">查看</a-button>
+      </a-list-item>
+    </a-list>
+  </a-card>
 </template>
 
 <script>
+import moment from 'moment'
+import OutStorageSvc from '../../api/TD/OutStorageSvc'
 export default {
-
+  data() {
+    return {
+      loading: false,
+      pagination: { current: 1, pageSize: 10, size: 'small', total: 0, onChange: this.handlerChange },
+      queryData: {
+        PageIndex: 1, PageRows: 10, SortField: 'Id', SortType: 'desc',
+        Search: { Status: null }
+      },
+      listData: []
+    }
+  },
+  mounted() {
+    this.getList()
+  },
+  methods: {
+    moment,
+    getList() {
+      this.loading = true
+      OutStorageSvc.GetDataList(this.queryData).then(resJson => {
+        this.loading = false
+        if (resJson.Success) {
+          // this.listData = this.listData.concat(resJson.Data)
+          this.listData = resJson.Data
+          this.pagination.current = this.queryData.PageIndex
+          this.pagination.total = resJson.Total
+        } else {
+          this.$message.error(resJson.Msg)
+        }
+      });
+    },
+    handlerShow(item) {
+      this.$router.push({ path: `/OutStorage/Detail/${item.Id}` })
+    },
+    handlerChange(page, size) {
+      this.queryData.PageIndex = page
+      this.queryData.PageRows = size
+      this.getList()
+    }
+  }
 }
 </script>
 
 <style>
-
 </style>

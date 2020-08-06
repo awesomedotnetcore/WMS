@@ -149,7 +149,7 @@ namespace Coldairarrow.Business.TD
             var now = DateTime.Now;
             var data = await this.GetTheDataAsync(audit.Id);
             var detail = data.InStorDetails;
-            var dicMUnit = detail.Select(s => s.Material).Distinct().ToDictionary(k => k.Id, v => v.MeasureId);
+            var dicMUnit = detail.Select(s => new { s.MaterialId, s.Material.MeasureId }).GroupBy(g => new { g.MaterialId, g.MeasureId }).ToDictionary(k => k.Key.MaterialId, v => v.Key.MeasureId);
 
             // 增加库存明细
             {
@@ -343,13 +343,25 @@ namespace Coldairarrow.Business.TD
         [Transactional]
         public async Task Reject(AuditDTO audit)
         {
-            var data = await this.GetEntityAsync(audit.Id);
+            var data = await this.GetTheDataAsync(audit.Id);
             // 修改主数据状态
             {
                 data.Status = 2;
                 data.AuditeTime = audit.AuditTime;
                 data.AuditUserId = audit.AuditUserId;
                 await UpdateAsync(data);
+            }
+
+            // 解锁货位 在自动入库的时候，货位可能被入库锁锁定了
+            {
+                var localIds = data.InStorDetails.Select(s => s.LocalId).ToList();
+                var listLocal = await Db.GetIQueryable<PB_Location>().Where(w => localIds.Contains(w.Id) && w.LockType == 1).ToListAsync();
+                foreach (var item in listLocal)
+                {
+                    item.LockType = 0;
+                }
+                var localSvc = _ServiceProvider.GetRequiredService<IPB_LocationBusiness>();
+                await localSvc.UpdateDataAsync(listLocal);
             }
 
             // 更新收货单数据

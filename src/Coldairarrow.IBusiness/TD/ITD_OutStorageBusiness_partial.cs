@@ -39,7 +39,15 @@ namespace Coldairarrow.Business.TD
     {
         public string LocalId { get; set; }
         public string TrayId { get; set; }
+        public string MaterialId { get; set; }
+        public string BatchNo { get; set; }
+        /// <summary>
+        /// 库存数量
+        /// </summary>
         public double LocalNum { get; set; }
+        /// <summary>
+        /// 实际出库数量
+        /// </summary>
         public double OutNum { get; set; }
     }
     /// <summary>
@@ -47,7 +55,7 @@ namespace Coldairarrow.Business.TD
     /// </summary>
     public class ProduceOutStorageQM
     {
-        public string MaterialId { get; set; }
+        public string MaterialCode { get; set; }
         public string BatchNo { get; set; }
         public double Num { get; set; }
     }

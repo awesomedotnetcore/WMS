@@ -17,6 +17,7 @@
 
 <script>
 import InputCode from '../../components/InputBarcode'
+import OutStorageSvc from '../../api/TD/OutStorageSvc'
 export default {
   components: {
     InputCode
@@ -37,6 +38,16 @@ export default {
         if (!valid) {
           return
         }
+        this.loading = true
+        OutStorageSvc.ProductOut(this.entity).then(resJson => {
+          this.loading = false
+          if (resJson.Success) {
+            this.$message.success(resJson.Msg)
+            this.$router.push({ path: `/OutStorage/Detail/${resJson.Data.Id}` })
+          } else {
+            this.$message.error(resJson.Msg)
+          }
+        })
       })
     }
   }
