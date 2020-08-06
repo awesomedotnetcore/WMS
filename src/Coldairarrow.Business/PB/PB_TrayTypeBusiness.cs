@@ -73,6 +73,12 @@ namespace Coldairarrow.Business.PB
             await DeleteAsync(ids);
         }
 
+        public async Task AddDataExlAsync(List<PB_TrayType> list)
+        {
+            await InsertAsync(list);
+
+        }
+
         #endregion
 
         #region 私有成员

@@ -175,7 +175,7 @@ namespace Coldairarrow.Api.Controllers.PB
         }
 
         /// <summary>
-        /// 托盘信息表模板导出
+        /// 单位表模板导出
         /// </summary>
         /// <returns></returns>
         [HttpGet]
