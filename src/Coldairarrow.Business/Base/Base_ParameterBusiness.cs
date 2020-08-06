@@ -52,7 +52,7 @@ namespace Coldairarrow.Business.Base
         public async Task UpdateDataAsync(Base_Parameter data)
         {
             //await UpdateAsync(data);
-            await Update_SqlAsync(w => w.Id == data.Id, ("Val", UpdateType.Equal, data.Val));
+            await UpdateSqlAsync(w => w.Id == data.Id, ("Val", UpdateType.Equal, data.Val));
         }
 
         [DataDeleteLog(UserLogType.系统参数, "Code", "参数")]
