@@ -49,7 +49,7 @@
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
     <address-list ref="addressList" :parentObj="this"></address-list>
-    <leading-show ref="leadingShow" :parentObj="this"></leading-show>
+    <leading-show ref="leadingShow" :parentObj="this" leading="/PB/PB_Customer/Import" templet="/PB/PB_Customer/ExportToExcel"></leading-show>
   </a-card>
 </template>
 
@@ -138,7 +138,7 @@ export default {
       this.$refs.editForm.openForm(id,"编辑客户")
     },
     hanldleLeading() {
-      this.$refs.leadingShow.openForm(null, '导入客户信息','/PB/PB_Customer/Import','/PB/PB_Customer/ExportToExcel')
+      this.$refs.leadingShow.openForm(null, '导入客户信息')
     },
     handleDelete(ids) {
       var thisObj = this

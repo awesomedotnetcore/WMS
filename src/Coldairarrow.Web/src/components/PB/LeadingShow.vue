@@ -41,8 +41,8 @@ export default {
   },
   props: {    
     parentObj: Object,
-    leading: {type: String, default: 'leading', required: false},
-    templet: {type: String, default: 'templet', required: false}
+    leading: {type: String,  required: false},
+    templet: {type: String,  required: false}
   },
   data() {
     return {
@@ -63,11 +63,9 @@ export default {
     init() {
       this.visible = true
     },
-    openForm(id, title,leading,templet) {
+    openForm(id, title) {
       this.init()
       this.title = title
-      // this.leading = leading 
-      // this.templet = templet
     },
     handleChange(info) {
       if (info.file.status !== 'uploading') {
