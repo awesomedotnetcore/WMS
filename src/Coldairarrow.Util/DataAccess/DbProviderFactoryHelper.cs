@@ -1,5 +1,4 @@
 ﻿using EFCore.Sharding;
-// using MySqlConnector;
 using MySql.Data.MySqlClient;
 using Npgsql;
 using Oracle.ManagedDataAccess.Client;
