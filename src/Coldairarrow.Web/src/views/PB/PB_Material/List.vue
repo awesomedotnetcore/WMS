@@ -47,7 +47,7 @@
     </a-table>
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
-    <leading-show ref="leadingShow" :parentObj="this"></leading-show>
+    <leading-show ref="leadingShow" :parentObj="this" leading="/PB/PB_Material/Import" templet="/PB/PB_Material/ExportToExcel"></leading-show>
   </a-card>
 </template>
 
@@ -135,7 +135,7 @@ export default {
       this.$refs.editForm.openForm(id, '编辑')
     },
     hanldleLeading() {
-      this.$refs.leadingShow.openForm(null, '导入物料','/PB/PB_Material/Import','/PB/PB_Material/ExportToExcel')
+      this.$refs.leadingShow.openForm(null, '导入物料')
     },
     handleDelete(ids) {
       var thisObj = this
