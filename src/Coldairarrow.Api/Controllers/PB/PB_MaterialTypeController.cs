@@ -155,10 +155,11 @@ namespace Coldairarrow.Api.Controllers.PB
                         if (row.GetCell(0) != null && row.GetCell(0).ToString().Trim().Length > 0)
                         {
                             commodity.Id = IdHelper.GetId();
+                            commodity.Path = commodity.Id;
+                            commodity.IsLeaf = false;//默认是父级节点
                             commodity.CreatorId = _Op.UserId; //"Admin";//_Op.UserId;
 
                             commodity.Code = row.GetCell(0).ToString();
-
                         }
                         if (row.GetCell(1) != null && row.GetCell(1).ToString().Trim().Length > 0)
                         {
@@ -172,29 +173,28 @@ namespace Coldairarrow.Api.Controllers.PB
                         {
                             commodity.IsLeaf = Convert.ToBoolean(row.GetCell(3).ToString());
                         }
-                        if (row.GetCell(4) != null && row.GetCell(4).ToString().Trim().Length > 0)
-                        {
-                            commodity.Path = row.GetCell(4).ToString().ToString();
-                        }
                         Data.Add(commodity);
                     }
-                    var listParentCodes = Data.Select(s => s.ParentId).Select(s => s.Trim()).Distinct().ToList();
-                    var dicParent = _pB_MaterialTypeBus.GetQueryable<PB_MaterialType>().Where(w => listParentCodes.Contains(w.Code)).ToDictionary(k => k.Code, v => v.Id);
-
-                    var listPathCodes = Data.Select(s => s.Path).Select(s => s.Trim()).Distinct().ToList();
-                    var dicPath = _pB_MaterialTypeBus.GetQueryable<PB_MaterialType>().Where(w => listPathCodes.Contains(w.Code)).ToDictionary(k => k.Code, v => v.Id);
+                    var listParentCodes = Data.Select(s => s.ParentId).Distinct().ToList();
+                    var dicParent = Data.ToDictionary(k => k.Code, k => k.Id);
 
                     foreach (var item in Data)
                     {
-                        if (dicParent.ContainsKey(item.ParentId.Trim()))
-                            item.ParentId = dicParent[item.ParentId.Trim()];
+                        if (item.ParentId == null)
+                        {
+                            item.ParentId = null;
+                            item.Path = item.Id;
+                            item.IsLeaf = false;
+                        }
+                        else
+                        if (dicParent.ContainsKey(item.ParentId))
+                        {
+                            item.ParentId = dicParent[item.ParentId];
+                            item.Path = item.ParentId + "/" + item.Id;
+                            item.IsLeaf = true;
+                        }                            
                         else
                             throw new Exception("上级物料分类不存在！");
-
-                        if (dicPath.ContainsKey(item.Path.Trim()))
-                            item.Path = dicPath[item.Path.Trim()];
-                        else
-                            throw new Exception("子级节点不存在！");
 
                     }
                     if (Data.Count > 0)
@@ -238,10 +238,8 @@ namespace Coldairarrow.Api.Controllers.PB
         /// <returns></returns>
         [HttpGet]
         [NoCheckJWT]
-        public IActionResult ExportToExcel()//async Task<IActionResult>
+        public IActionResult ExportToExcel()
         {
-            //var data = await _tD_CheckDataBus.QueryDataListAsync(checkId);
-
             //创建EXCEL工作薄
             IWorkbook workBook = new XSSFWorkbook();
             //创建sheet文件表
@@ -264,13 +262,7 @@ namespace Coldairarrow.Api.Controllers.PB
             cell.SetCellValue("物料类型名称");
 
             cell = header.CreateCell(2);
-            cell.SetCellValue("上级物料分类");
-
-            cell = header.CreateCell(3);
-            cell.SetCellValue("是否有下级物料(true/false)");
-
-            cell = header.CreateCell(4);
-            cell.SetCellValue("下级分类(格式：上级名称或上级名称/下级名称)");
+            cell.SetCellValue("上级物料分类编号");
 
             #endregion            
             //工作流写入，通过流的方式进行创建生成文件
