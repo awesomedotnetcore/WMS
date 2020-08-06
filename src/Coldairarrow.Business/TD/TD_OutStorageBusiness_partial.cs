@@ -130,7 +130,7 @@ namespace Coldairarrow.Business.TD
             var now = DateTime.Now;
             var data = await this.GetTheDataAsync(audit.Id);
             var detail = data.OutStorDetails;
-            var dicMUnit = detail.Select(s => s.Material).Distinct().ToDictionary(k => k.Id, v => v.MeasureId);
+            var dicMUnit = detail.Select(s => new { s.MaterialId, s.Material.MeasureId }).GroupBy(g => new { g.MaterialId, g.MeasureId }).ToDictionary(k => k.Key.MaterialId, v => v.Key.MeasureId);
 
             var lmSvc = _ServiceProvider.GetRequiredService<IIT_LocalMaterialBusiness>();
             var ldSvc = _ServiceProvider.GetRequiredService<IIT_LocalDetailBusiness>();
@@ -298,6 +298,18 @@ namespace Coldairarrow.Business.TD
             //    }
             //}
 
+            // 解锁货位 在自动出库的时候，货位可能被出库锁锁定了
+            {
+                var localIds = data.OutStorDetails.Select(s => s.LocalId).ToList();
+                var listLocal = await Db.GetIQueryable<PB_Location>().Where(w => localIds.Contains(w.Id) && w.LockType == 2).ToListAsync();
+                foreach (var item in listLocal)
+                {
+                    item.LockType = 0;
+                }
+                var localSvc = _ServiceProvider.GetRequiredService<IPB_LocationBusiness>();
+                await localSvc.UpdateDataAsync(listLocal);
+            }
+
             // 修改出库状态 
             {
                 data.Status = 1;
@@ -310,13 +322,25 @@ namespace Coldairarrow.Business.TD
         [DataEditLog(UserLogType.出库管理, "Id", "出库单驳回")]
         public async Task Reject(AuditDTO audit)
         {
-            var data = await this.GetEntityAsync(audit.Id);
+            var data = await this.GetTheDataAsync(audit.Id);
             // 修改出库状态
             {
                 data.Status = 2;
                 data.AuditeTime = audit.AuditTime;
                 data.AuditUserId = audit.AuditUserId;
                 await UpdateAsync(data);
+            }
+
+            // 解锁货位 在自动出库的时候，货位可能被出库锁锁定了
+            {
+                var localIds = data.OutStorDetails.Select(s => s.LocalId).ToList();
+                var listLocal = await Db.GetIQueryable<PB_Location>().Where(w => localIds.Contains(w.Id) && w.LockType == 2).ToListAsync();
+                foreach (var item in listLocal)
+                {
+                    item.LockType = 0;
+                }
+                var localSvc = _ServiceProvider.GetRequiredService<IPB_LocationBusiness>();
+                await localSvc.UpdateDataAsync(listLocal);
             }
         }
 
@@ -353,10 +377,19 @@ namespace Coldairarrow.Business.TD
         public async Task<AjaxResult<List<ReqMaterialResultDTO>>> ReqMaterial(ReqMaterialQM data)
         {
             var listResult = new List<ReqMaterialResultDTO>();
+            // 是否按批次取物料
             if (data.BatchNo.IsNullOrEmpty())
             {
                 //先检查物料是否满足数量
-                var lmCount = await Db.GetIQueryable<IT_LocalMaterial>().Where(w => w.StorId == data.StorId && w.MaterialId == data.MaterialId).SumAsync(w => w.Num);
+                var lmCountQuery = from lm in Db.GetIQueryable<IT_LocalMaterial>()
+                                   join l in Db.GetIQueryable<PB_Location>() on lm.LocalId equals l.Id
+                                   where lm.StorId == data.StorId
+                                   && lm.MaterialId == data.MaterialId
+                                   && l.StorId == data.StorId
+                                   && l.LockType == 0
+                                   group lm by lm.StorId into su
+                                   select su.Sum(a => a.Num);
+                var lmCount = await lmCountQuery.FirstOrDefaultAsync();
                 if (lmCount < data.Num) return new AjaxResult<List<ReqMaterialResultDTO>>() { Success = false, Msg = "库存不足" };
 
                 var listLM = from lm in Db.GetIQueryable<IT_LocalMaterial>()
@@ -370,6 +403,8 @@ namespace Coldairarrow.Business.TD
                              {
                                  LocalId = lm.LocalId,
                                  TrayId = lm.TrayId,
+                                 MaterialId = lm.MaterialId,
+                                 BatchNo = lm.BatchNo,
                                  LocalNum = lm.Num
                              };
                 listResult = await listLM.ToListAsync();
@@ -377,7 +412,16 @@ namespace Coldairarrow.Business.TD
             else
             {
                 //先检查物料是否满足数量
-                var lmCount = await Db.GetIQueryable<IT_LocalMaterial>().Where(w => w.StorId == data.StorId && w.MaterialId == data.MaterialId && w.BatchNo == data.BatchNo).SumAsync(w => w.Num);
+                var lmCountQuery = from lm in Db.GetIQueryable<IT_LocalMaterial>()
+                                   join l in Db.GetIQueryable<PB_Location>() on lm.LocalId equals l.Id
+                                   where lm.StorId == data.StorId
+                                   && lm.MaterialId == data.MaterialId
+                                   && lm.BatchNo == data.BatchNo
+                                   && l.StorId == data.StorId
+                                   && l.LockType == 0
+                                   group lm by lm.StorId into su
+                                   select su.Sum(a => a.Num);
+                var lmCount = await lmCountQuery.FirstOrDefaultAsync();
                 if (lmCount < data.Num) return new AjaxResult<List<ReqMaterialResultDTO>>() { Success = false, Msg = "库存不足" };
 
                 var listLM = from lm in Db.GetIQueryable<IT_LocalMaterial>()
@@ -392,10 +436,13 @@ namespace Coldairarrow.Business.TD
                              {
                                  LocalId = lm.LocalId,
                                  TrayId = lm.TrayId,
+                                 MaterialId = lm.MaterialId,
+                                 BatchNo = lm.BatchNo,
                                  LocalNum = lm.Num
                              };
                 listResult = await listLM.ToListAsync();
             }
+
             var result = new List<ReqMaterialResultDTO>();
             double diffNum = data.Num;
             foreach (var item in listResult)

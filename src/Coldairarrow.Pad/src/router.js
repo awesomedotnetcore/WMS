@@ -1,9 +1,11 @@
+/* eslint-disable no-unused-vars */
 import Vue from 'vue'
 import Router from 'vue-router'
+import TokenCache from './utils/TokenCache'
 import UserLayout from './layouts/UserLayout'
 import BaseLayout from './layouts/BaseLayout'
 Vue.use(Router)
-export default new Router({
+const router = new Router({
     mode: 'history',
     scrollBehavior: () => ({ y: 0 }),
     routes: [
@@ -20,7 +22,7 @@ export default new Router({
             children: [
                 {
                     path: '/Home/Index',
-                    name: 'Index',
+                    name: 'HomeIndex',
                     component: () => import('@/views/Home/Index')
                 }
             ]
@@ -32,7 +34,7 @@ export default new Router({
             children: [
                 {
                     path: '/User/Login',
-                    name: 'Login',
+                    name: 'UserLogin',
                     component: () => import('@/views/Home/Login')
                 }
             ]
@@ -44,7 +46,7 @@ export default new Router({
             children: [
                 {
                     path: '/InStorage/ProductIn',
-                    name: 'ProductIn',
+                    name: 'InStorageProductIn',
                     component: () => import('@/views/InStorage/ProductIn')
                 },
                 {
@@ -67,7 +69,7 @@ export default new Router({
             children: [
                 {
                     path: '/OutStorage/ProductOut',
-                    name: 'ProductOut',
+                    name: 'OutStorageProductOut',
                     component: () => import('@/views/OutStorage/ProductOut')
                 },
                 {
@@ -85,3 +87,9 @@ export default new Router({
         }
     ]
 })
+router.beforeEach((to, from, next) => {
+    var token = TokenCache.getToken()
+    if (to.name !== 'UserLogin' && !token) next({ name: 'UserLogin' })
+    next()
+})
+export default router

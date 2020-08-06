@@ -96,7 +96,7 @@ namespace Coldairarrow.Api.Controllers.TD
             var material = await materialSvc.GetByBarcode(data.MaterialCode);
             var StorId = _Op.Property.DefaultStorageId;
 
-            if (tray == null || material == null) return new AjaxResult<TD_InStorage>() { Success = false, Msg = "托盘或计划输入不正确" };
+            if (tray == null || material == null) return new AjaxResult<TD_InStorage>() { Success = false, Msg = "托盘或物料输入不正确" };
             (string StorId, string MaterialId, string TaryId) para = (StorId, material.Id, tray.Id);
             var localId = await _tD_InStorageBus.ReqLocation(para);
             if (localId.IsNullOrEmpty()) return new AjaxResult<TD_InStorage>() { Success = false, Msg = "没有可以入库的货位" };

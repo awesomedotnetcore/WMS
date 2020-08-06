@@ -76,7 +76,7 @@ namespace Coldairarrow.Api.Controllers.TD
                         InitEntity(item);
                     item.OutStorId = data.Id;
                     item.StorId = data.StorageId;
-                    item.TotalAmt = item.Price * item.LocalNum ;
+                    item.TotalAmt = item.Price * item.LocalNum;
                 }
                 await _tD_OutStorageBus.UpdateDataAsync(data);
             }
@@ -114,6 +114,49 @@ namespace Coldairarrow.Api.Controllers.TD
         public async Task<AjaxResult> OutBlankTray(List<KeyValuePair<string, string>> listTray)
         {
             return await _tD_OutStorageBus.OutBlankTray(listTray, _Op.Property.DefaultStorageId);
+        }
+
+        [HttpPost]
+        public async Task<AjaxResult<TD_OutStorage>> ProductOut(ProduceOutStorageQM data)
+        {
+            var materialSvc = this._provider.GetRequiredService<IPB_MaterialBusiness>();
+            var material = await materialSvc.GetByBarcode(data.MaterialCode);
+            if (material == null) return new AjaxResult<TD_OutStorage>() { Success = false, Msg = "物料编码不正确" };
+            var StorId = _Op.Property.DefaultStorageId;
+            var reqData = new ReqMaterialQM() { StorId = StorId, MaterialId = material.Id, BatchNo = data.BatchNo, Num = data.Num };
+            var listOut = await this._tD_OutStorageBus.ReqMaterial(reqData);
+            if (!listOut.Success) return new AjaxResult<TD_OutStorage>() { Success = false, Msg = listOut.Msg };
+
+            var entity = new TD_OutStorage()
+            {
+                StorageId = StorId,
+                OutTime = DateTime.Now,
+                OutType = "ProductOut",
+                OutNum = data.Num,
+                Status = 0,
+                OutStorDetails = new List<TD_OutStorDetail>()
+            };
+            InitEntity(entity);
+            foreach (var detail in listOut.Data)
+            {
+                var item = new TD_OutStorDetail()
+                {
+                    StorId = StorId,
+                    OutStorId = entity.Id,
+                    LocalId = detail.LocalId,
+                    TrayId = detail.TrayId,
+                    MaterialId = detail.MaterialId,
+                    BatchNo = detail.BatchNo,
+                    LocalNum = detail.LocalNum,
+                    OutNum = detail.OutNum,
+                    Price = material.Price.GetValueOrDefault(0),
+                    TotalAmt = material.Price.GetValueOrDefault(0) * detail.OutNum
+                };
+                InitEntity(item);
+                entity.OutStorDetails.Add(item);
+            }
+            await _tD_OutStorageBus.AddDataAsync(entity);
+            return new AjaxResult<TD_OutStorage>() { Success = true, Msg = "出库成功", Data = entity };
         }
         #endregion
     }

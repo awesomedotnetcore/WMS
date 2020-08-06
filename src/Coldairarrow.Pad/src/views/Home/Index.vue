@@ -21,13 +21,13 @@
         <a-col :span="6">
           <div class="app-card" @click="$router.push({ path: '/OutStorage/ProductOut' })">
             <a-avatar shape="square" :size="64" icon="logout" />
-            <div class="app-text">生产入库</div>
+            <div class="app-text">生产出库</div>
           </div>
         </a-col>
         <a-col :span="6">
           <div class="app-card" @click="$router.push({ path: '/OutStorage/List' })">
             <a-avatar shape="square" :size="64" icon="ordered-list" />
-            <div class="app-text">入库管理</div>
+            <div class="app-text">出库管理</div>
           </div>
         </a-col>
       </a-row>
