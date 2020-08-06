@@ -20,7 +20,7 @@ namespace Coldairarrow.Business.TD
         /// </summary>
         /// <param name="data"></param>
         /// <returns>返回物料对应的货位与数量</returns>
-        Task<List<ReqMaterialResultDTO>> ReqMaterial(ReqMaterialQM data);
+        Task<AjaxResult<List<ReqMaterialResultDTO>>> ReqMaterial(ReqMaterialQM data);
     }
     /// <summary>
     /// 请求物料参数
