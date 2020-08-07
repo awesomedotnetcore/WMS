@@ -32,6 +32,16 @@
         </a-col>
       </a-row>
     </a-card>
+    <a-card title="基本资料" size="small">
+      <a-row :gutter="10">
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/PB/MaterialList' })">
+            <a-avatar shape="square" :size="64" icon="border" />
+            <div class="app-text">物料管理</div>
+          </div>
+        </a-col>
+      </a-row>
+    </a-card>
   </div>
 </template>
 <script>

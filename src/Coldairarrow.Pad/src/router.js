@@ -84,6 +84,18 @@ const router = new Router({
                     props: true
                 }
             ]
+        },
+        {
+            path: '/PB',
+            component: BaseLayout,
+            redirect: '/PB/MaterialList',
+            children: [
+                {
+                    path: '/PB/MaterialList',
+                    name: 'PBMaterialList',
+                    component: () => import('@/views/PB/MaterialList')
+                }
+            ]
         }
     ]
 })
