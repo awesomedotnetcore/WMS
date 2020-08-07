@@ -12,6 +12,7 @@ namespace Coldairarrow.Business.PB
         Task AddDataAsync(PB_Measure data);
         Task UpdateDataAsync(PB_Measure data);
         Task DeleteDataAsync(List<string> ids);
+        Task AddDataExlAsync(List<PB_Measure> list);
     }
     public class PB_MeasureQM
     {

@@ -14,5 +14,6 @@ namespace Coldairarrow.Business.PB
         Task AddDataAsync(PB_TrayType data);
         Task UpdateDataAsync(PB_TrayType data);
         Task DeleteDataAsync(List<string> ids);
+        Task AddDataExlAsync(List<PB_TrayType> list);
     }
 }

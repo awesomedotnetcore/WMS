@@ -204,10 +204,10 @@ namespace Coldairarrow.Api.Controllers.PB
                     var listMeasureCodes = Data.Select(s => s.MeasureId).Select(s => s.Trim()).Distinct().ToList();
                     var dicMeasure = _pB_MaterialBus.GetQueryable<PB_Measure>().Where(w => listMeasureCodes.Contains(w.Code)).ToDictionary(k => k.Code, v => v.Id);
 
-                    var listCusCodes = Data.Select(s => s.CusId).Select(s => s.Trim()).Distinct().ToList();
+                    var listCusCodes = Data.Select(s => s.CusId).Distinct().ToList();
                     var dicCus = _pB_MaterialBus.GetQueryable<PB_Customer>().Where(w => listCusCodes.Contains(w.Code)).ToDictionary(k => k.Code, v => v.Id);
 
-                    var listSupCodes = Data.Select(s => s.SupId).Select(s => s.Trim()).Distinct().ToList();
+                    var listSupCodes = Data.Select(s => s.SupId).Distinct().ToList();
                     var dicSup = _pB_MaterialBus.GetQueryable<PB_Supplier>().Where(w => listSupCodes.Contains(w.Code)).ToDictionary(k => k.Code, v => v.Id);
 
                     var listStorCodes = Data.Select(s => s.StorId).Select(s => s.Trim()).Distinct().ToList();
@@ -223,22 +223,29 @@ namespace Coldairarrow.Api.Controllers.PB
                         if (dicMeasure.ContainsKey(item.MeasureId.Trim()))
                             item.MeasureId = dicMeasure[item.MeasureId.Trim()];
                         else
-                            throw new Exception("单位不存在！");
+                            throw new Exception("单位编号不存在！");
 
-                        if (dicCus.ContainsKey(item.CusId.Trim()))
+                        if (item.CusId == null)
+                        {
+                            item.CusId = null;
+                        } else if (dicCus.ContainsKey(item.CusId.Trim()))
                             item.CusId = dicCus[item.CusId.Trim()];
                         else
-                            throw new Exception("客户不存在！");
+                            throw new Exception("客户编号不存在！");
 
-                        if (dicSup.ContainsKey(item.SupId.Trim()))
+                        if (item.SupId == null)
+                        {
+                            item.SupId = null;
+                        }
+                        else if (dicSup.ContainsKey(item.SupId.Trim()))
                             item.SupId = dicSup[item.SupId.Trim()];
                         else
-                            throw new Exception("供应商不存在！");
+                            throw new Exception("供应商编号不存在！");
 
                         if (dicStor.ContainsKey(item.StorId.Trim()))
                             item.StorId = dicStor[item.StorId.Trim()];
                         else
-                            throw new Exception("仓库不存在！");
+                            throw new Exception("仓库编号不存在！");
 
                         if (item.BarCode == null)
                         {
@@ -332,7 +339,7 @@ namespace Coldairarrow.Api.Controllers.PB
             cell.SetCellValue("物料类型");
 
             cell = header.CreateCell(5);
-            cell.SetCellValue("物料单位");
+            cell.SetCellValue("单位编号");
 
             cell = header.CreateCell(6);
             cell.SetCellValue("物料规格");
@@ -344,13 +351,13 @@ namespace Coldairarrow.Api.Controllers.PB
             cell.SetCellValue("下限数量");
 
             cell = header.CreateCell(9);
-            cell.SetCellValue("客户");
+            cell.SetCellValue("客户编号");
 
             cell = header.CreateCell(10);
-            cell.SetCellValue("供应商");
+            cell.SetCellValue("供应商编号");
 
             cell = header.CreateCell(11);
-            cell.SetCellValue("仓库");
+            cell.SetCellValue("仓库编号");
 
             cell = header.CreateCell(12);
             cell.SetCellValue("价格");
