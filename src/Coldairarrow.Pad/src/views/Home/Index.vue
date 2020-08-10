@@ -14,6 +14,12 @@
             <div class="app-text">入库管理</div>
           </div>
         </a-col>
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/InStorage/InBlankTray' })">
+            <a-icon class="app-icon" type="pic-left" />
+            <div class="app-text">空托盘入库</div>
+          </div>
+        </a-col>
       </a-row>
     </a-card>
     <a-card title="出库" size="small">
@@ -28,6 +34,12 @@
           <div class="app-card" @click="$router.push({ path: '/OutStorage/List' })">
             <a-icon class="app-icon" type="ordered-list" />
             <div class="app-text">出库管理</div>
+          </div>
+        </a-col>
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/OutStorage/OutBlankTray' })">
+            <a-icon class="app-icon" type="pic-right" />
+            <div class="app-text">空托盘出库</div>
           </div>
         </a-col>
       </a-row>
