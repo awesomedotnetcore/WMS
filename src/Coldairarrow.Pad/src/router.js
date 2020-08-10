@@ -59,6 +59,11 @@ const router = new Router({
                     name: 'InStorageDetail',
                     component: () => import('@/views/InStorage/Detail'),
                     props: true
+                },
+                {
+                    path: '/InStorage/Receive',
+                    name: 'InStorageReceive',
+                    component: () => import('@/views/InStorage/Receive')
                 }
             ]
         },
