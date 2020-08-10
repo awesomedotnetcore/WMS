@@ -59,7 +59,8 @@ const router = new Router({
                     name: 'InStorageDetail',
                     component: () => import('@/views/InStorage/Detail'),
                     props: true
-                }
+                },
+
             ]
         },
         {
@@ -82,6 +83,11 @@ const router = new Router({
                     name: 'OutStorageDetail',
                     component: () => import('@/views/OutStorage/Detail'),
                     props: true
+                },
+                {
+                    path: '/OutStorage/OutBlankTray',
+                    name: 'OutStorageOutBlankTray',
+                    component: () => import('@/views/OutStorage/OutBlankTray'),
                 }
             ]
         },
