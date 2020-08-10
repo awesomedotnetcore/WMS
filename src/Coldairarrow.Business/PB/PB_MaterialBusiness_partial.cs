@@ -14,6 +14,11 @@ namespace Coldairarrow.Business.PB
 {
     public partial class PB_MaterialBusiness : BaseBusiness<PB_Material>, IPB_MaterialBusiness, ITransientDependency
     {
+        public async Task<PB_Material> GetTheDataAsync(string id)
+        {
+            var q = this.GetIQueryable().Include(i => i.MaterialType).Include(i => i.Measure).Include(i => i.Supplier).Include(i => i.Customer);
+            return await q.SingleOrDefaultAsync(w => w.Id == id);
+        }
         public async Task<List<PB_Material>> GetQueryData(SelectQueryDTO search)
         {
             var q = GetIQueryable();

@@ -57,7 +57,7 @@ export default {
       });
     },
     handlerShow(item) {
-      // this.$router.push({ path: `/InStorage/Detail/${item.Id}` })
+      this.$router.push({ path: `/PB/MaterialDetail/${item.Id}` })
     },
     handlerChange(page, size) {
       this.queryData.PageIndex = page

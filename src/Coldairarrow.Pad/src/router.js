@@ -94,6 +94,12 @@ const router = new Router({
                     path: '/PB/MaterialList',
                     name: 'PBMaterialList',
                     component: () => import('@/views/PB/MaterialList')
+                },
+                {
+                    path: '/PB/MaterialDetail/:id',
+                    name: 'PBMaterialDetail',
+                    component: () => import('@/views/PB/MaterialDetail'),
+                    props: true
                 }
             ]
         }
