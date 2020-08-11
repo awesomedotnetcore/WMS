@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Coldairarrow.IBusiness;
+using Coldairarrow.Business.IT;
+using Coldairarrow.Entity.PB;
 
 namespace Coldairarrow.Api.Controllers.TD
 {
@@ -18,11 +20,12 @@ namespace Coldairarrow.Api.Controllers.TD
     {
         #region DI
 
-        public TD_OutStorageController(ITD_OutStorageBusiness tD_OutStorageBus, IServiceProvider provider, IOperator op)
+        public TD_OutStorageController(ITD_OutStorageBusiness tD_OutStorageBus, IServiceProvider provider, IOperator op, IServiceProvider svcProvider)
         {
             _tD_OutStorageBus = tD_OutStorageBus;
             _provider = provider;
             _Op = op;
+            this.serviceProvider = svcProvider;
         }
 
         ITD_OutStorageBusiness _tD_OutStorageBus { get; }
@@ -30,6 +33,8 @@ namespace Coldairarrow.Api.Controllers.TD
         IServiceProvider _provider { get; }
 
         IOperator _Op { get; }
+
+        IServiceProvider serviceProvider { get; }
 
         #endregion
 
@@ -114,6 +119,29 @@ namespace Coldairarrow.Api.Controllers.TD
         public async Task<AjaxResult> OutBlankTray(List<KeyValuePair<string, string>> listTray)
         {
             return await _tD_OutStorageBus.OutBlankTray(listTray, _Op.Property.DefaultStorageId);
+        }
+
+        /// <summary>
+        /// 空托盘自动出库
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<AjaxResult<TD_OutStorage>> OutAutoTray(OutAutoByTary data)
+        {
+            var traySvc = this.serviceProvider.GetRequiredService<IPB_TrayBusiness>();
+            var listlocal = await traySvc.GetByLocation(data.TrayTypeId);
+
+            //var localSvc = this.serviceProvider.GetRequiredService<IIT_LocalMaterialBusiness>();
+            foreach (var detail in listlocal)
+            {
+                //var local = new IT_LocalMaterial
+               // {
+                   // LocalId = traytype
+               // };
+            }
+
+                var StorId = _Op.Property.DefaultStorageId;
+            return new AjaxResult<TD_OutStorage>(); //{ Success = true, Msg = "空托盘出库成功", Data = entity };
         }
 
         [HttpPost]
