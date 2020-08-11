@@ -32,8 +32,10 @@
 </template>
 
 <script>
+import moment from 'moment'
 import InputCode from '../../components/InputBarcode'
 import MaterialSvc from '../../api/PB/MaterialSvc'
+import ReceiveSvc from '../../api/TD/ReceiveSvc'
 export default {
   components: {
     InputCode
@@ -52,8 +54,26 @@ export default {
     }
   },
   methods: {
+    moment,
     handlerSubmit() {
-
+      var listData = this.listData.map((v) => { v.Material = null; return v; });
+      var data = {
+        OrderTime: moment().toJSON(),
+        RecTime: moment().toJSON(),
+        Type: 'Purchase',
+        Status: 0,
+        RecDetails: listData
+      }
+      this.loading = true
+      ReceiveSvc.SaveData(data).then(resJson => {
+        this.loading = false
+        if (resJson.Success) {
+          this.$message.success(resJson.Msg)
+          this.$router.push({ path: '/InStorage/List' })
+        } else {
+          this.$message.error(resJson.Msg)
+        }
+      })
     },
     handlerDel(item) {
       var index = this.listData.indexOf(item)
@@ -70,7 +90,7 @@ export default {
             return
           } else {
             var material = resJson.Data
-            var item = { Id: this.tempId + 1, MaterialId: material.Id, MeasureId: material.MeasureId, PlanNum: this.entity.Num, RecNum: this.entity.Num, Material: material }
+            var item = { Id: 'newid_' + (this.tempId + 1).toString(), MaterialId: material.Id, MeasureId: material.MeasureId, PlanNum: this.entity.Num, RecNum: this.entity.Num, Price: material.Price, Material: material }
             this.listData.push(item)
             this.visible = false
             this.tempId += 1
