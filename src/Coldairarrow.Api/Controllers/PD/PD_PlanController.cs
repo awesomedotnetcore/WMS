@@ -70,6 +70,11 @@ namespace Coldairarrow.Api.Controllers.PD
             await _pD_PlanBus.DeleteDataAsync(ids);
         }
 
+        [HttpPost]
+        public async Task Status(string id, int status)
+        {
+            await _pD_PlanBus.Status(id, status);
+        }
         #endregion
     }
 }

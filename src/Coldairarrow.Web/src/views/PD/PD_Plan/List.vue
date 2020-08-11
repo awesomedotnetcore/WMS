@@ -10,7 +10,7 @@
         <a-row :gutter="10">
           <a-col :md="4" :sm="24">
             <a-form-item>
-              <a-input v-model="queryParam.Keyword" placeholder="编号或物料Id" />
+              <a-input v-model="queryParam.Keyword" placeholder="计划编号" />
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="24">
@@ -22,22 +22,27 @@
     </div>
 
     <a-table ref="table" :columns="columns" :rowKey="row => row.Id" :dataSource="data" :pagination="pagination" :loading="loading" @change="handleTableChange" :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :bordered="true" size="small">
+      <template slot="Material" slot-scope="record">
+        <a-tooltip>
+          <template slot="title">{{ record.Code }}</template>
+          {{ record.Name }}
+        </a-tooltip>      
+      </template>
+      <template slot="YesOrNo" slot-scope="text">
+        <a-tag v-if="text" color="green">已完成</a-tag>
+        <a-tag v-else color="pink">未完成</a-tag>
+      </template>
       <span slot="action" slot-scope="text, record">
-        <template slot="Status" slot-scope="text">
-          <a-tag v-if="record.Status===1" color="green">已完成</a-tag>
-          <a-tag v-else color="pink">未完成</a-tag>
-        </template>      
         <template>
           <a v-if="!record.Status" @click="handleEdit(record.Id)">编辑</a>
           <a-divider v-if="!record.Status" type="vertical" />
           <a v-if="!record.Status" @click="handleDelete([record.Id])">删除</a>
           <a-divider v-if="!record.Status" type="vertical" />
-          <a @click="handleStatus(record.Id,!record.Status)">{{ record.Status?'未完成':'已完成' }}</a>
-          <a-divider type="vertical" />      
+          <a @click="handleStatus(record.Id,record.Status==0?1:0)">{{ record.Status==1?'未完成':'已完成' }}</a>
+          <a-divider type="vertical" />
         </template>
       </span>
     </a-table>
-
     <edit-form ref="editForm" :parentObj="this"></edit-form>
   </a-card>
 </template>
@@ -46,16 +51,14 @@
 import EditForm from './EditForm'
 
 const columns = [
-  { title: '计划编号', dataIndex: 'Code', width: '10%' },
-  { title: '物料Id', dataIndex: 'MaterialId', width: '10%' },
-  { title: 'Bom版本', dataIndex: 'BomVerId', width: '10%' },
-  { title: '批次号', dataIndex: 'BatchNo', width: '10%' },
-  { title: '计划日期', dataIndex: 'PlanDate', width: '10%' },
-  { title: '开始日期', dataIndex: 'StartDate', width: '10%' },
-  { title: '完成日期', dataIndex: 'FinishDate', width: '10%' },
-  { title: '生产单元', dataIndex: 'UnitCode', width: '10%' },
-  { title: '状态', dataIndex: 'Status', width: '10%', scopedSlots: { customRender: 'Status' } }, //是否完成},
-  { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' } }
+  { title: '计划编号', dataIndex: 'Code', width: '12%' },
+  { title: '物料', dataIndex: 'Material', scopedSlots: { customRender: 'Material' } },
+  { title: '计划日期', dataIndex: 'PlanDate',width: '12%' },
+  { title: '开始日期', dataIndex: 'StartDate',width: '12%' },
+  { title: '完成日期', dataIndex: 'FinishDate',width: '12%' },
+  { title: '生产单元', dataIndex: 'UnitCode' },
+  { title: '状态', dataIndex: 'Status', width: '6%', scopedSlots: { customRender: 'YesOrNo' } }, //是否完成},
+  { title: '操作', dataIndex: 'action', width: '18%', scopedSlots: { customRender: 'action' } }
 ]
 
 export default {
@@ -160,7 +163,7 @@ export default {
           })
         }
       })
-    },
+    }
   }
 }
 </script>
