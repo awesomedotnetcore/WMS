@@ -1,9 +1,14 @@
 ﻿<template>
   <a-card :bordered="false">
     <div class="table-operator">
+      <a-row :gutter="10">
+        <a-col :md="20" :sm="24">
       <a-button v-if="hasPerm('PB_TrayType.Edit')" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
       <a-button v-if="hasPerm('PB_TrayType.Delete')" type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
+        </a-col>
+      <a-button v-if="hasPerm('PB_TrayType.Leading')" type="primary" @click="hanldleLeading()">导入托盘类型</a-button>
+      </a-row>
     </div>
 
     <div class="table-page-search-wrapper">
@@ -42,6 +47,7 @@
     <zone-list ref="zoneList" :parentObj="this"></zone-list>
     <material-list ref="materialList" :parentObj="this"></material-list>
     <location-list ref="locationList" :parentObj="this"></location-list>
+    <leading-show ref="leadingShow" :parentObj="this" leading="/PB/PB_TrayType/Import" templet="/PB/PB_TrayType/ExportToExcel"></leading-show>
   </a-card>
 </template>
 
@@ -50,6 +56,7 @@ import EditForm from './EditForm'
 import ZoneList from '../PB_TrayZone/List'
 import MaterialList from '../PB_TrayMaterial/List'
 import LocationList from '../PB_LocalTray/List'
+import LeadingShow from '../../../components/PB/LeadingShow'
 
 const filterYesOrNo = (value, row, index) => {
   if (value) return '是'
@@ -70,7 +77,8 @@ export default {
     EditForm,
     ZoneList,
     MaterialList,
-    LocationList
+    LocationList,
+    LeadingShow
   },
   mounted() {
     this.getDataList()
@@ -130,6 +138,9 @@ export default {
     },
     handleEdit(id) {
       this.$refs.editForm.openForm(id, '编辑')
+    },
+    hanldleLeading() {
+      this.$refs.leadingShow.openForm(null, '导入托盘类型')
     },
     handleDelete(ids) {
       var thisObj = this

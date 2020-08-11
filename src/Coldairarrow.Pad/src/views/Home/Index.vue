@@ -1,52 +1,86 @@
 <template>
-  <a-row :gutter="10">
-    <a-col :span="12">
-      <a @click="$router.push({ path: '/TD/Receive' })">
-        <a-result title="收货">
-          <template #icon>
-            <img src="../../assets/receive.svg" width="100" />
-          </template>
-        </a-result>
-      </a>
-    </a-col>
-    <a-col :span="12">
-      <a @click="$router.push({ path: '/TD/Send' })">
-        <a-result title="发货">
-          <template #icon>
-            <img src="../../assets/send.svg" width="100" />
-          </template>
-        </a-result>
-      </a>
-    </a-col>
-    <a-col :span="12">
-      <a href="javascript:;">
-        <a-result title="入库">
-          <template #icon>
-            <img src="../../assets/in.svg" width="100" />
-          </template>
-        </a-result>
-      </a>
-    </a-col>
-    <a-col :span="12">
-      <a href="javascript:;">
-        <a-result title="出库">
-          <template #icon>
-            <img src="../../assets/out.svg" width="100" />
-          </template>
-        </a-result>
-      </a>
-    </a-col>
-  </a-row>
+  <div>
+    <a-card title="入库" size="small">
+      <a-row :gutter="[5,10]">
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/InStorage/ProductIn' })">
+            <a-icon type="login" class="app-icon" />
+            <div class="app-text">生产入库</div>
+          </div>
+        </a-col>
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/InStorage/List' })">
+            <a-icon class="app-icon" type="audit" />
+            <div class="app-text">入库管理</div>
+          </div>
+        </a-col>
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/InStorage/InBlankTray' })">
+            <a-icon class="app-icon" type="pic-left" />
+            <div class="app-text">空托盘入库</div>
+          </div>
+        </a-col>
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/InStorage/Receive' })">
+            <a-icon class="app-icon" type="import" />
+            <div class="app-text">采购收货</div>
+          </div>
+        </a-col>
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/InStorage/ReceiveList' })">
+            <a-icon class="app-icon" type="profile" />
+            <div class="app-text">收货管理</div>
+          </div>
+        </a-col>
+      </a-row>
+    </a-card>
+    <a-card title="出库" size="small">
+      <a-row :gutter="[5,10]">
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/OutStorage/ProductOut' })">
+            <a-icon class="app-icon" type="logout" />
+            <div class="app-text">生产出库</div>
+          </div>
+        </a-col>
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/OutStorage/List' })">
+            <a-icon class="app-icon" type="audit" />
+            <div class="app-text">出库管理</div>
+          </div>
+        </a-col>
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/OutStorage/OutBlankTray' })">
+            <a-icon class="app-icon" type="pic-right" />
+            <div class="app-text">空托盘出库</div>
+          </div>
+        </a-col>
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/OutStorage/SaleSend' })">
+            <a-icon class="app-icon" type="export" />
+            <div class="app-text">销售发货</div>
+          </div>
+        </a-col>
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/OutStorage/SendList' })">
+            <a-icon class="app-icon" type="profile" />
+            <div class="app-text">发货管理</div>
+          </div>
+        </a-col>
+      </a-row>
+    </a-card>
+    <a-card title="基本资料" size="small">
+      <a-row :gutter="[5,10]">
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/PB/MaterialList' })">
+            <a-icon class="app-icon" type="border" />
+            <div class="app-text">物料管理</div>
+          </div>
+        </a-col>
+      </a-row>
+    </a-card>
+  </div>
 </template>
-
 <script>
-// const data = [
-//   { title: '收货', icon: 'pic-left', path: '/TD/Receive' },
-//   { title: '发货', icon: 'pic-right', path: '/TD/Send' },
-//   { title: '入库', icon: 'login', path: '/TD/InStorage' },
-//   { title: '出库', icon: 'logout', path: '/TD/OutStorage' }
-// ];
-
 export default {
   components: {
   },
@@ -58,7 +92,14 @@ export default {
 };
 </script>
 <style>
-.svg {
-  width: 30px;
+.app-card {
+  text-align: center;
+}
+.app-card .app-icon {
+  font-size:48px;
+}
+.app-card .app-text {
+  margin-top: 8px;
+  color: #666;
 }
 </style>

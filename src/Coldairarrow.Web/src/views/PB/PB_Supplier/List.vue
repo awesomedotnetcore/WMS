@@ -1,9 +1,14 @@
 ﻿<template>
   <a-card :bordered="false">
     <div class="table-operator">
-      <a-button v-if="hasPerm('PB_Supplier.Add')" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
-      <a-button v-if="hasPerm('PB_Supplier.Delete')" type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
-      <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
+      <a-row :gutter="10">
+        <a-col :md="20" :sm="24">
+          <a-button v-if="hasPerm('PB_Supplier.Add')" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
+          <a-button v-if="hasPerm('PB_Supplier.Delete')" type="primary" icon="minus" @click="handleDelete(selectedRowKeys)" :disabled="!hasSelected()" :loading="loading">删除</a-button>
+          <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
+        </a-col>
+          <a-button v-if="hasPerm('PB_Supplier.Leading')" type="primary" @click="hanldleLeading()">导入供应商</a-button>
+      </a-row>
     </div>
 
     <div class="table-page-search-wrapper">
@@ -44,6 +49,7 @@
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
     <address-list ref="addressList" :parentObj="this"></address-list>
+    <leading-show ref="leadingShow" :parentObj="this" leading="/PB/PB_Supplier/Import" templet="/PB/PB_Supplier/ExportToExcel"></leading-show>
   </a-card>
 </template>
 
@@ -52,6 +58,8 @@ import EditForm from './EditForm'
 import EnumName from '../../../components/BaseEnum/BaseEnumName'
 import EnumSelect from '../../../components/BaseEnum/BaseEnumSelect'
 import AddressList from '../../PB/PB_Address/List'
+import LeadingShow from '../../../components/PB/LeadingShow'
+
 const columns = [
   { title: '供应商编号', dataIndex: 'Code'},
   { title: '供应商名称', dataIndex: 'Name'},
@@ -67,7 +75,8 @@ export default {
     EditForm,
     EnumName,
     EnumSelect,
-    AddressList
+    AddressList,
+    LeadingShow
   },
   mounted() {
     this.getDataList()
@@ -127,6 +136,9 @@ export default {
     },
     handleEdit(id) {
       this.$refs.editForm.openForm(id,"编辑供应商")
+    },
+    hanldleLeading() {
+      this.$refs.leadingShow.openForm(null, '导入供应商信息')
     },
     handleDelete(ids) {
       var thisObj = this

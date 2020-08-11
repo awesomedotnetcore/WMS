@@ -44,10 +44,7 @@ namespace Coldairarrow.Business.PB
             return await q.ToListAsync();
         }
 
-        public async Task<PB_Material> GetTheDataAsync(string id)
-        {
-            return await GetEntityAsync(id);
-        }
+        
 
         [DataAddLog(UserLogType.物料管理, "Name", "物料")]
         [DataRepeatValidate(new string[] { "Code", "Name" }, new string[] { "编号", "名称" })]
@@ -69,6 +66,16 @@ namespace Coldairarrow.Business.PB
             await DeleteAsync(ids);
         }
 
+        public async Task AddDataExlAsync(List<PB_Material> list)
+        {
+            await InsertAsync(list);   
+
+        }
+
+        public IQueryable<T> GetQueryable<T>() where T : class, new()
+        {
+            return Db.GetIQueryable<T>();
+        }
         #endregion
 
         #region 私有成员

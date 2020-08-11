@@ -1,6 +1,8 @@
 ﻿<template>
   <a-card :bordered="false">
     <div class="table-operator">
+      <a-row :gutter="10">
+        <a-col :md="20" :sm="24">
       <a-button v-if="hasPerm('PB_MaterialType.Add')" type="primary" icon="plus" @click="hanldleAdd()">新建</a-button>
       <a-button v-if="hasPerm('PB_MaterialType.Delete')" 
         type="primary"
@@ -10,6 +12,9 @@
         :loading="loading"
       >删除</a-button>
       <a-button type="primary" icon="redo" @click="getDataList()">刷新</a-button>
+        </a-col>
+      <a-button v-if="hasPerm('PB_MaterialType.Leading')" type="primary" @click="hanldleLeading()">导入物料类型</a-button>  
+      </a-row>
     </div>
 
     <a-table
@@ -34,11 +39,13 @@
     </a-table>
 
     <edit-form ref="editForm" :parentObj="this"></edit-form>
+    <leading-show ref="leadingShow" :parentObj="this" leading="/PB/PB_MaterialType/Import" templet="/PB/PB_MaterialType/ExportToExcel"></leading-show>
   </a-card>
 </template>
 
 <script>
 import EditForm from './EditForm'
+import LeadingShow from '../../../components/PB/LeadingShow'
 
 const columns = [
   { title: '物料分类名称', dataIndex: 'title'},
@@ -49,7 +56,8 @@ const columns = [
 
 export default {
   components: {
-    EditForm
+    EditForm,
+    LeadingShow
   },
   mounted() {
     this.getDataList()
@@ -109,6 +117,9 @@ export default {
     },
     handleEdit(id) {
       this.$refs.editForm.openForm(id,"编辑物料类型")
+    },
+    hanldleLeading() {
+      this.$refs.leadingShow.openForm(null, '导入物料类型')
     },
     handleDelete(ids) {
       var thisObj = this

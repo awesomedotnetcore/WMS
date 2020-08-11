@@ -3,7 +3,7 @@
     <a-layout-header class="layout-header">
       <a-row>
         <a-col :span="6">
-          <a @click="$router.push({ path: '/Home/Index' })">
+          <a @click="goHome">
             <img src="../assets/logo.svg" width="50px" />
           </a>
         </a-col>
@@ -29,6 +29,13 @@ export default {
   components: {
     UserMenu,
     StorageSwitch
+  },
+  methods: {
+    goHome() {
+      if (this.$route.name !== 'HomeIndex') {
+        this.$router.push({ path: '/Home/Index' })
+      }
+    }
   }
 }
 </script>

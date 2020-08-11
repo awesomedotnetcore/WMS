@@ -149,7 +149,7 @@ namespace Coldairarrow.Business.TD
             var now = DateTime.Now;
             var data = await this.GetTheDataAsync(audit.Id);
             var detail = data.InStorDetails;
-            var dicMUnit = detail.Select(s => s.Material).Distinct().ToDictionary(k => k.Id, v => v.MeasureId);
+            var dicMUnit = detail.Select(s => new { s.MaterialId, s.Material.MeasureId }).GroupBy(g => new { g.MaterialId, g.MeasureId }).ToDictionary(k => k.Key.MaterialId, v => v.Key.MeasureId);
 
             // 增加库存明细
             {
@@ -311,6 +311,19 @@ namespace Coldairarrow.Business.TD
                 }
             }
 
+            // 解锁货位 在自动入库的时候，货位可能被入库锁锁定了
+            {
+                var localIds = detail.Select(s => s.LocalId).ToList();
+                var listLocal = await Db.GetIQueryable<PB_Location>().Where(w => localIds.Contains(w.Id) && w.LockType == 1).ToListAsync();
+                //await Db.Update_SqlAsync<PB_Location>(w => localIds.Contains(w.Id) && w.LockType == 1, ("LockType", UpdateType.Equal, 0));
+                foreach (var item in listLocal)
+                {
+                    item.LockType = 0;
+                }
+                var localSvc = _ServiceProvider.GetRequiredService<IPB_LocationBusiness>();
+                await localSvc.UpdateDataAsync(listLocal);
+            }
+
             // 修改主数据状态
             {
                 data.Status = 1;
@@ -330,13 +343,25 @@ namespace Coldairarrow.Business.TD
         [Transactional]
         public async Task Reject(AuditDTO audit)
         {
-            var data = await this.GetEntityAsync(audit.Id);
+            var data = await this.GetTheDataAsync(audit.Id);
             // 修改主数据状态
             {
                 data.Status = 2;
                 data.AuditeTime = audit.AuditTime;
                 data.AuditUserId = audit.AuditUserId;
                 await UpdateAsync(data);
+            }
+
+            // 解锁货位 在自动入库的时候，货位可能被入库锁锁定了
+            {
+                var localIds = data.InStorDetails.Select(s => s.LocalId).ToList();
+                var listLocal = await Db.GetIQueryable<PB_Location>().Where(w => localIds.Contains(w.Id) && w.LockType == 1).ToListAsync();
+                foreach (var item in listLocal)
+                {
+                    item.LockType = 0;
+                }
+                var localSvc = _ServiceProvider.GetRequiredService<IPB_LocationBusiness>();
+                await localSvc.UpdateDataAsync(listLocal);
             }
 
             // 更新收货单数据
@@ -359,6 +384,53 @@ namespace Coldairarrow.Business.TD
             }
             var traySvc = _ServiceProvider.GetRequiredService<IPB_TrayBusiness>();
             await traySvc.UpdateDataAsync(trays);
+        }
+
+        [Transactional(System.Data.IsolationLevel.Serializable)]
+        public async Task<string> ReqLocation((string StorId, string MaterialId, string TaryId) data)
+        {
+            //托盘类型
+            var tray = await Db.GetIQueryable<PB_Tray>().SingleOrDefaultAsync(w => w.Id == data.TaryId);
+
+            //找到可存此物料的货区
+            var listAreaId = from sa in Db.GetIQueryable<PB_StorArea>()
+                             join am in Db.GetIQueryable<PB_AreaMaterial>() on sa.Id equals am.AreaId
+                             where sa.StorId == data.StorId && am.MaterialId == data.MaterialId
+                             select sa.Id;
+
+            //有库存的货位
+            var lmLocal = from lm in Db.GetIQueryable<IT_LocalMaterial>()
+                          join l in Db.GetIQueryable<PB_Location>() on lm.LocalId equals l.Id
+                          where l.StorId == data.StorId && lm.StorId == data.StorId
+                          select l.Id;
+
+            // 有托盘的货位
+            var trayLocal = from t in Db.GetIQueryable<PB_Tray>()
+                            join l in Db.GetIQueryable<PB_Location>() on t.LocalId equals l.Id
+                            where l.StorId == data.StorId
+                            select t.LocalId;
+
+            //过滤货位
+            var LocalQuery = from lt in Db.GetIQueryable<PB_LocalTray>()
+                             join l in Db.GetIQueryable<PB_Location>() on lt.LocalId equals l.Id
+                             join tt in Db.GetIQueryable<PB_TrayType>() on lt.TrayTypeId equals tt.Id
+                             where l.StorId == data.StorId && tt.Id == tray.TrayTypeId
+                             && listAreaId.Contains(l.AreaId)  //货区过滤
+                             && l.LockType == 0  //锁定过滤
+                             && !lmLocal.Contains(l.Id) //库存过滤
+                             && !trayLocal.Contains(l.Id) // 托盘过滤
+                             select new { l.Id };
+
+            //TODO:可以做到从数据库随机取一个
+            var count = await LocalQuery.CountAsync();
+            if (count == 0) return null;
+            var skip = RandomHelper.Next(0, count - 1);
+            var result = await LocalQuery.Skip(skip).Take(1).FirstOrDefaultAsync();
+
+            //锁定货位
+            await Db.UpdateSqlAsync<PB_Location>(w => w.Id == result.Id, ("LockType", UpdateType.Equal, 1));
+
+            return result.Id;
         }
     }
 }

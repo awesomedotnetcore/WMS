@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Coldairarrow.IBusiness;
 using Microsoft.Extensions.DependencyInjection;
 using Coldairarrow.Business.PB;
+using Coldairarrow.Business.PD;
 
 namespace Coldairarrow.Api.Controllers.TD
 {
@@ -85,11 +86,68 @@ namespace Coldairarrow.Api.Controllers.TD
         /// <param name="data"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<AjaxResult> AutoInByTary(ProduceInStorageByTary data)
+        public async Task<AjaxResult<TD_InStorage>> AutoInByTary(ProduceInStorageByTary data)
         {
-            var tarySvc = this.serviceProvider.GetRequiredService<IPB_TrayBusiness>();
-            var tary = await tarySvc.GetByCode(data.TaryCode);
-            return Success();
+            var traySvc = this.serviceProvider.GetRequiredService<IPB_TrayBusiness>();
+            var tray = await traySvc.GetByCode(data.TrayCode);
+            //var planSvc = this.serviceProvider.GetRequiredService<IPD_PlanBusiness>();
+            //var plan = await planSvc.GetByCode(data.PlanCode);
+            var materialSvc= this.serviceProvider.GetRequiredService<IPB_MaterialBusiness>();
+            var material = await materialSvc.GetByBarcode(data.MaterialCode);
+            var StorId = _Op.Property.DefaultStorageId;
+
+            if (tray == null || material == null) return new AjaxResult<TD_InStorage>() { Success = false, Msg = "托盘或物料输入不正确" };
+            (string StorId, string MaterialId, string TaryId) para = (StorId, material.Id, tray.Id);
+            var localId = await _tD_InStorageBus.ReqLocation(para);
+            if (localId.IsNullOrEmpty()) return new AjaxResult<TD_InStorage>() { Success = false, Msg = "没有可以入库的货位" };
+
+            var entity = new TD_InStorage()
+            {
+                InStorTime = DateTime.Now,
+                InType = "Product",
+                //RefCode = data.PlanCode,
+                Status = 0,
+                StorId = StorId,
+                //SupId = data.SupId,
+                InStorDetails = new List<TD_InStorDetail>() {
+                    new TD_InStorDetail(){
+                        StorId=StorId,
+                        LocalId=localId,
+                        TrayId=tray.Id,
+                        MaterialId=material.Id,
+                        BatchNo=data.BatchNo,
+                        Num=data.Num
+                    }
+                }
+            };
+
+            InitEntity(entity);
+            foreach (var item in entity.InStorDetails)
+            {
+                InitEntity(item);
+                item.InStorId = entity.Id;
+                item.TotalAmt = item.Price * item.Num;
+            }
+            await _tD_InStorageBus.AddDataAsync(entity);
+
+            return Success<TD_InStorage>(entity);
+        }
+
+        /// <summary>
+        /// 生产入库完成
+        /// </summary>
+        /// <param name="id">自动入库ID</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task ComplatedInByTray(string id)
+        {
+            var audit = new AuditDTO();
+            audit.Id = id;
+            audit.StorId = _Op.Property.DefaultStorageId;
+            audit.AuditUserId = _Op.UserId;
+            audit.AuditTime = DateTime.Now;
+            audit.AuditType = AuditType.Approve;
+            await _tD_InStorageBus.Approve(audit);
         }
 
         [HttpPost]

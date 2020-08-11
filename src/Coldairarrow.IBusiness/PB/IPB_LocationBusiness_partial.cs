@@ -14,6 +14,8 @@ namespace Coldairarrow.Business.PB
         IQueryable<T> GetQueryable<T>() where T : class, new();
         Task<PageResult<PB_Location>> GetDataListAsync(PageInput<PB_LocationQM> input);
         Task<List<PB_Location>> QueryAsync();
+
+        Task UpdateDataAsync(List<PB_Location> list);
     }
     public class PB_LocationSelectQueryDTO : SelectQueryDTO
     {
