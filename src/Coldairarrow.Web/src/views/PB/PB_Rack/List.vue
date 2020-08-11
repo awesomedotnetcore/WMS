@@ -20,7 +20,7 @@
             <a-form-item>
               <a-input v-model="queryParam.Keyword" placeholder="编码/名称" />
             </a-form-item>
-          </a-col>         
+          </a-col>
           <a-col :md="6" :sm="24">
             <a-button type="primary" @click="() => {this.pagination.current = 1; this.getDataList()}">查询</a-button>
             <a-button style="margin-left: 8px" @click="() => (queryParam = {})">重置</a-button>
@@ -124,10 +124,10 @@ export default {
       return this.selectedRowKeys.length > 0
     },
     hanldleAdd() {
-      this.$refs.editForm.openForm(null,this.storData.Id,'新增货架')
+      this.$refs.editForm.openForm(null, this.storData.Id, '新增货架')
     },
     handleEdit(id) {
-      this.$refs.editForm.openForm(id,this.storData.Id,'编辑货架')
+      this.$refs.editForm.openForm(id, this.storData.Id, '编辑货架')
     },
     handleDelete(ids) {
       var thisObj = this
