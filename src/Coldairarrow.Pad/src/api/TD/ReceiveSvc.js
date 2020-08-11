@@ -12,5 +12,8 @@ export default {
     },
     Approval(id, type) {
         return http.post('/TD/TD_Receiving/Approval', { Id: id, AuditType: type })
+    },
+    DeleteData(id) {
+        return http.post('/TD/TD_Receiving/DeleteData', [id])
     }
 }

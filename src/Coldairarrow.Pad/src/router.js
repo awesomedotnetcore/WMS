@@ -64,7 +64,19 @@ const router = new Router({
                     path: '/InStorage/Receive',
                     name: 'InStorageReceive',
                     component: () => import('@/views/InStorage/Receive')
+                },
+                {
+                    path: '/InStorage/ReceiveList',
+                    name: 'InStorageReceiveList',
+                    component: () => import('@/views/InStorage/ReceiveList')
+                },
+                {
+                    path: '/InStorage/ReceiveDetail/:id',
+                    name: 'InStorageReceiveDetail',
+                    component: () => import('@/views/InStorage/ReceiveDetail'),
+                    props: true
                 }
+                
             ]
         },
         {
