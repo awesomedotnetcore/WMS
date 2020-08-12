@@ -129,6 +129,18 @@ const router = new Router({
                     props: true
                 }
             ]
+        },
+        {
+            path: '/Report',
+            component: BaseLayout,
+            redirect: '/Report/LocalMaterialReport',
+            children: [
+                {
+                    path: '/Report/LocalMaterialReport',
+                    name: 'LocalMaterialReport',
+                    component: () => import('@/views/Report/LocalMaterialReport')
+                }
+            ]
         }
     ]
 })
