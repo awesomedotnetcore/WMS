@@ -3,9 +3,15 @@
     <a-card title="入库" size="small">
       <a-row :gutter="[5,10]">
         <a-col :span="6">
-          <div class="app-card" @click="$router.push({ path: '/InStorage/ProductIn' })">
+          <div class="app-card" @click="$router.push({ path: '/InStorage/AutoIn' })">
             <a-icon type="login" class="app-icon" />
-            <div class="app-text">生产入库</div>
+            <div class="app-text">自动入库</div>
+          </div>
+        </a-col>
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/InStorage/ManualIn' })">
+            <a-icon type="download" class="app-icon" />
+            <div class="app-text">手动入库</div>
           </div>
         </a-col>
         <a-col :span="6">

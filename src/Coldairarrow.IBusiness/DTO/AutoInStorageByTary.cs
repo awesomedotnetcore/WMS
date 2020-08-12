@@ -7,7 +7,7 @@ namespace Coldairarrow.IBusiness.DTO
     /// <summary>
     /// 自动入库Pad传入数据
     /// </summary>
-    public class ProduceInStorageByTary
+    public class AutoInStorageByTary
     {
         ///// <summary>
         ///// 生产线Id
@@ -22,7 +22,10 @@ namespace Coldairarrow.IBusiness.DTO
 
 
         //public string PlanCode { get; set; }
-
+        /// <summary>
+        /// 收货ID
+        /// </summary>
+        public string RecId { get; set; }
         public string MaterialCode { get; set; }
         public string BatchNo { get; set; }
         public string TrayCode { get; set; }

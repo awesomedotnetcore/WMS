@@ -42,12 +42,17 @@ const router = new Router({
         {
             path: '/InStorage',
             component: BaseLayout,
-            redirect: '/InStorage/ProductIn',
+            redirect: '/InStorage/List',
             children: [
                 {
-                    path: '/InStorage/ProductIn',
-                    name: 'InStorageProductIn',
-                    component: () => import('@/views/InStorage/ProductIn')
+                    path: '/InStorage/AutoIn',
+                    name: 'InStorageAutoIn',
+                    component: () => import('@/views/InStorage/AutoIn')
+                },
+                {
+                    path: '/InStorage/ManualIn',
+                    name: 'InStorageManualIn',
+                    component: () => import('@/views/InStorage/ManualIn')
                 },
                 {
                     path: '/InStorage/List',

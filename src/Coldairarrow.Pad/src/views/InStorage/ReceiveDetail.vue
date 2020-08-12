@@ -5,6 +5,9 @@
       <a-button v-if="entity.Status===0" type="danger" ghost @click="handleDel" :loading="loading">删除</a-button>
       <a-button v-if="entity.Status===1" type="primary" ghost :style="{marginRight:'10px'}" @click="handleAudit('Approve')" :loading="loading">通过</a-button>
       <a-button v-if="entity.Status===1" type="danger" ghost @click="handleAudit('Reject')" :loading="loading">驳回</a-button>
+
+      <a-button v-if="entity.Status===3 || entity.Status===5" type="primary" ghost :style="{marginRight:'10px'}" @click="$router.push({path:'/InStorage/ManualIn',query:{recId:id}})" :loading="loading">手动入库</a-button>
+      <a-button v-if="entity.Status===3 || entity.Status===5" type="danger" ghost @click="$router.push({path:'/InStorage/AutoIn',query:{recId:id}})" :loading="loading">自动入库</a-button>
     </div>
     <a-descriptions :title="entity.Code" bordered :column="1">
       <a-descriptions-item label="时间">{{ moment(entity.RecTime).format('YY/M/D H:m') }}</a-descriptions-item>
