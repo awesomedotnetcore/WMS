@@ -83,6 +83,12 @@
           </div>
         </a-col>
         <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/PB/TrayList' })">
+            <a-icon class="app-icon" type="border-outer" />
+            <div class="app-text">托盘管理</div>
+          </div>
+        </a-col>
+        <a-col :span="6">
           <div class="app-card" @click="$router.push({ path: '/Report/LocalMaterialReport' })">
             <a-icon class="app-icon" type="dot-chart" />
             <div class="app-text">库存报表</div>
