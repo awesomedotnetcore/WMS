@@ -110,6 +110,17 @@ const router = new Router({
                     name: 'PBMaterialDetail',
                     component: () => import('@/views/PB/MaterialDetail'),
                     props: true
+                },
+                {
+                    path: '/PB/PlanList',
+                    name: 'PBPlanList',
+                    component: () => import('@/views/PB/PlanList')
+                },
+                {
+                    path: '/PB/PlanDetail/:id',
+                    name: 'PBPlanDetail',
+                    component: () => import('@/views/PB/PlanDetail'),
+                    props: true
                 }
             ]
         }
