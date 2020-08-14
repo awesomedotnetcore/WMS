@@ -13,7 +13,7 @@
       </a-descriptions-item>
       <a-descriptions-item label="总数">{{ entity.OutNum }}</a-descriptions-item>
       <a-descriptions-item label="物料">
-        <a-descriptions v-for="item in entity.OutStorDetails" :key="item.Id" bordered :column="1" size="small">
+        <a-descriptions v-for="item in entity.OutStorDetails" :key="item.Id" bordered :column="1" size="small" :style="{marginBottom:'10px'}">
           <a-descriptions-item label="名称">{{ item.Material.Name }}</a-descriptions-item>
           <a-descriptions-item label="编码">{{ item.Material.Code }}</a-descriptions-item>
           <a-descriptions-item label="条码">{{ item.Material.BarCode }}</a-descriptions-item>

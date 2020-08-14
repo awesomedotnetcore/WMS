@@ -72,5 +72,10 @@ namespace Coldairarrow.Business.PB
         {
             await UpdateAsync(list);
         }
+
+        public async Task<PB_Location> GetByCode(string storId, string code)
+        {
+            return await this.GetIQueryable().SingleOrDefaultAsync(w => w.StorId == storId && w.Code == code);
+        }
     }
 }

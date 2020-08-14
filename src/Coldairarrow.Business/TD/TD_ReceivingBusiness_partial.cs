@@ -128,7 +128,7 @@ namespace Coldairarrow.Business.TD
             await UpdateAsync(data);
         }
 
-
+        [Transactional]
         public async Task UpdateByInStorage(string id)
         {
             var listIn = await Db.GetIQueryable<TD_InStorage>().Include(i => i.InStorDetails).Where(w => w.RecId == id && w.Status <= 1).ToListAsync();
@@ -161,7 +161,7 @@ namespace Coldairarrow.Business.TD
 
             var sunRec = dicIn1.Values.Sum();
             receive.InNum = sunRec;
-            receive.Status = receive.TotalNum == sunRec ? 6 : 5;
+            receive.Status = sunRec < receive.TotalNum ? 5 : 6;
 
             await this.UpdateAsync(receive);
         }

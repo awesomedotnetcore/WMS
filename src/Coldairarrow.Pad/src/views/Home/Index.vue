@@ -3,9 +3,15 @@
     <a-card title="入库" size="small">
       <a-row :gutter="[5,10]">
         <a-col :span="6">
-          <div class="app-card" @click="$router.push({ path: '/InStorage/ProductIn' })">
+          <div class="app-card" @click="$router.push({ path: '/InStorage/AutoIn' })">
             <a-icon type="login" class="app-icon" />
-            <div class="app-text">生产入库</div>
+            <div class="app-text">自动入库</div>
+          </div>
+        </a-col>
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/InStorage/ManualIn' })">
+            <a-icon type="download" class="app-icon" />
+            <div class="app-text">手动入库</div>
           </div>
         </a-col>
         <a-col :span="6">
@@ -17,7 +23,7 @@
         <a-col :span="6">
           <div class="app-card" @click="$router.push({ path: '/InStorage/InBlankTray' })">
             <a-icon class="app-icon" type="pic-left" />
-            <div class="app-text">空托盘入库</div>
+            <div class="app-text">空托盘入</div>
           </div>
         </a-col>
         <a-col :span="6">
@@ -51,7 +57,7 @@
         <a-col :span="6">
           <div class="app-card" @click="$router.push({ path: '/OutStorage/OutBlankTray' })">
             <a-icon class="app-icon" type="pic-right" />
-            <div class="app-text">空托盘出库</div>
+            <div class="app-text">空托盘出</div>
           </div>
         </a-col>
         <a-col :span="6">
@@ -72,8 +78,20 @@
       <a-row :gutter="[5,10]">
         <a-col :span="6">
           <div class="app-card" @click="$router.push({ path: '/PB/MaterialList' })">
-            <a-icon class="app-icon" type="border" />
+            <a-icon class="app-icon" type="gold" />
             <div class="app-text">物料管理</div>
+          </div>
+        </a-col>
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/PB/TrayList' })">
+            <a-icon class="app-icon" type="border-outer" />
+            <div class="app-text">托盘管理</div>
+          </div>
+        </a-col>
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/Report/LocalMaterialReport' })">
+            <a-icon class="app-icon" type="dot-chart" />
+            <div class="app-text">库存报表</div>
           </div>
         </a-col>
         <a-col :span="6">

@@ -199,7 +199,7 @@ namespace Coldairarrow.Business.IT
             if (!search.TrayName.IsNullOrEmpty())
                 where = where.And(w => w.Tray.Code.Contains(search.TrayName) || w.Tray.Name.Contains(search.TrayName));
             if (!search.MaterialName.IsNullOrEmpty())
-                where = where.And(w => w.Material.Code.Contains(search.MaterialName) || w.Material.Name.Contains(search.MaterialName));
+                where = where.And(w => w.Material.Code.Contains(search.MaterialName) || w.Material.Name.Contains(search.MaterialName) || w.Material.BarCode.Contains(search.MaterialName) || w.Material.SimpleName.Contains(search.MaterialName));
             if (!search.Code.IsNullOrEmpty())
                 where = where.And(w => w.BatchNo.Contains(search.Code) || w.BarCode.Contains(search.Code));
 

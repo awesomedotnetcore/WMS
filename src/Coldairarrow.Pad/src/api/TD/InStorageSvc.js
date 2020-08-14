@@ -4,6 +4,9 @@ export default {
     AutoInByTary(data) {
         return http.post('/TD/TD_InStorage/AutoInByTary', data)
     },
+    ManualIn(data) {
+        return http.post('/TD/TD_InStorage/ManualIn', data)
+    },
     GetDataList(query) {
         return http.post('/TD/TD_InStorage/GetDataList', query)
     },

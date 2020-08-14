@@ -16,17 +16,21 @@
         </a-list-item-meta>
         <a-button slot="actions" type="dashed" shape="circle" icon="delete" @click="handlerDel(item)"></a-button>
       </a-list-item>
+      <a-list-item>
+        <a-button type="primary" block @click="e=>{this.visible=true}" icon="plus">新增物料</a-button>
+      </a-list-item>
     </a-list>
-    <a-button type="primary" block @click="e=>{this.visible=true}" icon="plus">新增物料</a-button>
     <a-modal title="新增物料" :visible="visible" @cancel="e=>{this.visible=false}" @ok="handlerAdd">
-      <a-form-model layout="horizontal" :model="entity" :rules="rules" ref="form">
-        <a-form-model-item prop="BarCode">
-          <input-code v-model="entity.BarCode" placeholder="物料条码"></input-code>
-        </a-form-model-item>
-        <a-form-model-item prop="Num">
-          <a-input-number v-model="entity.Num" :style="{width:'100%'}" :min="1" placeholder="物料数量" />
-        </a-form-model-item>
-      </a-form-model>
+      <a-spin :spinning="modalLoading">
+        <a-form-model layout="horizontal" :model="entity" :rules="rules" ref="form">
+          <a-form-model-item prop="BarCode">
+            <input-code v-model="entity.BarCode" placeholder="物料条码"></input-code>
+          </a-form-model-item>
+          <a-form-model-item prop="Num">
+            <a-input-number v-model="entity.Num" :style="{width:'100%'}" :min="1" placeholder="物料数量" />
+          </a-form-model-item>
+        </a-form-model>
+      </a-spin>
     </a-modal>
   </a-card>
 </template>
@@ -44,6 +48,7 @@ export default {
     return {
       visible: false,
       loading: false,
+      modalLoading: false,
       entity: {},
       listData: [],
       tempId: 0,
@@ -69,7 +74,7 @@ export default {
         this.loading = false
         if (resJson.Success) {
           this.$message.success(resJson.Msg)
-          this.$router.push({ path: '/InStorage/List' })
+          this.$router.push({ path: '/InStorage/ReceiveList' })
         } else {
           this.$message.error(resJson.Msg)
         }
@@ -84,13 +89,23 @@ export default {
         if (!valid) {
           return
         }
+        this.modalLoading = true
         MaterialSvc.GetByBarcode(this.entity.BarCode).then(resJson => {
+          this.modalLoading = false
           if (!resJson.Data || !resJson.Success) {
             this.$message.error('物料不存在')
             return
           } else {
             var material = resJson.Data
-            var item = { Id: 'newid_' + (this.tempId + 1).toString(), MaterialId: material.Id, MeasureId: material.MeasureId, PlanNum: this.entity.Num, RecNum: this.entity.Num, Price: material.Price, Material: material }
+            var item = {
+              Id: 'newid_' + (this.tempId + 1).toString(),
+              MaterialId: material.Id,
+              MeasureId: material.MeasureId,
+              PlanNum: this.entity.Num,
+              RecNum: this.entity.Num,
+              Price: material.Price,
+              Material: material
+            }
             this.listData.push(item)
             this.visible = false
             this.tempId += 1

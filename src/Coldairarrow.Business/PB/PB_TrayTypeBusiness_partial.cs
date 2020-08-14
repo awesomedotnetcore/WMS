@@ -52,8 +52,20 @@ namespace Coldairarrow.Business.PB
         public async Task<List<string>> GetByLocation(string locationId)
         {
             var query = Db.GetIQueryable<PB_LocalTray>();
-            var listType = await query.Where(w => w.LocalId == locationId).Select(s => s.TrayTypeId).Distinct().ToListAsync();
-            return listType;
+            var listlocal = await query.Where(w => w.LocalId == locationId).Select(s => s.TrayTypeId).Distinct().ToListAsync();
+            return listlocal;
         }
+
+        ///// <summary>
+        ///// 根据托盘类型，找对应货位
+        ///// </summary>
+        ///// <param name="LocalId">货位ID</param>
+        ///// <returns></returns>
+        //public async Task<List<string>> GetByTrayType(string LocalId)
+        //{
+        //    var query = Db.GetIQueryable<PB_LocalTray>();
+        //    var listType = await query.Where(w => w.LocalId == locationId).Select(s => s.TrayTypeId).Distinct().ToListAsync();
+        //    return listType;
+        //}
     }
 }

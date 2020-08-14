@@ -69,6 +69,15 @@ namespace Coldairarrow.Business.PB
             return result;
         }
 
+        public async Task<List<string>> GetByLocation(string tarytypeId)
+        {
+            var query = Db.GetIQueryable<PB_Tray>();
+            var listLocal = await query.Where(w => w.TrayTypeId == tarytypeId).Select(s => s.LocalId).Distinct().ToListAsync();
+            return listLocal;
+            //var listType = await this.GetIQueryable().SingleOrDefaultAsync(w => w.TrayTypeId == type);
+            //return listType;
+        }
+
         [DataAddLog(UserLogType.托盘管理, "Code", "托盘")]
         [DataRepeatAndValidate(new string[] { "TrayTypeId", "Code" }, new string[] { "托盘类型", "编码" })]
         public async Task AddDataAsync(PB_Tray data)

@@ -12,5 +12,13 @@ export default {
     },
     Audit(id, type) {
         return http.post('/TD/TD_OutStorage/Audit', { Id: id, AuditType: type })
+    },
+    OutAutoTray(data) {
+        return http.post('/TD/TD_OutStorage/OutAutoTray', data)
+    },
+    OutTrayType() {
+        return http.post('/PB/PB_TrayType/GetAllData')
     }
+
+    
 }
