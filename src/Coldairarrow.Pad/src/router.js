@@ -81,7 +81,6 @@ const router = new Router({
                     component: () => import('@/views/InStorage/ReceiveDetail'),
                     props: true
                 }
-                
             ]
         },
         {
@@ -90,9 +89,14 @@ const router = new Router({
             redirect: '/OutStorage/ProductOut',
             children: [
                 {
-                    path: '/OutStorage/ProductOut',
-                    name: 'OutStorageProductOut',
-                    component: () => import('@/views/OutStorage/ProductOut')
+                    path: '/OutStorage/AutoOut',
+                    name: 'OutStorageAutoOut',
+                    component: () => import('@/views/OutStorage/AutoOut')
+                },
+                {
+                    path: '/OutStorage/ManualOut',
+                    name: 'OutStorageManualOut',
+                    component: () => import('@/views/OutStorage/ManualOut')
                 },
                 {
                     path: '/OutStorage/List',
@@ -109,6 +113,22 @@ const router = new Router({
                     path: '/OutStorage/OutBlankTray',
                     name: 'OutStorageOutBlankTray',
                     component: () => import('@/views/OutStorage/OutBlankTray'),
+                },
+                {
+                    path: '/OutStorage/Send',
+                    name: 'OutStorageSend',
+                    component: () => import('@/views/OutStorage/Send')
+                },
+                {
+                    path: '/OutStorage/SendList',
+                    name: 'OutStorageSendList',
+                    component: () => import('@/views/OutStorage/SendList')
+                },
+                {
+                    path: '/OutStorage/SendDetail/:id',
+                    name: 'OutStorageSendDetail',
+                    component: () => import('@/views/OutStorage/SendDetail'),
+                    props: true
                 }
             ]
         },

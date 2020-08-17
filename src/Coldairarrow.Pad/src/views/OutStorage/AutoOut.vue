@@ -1,5 +1,5 @@
 <template>
-  <a-card title="生产出库">
+  <a-card title="自动出库">
     <a-button slot="extra" type="primary" ghost @click="handlerSubmit" :loading="loading">确定</a-button>
     <a-form-model layout="horizontal" :model="entity" :rules="rules" ref="form">
       <a-form-model-item prop="MaterialCode">

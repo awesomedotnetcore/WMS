@@ -23,7 +23,7 @@
         <a-col :span="6">
           <div class="app-card" @click="$router.push({ path: '/InStorage/InBlankTray' })">
             <a-icon class="app-icon" type="pic-left" />
-            <div class="app-text">空托盘入</div>
+            <div class="app-text">空托入库</div>
           </div>
         </a-col>
         <a-col :span="6">
@@ -43,9 +43,15 @@
     <a-card title="出库" size="small">
       <a-row :gutter="[5,10]">
         <a-col :span="6">
-          <div class="app-card" @click="$router.push({ path: '/OutStorage/ProductOut' })">
+          <div class="app-card" @click="$router.push({ path: '/OutStorage/AutoOut' })">
             <a-icon class="app-icon" type="logout" />
-            <div class="app-text">生产出库</div>
+            <div class="app-text">自动出库</div>
+          </div>
+        </a-col>
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/OutStorage/ManualOut' })">
+            <a-icon class="app-icon" type="upload" />
+            <div class="app-text">手动出库</div>
           </div>
         </a-col>
         <a-col :span="6">
@@ -57,11 +63,11 @@
         <a-col :span="6">
           <div class="app-card" @click="$router.push({ path: '/OutStorage/OutBlankTray' })">
             <a-icon class="app-icon" type="pic-right" />
-            <div class="app-text">空托盘出</div>
+            <div class="app-text">空托出库</div>
           </div>
         </a-col>
         <a-col :span="6">
-          <div class="app-card" @click="$router.push({ path: '/OutStorage/SaleSend' })">
+          <div class="app-card" @click="$router.push({ path: '/OutStorage/Send' })">
             <a-icon class="app-icon" type="export" />
             <div class="app-text">销售发货</div>
           </div>
@@ -121,6 +127,7 @@ export default {
 }
 .app-card .app-icon {
   font-size:48px;
+  color:#1890ff;
 }
 .app-card .app-text {
   margin-top: 8px;
