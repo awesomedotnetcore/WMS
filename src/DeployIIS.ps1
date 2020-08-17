@@ -13,7 +13,7 @@ foreach($SiteName in $ListSiteName)
     #创建应用程序池
     New-WebAppPool $SiteName
     $PropPath="IIS:\AppPools\"+$SiteName
-    Set-ItemProperty -Path $PropPath -Name managedRuntimeVersion -Value ''
+    Set-ItemProperty -Path $PropPath -Name "managedRuntimeVersion" -Value ''
     #创建站点
     $PhysicalPath=$RootPhysicalPath+$SiteName
     New-Item -Path $PhysicalPath -ItemType Directory
