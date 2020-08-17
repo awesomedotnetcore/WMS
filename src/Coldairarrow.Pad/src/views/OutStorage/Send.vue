@@ -12,7 +12,7 @@
             <span :style="{marginRight:'10px'}">名称:{{ item.Material.Name }}</span>
             <span :style="{marginRight:'10px'}">编码:{{ item.Material.Code }}</span>
             <span :style="{marginRight:'10px'}">规格:{{ item.Material.Spec }}</span>
-            <span :style="{marginRight:'10px'}">批次:{{ item.BatchNo }}</span>
+            <span :style="{marginRight:'10px'}" v-if="item.BatchNo">批次:{{ item.BatchNo }}</span>
           </div>
         </a-list-item-meta>
         <a-button slot="actions" type="dashed" shape="circle" icon="delete" @click="handlerDel(item)"></a-button>
@@ -58,7 +58,6 @@ export default {
       tempId: 0,
       rules: {
         BarCode: [{ required: true, message: '请输入物料编码', trigger: 'blur' }],
-        BatchNo: [{ required: true, message: '请输入批次号', trigger: 'blur' }],
         Num: [{ required: true, message: '请输入物料数量', trigger: 'blur' }]
       }
     }
@@ -69,17 +68,17 @@ export default {
       var listData = this.listData.map((v) => { v.Material = null; return v; });
       var data = {
         OrderTime: moment().toJSON(),
-        RecTime: moment().toJSON(),
-        Type: 'Purchase',
+        SendTime: moment().toJSON(),
+        Type: 'SaleOut',
         Status: 0,
-        RecDetails: listData
+        SendDetails: listData
       }
       this.loading = true
       SendSvc.SaveData(data).then(resJson => {
         this.loading = false
         if (resJson.Success) {
           this.$message.success(resJson.Msg)
-          this.$router.push({ path: '/InStorage/ReceiveList' })
+          this.$router.push({ path: '/OutStorage/SendList' })
         } else {
           this.$message.error(resJson.Msg)
         }
@@ -106,8 +105,10 @@ export default {
               Id: 'newid_' + (this.tempId + 1).toString(),
               MaterialId: material.Id,
               MeasureId: material.MeasureId,
+              BatchNo:this.entity.BatchNo,
+              LocalNum: this.entity.Num,
               PlanNum: this.entity.Num,
-              RecNum: this.entity.Num,
+              SendNum: 0,
               Price: material.Price,
               Material: material
             }

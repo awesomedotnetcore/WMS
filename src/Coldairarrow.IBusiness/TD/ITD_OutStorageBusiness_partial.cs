@@ -51,12 +51,27 @@ namespace Coldairarrow.Business.TD
         public double OutNum { get; set; }
     }
     /// <summary>
-    /// 生产物料出库
+    /// 自动出库
     /// </summary>
-    public class ProduceOutStorageQM
+    public class AutoOutStorageQM
     {
+        public string SendId { get; set; }
         public string MaterialCode { get; set; }
         public string BatchNo { get; set; }
+        public double Num { get; set; }
+    }
+    /// <summary>
+    /// 手动出库
+    /// </summary>
+    public class ManualOutStorageQM
+    {
+        public string SendId { get; set; }
+        public string MaterialCode { get; set; }
+        public string BatchNo { get; set; }
+
+        public string LocalCode { get; set; }
+        public string TrayCode { get; set; }
+
         public double Num { get; set; }
     }
 }

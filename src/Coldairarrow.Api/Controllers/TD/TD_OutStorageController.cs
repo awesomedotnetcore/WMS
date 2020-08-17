@@ -135,17 +135,22 @@ namespace Coldairarrow.Api.Controllers.TD
             foreach (var detail in listlocal)
             {
                 //var local = new IT_LocalMaterial
-               // {
-                   // LocalId = traytype
-               // };
+                // {
+                // LocalId = traytype
+                // };
             }
 
-                var StorId = _Op.Property.DefaultStorageId;
+            var StorId = _Op.Property.DefaultStorageId;
             return new AjaxResult<TD_OutStorage>(); //{ Success = true, Msg = "空托盘出库成功", Data = entity };
         }
 
+        /// <summary>
+        /// 自动出库
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<AjaxResult<TD_OutStorage>> ProductOut(ProduceOutStorageQM data)
+        public async Task<AjaxResult<TD_OutStorage>> AutoOut(AutoOutStorageQM data)
         {
             var materialSvc = this._provider.GetRequiredService<IPB_MaterialBusiness>();
             var material = await materialSvc.GetByBarcode(data.MaterialCode);
@@ -157,6 +162,7 @@ namespace Coldairarrow.Api.Controllers.TD
 
             var entity = new TD_OutStorage()
             {
+                SendId = data.SendId,
                 StorageId = StorId,
                 OutTime = DateTime.Now,
                 OutType = "ProductOut",
@@ -183,6 +189,64 @@ namespace Coldairarrow.Api.Controllers.TD
                 InitEntity(item);
                 entity.OutStorDetails.Add(item);
             }
+            await _tD_OutStorageBus.AddDataAsync(entity);
+            return new AjaxResult<TD_OutStorage>() { Success = true, Msg = "出库成功", Data = entity };
+        }
+
+        /// <summary>
+        /// 手动出库
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<AjaxResult<TD_OutStorage>> ManualOut(ManualOutStorageQM data)
+        {
+            var materialSvc = this._provider.GetRequiredService<IPB_MaterialBusiness>();
+            var material = await materialSvc.GetByBarcode(data.MaterialCode);
+            if (material == null) return new AjaxResult<TD_OutStorage>() { Success = false, Msg = "物料编码不正确" };
+            var StorId = _Op.Property.DefaultStorageId;
+
+            var entity = new TD_OutStorage()
+            {
+                SendId = data.SendId,
+                StorageId = StorId,
+                OutTime = DateTime.Now,
+                OutType = "ProductOut",
+                OutNum = data.Num,
+                Status = 0,
+                OutStorDetails = new List<TD_OutStorDetail>()
+            };
+            InitEntity(entity);
+
+            var localSvc = this._provider.GetRequiredService<IPB_LocationBusiness>();
+            var local = await localSvc.GetByCode(StorId, data.LocalCode);
+            if (local == null) return new AjaxResult<TD_OutStorage>() { Success = false, Msg = "货位编码不正确" };
+
+            string trayId = null;
+            if (!data.TrayCode.IsNullOrEmpty())
+            {
+                var traySvc = this._provider.GetRequiredService<IPB_TrayBusiness>();
+                var tray = await traySvc.GetByCode(data.TrayCode);
+                if (tray == null) return new AjaxResult<TD_OutStorage>() { Success = false, Msg = "托盘编码不正确" };
+                trayId = tray.Id;
+            }
+
+            var item = new TD_OutStorDetail()
+            {
+                StorId = StorId,
+                OutStorId = entity.Id,
+                LocalId = local.Id,
+                TrayId = trayId,
+                MaterialId = material.Id,
+                BatchNo = data.BatchNo,
+                LocalNum = data.Num,
+                OutNum = data.Num,
+                Price = material.Price.GetValueOrDefault(0),
+                TotalAmt = material.Price.GetValueOrDefault(0) * data.Num
+            };
+            InitEntity(item);
+            entity.OutStorDetails.Add(item);
+
             await _tD_OutStorageBus.AddDataAsync(entity);
             return new AjaxResult<TD_OutStorage>() { Success = true, Msg = "出库成功", Data = entity };
         }

@@ -1,8 +1,11 @@
 import http from '../../utils/axios-plugin'
 
 export default {
-    ProductOut(data) {
-        return http.post('/TD/TD_OutStorage/ProductOut', data)
+    AutoOut(data) {
+        return http.post('/TD/TD_OutStorage/AutoOut', data)
+    },
+    ManualOut(data) {
+        return http.post('/TD/TD_OutStorage/ManualOut', data)
     },
     GetDataList(query) {
         return http.post('/TD/TD_OutStorage/GetDataList', query)

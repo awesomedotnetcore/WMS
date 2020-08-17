@@ -22,6 +22,11 @@ export default {
   components: {
     InputCode
   },
+  mounted() {
+    if (this.$route.query.sendId) {
+      this.entity.SendId = this.$route.query.sendId
+    }
+  },
   data() {
     return {
       loading: false,
@@ -39,7 +44,7 @@ export default {
           return
         }
         this.loading = true
-        OutStorageSvc.ProductOut(this.entity).then(resJson => {
+        OutStorageSvc.AutoOut(this.entity).then(resJson => {
           this.loading = false
           if (resJson.Success) {
             this.$message.success(resJson.Msg)

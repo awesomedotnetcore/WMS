@@ -5,6 +5,12 @@
       <a-form-model-item prop="MaterialCode">
         <input-code v-model="entity.MaterialCode" placeholder="物料条码"></input-code>
       </a-form-model-item>
+      <a-form-model-item prop="LocalCode">
+        <input-code v-model="entity.LocalCode" placeholder="货位编码"></input-code>
+      </a-form-model-item>
+      <a-form-model-item prop="TrayCode">
+        <input-code v-model="entity.TrayCode" placeholder="托盘编码"></input-code>
+      </a-form-model-item>
       <a-form-model-item prop="BatchNo">
         <a-input v-model="entity.BatchNo" placeholder="批次号" />
       </a-form-model-item>
@@ -22,12 +28,18 @@ export default {
   components: {
     InputCode
   },
+  mounted() {
+    if (this.$route.query.sendId) {
+      this.entity.SendId = this.$route.query.sendId
+    }
+  },
   data() {
     return {
       loading: false,
       entity: {},
       rules: {
         MaterialCode: [{ required: true, message: '请输入物料条码', trigger: 'blur' }],
+        LocalCode: [{ required: true, message: '请输入物料条码', trigger: 'blur' }],
         Num: [{ required: true, message: '请输入物料数量', trigger: 'blur' }]
       }
     }
@@ -39,7 +51,7 @@ export default {
           return
         }
         this.loading = true
-        OutStorageSvc.ProductOut(this.entity).then(resJson => {
+        OutStorageSvc.ManualOut(this.entity).then(resJson => {
           this.loading = false
           if (resJson.Success) {
             this.$message.success(resJson.Msg)
