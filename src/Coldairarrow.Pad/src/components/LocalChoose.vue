@@ -3,7 +3,7 @@
     <a-row slot="title">
       <a-col :span="6">货位选择</a-col>
       <a-col :span="16">
-        <a-input-search placeholder="编码/名称" v-model="queryData.Search.Keyword" :allowClear="true" @search="()=>{this.queryData.PageIndex=1;this.getList()}" />
+        <a-input-search placeholder="编码/名称" size="small" v-model="queryData.Search.Keyword" :allowClear="true" @search="()=>{this.queryData.PageIndex=1;this.getList()}" />
       </a-col>
     </a-row>
     <a-list :data-source="listData" :rowKey="item=>item.Id" item-layout="horizontal" :loading="loading" :pagination="pagination">
@@ -14,18 +14,9 @@
             <span class="spanTag">{{ item.Code }}</span>
           </div>
           <div slot="description">
-            <span class="spanTag" v-if="item.MaterialTypeId">
-              <a-icon type="caret-right" />
-              {{ item.MaterialType.Name }}
-            </span>
-            <span class="spanTag" v-if="item.BarCode">
-              <a-icon type="barcode" />
-              {{ item.BarCode }}
-            </span>
-            <span class="spanTag" v-if="item.Spec">
-              <a-icon type="double-right" />
-              {{ item.Spec }}
-            </span>
+            <span class="spanTag" v-if="item.AreaId">货区:{{ item.PB_StorArea.Name }}</span>
+            <span class="spanTag" v-if="item.LanewayId">巷道:{{ item.PB_Laneway.Name }}</span>
+            <span class="spanTag" v-if="item.RackId">货架:{{ item.PB_Rack.Name }}</span>
           </div>
         </a-list-item-meta>
         <a-button type="link" slot="actions" @click="handlerChoose(item)">选择</a-button>
@@ -36,6 +27,7 @@
 
 <script>
 import moment from "moment";
+import StorageSvc from '../api/PB/StorageSvc'
 import LocalSvc from "../api/PB/LocalSvc";
 export default {
   components: {},
@@ -43,13 +35,23 @@ export default {
     return {
       visible: false,
       loading: false,
-      pagination: { current: 1, pageSize: 4, size: "small", total: 0, onChange: this.handlerChange },
-      queryData: { PageIndex: 1, PageRows: 4, SortField: "Id", SortType: "desc", Search: { Keyword: null } },
+      pagination: { current: 1, pageSize: 5, size: "small", total: 0, onChange: this.handlerChange },
+      queryData: { PageIndex: 1, PageRows: 5, SortField: "Code", SortType: "asc", Search: { Keyword: null, StorId: null } },
       listData: [],
+      Storage: {}
     };
+  },
+  mounted() {
+    this.getStorage()
   },
   methods: {
     moment,
+    getStorage() {
+      StorageSvc.GetCurStorage().then(resJson => {
+        this.Storage = resJson.Data
+        this.queryData.Search.StorId = this.Storage.Id
+      })
+    },
     getList() {
       this.loading = true;
       LocalSvc.GetDataList(this.queryData).then((resJson) => {

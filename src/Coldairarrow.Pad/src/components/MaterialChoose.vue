@@ -3,7 +3,7 @@
     <a-row slot="title">
       <a-col :span="6">物料选择</a-col>
       <a-col :span="16">
-        <a-input-search placeholder="编码/名称/条码/简称" v-model="queryData.Search.Keyword" :allowClear="true" @search="()=>{this.queryData.PageIndex=1;this.getList()}" />
+        <a-input-search placeholder="编码/名称/条码/简称" size="small" v-model="queryData.Search.Keyword" :allowClear="true" @search="()=>{this.queryData.PageIndex=1;this.getList()}" />
       </a-col>
     </a-row>
     <a-list :data-source="listData" :rowKey="item=>item.Id" item-layout="horizontal" :loading="loading" :pagination="pagination">
@@ -43,8 +43,8 @@ export default {
     return {
       visible: false,
       loading: false,
-      pagination: { current: 1, pageSize: 4, size: "small", total: 0, onChange: this.handlerChange },
-      queryData: { PageIndex: 1, PageRows: 4, SortField: "Id", SortType: "desc", Search: { Keyword: null } },
+      pagination: { current: 1, pageSize: 5, size: "small", total: 0, onChange: this.handlerChange },
+      queryData: { PageIndex: 1, PageRows: 5, SortField: "Code", SortType: "asc", Search: { Keyword: null } },
       listData: [],
     };
   },
