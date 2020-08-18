@@ -25,7 +25,7 @@
       <a-spin :spinning="modalLoading">
         <a-form-model layout="horizontal" :model="entity" :rules="rules" ref="form">
           <a-form-model-item prop="BarCode">
-            <input-code v-model="entity.BarCode" placeholder="物料条码"></input-code>
+            <input-material v-model="entity.BarCode"></input-material>
           </a-form-model-item>
           <a-form-model-item prop="BatchNo">
             <a-input v-model="entity.BatchNo" placeholder="批次号" />
@@ -41,12 +41,12 @@
 
 <script>
 import moment from 'moment'
-import InputCode from '../../components/InputBarcode'
+import InputMaterial from '../../components/InputMaterial'
 import MaterialSvc from '../../api/PB/MaterialSvc'
 import SendSvc from '../../api/TD/SendSvc'
 export default {
   components: {
-    InputCode
+    InputMaterial
   },
   data() {
     return {

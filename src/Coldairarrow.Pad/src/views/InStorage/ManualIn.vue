@@ -3,13 +3,13 @@
     <a-button slot="extra" type="primary" ghost @click="handlerSubmit" :loading="loading">确定</a-button>
     <a-form-model layout="horizontal" :model="entity" :rules="rules" ref="form">
       <a-form-model-item prop="MaterialCode">
-        <input-code v-model="entity.MaterialCode" placeholder="物料条码"></input-code>
+        <input-material v-model="entity.MaterialCode"></input-material>
       </a-form-model-item>
       <a-form-model-item prop="LocalCode">
-        <input-code v-model="entity.LocalCode" placeholder="货位编码"></input-code>
+        <input-location v-model="entity.LocalCode"></input-location>
       </a-form-model-item>
       <a-form-model-item prop="TrayCode">
-        <input-code v-model="entity.TrayCode" placeholder="托盘编码"></input-code>
+        <input-tray v-model="entity.TrayCode"></input-tray>
       </a-form-model-item>
       <a-form-model-item prop="Num">
         <a-input-number v-model="entity.Num" :style="{width:'100%'}" :min="1" placeholder="物料数量" />
@@ -22,11 +22,15 @@
 </template>
 
 <script>
-import InputCode from '../../components/InputBarcode'
+import InputMaterial from '../../components/InputMaterial'
+import InputTray from '../../components/InputTray'
+import InputLocation from '../../components/InputLocation'
 import InStorageSvc from '../../api/TD/InStorageSvc'
 export default {
   components: {
-    InputCode
+    InputMaterial,
+    InputTray,
+    InputLocation
   },
   mounted() {
     if (this.$route.query.recId) {
