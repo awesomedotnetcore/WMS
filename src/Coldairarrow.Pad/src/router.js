@@ -24,6 +24,11 @@ const router = new Router({
                     path: '/Home/Index',
                     name: 'HomeIndex',
                     component: () => import('@/views/Home/Index')
+                },
+                {
+                    path: '/Home/Test',
+                    name: 'HomeTest',
+                    component: () => import('@/views/Home/Test')
                 }
             ]
         },

@@ -8,7 +8,7 @@
           </a>
         </a-col>
         <a-col :span="14">
-          <storage-switch></storage-switch>
+          <storage-switch ref="storageSwitch"></storage-switch>
         </a-col>
         <a-col :span="4">
           <user-menu></user-menu>

@@ -105,7 +105,13 @@
             <a-icon class="app-icon" type="profile" />
             <div class="app-text">计划表</div>
           </div>
-        </a-col>        
+        </a-col>
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/Home/Test' })">
+            <a-icon class="app-icon" type="profile" />
+            <div class="app-text">测试页面</div>
+          </div>
+        </a-col>
       </a-row>
     </a-card>
   </div>

@@ -26,10 +26,9 @@ export default {
   },
   computed: {
     curStorage() {
-      var defaultStorage = this.listData.filter((item) => { return item.IsDefault })
-      if (defaultStorage.length > 0) return defaultStorage[0]
-      if (this.listData.length === 0) return { Name: '', Code: '' }
-      return this.listData[0]
+      var defaultStorage = this.listData.find(w => w.IsDefault)
+      if (defaultStorage) return defaultStorage
+      else return { Name: '', Code: '' }
     }
   },
   mounted() {
