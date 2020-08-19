@@ -91,6 +91,12 @@ namespace Coldairarrow.Business.IT
     }
     public class IT_LocalMaterialQM
     {
+        #region 特定条件查询
+        public string LocalId { get; set; }
+        public string TrayId { get; set; }
+        public string MaterialId { get; set; }
+        #endregion
+
         public string LocalName { get; set; }
         public string TrayName { get; set; }
         public string MaterialName { get; set; }

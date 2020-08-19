@@ -70,7 +70,7 @@ export default {
       this.getList()
     },
     handlerLMReport(local) {
-      this.$router.push({ path: '/Report/LocalMaterialReport', query: { localCode: local.Code } })
+      this.$router.push({ path: '/Report/LocalMaterialReport', query: { localId: local.Id } })
     }
   }
 }

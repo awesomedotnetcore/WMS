@@ -13,7 +13,7 @@
           <a-input v-model="queryData.Search.MaterialName" placeholder="物料名称/编码/条码"></a-input>
         </a-form-model-item>
         <a-form-model-item>
-          <a-input v-model="queryData.Search.Code" placeholder="批次/条码"></a-input>
+          <a-input v-model="queryData.Search.Code" placeholder="批次/唯一码"></a-input>
         </a-form-model-item>
         <a-form-model-item>
           <a-row>
@@ -21,7 +21,7 @@
               <a-button block type="primary" @click="()=>{this.queryData.PageIndex=1;this.getList();this.visible=false}">查询</a-button>
             </a-col>
             <a-col :span="12">
-              <a-button block @click="()=>{this.queryData.Search = { Status: null};this.getList();this.visible=false}">重置</a-button>
+              <a-button block @click="()=>{this.queryData.Search = {};this.getList();this.visible=false}">重置</a-button>
             </a-col>
           </a-row>
         </a-form-model-item>
@@ -66,14 +66,14 @@ export default {
     }
   },
   mounted() {
-    if (this.$route.query.localCode) {
-      this.queryData.Search.LocalName = this.$route.query.localCode
+    if (this.$route.query.localId) {
+      this.queryData.Search.LocalId = this.$route.query.localId
     }
-    if (this.$route.query.trayCode) {
-      this.queryData.Search.TrayName = this.$route.query.trayCode
+    if (this.$route.query.trayId) {
+      this.queryData.Search.TrayId = this.$route.query.trayId
     }
-    if (this.$route.query.materialCode) {
-      this.queryData.Search.MaterialName = this.$route.query.materialCode
+    if (this.$route.query.materialId) {
+      this.queryData.Search.MaterialId = this.$route.query.materialId
     }
     this.getList()
   },

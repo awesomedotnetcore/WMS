@@ -48,7 +48,7 @@ export default {
       })
     },
     handlerLMReport(material) {
-      this.$router.push({ path: '/Report/LocalMaterialReport', query: { materialCode: material.Code } })
+      this.$router.push({ path: '/Report/LocalMaterialReport', query: { materialId: material.Id } })
     }
   }
 }

@@ -60,7 +60,7 @@ export default {
       this.getList()
     },
     handlerLMReport(tray) {
-      this.$router.push({ path: '/Report/LocalMaterialReport', query: { trayCode: tray.Code } })
+      this.$router.push({ path: '/Report/LocalMaterialReport', query: { trayId: tray.Id } })
     }
   }
 }
