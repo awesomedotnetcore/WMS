@@ -1,21 +1,20 @@
 <template>
-  <a-card title="物料管理">
-    <a-input-search slot="extra" placeholder="物料编码/名称" v-model="queryData.Search.Keyword" :allowClear="true" @search="()=>{this.queryData.PageIndex=1;this.getList()}" />
+  <a-card title="货位管理">
+    <a-input-search slot="extra" placeholder="名称/编码" v-model="queryData.Search.Keyword" :allowClear="true" @search="()=>{this.queryData.PageIndex=1;this.getList()}" />
     <a-list :data-source="listData" :rowKey="item=>item.Id" item-layout="horizontal" :loading="loading" :pagination="pagination">
       <a-list-item slot="renderItem" slot-scope="item">
         <a-list-item-meta>
           <div slot="title">
-            <span class="spanTag">{{ item.Name }}</span>
+            <span class="spanTag">{{ item.PB_Storage.Name }}</span>
             <span class="spanTag">{{ item.Code }}</span>
           </div>
           <div slot="description">
-            <span class="spanTag" v-if="item.MaterialTypeId"><a-icon type="caret-right" />{{ item.MaterialType.Name }}</span>
-            <span class="spanTag" v-if="item.BarCode"><a-icon type="barcode" />{{ item.BarCode }}</span>
-            <span class="spanTag" v-if="item.SimpleName"><a-icon type="info-circle" />{{ item.SimpleName }}</span>
-            <span class="spanTag" v-if="item.Spec"><a-icon type="double-right" />{{ item.Spec }}</span>
+            <span class="spanTag" v-if="item.AreaId">货区:{{ item.PB_StorArea.Name }}</span>
+            <span class="spanTag" v-if="item.LanewayId">巷道:{{ item.PB_Laneway.Name }}</span>
+            <span class="spanTag" v-if="item.RackId">货架:{{ item.PB_Rack.Name }}</span>
           </div>
         </a-list-item-meta>
-        <a-button type="link" slot="actions" @click="handlerShow(item)">查看</a-button>
+        <a-button type="link" slot="actions" @click="handlerLMReport(item)">库存</a-button>
       </a-list-item>
     </a-list>
   </a-card>
@@ -23,7 +22,8 @@
 
 <script>
 import moment from 'moment'
-import MaterialSvc from '../../api/PB/MaterialSvc'
+import StorageSvc from '../../api/PB/StorageSvc'
+import LocalSvc from '../../api/PB/LocalSvc'
 export default {
   components: {
   },
@@ -33,19 +33,27 @@ export default {
       pagination: { current: 1, pageSize: 10, size: 'small', total: 0, onChange: this.handlerChange },
       queryData: {
         PageIndex: 1, PageRows: 10, SortField: 'Code', SortType: 'asc',
-        Search: { Keyword: null }
+        Search: { Keyword: null, StorId: null }
       },
-      listData: []
+      listData: [],
+      storage: {}
     }
   },
   mounted() {
-    this.getList()
+    this.getStorage()
   },
   methods: {
     moment,
+    getStorage() {
+      StorageSvc.GetCurStorage().then(jsonRes => {
+        this.storage = jsonRes.Data
+        this.queryData.Search.StorId = this.storage.Id
+        this.getList()
+      })
+    },
     getList() {
       this.loading = true
-      MaterialSvc.GetDataList(this.queryData).then(resJson => {
+      LocalSvc.GetDataList(this.queryData).then(resJson => {
         this.loading = false
         if (resJson.Success) {
           this.listData = resJson.Data
@@ -56,20 +64,20 @@ export default {
         }
       });
     },
-    handlerShow(item) {
-      this.$router.push({ path: `/PB/MaterialDetail/${item.Id}` })
-    },
     handlerChange(page, size) {
       this.queryData.PageIndex = page
       this.queryData.PageRows = size
       this.getList()
+    },
+    handlerLMReport(local) {
+      this.$router.push({ path: '/Report/LocalMaterialReport', query: { localCode: local.Code } })
     }
   }
 }
 </script>
 
 <style>
-.spanTag{
+.spanTag {
   margin: 0 5px 0 5px;
 }
 </style>

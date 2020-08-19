@@ -60,12 +60,21 @@ export default {
       pagination: { current: 1, pageSize: 10, size: 'small', total: 0, onChange: this.handlerChange },
       queryData: {
         PageIndex: 1, PageRows: 10, SortField: 'Id', SortType: 'desc',
-        Search: { }
+        Search: {}
       },
       listData: []
     }
   },
   mounted() {
+    if (this.$route.query.localCode) {
+      this.queryData.Search.LocalName = this.$route.query.localCode
+    }
+    if (this.$route.query.trayCode) {
+      this.queryData.Search.TrayName = this.$route.query.trayCode
+    }
+    if (this.$route.query.materialCode) {
+      this.queryData.Search.MaterialName = this.$route.query.materialCode
+    }
     this.getList()
   },
   methods: {

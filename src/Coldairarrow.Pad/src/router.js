@@ -168,6 +168,11 @@ const router = new Router({
                     path: '/PB/TrayList',
                     name: 'PBTrayList',
                     component: () => import('@/views/PB/TrayList')
+                },
+                {
+                    path: '/PB/LocalList',
+                    name: 'PBLocalList',
+                    component: () => import('@/views/PB/LocalList')
                 }
             ]
         },
