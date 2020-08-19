@@ -55,6 +55,7 @@ $Credential = New-Object -TypeName System.Management.Automation.PSCredential -Ar
 $Session = New-PSSession -ComputerName 114.115.162.100 -Credential $Credential
 Write-Host 'Successfully connected to the server' -ForegroundColor Green
 Write-Host 'Start copying files to the server' -ForegroundColor Yellow
+Invoke-Command -Session $Session -ScriptBlock {Stop-Service -Name "W3SVC"}
 $RemotePath="D:\ZEQPWMS\"
 Copy-Item $APIZIPFilePath -Destination $RemotePath -ToSession $Session
 Copy-Item $WebZIPFilePath -Destination $RemotePath -ToSession $Session
@@ -67,7 +68,6 @@ $WebRemoteDestinationPath=$RemotePath+"WMSWeb\"
 $WebRemoteZipPath=$RemotePath+$WebZIPFileName
 $PadRemoteDestinationPath=$RemotePath+"WMSPad\"
 $PadRemoteZipPath=$RemotePath+$PadZIPFileName
-Invoke-Command -Session $Session -ScriptBlock {Stop-Service -Name "W3SVC"}
 Invoke-Command -Session $Session -ScriptBlock {param($p) Remove-Item -Path $p -Recurse -Force} -ArgumentList $APIRemoteDestinationPath
 Invoke-Command -Session $Session -ScriptBlock {param($p) Remove-Item -Path $p -Recurse -Force} -ArgumentList $WebRemoteDestinationPath
 Invoke-Command -Session $Session -ScriptBlock {param($p) Remove-Item -Path $p -Recurse -Force} -ArgumentList $PadRemoteDestinationPath
