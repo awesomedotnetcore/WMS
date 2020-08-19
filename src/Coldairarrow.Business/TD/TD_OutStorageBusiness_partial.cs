@@ -395,6 +395,7 @@ namespace Coldairarrow.Business.TD
                 var listLM = from lm in Db.GetIQueryable<IT_LocalMaterial>()
                              join l in Db.GetIQueryable<PB_Location>() on lm.LocalId equals l.Id
                              where lm.StorId == data.StorId
+                             && l.IsForbid == false // 没有禁用
                              && lm.MaterialId == data.MaterialId
                              && l.StorId == data.StorId
                              && l.LockType == 0
@@ -427,6 +428,7 @@ namespace Coldairarrow.Business.TD
                 var listLM = from lm in Db.GetIQueryable<IT_LocalMaterial>()
                              join l in Db.GetIQueryable<PB_Location>() on lm.LocalId equals l.Id
                              where lm.StorId == data.StorId
+                             && l.IsForbid == false // 没有禁用
                              && lm.MaterialId == data.MaterialId
                              && lm.BatchNo == data.BatchNo
                              && l.StorId == data.StorId

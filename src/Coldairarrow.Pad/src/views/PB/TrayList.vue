@@ -13,7 +13,7 @@
             <span class="spanTag" v-if="item.LocalId">货位:{{ item.PB_Location.Code }}</span>
           </div>
         </a-list-item-meta>
-        <a-button type="link" slot="actions" @click="handlerLMReport(item)">库存</a-button>
+        <a-button type="link" slot="actions" @click="handlerLMReport(item)">物料</a-button>
       </a-list-item>
     </a-list>
   </a-card>

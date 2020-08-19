@@ -6,8 +6,8 @@
       <a-button v-if="entity.Status===1" type="primary" ghost :style="{marginRight:'10px'}" @click="handleAudit('Approve')" :loading="loading">通过</a-button>
       <a-button v-if="entity.Status===1" type="danger" ghost @click="handleAudit('Reject')" :loading="loading">驳回</a-button>
 
-      <a-button v-if="entity.Status===3 || entity.Status===5" type="primary" ghost :style="{marginRight:'10px'}" @click="$router.push({path:'/OutStorage/ManualOut',query:{sendId:id}})" :loading="loading">手动入库</a-button>
-      <a-button v-if="entity.Status===3 || entity.Status===5" type="danger" ghost @click="$router.push({path:'/OutStorage/AutoOut',query:{sendId:id}})" :loading="loading">自动入库</a-button>
+      <a-button v-if="entity.Status===3 || entity.Status===5" type="primary" ghost :style="{marginRight:'10px'}" @click="$router.push({path:'/OutStorage/ManualOut',query:{sendId:id}})" :loading="loading">手动出库</a-button>
+      <a-button v-if="entity.Status===3 || entity.Status===5" type="danger" ghost @click="$router.push({path:'/OutStorage/AutoOut',query:{sendId:id}})" :loading="loading">自动出库</a-button>
     </div>
     <a-descriptions :title="entity.Code" bordered :column="1">
       <a-descriptions-item label="时间">{{ moment(entity.SendTime).format('YY/M/D H:m') }}</a-descriptions-item>
