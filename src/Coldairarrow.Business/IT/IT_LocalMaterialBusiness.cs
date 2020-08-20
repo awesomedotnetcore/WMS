@@ -75,6 +75,12 @@ namespace Coldairarrow.Business.IT
             await DeleteAsync(ids);
         }
 
+        public async Task<IT_LocalMaterial> GetByLocalMaterial(string local)
+        {
+            //return await GetIQueryable.where(w=>local.Contains(w.Id));
+            return await this.GetIQueryable().SingleOrDefaultAsync(w => w.LocalId == local);
+        }
+
         #endregion
 
         #region 私有成员

@@ -121,28 +121,26 @@ namespace Coldairarrow.Api.Controllers.TD
             return await _tD_OutStorageBus.OutBlankTray(listTray, _Op.Property.DefaultStorageId);
         }
 
-        /// <summary>
-        /// 空托盘自动出库
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public async Task<AjaxResult<TD_OutStorage>> OutAutoTray(OutAutoByTary data)
-        {
-            var traySvc = this.serviceProvider.GetRequiredService<IPB_TrayBusiness>();
-            var listlocal = await traySvc.GetByLocation(data.TrayTypeId);
-
-            //var localSvc = this.serviceProvider.GetRequiredService<IIT_LocalMaterialBusiness>();
-            foreach (var detail in listlocal)
-            {
-                //var local = new IT_LocalMaterial
-                // {
-                // LocalId = traytype
-                // };
-            }
-
-            var StorId = _Op.Property.DefaultStorageId;
-            return new AjaxResult<TD_OutStorage>(); //{ Success = true, Msg = "空托盘出库成功", Data = entity };
-        }
+        ///// <summary>
+        ///// 空托盘自动出库
+        ///// </summary>
+        ///// <returns></returns>
+        //[HttpPost]
+        //public async Task<AjaxResult<TD_OutStorage>> OutAutoTray(OutAutoByTary data)
+        //{
+        //    //var traySvc = this._provider.GetRequiredService<IPB_TrayBusiness>();
+        //    //var tray = await traySvc.GetByLocation(data.TrayTypeId);
+        //    //if (tray == null) return new AjaxResult<TD_OutStorage>() { Success = false, Msg = "托盘号为空" };
+        //    var StorId = _Op.Property.DefaultStorageId;
+        //    //var reqData = new ReqTrayQM() { StorId = StorId, LocalId = tray.LocalId, TrayId = tray.Id };
+        //    var listOut = await this._tD_OutStorageBus.ReqBlankTray(StorId,data.TrayTypeId);
+        //    var entity = new PB_Tray()
+        //    {
+        //        LocalId = listOut.LocalId,
+        //        Id = listOut.TrayId
+        //    };
+        //    return new AjaxResult<TD_OutStorage>() { Success = true, Msg = "空托盘出库成功",Data = entity };
+        //}
 
         /// <summary>
         /// 自动出库

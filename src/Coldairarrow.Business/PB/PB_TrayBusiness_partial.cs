@@ -1,4 +1,5 @@
-﻿using Coldairarrow.Entity.PB;
+﻿using Coldairarrow.Entity.IT;
+using Coldairarrow.Entity.PB;
 using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using EFCore.Sharding;
@@ -69,13 +70,28 @@ namespace Coldairarrow.Business.PB
             return result;
         }
 
-        public async Task<List<string>> GetByLocation(string tarytypeId)
+        public async Task<(string LocalId, string TrayId)> ReqBlankTray(string storId, string typeId)
         {
-            var query = Db.GetIQueryable<PB_Tray>();
-            var listLocal = await query.Where(w => w.TrayTypeId == tarytypeId).Select(s => s.LocalId).Distinct().ToListAsync();
-            return listLocal;
-            //var listType = await this.GetIQueryable().SingleOrDefaultAsync(w => w.TrayTypeId == type);
-            //return listType;
+            var lmTrayId = from lm in Db.GetIQueryable<IT_LocalMaterial>()
+                           join l in Db.GetIQueryable<PB_Location>() on lm.LocalId equals l.Id
+                           where l.StorId == storId && l.LockType == 0 && l.IsForbid == false
+                           select lm.TrayId;
+            var listTrayId = from t in Db.GetIQueryable<PB_Tray>()
+                             join l in Db.GetIQueryable<PB_Location>() on t.LocalId equals l.Id
+                             where t.Status == 1
+                             && t.TrayTypeId == typeId
+                             && l.StorId == storId
+                             && l.LockType == 0
+                             && !lmTrayId.Contains(t.Id)
+                             select new { LocalId = l.Id, TrayId = t.Id };
+
+            var resut = await listTrayId.FirstOrDefaultAsync();
+            return (resut.LocalId, resut.TrayId);
+        }
+
+        public async Task<PB_Tray> GetByLocation(string traytypeId)
+        {
+            return await this.GetIQueryable().SingleOrDefaultAsync(w => w.TrayTypeId == traytypeId);
         }
 
         [DataAddLog(UserLogType.托盘管理, "Code", "托盘")]

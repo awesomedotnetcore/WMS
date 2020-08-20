@@ -5,6 +5,7 @@ using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
@@ -21,15 +22,18 @@ namespace Coldairarrow.Api.Controllers.PB
     {
         #region DI
 
-        public PB_TrayController(IPB_TrayBusiness pB_TrayBus, IOperator op)
+        public PB_TrayController(IPB_TrayBusiness pB_TrayBus, IOperator op, IServiceProvider provider)
         {
             _pB_TrayBus = pB_TrayBus;
             _Op = op;
+            _provider = provider;
         }
 
         IPB_TrayBusiness _pB_TrayBus { get; }
 
         IOperator _Op { get; }
+
+        IServiceProvider _provider { get; }
 
         #endregion
 
@@ -294,6 +298,27 @@ namespace Coldairarrow.Api.Controllers.PB
                 return File(buffer, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", string.Format("托盘信息表_{0}.xlsx", DateTime.Now.ToString("yyyyMMddHHmmss")));
             }
 
+        }
+
+        /// <summary>
+        /// 空托盘自动出库
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<AjaxResult<PB_Tray>> OutAutoTray(OutAutoByTary data)
+        {
+            var traySvc = this._provider.GetRequiredService<IPB_TrayBusiness>();
+            var tray = await traySvc.GetByLocation(data.TrayTypeId);
+            if (tray == null) return new AjaxResult<PB_Tray>() { Success = false, Msg = "托盘号为空" };
+
+            var StorId = _Op.Property.DefaultStorageId;
+            var listOut = await this._pB_TrayBus.ReqBlankTray(StorId, data.TrayTypeId);
+            var entity = new PB_Tray()
+            {
+                Id = listOut.TrayId,
+                LocalId = listOut.LocalId
+            };
+            return new AjaxResult<PB_Tray>() { Success = true, Msg = "空托盘出库成功", Data = entity };
         }
         #endregion
     }

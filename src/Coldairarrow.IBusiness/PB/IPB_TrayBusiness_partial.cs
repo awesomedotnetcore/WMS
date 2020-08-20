@@ -15,7 +15,8 @@ namespace Coldairarrow.Business.PB
         Task UpdateDataAsync(List<PB_Tray> list);
 
         Task<PB_Tray> GetByCode(string code);
-        Task<List<string>> GetByLocation(string tarytypeId);
+        Task<(string LocalId, string TrayId)> ReqBlankTray(string storId, string typeId);
+        Task<PB_Tray> GetByLocation(string traytypeId);
     }
     public class PB_TrayQM
     {

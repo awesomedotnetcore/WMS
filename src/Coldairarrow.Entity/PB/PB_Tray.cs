@@ -8,7 +8,7 @@ namespace Coldairarrow.Entity.PB
     /// 托盘表
     /// </summary>
     [Table("PB_Tray")]
-    public class PB_Tray
+    public partial class PB_Tray
     {
 
         /// <summary>

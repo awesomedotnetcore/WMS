@@ -13,5 +13,6 @@ namespace Coldairarrow.Business.IT
         Task AddDataAsync(IT_LocalMaterial data);
         Task UpdateDataAsync(IT_LocalMaterial data);
         Task DeleteDataAsync(List<string> ids);
+        Task<IT_LocalMaterial> GetByLocalMaterial(string local);
     }
 }
