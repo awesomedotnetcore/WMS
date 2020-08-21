@@ -67,6 +67,12 @@
           </div>
         </a-col>
         <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/OutStorage/OutManualTray' })">
+            <a-icon class="app-icon" type="menu-fold" />
+            <div class="app-text">手动空托出库</div>
+          </div>
+        </a-col>
+        <a-col :span="6">
           <div class="app-card" @click="$router.push({ path: '/OutStorage/Send' })">
             <a-icon class="app-icon" type="export" />
             <div class="app-text">销售发货</div>

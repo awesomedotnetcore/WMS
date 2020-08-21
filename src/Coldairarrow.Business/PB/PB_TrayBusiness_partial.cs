@@ -70,7 +70,7 @@ namespace Coldairarrow.Business.PB
             return result;
         }
 
-        public async Task<(string LocalId, string TrayId)> ReqBlankTray(string storId, string typeId)
+        public async Task<(PB_Location Local, PB_Tray Tray)> ReqBlankTray(string storId, string typeId)
         {
             var lmTrayId = from lm in Db.GetIQueryable<IT_LocalMaterial>()
                            join l in Db.GetIQueryable<PB_Location>() on lm.LocalId equals l.Id
@@ -83,10 +83,11 @@ namespace Coldairarrow.Business.PB
                              && l.StorId == storId
                              && l.LockType == 0
                              && !lmTrayId.Contains(t.Id)
-                             select new { LocalId = l.Id, TrayId = t.Id };
+                             select new { Local = l, Tray=t };
+            //  select new { LocalId = l.Id, TrayId = t.Id };
 
             var resut = await listTrayId.FirstOrDefaultAsync();
-            return (resut.LocalId, resut.TrayId);
+            return (resut.Local, resut.Tray);            
         }
 
         public async Task<PB_Tray> GetByLocation(string traytypeId)

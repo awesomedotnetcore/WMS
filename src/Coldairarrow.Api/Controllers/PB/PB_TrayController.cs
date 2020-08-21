@@ -313,10 +313,11 @@ namespace Coldairarrow.Api.Controllers.PB
 
             var StorId = _Op.Property.DefaultStorageId;
             var listOut = await this._pB_TrayBus.ReqBlankTray(StorId, data.TrayTypeId);
+
             var entity = new PB_Tray()
             {
-                Id = listOut.TrayId,
-                LocalId = listOut.LocalId
+                Code = listOut.Tray.Code,
+                PB_Location = listOut.Local
             };
             return new AjaxResult<PB_Tray>() { Success = true, Msg = "空托盘出库成功", Data = entity };
         }

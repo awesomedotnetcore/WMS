@@ -22,11 +22,6 @@ namespace Coldairarrow.Business.TD
         /// <returns>返回物料对应的货位与数量</returns>
         Task<AjaxResult<List<ReqMaterialResultDTO>>> ReqMaterial(ReqMaterialQM data);
 
-        ///// <summary>
-        ///// 空托盘自动出库
-        ///// </summary>
-        ///// <returns>返回货位和托盘号</returns>
-        //Task <(string LocalId, string TrayId)> ReqBlankTray(string storId, string typeId);
     }
     /// <summary>
     /// 请求物料参数

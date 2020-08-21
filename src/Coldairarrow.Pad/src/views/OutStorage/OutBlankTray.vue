@@ -21,10 +21,10 @@
       <a-list-item slot="renderItem" slot-scope="item">
         <a-list-item-meta>
           <div slot="title">
-            <span class="spanTag">托盘号:{{ item.Id }}</span>            
+            <span class="spanTag">  托盘号:{{ item.Code }}</span>            
           </div>
           <div slot="title">
-            <span class="spanTag">库位编号:{{ item.LocalId }}</span>
+            <span class="spanTag">  库位编号:{{ item.PB_Location.Code }}</span>
           </div>          
         </a-list-item-meta>
       </a-list-item>
@@ -35,6 +35,7 @@
 
 <script>
 import OutStorageSvc from '../../api/TD/OutStorageSvc'
+import TraySvc from '../../api/PB/TraySvc'
 
 export default {
   components: {
@@ -45,7 +46,7 @@ export default {
       loading: false,
       entity: {},
       rules: {
-        TrayType: [{ required: true, message: '请选择托盘类型', trigger: 'change' }],
+        TrayTypeId: [{ required: true, message: '请选择托盘类型', trigger: 'change' }],
       },
       TrayTypeList: [],
       listData: []
@@ -68,7 +69,7 @@ export default {
         OutStorageSvc.OutAutoTray(this.entity).then(resJson => {          
           this.loading = false
           if (resJson.Success) {
-            this.listData=[]
+            this.listData=[]            
             this.listData.push(resJson.Data)        
           } else {
             this.$message.error(resJson.Msg)

@@ -472,25 +472,6 @@ namespace Coldairarrow.Business.TD
 
             return new AjaxResult<List<ReqMaterialResultDTO>>() { Success = true, Data = result, Msg = "分拣成功" };
         }
-
-        //public async Task<(string LocalId, string TrayId)> ReqBlankTray(string storId, string typeId)
-        //{
-        //    var lmTrayId = from lm in Db.GetIQueryable<IT_LocalMaterial>()
-        //                   join l in Db.GetIQueryable<PB_Location>() on lm.LocalId equals l.Id
-        //                   where l.StorId == storId && l.LockType == 0 && l.IsForbid == false
-        //                   select lm.TrayId;
-        //    var listTrayId = from t in Db.GetIQueryable<PB_Tray>()
-        //                     join l in Db.GetIQueryable<PB_Location>() on t.LocalId equals l.Id
-        //                     where t.Status == 1
-        //                     && t.TrayTypeId == typeId
-        //                     && l.StorId == storId
-        //                     && l.LockType == 0
-        //                     && !lmTrayId.Contains(t.Id)
-        //                     select new { LocalId = l.Id, TrayId = t.Id };
-
-        //    var resut = await listTrayId.FirstOrDefaultAsync();
-        //    return (resut.LocalId,resut.TrayId);
-        //}
     }
     
 }

@@ -120,6 +120,11 @@ const router = new Router({
                     component: () => import('@/views/OutStorage/OutBlankTray'),
                 },
                 {
+                    path: '/OutStorage/OutManualTray',
+                    name: 'OutStorageOutManualTray',
+                    component: () => import('@/views/OutStorage/OutManualTray'),
+                },
+                {
                     path: '/OutStorage/Send',
                     name: 'OutStorageSend',
                     component: () => import('@/views/OutStorage/Send')
