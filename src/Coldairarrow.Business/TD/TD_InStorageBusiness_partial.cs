@@ -415,6 +415,7 @@ namespace Coldairarrow.Business.TD
                              join l in Db.GetIQueryable<PB_Location>() on lt.LocalId equals l.Id
                              join tt in Db.GetIQueryable<PB_TrayType>() on lt.TrayTypeId equals tt.Id
                              where l.StorId == data.StorId && tt.Id == tray.TrayTypeId
+                             && l.IsForbid == false // 没有禁用
                              && listAreaId.Contains(l.AreaId)  //货区过滤
                              && l.LockType == 0  //锁定过滤
                              && !lmLocal.Contains(l.Id) //库存过滤

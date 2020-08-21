@@ -13,6 +13,7 @@
             <span class="spanTag" v-if="item.LocalId">货位:{{ item.PB_Location.Code }}</span>
           </div>
         </a-list-item-meta>
+        <a-button type="link" slot="actions" @click="handlerLMReport(item)">物料</a-button>
       </a-list-item>
     </a-list>
   </a-card>
@@ -29,7 +30,7 @@ export default {
       loading: false,
       pagination: { current: 1, pageSize: 10, size: 'small', total: 0, onChange: this.handlerChange },
       queryData: {
-        PageIndex: 1, PageRows: 10, SortField: 'Id', SortType: 'desc',
+        PageIndex: 1, PageRows: 10, SortField: 'Code', SortType: 'asc',
         Search: { Keyword: null }
       },
       listData: []
@@ -57,6 +58,9 @@ export default {
       this.queryData.PageIndex = page
       this.queryData.PageRows = size
       this.getList()
+    },
+    handlerLMReport(tray) {
+      this.$router.push({ path: '/Report/LocalMaterialReport', query: { trayId: tray.Id } })
     }
   }
 }

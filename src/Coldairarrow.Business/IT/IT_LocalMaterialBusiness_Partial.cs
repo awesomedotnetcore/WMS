@@ -203,6 +203,10 @@ namespace Coldairarrow.Business.IT
             if (!search.Code.IsNullOrEmpty())
                 where = where.And(w => w.BatchNo.Contains(search.Code) || w.BarCode.Contains(search.Code));
 
+            where = where.AndIf(!search.LocalId.IsNullOrEmpty(), w => w.LocalId == search.LocalId);
+            where = where.AndIf(!search.TrayId.IsNullOrEmpty(), w => w.TrayId == search.TrayId);
+            where = where.AndIf(!search.MaterialId.IsNullOrEmpty(), w => w.MaterialId == search.MaterialId);
+
             return await q.Where(where).GetPageResultAsync(input);
         }
 

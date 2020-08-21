@@ -1,5 +1,6 @@
 <template>
   <a-card title="物料明细" :loading="loading">
+    <a-button slot="extra" type="primary" ghost @click="handlerLMReport(entity)" :loading="loading">库存</a-button>
     <a-descriptions :title="entity.Code" bordered :column="1">
       <a-descriptions-item label="名称">{{ entity.Name }}</a-descriptions-item>
       <a-descriptions-item label="编码">{{ entity.Code }}</a-descriptions-item>
@@ -45,6 +46,9 @@ export default {
           this.$message.error(resJson.Msg)
         }
       })
+    },
+    handlerLMReport(material) {
+      this.$router.push({ path: '/Report/LocalMaterialReport', query: { materialId: material.Id } })
     }
   }
 }

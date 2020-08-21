@@ -95,6 +95,12 @@
     <a-card title="基本资料" size="small">
       <a-row :gutter="[5,10]">
         <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/Report/LocalMaterialReport' })">
+            <a-icon class="app-icon" type="dot-chart" />
+            <div class="app-text">库存报表</div>
+          </div>
+        </a-col>
+        <a-col :span="6">
           <div class="app-card" @click="$router.push({ path: '/PB/MaterialList' })">
             <a-icon class="app-icon" type="gold" />
             <div class="app-text">物料管理</div>
@@ -107,9 +113,9 @@
           </div>
         </a-col>
         <a-col :span="6">
-          <div class="app-card" @click="$router.push({ path: '/Report/LocalMaterialReport' })">
-            <a-icon class="app-icon" type="dot-chart" />
-            <div class="app-text">库存报表</div>
+          <div class="app-card" @click="$router.push({ path: '/PB/LocalList' })">
+            <a-icon class="app-icon" type="table" />
+            <div class="app-text">货位管理</div>
           </div>
         </a-col>
         <a-col :span="6">
@@ -144,8 +150,8 @@ export default {
   text-align: center;
 }
 .app-card .app-icon {
-  font-size:48px;
-  color:#1890ff;
+  font-size: 48px;
+  color: #1890ff;
 }
 .app-card .app-text {
   margin-top: 8px;
