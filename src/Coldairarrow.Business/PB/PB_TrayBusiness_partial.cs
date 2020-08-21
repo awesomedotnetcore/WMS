@@ -16,12 +16,14 @@ namespace Coldairarrow.Business.PB
 {
     public partial class PB_TrayBusiness : BaseBusiness<PB_Tray>, IPB_TrayBusiness, ITransientDependency
     {
-        public PB_TrayBusiness(IDbAccessor db, IServiceProvider svcProvider)
+        public PB_TrayBusiness(IDbAccessor db, IServiceProvider svcProvider, IServiceProvider provider)
             : base(db)
         {
             _ServiceProvider = svcProvider;
+            _provider = provider;
         }
         readonly IServiceProvider _ServiceProvider;
+        IServiceProvider _provider { get; }
 
         public async Task<PageResult<PB_Tray>> GetDataListAsync(PageInput<PB_TrayQM> input)
         {
@@ -84,16 +86,46 @@ namespace Coldairarrow.Business.PB
                              && l.LockType == 0
                              && !lmTrayId.Contains(t.Id)
                              select new { Local = l, Tray=t };
-            //  select new { LocalId = l.Id, TrayId = t.Id };
 
-            var resut = await listTrayId.FirstOrDefaultAsync();
-            return (resut.Local, resut.Tray);            
+             var resut = await listTrayId.FirstOrDefaultAsync();
+            return (resut.Local, resut.Tray);  
         }
 
-        public async Task<PB_Tray> GetByLocation(string traytypeId)
+        public async Task<List<PB_Tray>> GetByLocation(string traytypeId)
         {
-            return await this.GetIQueryable().SingleOrDefaultAsync(w => w.TrayTypeId == traytypeId);
+            var q = GetIQueryable();
+            var where = LinqHelper.True<PB_Tray>();
+            var result = await q.Where(where).OrderBy(o => o.TrayTypeId).Distinct().ToListAsync();
+            return result;
+
+            //await this.GetIQueryable().SingleOrDefaultAsync(w => w.TrayTypeId == traytypeId);
+            // result.Add(one);
         }
+
+        //public async Task<PB_Tray> GetByTrayId(string traycode)
+        //{
+        //    return await this.GetIQueryable().SingleOrDefaultAsync(w => w.Code == traycode);
+        //}
+
+        //  public async Task<PB_Tray> InNulltray(string trayId)
+        // {
+        //  var traySvc = this._provider.GetRequiredService<IPB_TrayBusiness>();
+        //  var local = await traySvc.GetTheDataAsync(trayId);
+
+
+        //var tray = await traySvc.GetByTrayId(traycode);
+
+        //var localIds = local.Select(s => s.Id).ToList();
+
+        //var listLocal = await Db.GetIQueryable<PB_Location>().Where(w => w.Id == w.Id).ToListAsync();
+        //foreach (var item in listLocal)
+        //{
+        //    item.LockType = 2;
+        //}
+        // var localSvc = _ServiceProvider.GetRequiredService<IPB_LocationBusiness>();
+        // await localSvc.UpdateDataAsync(listLocal);
+        //return 
+        //  }
 
         [DataAddLog(UserLogType.托盘管理, "Code", "托盘")]
         [DataRepeatAndValidate(new string[] { "TrayTypeId", "Code" }, new string[] { "托盘类型", "编码" })]

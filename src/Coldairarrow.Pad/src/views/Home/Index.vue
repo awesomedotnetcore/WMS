@@ -23,7 +23,13 @@
         <a-col :span="6">
           <div class="app-card" @click="$router.push({ path: '/InStorage/InBlankTray' })">
             <a-icon class="app-icon" type="pic-left" />
-            <div class="app-text">空托入库</div>
+            <div class="app-text">自动入托</div>
+          </div>
+        </a-col>
+        <a-col :span="6">
+          <div class="app-card" @click="$router.push({ path: '/InStorage/InManualTray' })">
+            <a-icon class="app-icon" type="menu-unfold" />
+            <div class="app-text">手动入托</div>
           </div>
         </a-col>
         <a-col :span="6">
@@ -63,13 +69,13 @@
         <a-col :span="6">
           <div class="app-card" @click="$router.push({ path: '/OutStorage/OutBlankTray' })">
             <a-icon class="app-icon" type="pic-right" />
-            <div class="app-text">空托出库</div>
+            <div class="app-text">自动出托</div>
           </div>
         </a-col>
         <a-col :span="6">
           <div class="app-card" @click="$router.push({ path: '/OutStorage/OutManualTray' })">
             <a-icon class="app-icon" type="menu-fold" />
-            <div class="app-text">手动空托出库</div>
+            <div class="app-text">手动出托</div>
           </div>
         </a-col>
         <a-col :span="6">

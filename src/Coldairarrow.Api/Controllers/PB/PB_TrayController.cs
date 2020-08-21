@@ -319,7 +319,7 @@ namespace Coldairarrow.Api.Controllers.PB
                 Code = listOut.Tray.Code,
                 PB_Location = listOut.Local
             };
-            return new AjaxResult<PB_Tray>() { Success = true, Msg = "空托盘出库成功", Data = entity };
+            return new AjaxResult<PB_Tray>() { Success = true, Msg = "空托盘查询成功", Data = entity };
         }
         #endregion
     }

@@ -16,7 +16,10 @@ namespace Coldairarrow.Business.PB
 
         Task<PB_Tray> GetByCode(string code);
         Task<(PB_Location Local, PB_Tray Tray)> ReqBlankTray(string storId, string typeId);
-        Task<PB_Tray> GetByLocation(string traytypeId);
+        //Task<(PB_Location Local, PB_Tray Tray)> ReqBlankTray(string storId, string typeId);
+        Task<List<PB_Tray>> GetByLocation(string traytypeId);
+        //Task<PB_Tray> GetByLocation(string traytypeId);
+        //Task<PB_Tray> GetByTrayId(string traycode);
     }
     public class PB_TrayQM
     {
