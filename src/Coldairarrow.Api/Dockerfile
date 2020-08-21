@@ -1,4 +1,4 @@
-﻿FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine
+﻿FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 RUN echo "http://mirrors.aliyun.com/alpine/v3.10/main/" > /etc/apk/repositories \
 	&& apk add --no-cache  icu-libs \
 	&& apk add --no-cache --repository http://mirrors.aliyun.com/alpine/edge/testing/ libgdiplus \
