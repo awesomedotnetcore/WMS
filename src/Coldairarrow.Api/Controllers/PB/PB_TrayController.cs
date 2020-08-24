@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using Quartz.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -80,7 +81,15 @@ namespace Coldairarrow.Api.Controllers.PB
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
-
+                if (data.Code.IsNullOrWhiteSpace())
+                {
+                    var typeSvc = this._provider.GetRequiredService<IPB_TrayTypeBusiness>();
+                    var type = await typeSvc.GetByTypeCode(data.TrayTypeId);
+                    var codeSvc = _provider.GetRequiredService<IPB_BarCodeTypeBusiness>();
+                    var dic = new Dictionary<string, string>();
+                    dic.Add("TypeCode", type.Code);
+                    data.Code = await codeSvc.Generate("PB_Tray", dic);
+                }
                 await _pB_TrayBus.AddDataAsync(data);
             }
             else
@@ -313,6 +322,7 @@ namespace Coldairarrow.Api.Controllers.PB
 
             var StorId = _Op.Property.DefaultStorageId;
             var listOut = await this._pB_TrayBus.ReqBlankTray(StorId, data.TrayTypeId);
+            if (listOut.Local == null || listOut.Tray == null) return new AjaxResult<PB_Tray>() { Success = false, Msg = "无空托盘" };
 
             var entity = new PB_Tray()
             {

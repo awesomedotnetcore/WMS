@@ -86,8 +86,9 @@ namespace Coldairarrow.Business.PB
                              && l.LockType == 0
                              && !lmTrayId.Contains(t.Id)
                              select new { Local = l, Tray=t };
+           // if (listTrayId == null) return new AjaxResult<(PB_Tray)>() { Success = false, Msg = "可用库存不足" };
 
-             var resut = await listTrayId.FirstOrDefaultAsync();
+            var resut = await listTrayId.FirstOrDefaultAsync();
             return (resut.Local, resut.Tray);  
         }
 
@@ -127,18 +128,10 @@ namespace Coldairarrow.Business.PB
         //return 
         //  }
 
-        [DataAddLog(UserLogType.托盘管理, "Code", "托盘")]
-        [DataRepeatAndValidate(new string[] { "TrayTypeId", "Code" }, new string[] { "托盘类型", "编码" })]
+        [DataAddLog(UserLogType.托盘管理, "Code", "托盘名称")]
+        [DataRepeatAndValidate(new string[] { "TrayTypeId", "Code" }, new string[] { "托盘类型", "托盘编号" })]
         public async Task AddDataAsync(PB_Tray data)
         {
-            if (data.Code.IsNullOrEmpty())
-            {
-                var type = await Db.GetIQueryable<PB_TrayType>().SingleAsync(w => w.Id == data.TrayTypeId);
-                var codeSvc = _ServiceProvider.GetRequiredService<IPB_BarCodeTypeBusiness>();
-                var dic = new Dictionary<string, string>();
-                dic.Add("TypeCode", type.Code);
-                data.Code = await codeSvc.Generate("PB_Tray", dic);
-            }
             await InsertAsync(data);
         }
         public async Task AddDataAsync(List<PB_Tray> list)
