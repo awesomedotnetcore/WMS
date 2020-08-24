@@ -85,8 +85,7 @@ namespace Coldairarrow.Business.PB
                              && l.StorId == storId
                              && l.LockType == 0
                              && !lmTrayId.Contains(t.Id)
-                             select new { Local = l, Tray=t };
-           // if (listTrayId == null) return new AjaxResult<(PB_Tray)>() { Success = false, Msg = "可用库存不足" };
+                             select new { Local = l, Tray=t };            
 
             var resut = await listTrayId.FirstOrDefaultAsync();
             return (resut.Local, resut.Tray);  
@@ -98,35 +97,54 @@ namespace Coldairarrow.Business.PB
             var where = LinqHelper.True<PB_Tray>();
             var result = await q.Where(where).OrderBy(o => o.TrayTypeId).Distinct().ToListAsync();
             return result;
-
-            //await this.GetIQueryable().SingleOrDefaultAsync(w => w.TrayTypeId == traytypeId);
-            // result.Add(one);
         }
 
-        //public async Task<PB_Tray> GetByTrayId(string traycode)
-        //{
-        //    return await this.GetIQueryable().SingleOrDefaultAsync(w => w.Code == traycode);
-        //}
+        public async Task<PB_Tray> GetByTrayId(string traycode)
+        {
+            return await this.GetIQueryable().SingleOrDefaultAsync(w => w.Code == traycode);
+        }
 
-        //  public async Task<PB_Tray> InNulltray(string trayId)
-        // {
-        //  var traySvc = this._provider.GetRequiredService<IPB_TrayBusiness>();
-        //  var local = await traySvc.GetTheDataAsync(trayId);
+        public async Task<PB_Location> InNullTray(string storId, string trayId)
+        {
+            //托盘类型
+            var tray = await Db.GetIQueryable<PB_Tray>().SingleOrDefaultAsync(w => w.Id == trayId);
 
+            //有库存的货位
+            var lmLocal = from lm in Db.GetIQueryable<IT_LocalMaterial>()
+                          join l in Db.GetIQueryable<PB_Location>() on lm.LocalId equals l.Id
+                          where l.StorId == storId && lm.StorId == storId
+                          select l.Id;
 
-        //var tray = await traySvc.GetByTrayId(traycode);
+            // 有托盘的货位
+            var trayLocal = from t in Db.GetIQueryable<PB_Tray>()
+                            join l in Db.GetIQueryable<PB_Location>() on t.LocalId equals l.Id
+                            where l.StorId == storId
+                            select t.LocalId;
 
-        //var localIds = local.Select(s => s.Id).ToList();
+            //过滤货位
+            var LocalQuery = from lt in Db.GetIQueryable<PB_LocalTray>()
+                             join l in Db.GetIQueryable<PB_Location>() on lt.LocalId equals l.Id
+                            // join tt in Db.GetIQueryable<PB_TrayType>() on lt.TrayTypeId equals tt.Id
+                             where l.StorId == storId //&& tt.Id == tray.TrayTypeId
+                             && l.IsForbid == true // 没有禁用
+                             && l.LockType == 0  //锁定过滤
+                             && !lmLocal.Contains(l.Id) //库存过滤
+                             && !trayLocal.Contains(l.Id) // 托盘过滤
+                             select new { Local = l };
 
-        //var listLocal = await Db.GetIQueryable<PB_Location>().Where(w => w.Id == w.Id).ToListAsync();
-        //foreach (var item in listLocal)
-        //{
-        //    item.LockType = 2;
-        //}
-        // var localSvc = _ServiceProvider.GetRequiredService<IPB_LocationBusiness>();
-        // await localSvc.UpdateDataAsync(listLocal);
-        //return 
-        //  }
+            //TODO:可以做到从数据库随机取一个
+            var count = await LocalQuery.CountAsync();
+            if (count == 0) return null;
+            var skip = RandomHelper.Next(0, count - 1);
+            var result = await LocalQuery.Skip(skip).Take(1).FirstOrDefaultAsync();
+
+            //更新托盘货位信息
+            //await Db.UpdateSqlAsync<PB_Tray>(w => w.LocalId == result.Local.Id, ("LocalId", UpdateType.Equal, 1));
+            //锁定货位
+            //await Db.UpdateSqlAsync<PB_Location>(w => w.Id == result.Local.Id, ("LockType", UpdateType.Equal, 1));
+
+            return (result.Local);//.Id
+        }
 
         [DataAddLog(UserLogType.托盘管理, "Code", "托盘名称")]
         [DataRepeatAndValidate(new string[] { "TrayTypeId", "Code" }, new string[] { "托盘类型", "托盘编号" })]

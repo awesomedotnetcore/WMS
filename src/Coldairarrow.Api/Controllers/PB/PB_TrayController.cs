@@ -331,6 +331,43 @@ namespace Coldairarrow.Api.Controllers.PB
             };
             return new AjaxResult<PB_Tray>() { Success = true, Msg = "空托盘查询成功", Data = entity };
         }
+
+        /// <summary>
+        /// 空托盘自动入库
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<AjaxResult<PB_Tray>> InAutoTray(InAutoByTary data)
+        {
+            var traySvc = this._provider.GetRequiredService<IPB_TrayBusiness>();
+            var tray = await traySvc.GetByTrayId(data.TrayId);
+            if (tray == null) return new AjaxResult<PB_Tray>() { Success = false, Msg = "托盘号为空" };
+
+            var StorId = _Op.Property.DefaultStorageId;
+            var local = await this._pB_TrayBus.InNullTray(StorId, data.TrayId);
+            if (local.IsNullOrEmpty()) return new AjaxResult<PB_Tray>() { Success = false, Msg = "没有可以入库的货位" };
+
+            var entity = new PB_Tray()
+            {
+                Code = tray.Code,
+                PB_Location = local
+            };
+            return new AjaxResult<PB_Tray>() { Success = true, Msg = "空托盘查询成功",Data = entity };//, 
+        }
+
+        /// <summary>
+        /// 空托盘查询
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<AjaxResult<PB_Tray>> QueryTray(InAutoByTary data)
+        {
+            var traySvc = this._provider.GetRequiredService<IPB_TrayBusiness>();
+            var tray = await traySvc.GetByTrayId(data.TrayId);
+            if (tray == null) return new AjaxResult<PB_Tray>() { Success = false, Msg = "此托盘不存在" };
+
+            return new AjaxResult<PB_Tray>() { Success = true, Msg = "托盘号查询成功", Data = tray };
+        }
         #endregion
     }
 }

@@ -43,13 +43,14 @@ export default {
       queryData: {
         Search: { Keyword: null }
       },
-      listData: []
+      listData: [],
+      listinData: []
     }
   },
   mounted() {
    // this.getTrayTypeList()
   },
-  methods: {
+  methods: {    
       handlerSubmit() {
       this.$refs['form'].validate(valid => {
         if (!valid) {
@@ -65,7 +66,8 @@ export default {
           }
         })
       })
-    }
+    },
+    
   }
 }
 </script>
