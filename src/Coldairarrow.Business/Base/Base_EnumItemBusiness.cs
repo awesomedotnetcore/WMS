@@ -39,13 +39,13 @@ namespace Coldairarrow.Business.Base
             return await GetEntityAsync(id);
         }
         [DataAddLog(UserLogType.数据字典, "Name", "字典值")]
-        [DataRepeatAndValidate(new string[] { "EnumId", "Code" }, new string[] { "数据字典", "值" })]
+        [DataRepeatValidate(new string[] { "EnumId", "Code" }, new string[] { "数据字典", "值" }, allData: false, matchOr: false)]
         public async Task AddDataAsync(Base_EnumItem data)
         {
             await InsertAsync(data);
         }
         [DataEditLog(UserLogType.数据字典, "Name", "字典值")]
-        [DataRepeatAndValidate(new string[] { "EnumId", "Code" }, new string[] { "数据字典", "值" })]
+        [DataRepeatValidate(new string[] { "EnumId", "Code" }, new string[] { "数据字典", "值" }, allData: false, matchOr: false)]
         public async Task UpdateDataAsync(Base_EnumItem data)
         {
             await UpdateAsync(data);

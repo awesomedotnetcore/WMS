@@ -42,13 +42,13 @@ namespace Coldairarrow.Business.Base
         }
 
         [DataAddLog(UserLogType.系统参数, "Code", "参数")]
-        [DataRepeatAndValidate(new string[] { "Code" }, new string[] { "参数" })]
+        [DataRepeatValidate(new string[] { "Code" }, new string[] { "参数" }, allData: false, matchOr: false)]
         public async Task AddDataAsync(Base_Parameter data)
         {
             await InsertAsync(data);
         }
         [DataEditLog(UserLogType.系统参数, "Code", "参数")]
-        [DataRepeatAndValidate(new string[] { "Code" }, new string[] { "参数" })]
+        [DataRepeatValidate(new string[] { "Code" }, new string[] { "参数" }, allData: false, matchOr: false)]
         public async Task UpdateDataAsync(Base_Parameter data)
         {
             //await UpdateAsync(data);

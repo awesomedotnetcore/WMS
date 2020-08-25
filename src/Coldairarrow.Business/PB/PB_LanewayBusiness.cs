@@ -43,14 +43,14 @@ namespace Coldairarrow.Business.PB
         }
 
         [DataAddLog(UserLogType.巷道管理, "Name", "巷道")]
-        [DataRepeatAndValidate(new string[] { "StorId", "Name" }, new string[] { "仓库", "巷道" })]
+        [DataRepeatValidate(new string[] { "StorId", "Name" }, new string[] { "仓库", "巷道" }, allData: false, matchOr: false)]
         public async Task AddDataAsync(PB_Laneway data)
         {
             await InsertAsync(data);
         }
 
         [DataEditLog(UserLogType.巷道管理, "Name", "巷道")]
-        [DataRepeatAndValidate(new string[] { "StorId", "Name" }, new string[] { "仓库", "巷道" })]
+        [DataRepeatValidate(new string[] { "StorId", "Name" }, new string[] { "仓库", "巷道" }, allData: false, matchOr: false)]
         public async Task UpdateDataAsync(PB_Laneway data)
         {
             await UpdateAsync(data);
