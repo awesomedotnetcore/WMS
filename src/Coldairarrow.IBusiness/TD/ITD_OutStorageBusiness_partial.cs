@@ -21,6 +21,7 @@ namespace Coldairarrow.Business.TD
         /// <param name="data"></param>
         /// <returns>返回物料对应的货位与数量</returns>
         Task<AjaxResult<List<ReqMaterialResultDTO>>> ReqMaterial(ReqMaterialQM data);
+
     }
     /// <summary>
     /// 请求物料参数
@@ -73,5 +74,14 @@ namespace Coldairarrow.Business.TD
         public string TrayCode { get; set; }
 
         public double Num { get; set; }
+    }
+    /// <summary>
+    /// 空托盘
+    /// </summary>
+    public class ReqTrayQM
+    {
+        public string StorId { get; set; }
+        public string LocalId { get; set; }
+        public string TrayId { get; set; }
     }
 }

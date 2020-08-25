@@ -1,4 +1,5 @@
-﻿using Coldairarrow.Entity.PB;
+﻿using Coldairarrow.Entity.IT;
+using Coldairarrow.Entity.PB;
 using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using EFCore.Sharding;
@@ -15,12 +16,14 @@ namespace Coldairarrow.Business.PB
 {
     public partial class PB_TrayBusiness : BaseBusiness<PB_Tray>, IPB_TrayBusiness, ITransientDependency
     {
-        public PB_TrayBusiness(IDbAccessor db, IServiceProvider svcProvider)
+        public PB_TrayBusiness(IDbAccessor db, IServiceProvider svcProvider, IServiceProvider provider)
             : base(db)
         {
             _ServiceProvider = svcProvider;
+            _provider = provider;
         }
         readonly IServiceProvider _ServiceProvider;
+        IServiceProvider _provider { get; }
 
         public async Task<PageResult<PB_Tray>> GetDataListAsync(PageInput<PB_TrayQM> input)
         {
@@ -69,27 +72,84 @@ namespace Coldairarrow.Business.PB
             return result;
         }
 
-        public async Task<List<string>> GetByLocation(string tarytypeId)
+        public async Task<(PB_Location Local, PB_Tray Tray)> ReqBlankTray(string storId, string typeId)
         {
-            var query = Db.GetIQueryable<PB_Tray>();
-            var listLocal = await query.Where(w => w.TrayTypeId == tarytypeId).Select(s => s.LocalId).Distinct().ToListAsync();
-            return listLocal;
-            //var listType = await this.GetIQueryable().SingleOrDefaultAsync(w => w.TrayTypeId == type);
-            //return listType;
+            var lmTrayId = from lm in Db.GetIQueryable<IT_LocalMaterial>()
+                           join l in Db.GetIQueryable<PB_Location>() on lm.LocalId equals l.Id
+                           where l.StorId == storId && l.LockType == 0 && l.IsForbid == false
+                           select lm.TrayId;
+            var listTrayId = from t in Db.GetIQueryable<PB_Tray>()
+                             join l in Db.GetIQueryable<PB_Location>() on t.LocalId equals l.Id
+                             where t.Status == 1
+                             && t.TrayTypeId == typeId
+                             && l.StorId == storId
+                             && l.LockType == 0
+                             && !lmTrayId.Contains(t.Id)
+                             select new { Local = l, Tray=t };            
+
+            var resut = await listTrayId.FirstOrDefaultAsync();
+            return (resut.Local, resut.Tray);  
         }
 
-        [DataAddLog(UserLogType.托盘管理, "Code", "托盘")]
-        [DataRepeatAndValidate(new string[] { "TrayTypeId", "Code" }, new string[] { "托盘类型", "编码" })]
+        public async Task<List<PB_Tray>> GetByLocation(string traytypeId)
+        {
+            var q = GetIQueryable();
+            var where = LinqHelper.True<PB_Tray>();
+            var result = await q.Where(where).OrderBy(o => o.TrayTypeId).Distinct().ToListAsync();
+            return result;
+        }
+
+        public async Task<PB_Tray> GetByTrayId(string traycode)
+        {
+            return await this.GetIQueryable().SingleOrDefaultAsync(w => w.Code == traycode);
+        }
+
+        public async Task<PB_Location> InNullTray(string storId, string trayId)
+        {
+            //托盘类型
+            var tray = await Db.GetIQueryable<PB_Tray>().SingleOrDefaultAsync(w => w.Id == trayId);
+
+            //有库存的货位
+            var lmLocal = from lm in Db.GetIQueryable<IT_LocalMaterial>()
+                          join l in Db.GetIQueryable<PB_Location>() on lm.LocalId equals l.Id
+                          where l.StorId == storId && lm.StorId == storId
+                          select l.Id;
+
+            // 有托盘的货位
+            var trayLocal = from t in Db.GetIQueryable<PB_Tray>()
+                            join l in Db.GetIQueryable<PB_Location>() on t.LocalId equals l.Id
+                            where l.StorId == storId
+                            select t.LocalId;
+
+            //过滤货位
+            var LocalQuery = from lt in Db.GetIQueryable<PB_LocalTray>()
+                             join l in Db.GetIQueryable<PB_Location>() on lt.LocalId equals l.Id
+                            // join tt in Db.GetIQueryable<PB_TrayType>() on lt.TrayTypeId equals tt.Id
+                             where l.StorId == storId //&& tt.Id == tray.TrayTypeId
+                             && l.IsForbid == true // 没有禁用
+                             && l.LockType == 0  //锁定过滤
+                             && !lmLocal.Contains(l.Id) //库存过滤
+                             && !trayLocal.Contains(l.Id) // 托盘过滤
+                             select new { Local = l };
+
+            //TODO:可以做到从数据库随机取一个
+            var count = await LocalQuery.CountAsync();
+            if (count == 0) return null;
+            var skip = RandomHelper.Next(0, count - 1);
+            var result = await LocalQuery.Skip(skip).Take(1).FirstOrDefaultAsync();
+
+            //更新托盘货位信息
+            //await Db.UpdateSqlAsync<PB_Tray>(w => w.LocalId == result.Local.Id, ("LocalId", UpdateType.Equal, 1));
+            //锁定货位
+            //await Db.UpdateSqlAsync<PB_Location>(w => w.Id == result.Local.Id, ("LockType", UpdateType.Equal, 1));
+
+            return (result.Local);//.Id
+        }
+
+        [DataAddLog(UserLogType.托盘管理, "Code", "托盘名称")]
+        [DataRepeatAndValidate(new string[] { "TrayTypeId", "Code" }, new string[] { "托盘类型", "托盘编号" })]
         public async Task AddDataAsync(PB_Tray data)
         {
-            if (data.Code.IsNullOrEmpty())
-            {
-                var type = await Db.GetIQueryable<PB_TrayType>().SingleAsync(w => w.Id == data.TrayTypeId);
-                var codeSvc = _ServiceProvider.GetRequiredService<IPB_BarCodeTypeBusiness>();
-                var dic = new Dictionary<string, string>();
-                dic.Add("TypeCode", type.Code);
-                data.Code = await codeSvc.Generate("PB_Tray", dic);
-            }
             await InsertAsync(data);
         }
         public async Task AddDataAsync(List<PB_Tray> list)

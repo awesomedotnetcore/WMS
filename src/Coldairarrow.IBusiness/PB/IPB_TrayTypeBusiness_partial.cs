@@ -20,5 +20,7 @@ namespace Coldairarrow.Business.PB
         /// <param name="locationId">货位ID</param>
         /// <returns></returns>
         Task<List<string>> GetByLocation(string locationId);
+
+        Task<PB_TrayType> GetByTypeCode(string typecode);
     }
 }

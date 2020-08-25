@@ -59,6 +59,6 @@ namespace Coldairarrow.Business.PB
         public async Task<PB_Material> GetByBarcode(string code)
         {
             return await this.GetIQueryable().SingleOrDefaultAsync(w => w.BarCode == code);
-        }
+        }        
     }
 }

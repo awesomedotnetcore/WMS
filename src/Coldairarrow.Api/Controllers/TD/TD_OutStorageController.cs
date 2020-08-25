@@ -122,29 +122,6 @@ namespace Coldairarrow.Api.Controllers.TD
         }
 
         /// <summary>
-        /// 空托盘自动出库
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public async Task<AjaxResult<TD_OutStorage>> OutAutoTray(OutAutoByTary data)
-        {
-            var traySvc = this.serviceProvider.GetRequiredService<IPB_TrayBusiness>();
-            var listlocal = await traySvc.GetByLocation(data.TrayTypeId);
-
-            //var localSvc = this.serviceProvider.GetRequiredService<IIT_LocalMaterialBusiness>();
-            foreach (var detail in listlocal)
-            {
-                //var local = new IT_LocalMaterial
-                // {
-                // LocalId = traytype
-                // };
-            }
-
-            var StorId = _Op.Property.DefaultStorageId;
-            return new AjaxResult<TD_OutStorage>(); //{ Success = true, Msg = "空托盘出库成功", Data = entity };
-        }
-
-        /// <summary>
         /// 自动出库
         /// </summary>
         /// <param name="data"></param>

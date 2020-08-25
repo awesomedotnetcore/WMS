@@ -56,6 +56,16 @@ namespace Coldairarrow.Business.PB
             return listlocal;
         }
 
+        /// <summary>
+        /// 返回托盘类型编号
+        /// </summary>
+        /// <param name="typecode">类型编号</param>
+        /// <returns></returns>
+        public async Task<PB_TrayType> GetByTypeCode(string typecode)
+        {
+            return await this.GetIQueryable().SingleOrDefaultAsync(w => w.Id == typecode);
+        }
+
         ///// <summary>
         ///// 根据托盘类型，找对应货位
         ///// </summary>

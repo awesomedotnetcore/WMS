@@ -71,6 +71,16 @@ const router = new Router({
                     props: true
                 },
                 {
+                    path: '/InStorage/InBlankTray',
+                    name: 'InStorageInBlankTray',
+                    component: () => import('@/views/InStorage/InBlankTray'),
+                },
+                {
+                    path: '/InStorage/InManualTray',
+                    name: 'InStorageInManualTray',
+                    component: () => import('@/views/InStorage/InManualTray'),
+                },
+                {
                     path: '/InStorage/Receive',
                     name: 'InStorageReceive',
                     component: () => import('@/views/InStorage/Receive')
@@ -118,6 +128,11 @@ const router = new Router({
                     path: '/OutStorage/OutBlankTray',
                     name: 'OutStorageOutBlankTray',
                     component: () => import('@/views/OutStorage/OutBlankTray'),
+                },
+                {
+                    path: '/OutStorage/OutManualTray',
+                    name: 'OutStorageOutManualTray',
+                    component: () => import('@/views/OutStorage/OutManualTray'),
                 },
                 {
                     path: '/OutStorage/Send',

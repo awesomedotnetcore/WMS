@@ -5,9 +5,11 @@ using Coldairarrow.IBusiness.DTO;
 using Coldairarrow.Util;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using Quartz.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,15 +23,18 @@ namespace Coldairarrow.Api.Controllers.PB
     {
         #region DI
 
-        public PB_TrayController(IPB_TrayBusiness pB_TrayBus, IOperator op)
+        public PB_TrayController(IPB_TrayBusiness pB_TrayBus, IOperator op, IServiceProvider provider)
         {
             _pB_TrayBus = pB_TrayBus;
             _Op = op;
+            _provider = provider;
         }
 
         IPB_TrayBusiness _pB_TrayBus { get; }
 
         IOperator _Op { get; }
+
+        IServiceProvider _provider { get; }
 
         #endregion
 
@@ -76,7 +81,15 @@ namespace Coldairarrow.Api.Controllers.PB
             if (data.Id.IsNullOrEmpty())
             {
                 InitEntity(data);
-
+                if (data.Code.IsNullOrWhiteSpace())
+                {
+                    var typeSvc = this._provider.GetRequiredService<IPB_TrayTypeBusiness>();
+                    var type = await typeSvc.GetByTypeCode(data.TrayTypeId);
+                    var codeSvc = _provider.GetRequiredService<IPB_BarCodeTypeBusiness>();
+                    var dic = new Dictionary<string, string>();
+                    dic.Add("TypeCode", type.Code);
+                    data.Code = await codeSvc.Generate("PB_Tray", dic);
+                }
                 await _pB_TrayBus.AddDataAsync(data);
             }
             else
@@ -294,6 +307,66 @@ namespace Coldairarrow.Api.Controllers.PB
                 return File(buffer, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", string.Format("托盘信息表_{0}.xlsx", DateTime.Now.ToString("yyyyMMddHHmmss")));
             }
 
+        }
+
+        /// <summary>
+        /// 空托盘自动出库
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<AjaxResult<PB_Tray>> OutAutoTray(OutAutoByTary data)
+        {
+            var traySvc = this._provider.GetRequiredService<IPB_TrayBusiness>();
+            var tray = await traySvc.GetByLocation(data.TrayTypeId);
+            if (tray == null) return new AjaxResult<PB_Tray>() { Success = false, Msg = "托盘号为空" };
+
+            var StorId = _Op.Property.DefaultStorageId;
+            var listOut = await this._pB_TrayBus.ReqBlankTray(StorId, data.TrayTypeId);
+            if (listOut.Local == null || listOut.Tray == null) return new AjaxResult<PB_Tray>() { Success = false, Msg = "无空托盘" };
+
+            var entity = new PB_Tray()
+            {
+                Code = listOut.Tray.Code,
+                PB_Location = listOut.Local
+            };
+            return new AjaxResult<PB_Tray>() { Success = true, Msg = "空托盘查询成功", Data = entity };
+        }
+
+        /// <summary>
+        /// 空托盘自动入库
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<AjaxResult<PB_Tray>> InAutoTray(InAutoByTary data)
+        {
+            var traySvc = this._provider.GetRequiredService<IPB_TrayBusiness>();
+            var tray = await traySvc.GetByTrayId(data.TrayId);
+            if (tray == null) return new AjaxResult<PB_Tray>() { Success = false, Msg = "托盘号为空" };
+
+            var StorId = _Op.Property.DefaultStorageId;
+            var local = await this._pB_TrayBus.InNullTray(StorId, data.TrayId);
+            if (local.IsNullOrEmpty()) return new AjaxResult<PB_Tray>() { Success = false, Msg = "没有可以入库的货位" };
+
+            var entity = new PB_Tray()
+            {
+                Code = tray.Code,
+                PB_Location = local
+            };
+            return new AjaxResult<PB_Tray>() { Success = true, Msg = "空托盘查询成功",Data = entity };//, 
+        }
+
+        /// <summary>
+        /// 空托盘查询
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<AjaxResult<PB_Tray>> QueryTray(InAutoByTary data)
+        {
+            var traySvc = this._provider.GetRequiredService<IPB_TrayBusiness>();
+            var tray = await traySvc.GetByTrayId(data.TrayId);
+            if (tray == null) return new AjaxResult<PB_Tray>() { Success = false, Msg = "此托盘不存在" };
+
+            return new AjaxResult<PB_Tray>() { Success = true, Msg = "托盘号查询成功", Data = tray };
         }
         #endregion
     }
