@@ -376,13 +376,23 @@ namespace Coldairarrow.Api.Controllers.PB
 
             var entity = new PB_Tray()
             {
+                Id = tray.Id,
+                LocalId = local.Id,
                 Code = tray.Code,
-                PB_Location = local
+                Name = tray.Name,
+                TrayTypeId = tray.TrayTypeId,
+                StartTime = tray.StartTime,
+                Status = tray.Status,
+                Remarks = tray.Remarks,
+                CreateTime = tray.CreateTime,
+                CreatorId = tray.CreatorId,
+                Deleted = tray.Deleted,
+                PB_Location = local,                
             };
-            //if (entity.Id.IsNullOrEmpty())
-            //{
-            //    await _pB_TrayBus.UpdateDataAsync(entity);
-            //}
+            if (!entity.Id.IsNullOrEmpty())
+            {
+                await _pB_TrayBus.UpdateDataAsync(entity);
+            }
             return new AjaxResult<PB_Tray>() { Success = true, Msg = "空托盘自动入库成功", Data = entity };//, 
         }
 
