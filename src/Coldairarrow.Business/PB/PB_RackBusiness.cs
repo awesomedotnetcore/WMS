@@ -41,21 +41,21 @@ namespace Coldairarrow.Business.PB
         }
 
         [DataAddLog(UserLogType.仓库管理, "Name", "货架")]
-        [DataRepeatAndValidate(new string[] { "StorId", "Code" }, new string[] { "仓库", "货架" })]
+        [DataRepeatValidate(new string[] { "StorId", "Code" }, new string[] { "仓库", "货架" }, allData: false, matchOr: false)]
         public async Task AddDataAsync(PB_Rack data)
         {
             await InsertAsync(data);
         }
 
         [DataEditLog(UserLogType.仓库管理, "Name", "货架")]
-        [DataRepeatAndValidate(new string[] { "StorId", "Code" }, new string[] { "仓库", "货架" })]
+        [DataRepeatValidate(new string[] { "StorId", "Code" }, new string[] { "仓库", "货架" }, allData: false, matchOr: false)]
         public async Task UpdateDataAsync(PB_Rack data)
         {
             await UpdateAsync(data);
         }
 
         [DataDeleteLog(UserLogType.仓库管理, "Name", "货架")]
-        [DataRepeatAndValidate(new string[] { "StorId", "Code" }, new string[] { "仓库", "货架" })]
+        [DataRepeatValidate(new string[] { "StorId", "Code" }, new string[] { "仓库", "货架" }, allData: false, matchOr: false)]
         public async Task DeleteDataAsync(List<string> ids)
         {
             await DeleteAsync(ids);

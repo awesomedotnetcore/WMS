@@ -47,14 +47,14 @@ namespace Coldairarrow.Business.PB
         }
 
         [DataAddLog(UserLogType.条码类型, "Name", "条码类型")]
-        [DataRepeatAndValidate(new string[] { "Code" }, new string[] { "条码类型" })]
+        [DataRepeatValidate(new string[] { "Code" }, new string[] { "条码类型" }, allData: false, matchOr: false)]
         public async Task AddDataAsync(PB_BarCodeType data)
         {
             await InsertAsync(data);
         }
 
         [DataEditLog(UserLogType.条码类型, "Name", "条码类型")]
-        [DataRepeatAndValidate(new string[] { "Code" }, new string[] { "条码类型" })]
+        [DataRepeatValidate(new string[] { "Code" }, new string[] { "条码类型" }, allData: false, matchOr: false)]
         public async Task UpdateDataAsync(PB_BarCodeType data)
         {
             await UpdateAsync(data);

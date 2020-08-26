@@ -147,7 +147,7 @@ namespace Coldairarrow.Business.PB
         }
 
         [DataAddLog(UserLogType.托盘管理, "Code", "托盘名称")]
-        [DataRepeatAndValidate(new string[] { "TrayTypeId", "Code" }, new string[] { "托盘类型", "托盘编号" })]
+        [DataRepeatValidate(new string[] { "TrayTypeId", "Code" }, new string[] { "托盘类型", "托盘编号" }, allData: false, matchOr: false)]
         public async Task AddDataAsync(PB_Tray data)
         {
             await InsertAsync(data);

@@ -24,7 +24,7 @@ namespace Coldairarrow.Business.PB
 
 
         [DataEditLog(UserLogType.托盘管理, "Code", "托盘")]
-        [DataRepeatAndValidate(new string[] { "TrayTypeId", "Code" }, new string[] { "托盘类型", "编码" })]
+        [DataRepeatValidate(new string[] { "TrayTypeId", "Code" }, new string[] { "托盘类型", "编码" }, allData: false, matchOr: false)]
         public async Task UpdateDataAsync(PB_Tray data)
         {
             await UpdateAsync(data);

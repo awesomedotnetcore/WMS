@@ -32,14 +32,14 @@ namespace Coldairarrow.Business.PB
         }
 
         [DataAddLog(UserLogType.货位管理, "Name", "货位")]
-        [DataRepeatAndValidate(new string[] { "StorId", "AreaId", "Code" }, new string[] { "仓库", "货区", "货位" })]
+        [DataRepeatValidate(new string[] { "StorId", "AreaId", "Code" }, new string[] { "仓库", "货区", "货位" }, allData: false, matchOr: false)]
         public async Task AddDataAsync(PB_Location data)
         {
             await InsertAsync(data);
         }
 
         [DataEditLog(UserLogType.货位管理, "Name", "货位")]
-        [DataRepeatAndValidate(new string[] { "StorId", "AreaId", "Code" }, new string[] { "仓库", "货区", "货位" })]
+        [DataRepeatValidate(new string[] { "StorId", "AreaId", "Code" }, new string[] { "仓库", "货区", "货位" }, allData: false, matchOr: false)]
         public async Task UpdateDataAsync(PB_Location data)
         {
             await UpdateAsync(data);
