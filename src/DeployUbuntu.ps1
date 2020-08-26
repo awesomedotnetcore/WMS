@@ -21,7 +21,7 @@ Write-Host 'Compress API Completed' -ForegroundColor Green
 
 Set-Location -Path $WebPath
 Write-Host 'Build Web Starting' -ForegroundColor Yellow
-$BuildScript={npm run build:live}
+$BuildScript={npm run build:docker}
 Invoke-Command -ScriptBlock $BuildScript
 Write-Host 'Build Web Completed' -ForegroundColor Green
 
@@ -34,7 +34,7 @@ Write-Host 'Compress Web Completed' -ForegroundColor Green
 
 Set-Location -Path $PadPath
 Write-Host 'Build Pad Starting' -ForegroundColor Yellow
-$BuildScript={npm run build:live}
+$BuildScript={npm run build:docker}
 Invoke-Command -ScriptBlock $BuildScript
 Write-Host 'Build Pad Completed' -ForegroundColor Green
 

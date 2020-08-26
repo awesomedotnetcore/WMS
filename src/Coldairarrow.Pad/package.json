@@ -6,6 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "build:live": "vue-cli-service build --mode live",
+    "build:docker": "vue-cli-service build --mode docker",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
