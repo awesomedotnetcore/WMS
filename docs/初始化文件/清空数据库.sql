@@ -18,6 +18,10 @@ TRUNCATE TABLE TD_Move;
 TRUNCATE TABLE TD_MoveDetail;
 TRUNCATE TABLE TD_OutStorDetail;
 TRUNCATE TABLE TD_OutStorage;
+TRUNCATE TABLE TD_Receiving
+TRUNCATE TABLE TD_RecDetail
+TRUNCATE TABLE TD_Send
+TRUNCATE TABLE TD_SendDetail
 
 TRUNCATE TABLE PB_Address;
 TRUNCATE TABLE PB_AreaMaterial;
@@ -25,10 +29,12 @@ TRUNCATE TABLE PB_BarCode;
 TRUNCATE TABLE PB_BarCodeSerial;
 TRUNCATE TABLE PB_Customer;
 TRUNCATE TABLE PB_Equipment;
+TRUNCATE TABLE PB_FeedPoint;
 TRUNCATE TABLE PB_Laneway;
 TRUNCATE TABLE PB_LocalTray;
 TRUNCATE TABLE PB_Location;
 TRUNCATE TABLE PB_Material;
+TRUNCATE TABLE PB_MaterialPoint;
 TRUNCATE TABLE PB_MaterialType;
 TRUNCATE TABLE PB_Measure;
 TRUNCATE TABLE PB_Rack;
@@ -39,6 +45,8 @@ TRUNCATE TABLE PB_Tray;
 TRUNCATE TABLE PB_TrayMaterial;
 TRUNCATE TABLE PB_TrayType;
 TRUNCATE TABLE PB_TrayZone;
+
+TRUNCATE TABLE PD_Plan;
 
 
 TRUNCATE TABLE Base_BuildTest;
@@ -55,7 +63,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 
 INSERT INTO `Base_User`(`Id`, `CreateTime`, `CreatorId`, `Deleted`, `UserName`, `Password`, `RealName`, `Sex`, `Birthday`, `DepartmentId`) VALUES ('Admin', NOW(), 'Admin', 0, 'Admin', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', 1, '2020-01-01', NULL);
-INSERT INTO `Base_Department`(`Id`, `CreateTime`, `CreatorId`, `Deleted`, `Name`, `ParentId`) VALUES ('1', NOW(), 'Admin', 0, '中南智能', NULL);
+INSERT INTO `Base_Department`(`Id`, `CreateTime`, `CreatorId`, `Deleted`, `Name`, `ParentId`) VALUES ('1', NOW(), 'Admin', 0, '集团总部', NULL);
 INSERT INTO `Base_Role`(`Id`, `CreateTime`, `CreatorId`, `Deleted`, `RoleName`) VALUES ('1', NOW(), NULL, 0, '超级管理员');
 
 INSERT INTO `Base_RoleAction`(`Id`, `CreateTime`, `CreatorId`, `Deleted`, `RoleId`, `ActionId`) 
@@ -67,8 +75,4 @@ INSERT INTO `PB_Storage`(`Id`, `Code`, `Name`, `Type`, `IsTray`, `IsZone`, `disa
 
 INSERT INTO `Base_UserStor`(`Id`, `UserId`, `StorId`, `IsDefault`, `CreateTime`, `CreatorId`, `Deleted`) VALUES ('1', '1', '1', 1, NOW(), 'Admin', 0);
 
-
-
-
-
-
+INSERT INTO `PB_BarCodeSerial`(`Id`, `TypeId`, `ParaName`, `ParaValue`, `SerialNum`) VALUES ('1', '1265898274779303936', 'Serial', '', 1);

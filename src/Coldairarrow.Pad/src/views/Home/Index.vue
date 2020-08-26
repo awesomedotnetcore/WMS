@@ -118,7 +118,7 @@
             <div class="app-text">货位管理</div>
           </div>
         </a-col>
-        <a-col :span="6">
+        <!-- <a-col :span="6">
           <div class="app-card" @click="$router.push({ path: '/PB/PlanList' })">
             <a-icon class="app-icon" type="profile" />
             <div class="app-text">计划表</div>
@@ -129,7 +129,7 @@
             <a-icon class="app-icon" type="profile" />
             <div class="app-text">测试页面</div>
           </div>
-        </a-col>
+        </a-col> -->
       </a-row>
     </a-card>
   </div>
