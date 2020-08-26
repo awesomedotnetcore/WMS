@@ -18,6 +18,7 @@ namespace Coldairarrow.Business.PB
         Task UpdateDataAsync(List<PB_Location> list);
 
         Task<PB_Location> GetByCode(string storId, string code);
+        Task<PB_Location> GetBylocal(string id);
     }
     public class PB_LocationSelectQueryDTO : SelectQueryDTO
     {
