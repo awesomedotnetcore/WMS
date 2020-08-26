@@ -10,7 +10,6 @@
         </div>
         <div class="desc">
           仓储管理系统 V2.20.9.1
-          <br />中南智能
         </div>
       </div>
 

@@ -16,4 +16,4 @@ export const setDocumentTitle = function (title) {
   }
 }
 
-export const domTitle = process.env.VUE_APP_ProjectName + decodeURI('%20-%20%E4%B8%AD%E5%8D%97%E6%99%BA%E8%83%BD')
+export const domTitle = process.env.VUE_APP_ProjectName + ' ZEQP'
