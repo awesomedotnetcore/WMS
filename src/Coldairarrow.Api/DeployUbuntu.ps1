@@ -14,10 +14,6 @@ Compress-Archive -Path $CompressPath -DestinationPath $ZIPFilePath
 Write-Host 'Compress Completed' -ForegroundColor Green
 
 Write-Host 'Deploy Starting' -ForegroundColor Yellow
-# $User = "WDeployAdmin"
-# $Password = Read-Host -Prompt "Please enter the server password" -AsSecureString
-# Write-Host 'Start connecting to the server' -ForegroundColor Yellow
-# $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User, $Password
 $Session = New-PSSession -HostName 10.76.20.162 -UserName root -KeyFilePath "C:\Users\Administrator\.ssh\id_rsa"
 $Session
 Write-Host 'Successfully connected to the server' -ForegroundColor Green

@@ -48,38 +48,51 @@ Write-Host 'Compress Pad Completed' -ForegroundColor Green
 Set-Location -Path $CurPath
 
 Write-Host 'Deploy Starting' -ForegroundColor Yellow
-$User = "Administrator"
-$Password = Read-Host -Prompt "Please enter the server password" -AsSecureString
-Write-Host 'Start connecting to the server' -ForegroundColor Yellow
-$Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User, $Password
-$Session = New-PSSession -ComputerName 10.76.20.194 -Credential $Credential
+$Session = New-PSSession -HostName 10.76.20.162 -UserName root -KeyFilePath "C:\Users\Administrator\.ssh\id_rsa"
+$Session
 Write-Host 'Successfully connected to the server' -ForegroundColor Green
 Write-Host 'Start copying files to the server' -ForegroundColor Yellow
-$RemotePath="D:\ZEQPWMS\"
+$RemotePath="/srv/zeqpwms/"
 Copy-Item $APIZIPFilePath -Destination $RemotePath -ToSession $Session
 Copy-Item $WebZIPFilePath -Destination $RemotePath -ToSession $Session
 Copy-Item $PadZIPFilePath -Destination $RemotePath -ToSession $Session
 Write-Host 'Copy files completed' -ForegroundColor Green
 Write-Host 'Start Expand files on the server' -ForegroundColor Yellow
-$APIRemoteDestinationPath=$RemotePath+"WMSAPI\"
+$APIRemoteDestinationPath=$RemotePath+"WMSAPI"
 $APIRemoteZipPath=$RemotePath+$APIZIPFileName
-$WebRemoteDestinationPath=$RemotePath+"WMSWeb\"
+$WebRemoteDestinationPath=$RemotePath+"WMSWeb"
 $WebRemoteZipPath=$RemotePath+$WebZIPFileName
-$PadRemoteDestinationPath=$RemotePath+"WMSPad\"
+$PadRemoteDestinationPath=$RemotePath+"WMSPad"
 $PadRemoteZipPath=$RemotePath+$PadZIPFileName
-Invoke-Command -Session $Session -ScriptBlock {Stop-Service -Name "W3SVC"}
 Invoke-Command -Session $Session -ScriptBlock {param($p) Remove-Item -Path $p -Recurse -Force} -ArgumentList $APIRemoteDestinationPath
 Invoke-Command -Session $Session -ScriptBlock {param($p) Remove-Item -Path $p -Recurse -Force} -ArgumentList $WebRemoteDestinationPath
 Invoke-Command -Session $Session -ScriptBlock {param($p) Remove-Item -Path $p -Recurse -Force} -ArgumentList $PadRemoteDestinationPath
 Invoke-Command -Session $Session -ScriptBlock {param($p,$dp) Expand-Archive -Path $p -DestinationPath $dp} -ArgumentList $APIRemoteZipPath,$APIRemoteDestinationPath
 Invoke-Command -Session $Session -ScriptBlock {param($p,$dp) Expand-Archive -Path $p -DestinationPath $dp} -ArgumentList $WebRemoteZipPath,$WebRemoteDestinationPath
 Invoke-Command -Session $Session -ScriptBlock {param($p,$dp) Expand-Archive -Path $p -DestinationPath $dp} -ArgumentList $PadRemoteZipPath,$PadRemoteDestinationPath
-Invoke-Command -Session $Session -ScriptBlock {Start-Service -Name "W3SVC"}
 Write-Host 'Expand Completed' -ForegroundColor Green
 
-Disconnect-PSSession -Session $Session
+Write-Host 'Deploy to Docker Starting' -ForegroundColor Yellow
+Invoke-Command -Session $Session -ScriptBlock {docker stop wmsapi}
+Invoke-Command -Session $Session -ScriptBlock {docker rm wmsapi}
+Invoke-Command -Session $Session -ScriptBlock {docker rmi wmsapi}
+Invoke-Command -Session $Session -ScriptBlock {param($p) docker build -t wmsapi $p} -ArgumentList $APIRemoteDestinationPath
+Invoke-Command -Session $Session -ScriptBlock {docker run -d -p 5000:5000 --name wmsapi wmsapi}
+
+Invoke-Command -Session $Session -ScriptBlock {docker stop wmsweb}
+Invoke-Command -Session $Session -ScriptBlock {docker rm wmsweb}
+Invoke-Command -Session $Session -ScriptBlock {docker rmi wmsweb}
+Invoke-Command -Session $Session -ScriptBlock {param($p) docker build -t wmsweb $p} -ArgumentList $WebRemoteDestinationPath
+Invoke-Command -Session $Session -ScriptBlock {docker run -d -p 8080:80 --name wmsweb wmsweb}
+
+Invoke-Command -Session $Session -ScriptBlock {docker stop wmspad}
+Invoke-Command -Session $Session -ScriptBlock {docker rm wmspad}
+Invoke-Command -Session $Session -ScriptBlock {docker rmi wmspad}
+Invoke-Command -Session $Session -ScriptBlock {param($p) docker build -t wmspad $p} -ArgumentList $PadRemoteDestinationPath
+Invoke-Command -Session $Session -ScriptBlock {docker run -d -p 8081:80 --name wmspad wmspad}
+Write-Host 'Deploy to Docker Completed' -ForegroundColor Green
+
 Remove-Item -Path $APIZIPFilePath
 Remove-Item -Path $WebZIPFilePath
 Remove-Item -Path $PadZIPFilePath
-Write-Host 'Disconnected from server' -ForegroundColor Yellow
 Write-Host 'Deploy Completed' -ForegroundColor Green
