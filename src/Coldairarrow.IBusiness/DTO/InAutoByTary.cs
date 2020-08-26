@@ -9,6 +9,7 @@ namespace Coldairarrow.IBusiness.DTO
     /// </summary>
     public class InAutoByTary
     {
-        public string TrayId { get; set; }
+        public string TrayCode { get; set; }
+        public string LocalCode { get; set; }
     }
 }

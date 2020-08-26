@@ -3,7 +3,7 @@
     <a-button slot="extra" type="primary" ghost @click="handlerInTray" :loading="loading">确定</a-button>
     <a-form-model layout="horizontal" :model="entity" :rules="rules" ref="form">
       <a-form-model-item prop="TrayCode">
-        <input-tray v-model="entity.TrayId"></input-tray>
+        <input-tray v-model="entity.TrayCode"></input-tray>
       </a-form-model-item>
     </a-form-model>
 

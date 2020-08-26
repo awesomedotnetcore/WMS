@@ -10,5 +10,6 @@ namespace Coldairarrow.IBusiness.DTO
     public class OutAutoByTary
     {
         public string TrayTypeId { get; set; }
+        public string TrayCode { get; set; }
     }
 }

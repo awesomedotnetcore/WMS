@@ -77,5 +77,11 @@ namespace Coldairarrow.Business.PB
         {
             return await this.GetIQueryable().SingleOrDefaultAsync(w => w.StorId == storId && w.Code == code);
         }
+
+        public async Task<PB_Location> GetBylocal(string id)
+        {
+           var rel =  await this.GetIQueryable().SingleOrDefaultAsync(w => w.Id == id);
+            return rel;
+        }
     }
 }
